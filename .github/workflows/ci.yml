@@ -24,7 +24,7 @@ jobs:
         with:
           java-version: openjdk${{ matrix.java }}
       - name: Build Quarkus QE Test Framework
-        run: git clone https://github.com/Sgitario/quarkus-test-framework && mvn -B -s .github/mvn-settings.xml clean install -Pframework
+        run: git clone https://github.com/Sgitario/quarkus-test-framework && cd quarkus-test-framework && mvn -B -s .github/mvn-settings.xml clean install -Pframework
       - name: Build with Maven
         run: mvn -fae -V -B -s .github/mvn-settings.xml clean verify
       - name: Zip Artifacts
@@ -63,7 +63,7 @@ jobs:
         with:
           java-version: openjdk${{ matrix.java }}
       - name: Build Quarkus QE Test Framework
-        run: git clone https://github.com/Sgitario/quarkus-test-framework && mvn -B -s .github/mvn-settings.xml clean install -Pframework
+        run: git clone https://github.com/Sgitario/quarkus-test-framework && cd quarkus-test-framework && mvn -B -s .github/mvn-settings.xml clean install -Pframework
       - name: Build with Maven
         run: |
           mvn -fae -V -B -s .github/mvn-settings.xml clean verify -Dquarkus.profile=native -Dquarkus.native.container-runtime=docker
@@ -98,7 +98,7 @@ jobs:
       - name: Build Quarkus main
         run: git clone https://github.com/quarkusio/quarkus.git && cd quarkus && mvn -B -s .github/mvn-settings.xml clean install -DskipTests -DskipITs -DskipDocs
       - name: Build Quarkus QE Test Framework
-        run: git clone https://github.com/Sgitario/quarkus-test-framework && mvn -B -s .github/mvn-settings.xml clean install -Pframework
+        run: git clone https://github.com/Sgitario/quarkus-test-framework && cd quarkus-test-framework && mvn -B -s .github/mvn-settings.xml clean install -Pframework
       - name: Build with Maven
         run: mvn -fae -V -B -s .github/mvn-settings.xml clean verify -Dquarkus-core-only
       - name: Zip Artifacts
