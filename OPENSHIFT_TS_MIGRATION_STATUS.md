@@ -1,4 +1,5 @@
 
 | Original Modules  | Second Header |
 | ------------- | ------------- |
-| modules in old OpenShift TS repo | migrated to  |
+| configmap/api-server | configmap |
+| configmap/file-system | configmap |

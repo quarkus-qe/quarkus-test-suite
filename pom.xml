@@ -36,6 +36,10 @@
         <checkstyle.version>8.41.1</checkstyle.version>
     </properties>
 
+    <modules>
+        <module>configmap</module>
+    </modules>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
