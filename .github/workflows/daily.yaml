@@ -1,0 +1,76 @@
+name: "Daily Build"
+on:
+  schedule:
+    - cron: '0 23 * * *'
+jobs:
+  build-jvm:
+    name: Daily build - JVM
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [ 11 ]
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Reclaim Disk Space
+        run: .github/ci-prerequisites.sh
+      - name: Install JDK {{ matrix.java }}
+        uses: joschi/setup-jdk@e87a7cec853d2dd7066adf837fe12bf0f3d45e52
+        with:
+          java-version: ${{ matrix.java }}
+      - name: Build Quarkus main
+        run: |
+          git clone https://github.com/quarkusio/quarkus.git && cd quarkus && mvn -B -s .github/mvn-settings.xml clean install -Dquickly
+      - name: Test in JVM mode
+        run: |
+          mvn -fae -V -B -s .github/mvn-settings.xml -fae clean verify
+      - name: Zip Artifacts
+        run: |
+          zip -R artifacts-jvm${{ matrix.java }}.zip '*-reports/*'
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: ci-artifacts
+          path: artifacts-jvm${{ matrix.java }}.zip
+  build-native:
+    name: Daily build - Native
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [ 11 ]
+        image: [ "ubi-quarkus-native-image:21.0-java11", "ubi-quarkus-mandrel:21.0-java11" ]
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Reclaim Disk Space
+        run: .github/ci-prerequisites.sh
+      - name: Install JDK {{ matrix.java }}
+        uses: joschi/setup-jdk@e87a7cec853d2dd7066adf837fe12bf0f3d45e52
+        with:
+          java-version: ${{ matrix.java }}
+      - name: Build Quarkus main
+        run: |
+          git clone https://github.com/quarkusio/quarkus.git && cd quarkus && mvn -B -s .github/mvn-settings.xml clean install -Dquickly
+      - name: Test in Native mode
+        run: |
+          mvn -fae -V -B -s .github/mvn-settings.xml -fae clean verify -Dnative \
+            -Dquarkus.native.container-build=true -Dquarkus.native.native-image-xmx=4g \
+            -Dquarkus.native.builder-image=quay.io/quarkus/${{ matrix.image }}
+      - name: Zip Artifacts
+        run: |
+          zip -R artifacts-native${{ matrix.java }}.zip '*-reports/*'
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: ci-artifacts
+          path: artifacts-native${{ matrix.java }}.zip
