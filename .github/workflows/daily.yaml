@@ -26,6 +26,8 @@ jobs:
       - name: Build Quarkus main
         run: |
           git clone https://github.com/quarkusio/quarkus.git && cd quarkus && mvn -B -s .github/mvn-settings.xml clean install -Dquickly
+      - name: Build Quarkus QE Test Framework
+        run: git clone https://github.com/Sgitario/quarkus-test-framework && cd quarkus-test-framework && mvn -B -s .github/mvn-settings.xml clean install -Pframework
       - name: Test in JVM mode
         run: |
           mvn -fae -V -B -s .github/mvn-settings.xml -fae clean verify
@@ -61,6 +63,8 @@ jobs:
       - name: Build Quarkus main
         run: |
           git clone https://github.com/quarkusio/quarkus.git && cd quarkus && mvn -B -s .github/mvn-settings.xml clean install -Dquickly
+      - name: Build Quarkus QE Test Framework
+        run: git clone https://github.com/Sgitario/quarkus-test-framework && cd quarkus-test-framework && mvn -B -s .github/mvn-settings.xml clean install -Pframework
       - name: Test in Native mode
         run: |
           mvn -fae -V -B -s .github/mvn-settings.xml -fae clean verify -Dnative \
