@@ -28,16 +28,11 @@ jobs:
       - name: Build with Maven
         run: mvn -fae -V -B -s .github/mvn-settings.xml clean verify
       - name: Zip Artifacts
-        run: |
-          zip -R artifacts-jvm${{ matrix.java }}.zip 'surefire-reports/*'
-      - uses: actions/upload-artifact@v1
-        with:
-          name: ci-artifacts
-          path: artifacts-jvm${{ matrix.java }}.zip
-      - name: Zip Artifacts
+        if: failure()
         run: |
           zip -R released-jvm${{ matrix.java }}.zip '*-reports/*'
       - uses: actions/upload-artifact@v1
+        if: failure()
         with:
           name: ci-artifacts
           path: released-jvm${{ matrix.java }}.zip
@@ -68,9 +63,11 @@ jobs:
         run: |
           mvn -fae -V -B -s .github/mvn-settings.xml clean verify -Dquarkus.profile=native -Dquarkus.native.container-runtime=docker
       - name: Zip Artifacts
+        if: failure()
         run: |
           zip -R released-native${{ matrix.java }}.zip '*-reports/*'
       - uses: actions/upload-artifact@v1
+        if: failure()
         with:
           name: ci-artifacts
           path: released-native${{ matrix.java }}.zip
@@ -102,9 +99,11 @@ jobs:
       - name: Build with Maven
         run: mvn -fae -V -B -s .github/mvn-settings.xml clean verify -Dquarkus-core-only
       - name: Zip Artifacts
+        if: failure()
         run: |
           zip -R main-jvm${{ matrix.java }}.zip '*-reports/*'
       - uses: actions/upload-artifact@v1
+        if: failure()
         with:
           name: ci-artifacts
           path: main-jvm${{ matrix.java }}.zip
