@@ -36,6 +36,10 @@
         <checkstyle.version>8.41.1</checkstyle.version>
     </properties>
 
+    <modules>
+        <module>scaling</module>
+    </modules>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
