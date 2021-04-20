@@ -16,3 +16,6 @@
 | messaging/qpid | messaging/qpid |
 | messaging/kafka-streams-reactive-messaging | messaging/kafka-streams-reactive-messaging |
 | messaging/kafka-avro-reactive-messaging | messaging/kafka-avro-reactive-messaging |
+| micrometer/prometheus-kafka | micrometer/prometheus-kafka |¡
+| microprofile  | microprofile  |
+

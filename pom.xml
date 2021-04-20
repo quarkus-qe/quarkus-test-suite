@@ -49,6 +49,7 @@
         <module>messaging/qpid</module>
         <module>messaging/kafka-streams-reactive-messaging</module>
         <module>messaging/kafka-avro-reactive-messaging</module>
+        <module>microprofile</module>
     </modules>
 
     <dependencyManagement>
@@ -77,6 +78,12 @@
                 <groupId>io.quarkiverse.apicurio</groupId>
                 <artifactId>quarkiverse-apicurio-registry-client</artifactId>
                 <version>${quarkiverse.apicurio.registry.client.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.quarkus.qe</groupId>
+                <artifactId>quarkus-test-service-jaeger</artifactId>
+                <version>${quarkus.qe.framework.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
