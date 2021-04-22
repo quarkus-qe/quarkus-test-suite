@@ -16,6 +16,17 @@
 | messaging/qpid | messaging/qpid |
 | messaging/kafka-streams-reactive-messaging | messaging/kafka-streams-reactive-messaging |
 | messaging/kafka-avro-reactive-messaging | messaging/kafka-avro-reactive-messaging |
-| micrometer/prometheus-kafka | micrometer/prometheus-kafka |¡
 | microprofile  | microprofile  |
-
+| security/basic | security/basic |
+| security/https-1way | security/https |
+| security/https-2way | security/https |
+| security/https-2way-authz | security/https |
+| security/jwt | security/jwt |
+| security/jwt-cookie | security/jwt |
+| security/keycloak | security/keycloak |
+| security/keycloak-authz | security/authz |
+| security/keycloak-jwt | security/jwt |
+| security/keycloak-multitenant | security/keycloak-multitenant |
+| security/keycloak-aouth2 | security/keycloak-aouth2 |
+| security/keycloak-oidc-client | security/keycloak-oidc-client |
+| security/keycloak-webapp | security/keycloak-webapp |

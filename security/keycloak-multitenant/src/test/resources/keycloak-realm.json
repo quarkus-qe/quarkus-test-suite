@@ -1,0 +1,65 @@
+{
+  "realm": "test-realm",
+  "enabled": true,
+  "sslRequired": "none",
+  "roles": {
+    "realm": [
+      {
+        "name": "test-user-role"
+      }
+    ]
+  },
+  "users": [
+    {
+      "username": "test-user",
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test-user"
+        }
+      ],
+      "realmRoles": [
+        "test-user-role"
+      ]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "test-webapp-client",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "test-webapp-client-secret",
+      "redirectUris": [
+        "*"
+      ]
+    },
+    {
+      "clientId": "test-service-client",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "test-service-client-secret"
+    },
+    {
+      "clientId": "test-jwt-client",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "clientAuthenticatorType": "client-secret-jwt",
+      "secret": "AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow",
+      "redirectUris": [
+        "*"
+      ]
+    }
+  ]
+}
