@@ -38,6 +38,8 @@
 
     <modules>
         <module>config</module>
+        <module>http/http-minimum</module>
+        <module>http/http-advanced</module>
         <module>scaling</module>
     </modules>
 

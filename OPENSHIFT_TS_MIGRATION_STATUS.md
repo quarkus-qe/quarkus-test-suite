@@ -6,3 +6,5 @@
 | configmap/file-system | config |
 | config-secret/api-server | config |
 | config-secret/file-system | config |
+| http/http-minimum | http/http-minimum |
+| http/http-advanced | http/http-advanced |
