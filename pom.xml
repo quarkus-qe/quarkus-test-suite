@@ -43,6 +43,12 @@
         <module>scaling</module>
         <module>micrometer/prometheus</module>
         <module>micrometer/prometheus-kafka</module>
+        <module>messaging/artemis</module>
+        <module>messaging/artemis-jta</module>
+        <module>messaging/amqp-reactive</module>
+        <module>messaging/qpid</module>
+        <module>messaging/kafka-streams-reactive-messaging</module>
+        <module>messaging/kafka-avro-reactive-messaging</module>
     </modules>
 
     <dependencyManagement>
@@ -56,31 +62,12 @@
             </dependency>
 
             <dependency>
-                <groupId>io.quarkus.ts.qe</groupId>
-                <artifactId>sql-db-app</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.quarkus.ts.qe</groupId>
-                <artifactId>sql-db-app</artifactId>
-                <version>${project.version}</version>
-                <classifier>tests</classifier>
-            </dependency>
-
-            <dependency>
                 <groupId>io.quarkus.qe</groupId>
-                <artifactId>quarkus-test-service-keycloak</artifactId>
+                <artifactId>quarkus-test-parent</artifactId>
                 <version>${quarkus.qe.framework.version}</version>
-                <scope>test</scope>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
-
-            <dependency>
-                <groupId>io.quarkus.qe</groupId>
-                <artifactId>quarkus-test-service-kafka</artifactId>
-                <version>${quarkus.qe.framework.version}</version>
-                <scope>test</scope>
-            </dependency>
-
             <dependency>
                 <groupId>io.apicurio</groupId>
                 <artifactId>apicurio-registry-utils-serde</artifactId>
@@ -248,14 +235,18 @@
                             <execution>
                                 <configuration>
                                     <systemProperties>
-                                        <native.image.path>${project.build.directory}/${project.build.finalName}-runner
+                                        <native.image.path>
+                                            ${project.build.directory}/${project.build.finalName}-runner
                                         </native.image.path>
                                         <quarkus.package.type>${quarkus.package.type}</quarkus.package.type>
-                                        <quarkus.native.container-build>${quarkus.native.container-build}
+                                        <quarkus.native.container-build>
+                                            ${quarkus.native.container-build}
                                         </quarkus.native.container-build>
-                                        <quarkus.native.native-image-xmx>${quarkus.native.native-image-xmx}
+                                        <quarkus.native.native-image-xmx>
+                                            ${quarkus.native.native-image-xmx}
                                         </quarkus.native.native-image-xmx>
-                                        <quarkus.native.builder-image>${quarkus.native.builder-image}
+                                        <quarkus.native.builder-image>
+                                            ${quarkus.native.builder-image}
                                         </quarkus.native.builder-image>
                                     </systemProperties>
                                 </configuration>
