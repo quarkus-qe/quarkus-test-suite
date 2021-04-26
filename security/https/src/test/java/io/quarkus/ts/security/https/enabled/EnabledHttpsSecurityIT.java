@@ -1,0 +1,117 @@
+package io.quarkus.ts.security.https.enabled;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.io.File;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
+import javax.net.ssl.SSLContext;
+
+import org.apache.http.client.fluent.Executor;
+import org.apache.http.client.fluent.Request;
+import org.apache.http.conn.ssl.DefaultHostnameVerifier;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContexts;
+import org.junit.jupiter.api.Test;
+
+import io.quarkus.test.bootstrap.Protocol;
+import io.quarkus.test.bootstrap.RestService;
+import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.ts.security.https.utils.HttpsAssertions;
+import io.quarkus.vertx.http.runtime.HttpConfiguration;
+
+@QuarkusScenario
+public class EnabledHttpsSecurityIT {
+    // not using RestAssured because we want 100% control over certificate & hostname verification
+
+    static final char[] CLIENT_PASSWORD = "client-password".toCharArray();
+
+    @QuarkusApplication(ssl = true)
+    static RestService app = new RestService()
+            .withProperty("quarkus.http.insecure-requests", HttpConfiguration.InsecureRequests.ENABLED.name());
+
+    @Test
+    public void https() throws IOException, GeneralSecurityException {
+        SSLContext sslContext = SSLContexts.custom()
+                .setKeyStoreType("pkcs12")
+                .loadKeyMaterial(new File("target/client-keystore.pkcs12"), CLIENT_PASSWORD, CLIENT_PASSWORD)
+                .loadTrustMaterial(new File("target/client-truststore.pkcs12"), CLIENT_PASSWORD)
+                .build();
+        try (CloseableHttpClient httpClient = HttpClients.custom()
+                .setSSLContext(sslContext)
+                .setSSLHostnameVerifier(new DefaultHostnameVerifier())
+                .build()) {
+
+            String response = Executor.newInstance(httpClient)
+                    .execute(Request.Get(url(Protocol.HTTPS)))
+                    .returnContent().asString();
+            assertEquals("Hello, use SSL true", response);
+        }
+    }
+
+    @Test
+    public void httpsServerCertificateUnknownToClient() throws IOException, GeneralSecurityException {
+        SSLContext sslContext = SSLContexts.custom()
+                .setKeyStoreType("pkcs12")
+                .loadKeyMaterial(new File("target/client-keystore.pkcs12"), CLIENT_PASSWORD, CLIENT_PASSWORD)
+                .build();
+        try (CloseableHttpClient httpClient = HttpClients.custom()
+                .setSSLContext(sslContext)
+                .setSSLHostnameVerifier(new DefaultHostnameVerifier())
+                .build()) {
+
+            HttpsAssertions.assertTlsHandshakeError(() -> {
+                Executor.newInstance(httpClient).execute(Request.Get(url(Protocol.HTTPS)));
+            });
+        }
+    }
+
+    @Test
+    public void httpsClientCertificateUnknownToServer() throws IOException, GeneralSecurityException {
+        SSLContext sslContext = SSLContexts.custom()
+                .setKeyStoreType("pkcs12")
+                .loadKeyMaterial(new File("target/unknown-client-keystore.pkcs12"), CLIENT_PASSWORD, CLIENT_PASSWORD)
+                .loadTrustMaterial(new File("target/client-truststore.pkcs12"), CLIENT_PASSWORD)
+                .build();
+        try (CloseableHttpClient httpClient = HttpClients.custom()
+                .setSSLContext(sslContext)
+                .setSSLHostnameVerifier(new DefaultHostnameVerifier())
+                .build()) {
+
+            HttpsAssertions.assertTlsHandshakeError(() -> {
+                Executor.newInstance(httpClient).execute(Request.Get(url(Protocol.HTTPS)));
+            });
+        }
+    }
+
+    @Test
+    public void httpsServerCertificateUnknownToClientClientCertificateUnknownToServer()
+            throws IOException, GeneralSecurityException {
+        SSLContext sslContext = SSLContexts.custom()
+                .setKeyStoreType("pkcs12")
+                .loadKeyMaterial(new File("target/unknown-client-keystore.pkcs12"), CLIENT_PASSWORD, CLIENT_PASSWORD)
+                .build();
+        try (CloseableHttpClient httpClient = HttpClients.custom()
+                .setSSLContext(sslContext)
+                .setSSLHostnameVerifier(new DefaultHostnameVerifier())
+                .build()) {
+
+            HttpsAssertions.assertTlsHandshakeError(() -> {
+                Executor.newInstance(httpClient).execute(Request.Get(url(Protocol.HTTPS)));
+            });
+        }
+    }
+
+    @Test
+    public void http() throws IOException {
+        String response = Request.Get(url(Protocol.HTTP)).execute().returnContent().asString();
+        assertEquals("Hello, use SSL false", response);
+    }
+
+    private String url(Protocol protocol) {
+        return app.getHost(protocol) + ":" + app.getPort(protocol) + "/hello/simple";
+    }
+}
