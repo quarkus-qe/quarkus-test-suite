@@ -8,3 +8,5 @@
 | config-secret/file-system | config |
 | http/http-minimum | http/http-minimum |
 | http/http-advanced | http/http-advanced |
+| micrometer/prometheus | micrometer/prometheus |
+| micrometer/prometheus-kafka | micrometer/prometheus-kafka |¡

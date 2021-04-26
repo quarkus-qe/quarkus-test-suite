@@ -41,6 +41,8 @@
         <module>http/http-minimum</module>
         <module>http/http-advanced</module>
         <module>scaling</module>
+        <module>micrometer/prometheus</module>
+        <module>micrometer/prometheus-kafka</module>
     </modules>
 
     <dependencyManagement>
