@@ -30,3 +30,8 @@
 | security/keycloak-aouth2 | security/keycloak-aouth2 |
 | security/keycloak-oidc-client | security/keycloak-oidc-client |
 | security/keycloak-webapp | security/keycloak-webapp |
+| sql-db/postgresql | sql-db/sql-app |
+| sql-db/mysql | sql-db/sql-app |
+| sql-db/mariadb | sql-db/sql-app |
+| sql-db/mssql | sql-db/sql-app |
+| sql-db/multiple-pus | sql-db/multiple-pus |

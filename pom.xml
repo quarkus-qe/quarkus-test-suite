@@ -62,6 +62,8 @@
         <module>security/keycloak-oauth2</module>
         <module>security/keycloak-multitenant</module>
         <module>security/keycloak-oidc-client</module>
+        <module>sql-db/sql-app</module>
+        <module>sql-db/multiple-pus</module>
     </modules>
 
     <dependencyManagement>
@@ -314,6 +316,29 @@
                         <configuration>
                             <systemPropertyVariables>
                                 <ts.openshift.scenario.enabled>true</ts.openshift.scenario.enabled>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>redhat-registry</id>
+            <activation>
+                <property>
+                    <name>openshift</name>
+                </property>
+            </activation>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <ts.redhat.registry.enabled>true</ts.redhat.registry.enabled>
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>
