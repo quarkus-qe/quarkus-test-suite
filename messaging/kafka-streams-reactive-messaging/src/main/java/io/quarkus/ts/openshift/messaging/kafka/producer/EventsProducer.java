@@ -19,7 +19,7 @@ import io.vertx.core.json.Json;
 @ApplicationScoped
 public class EventsProducer {
 
-    private static final int SEND_EVENT_EVERY_MILLIS = 100;
+    private static final int SEND_EVENT_EVERY_MILLIS = 1000;
     private static final Logger LOG = Logger.getLogger(EventsProducer.class);
 
     @ConfigProperty(name = "producer.httpCodes")
