@@ -22,6 +22,7 @@ import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.ts.security.https.utils.Certificates;
 import io.quarkus.ts.security.https.utils.HttpsAssertions;
 import io.quarkus.vertx.http.runtime.HttpConfiguration;
 
@@ -38,8 +39,8 @@ public class RedirectHttpsSecurityIT {
     @Test
     public void https() throws IOException, GeneralSecurityException {
         SSLContext sslContext = SSLContexts.custom()
-                .setKeyStoreType("pkcs12")
-                .loadTrustMaterial(new File("target/client-truststore.pkcs12"), CLIENT_PASSWORD)
+                .setKeyStoreType(Certificates.PKCS12)
+                .loadTrustMaterial(new File(Certificates.CLIENT_TRUSTSTORE), CLIENT_PASSWORD)
                 .build();
         try (CloseableHttpClient httpClient = HttpClients.custom()
                 .setSSLContext(sslContext)

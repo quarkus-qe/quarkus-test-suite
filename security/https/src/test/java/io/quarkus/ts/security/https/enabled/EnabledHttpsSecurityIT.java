@@ -20,6 +20,7 @@ import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.ts.security.https.utils.Certificates;
 import io.quarkus.ts.security.https.utils.HttpsAssertions;
 import io.quarkus.vertx.http.runtime.HttpConfiguration;
 
@@ -36,9 +37,9 @@ public class EnabledHttpsSecurityIT {
     @Test
     public void https() throws IOException, GeneralSecurityException {
         SSLContext sslContext = SSLContexts.custom()
-                .setKeyStoreType("pkcs12")
-                .loadKeyMaterial(new File("target/client-keystore.pkcs12"), CLIENT_PASSWORD, CLIENT_PASSWORD)
-                .loadTrustMaterial(new File("target/client-truststore.pkcs12"), CLIENT_PASSWORD)
+                .setKeyStoreType(Certificates.PKCS12)
+                .loadKeyMaterial(new File(Certificates.CLIENT_KEYSTORE), CLIENT_PASSWORD, CLIENT_PASSWORD)
+                .loadTrustMaterial(new File(Certificates.CLIENT_TRUSTSTORE), CLIENT_PASSWORD)
                 .build();
         try (CloseableHttpClient httpClient = HttpClients.custom()
                 .setSSLContext(sslContext)
@@ -55,8 +56,8 @@ public class EnabledHttpsSecurityIT {
     @Test
     public void httpsServerCertificateUnknownToClient() throws IOException, GeneralSecurityException {
         SSLContext sslContext = SSLContexts.custom()
-                .setKeyStoreType("pkcs12")
-                .loadKeyMaterial(new File("target/client-keystore.pkcs12"), CLIENT_PASSWORD, CLIENT_PASSWORD)
+                .setKeyStoreType(Certificates.PKCS12)
+                .loadKeyMaterial(new File(Certificates.CLIENT_KEYSTORE), CLIENT_PASSWORD, CLIENT_PASSWORD)
                 .build();
         try (CloseableHttpClient httpClient = HttpClients.custom()
                 .setSSLContext(sslContext)
@@ -72,9 +73,9 @@ public class EnabledHttpsSecurityIT {
     @Test
     public void httpsClientCertificateUnknownToServer() throws IOException, GeneralSecurityException {
         SSLContext sslContext = SSLContexts.custom()
-                .setKeyStoreType("pkcs12")
-                .loadKeyMaterial(new File("target/unknown-client-keystore.pkcs12"), CLIENT_PASSWORD, CLIENT_PASSWORD)
-                .loadTrustMaterial(new File("target/client-truststore.pkcs12"), CLIENT_PASSWORD)
+                .setKeyStoreType(Certificates.PKCS12)
+                .loadKeyMaterial(new File(Certificates.UNKNOWN_CLIENT_KEYSTORE), CLIENT_PASSWORD, CLIENT_PASSWORD)
+                .loadTrustMaterial(new File(Certificates.CLIENT_TRUSTSTORE), CLIENT_PASSWORD)
                 .build();
         try (CloseableHttpClient httpClient = HttpClients.custom()
                 .setSSLContext(sslContext)
@@ -91,8 +92,8 @@ public class EnabledHttpsSecurityIT {
     public void httpsServerCertificateUnknownToClientClientCertificateUnknownToServer()
             throws IOException, GeneralSecurityException {
         SSLContext sslContext = SSLContexts.custom()
-                .setKeyStoreType("pkcs12")
-                .loadKeyMaterial(new File("target/unknown-client-keystore.pkcs12"), CLIENT_PASSWORD, CLIENT_PASSWORD)
+                .setKeyStoreType(Certificates.PKCS12)
+                .loadKeyMaterial(new File(Certificates.UNKNOWN_CLIENT_KEYSTORE), CLIENT_PASSWORD, CLIENT_PASSWORD)
                 .build();
         try (CloseableHttpClient httpClient = HttpClients.custom()
                 .setSSLContext(sslContext)
