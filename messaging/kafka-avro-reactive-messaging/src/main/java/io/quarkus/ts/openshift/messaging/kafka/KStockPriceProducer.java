@@ -23,7 +23,7 @@ public class KStockPriceProducer {
 
     @Inject
     @Channel("source-stock-price")
-    @OnOverflow(value = OnOverflow.Strategy.BUFFER, bufferSize = 1)
+    @OnOverflow(value = OnOverflow.Strategy.DROP)
     Emitter<StockPrice> emitter;
 
     private Random random = new Random();

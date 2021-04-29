@@ -2,36 +2,32 @@ package io.quarkus.ts.openshift.messaging.kafka;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.sse.SseEventSource;
 
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
-import io.quarkus.ts.openshift.messaging.kafka.aggregator.model.LoginAggregation;
 
 public abstract class BaseKafkaStreamIT {
 
     private static final int TIMEOUT_SEC = 25;
-    private static final int EVENTS_AMOUNT = 3;
+    private static final int EVENTS_AMOUNT = 1;
 
     private String endpoint;
     private Client client = ClientBuilder.newClient();
-    private List<LoginAggregation> receive = new CopyOnWriteArrayList<>();
-    private boolean completed;
+    private AtomicInteger receivedEvents = new AtomicInteger(0);
 
     @Test
     public void testAlertMonitorEventStream() throws InterruptedException {
-        givenAnApplicationEndpoint(getEndpoint() + "/monitor/stream");
-        whenRequestSomeEvents(EVENTS_AMOUNT);
+        givenAnApplicationEndpoint("/monitor/stream");
+        whenRequestSomeEvents();
         thenVerifyAllEventsArrived();
     }
 
@@ -41,26 +37,27 @@ public abstract class BaseKafkaStreamIT {
         this.endpoint = endpoint;
     }
 
-    private void whenRequestSomeEvents(int amount) throws InterruptedException {
-        WebTarget target = client.target(endpoint);
-        final CountDownLatch latch = new CountDownLatch(amount);
+    private void whenRequestSomeEvents() throws InterruptedException {
+        WebTarget target = client.target(getAppUrl() + endpoint);
+        final CountDownLatch latch = new CountDownLatch(EVENTS_AMOUNT);
 
         SseEventSource source = SseEventSource.target(target).build();
         source.register(inboundSseEvent -> {
-            receive.add(inboundSseEvent.readData(LoginAggregation.class, MediaType.APPLICATION_JSON_TYPE));
+            receivedEvents.incrementAndGet();
             latch.countDown();
         });
 
         source.open();
-        completed = latch.await(TIMEOUT_SEC, TimeUnit.SECONDS);
+        latch.await(TIMEOUT_SEC, TimeUnit.SECONDS);
         source.close();
     }
 
     private void thenVerifyAllEventsArrived() {
-        assertTrue(completed, "Not all expected kafka events has been consumed.");
+        assertTrue(receivedEvents.get() >= EVENTS_AMOUNT,
+                "Not all expected kafka events has been consumed. Got: " + receivedEvents.get());
     }
 
-    private String getEndpoint() {
+    private String getAppUrl() {
         return getApp().getHost() + ":" + getApp().getPort();
     }
 }

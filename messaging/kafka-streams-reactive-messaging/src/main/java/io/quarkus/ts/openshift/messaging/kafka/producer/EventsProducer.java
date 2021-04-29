@@ -9,9 +9,9 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.messaging.Outgoing;
-import org.jboss.logging.Logger;
 
 import io.quarkus.ts.openshift.messaging.kafka.aggregator.model.LoginAttempt;
+import io.quarkus.ts.openshift.messaging.kafka.aggregator.streams.WindowedLoginDeniedStream;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.reactive.messaging.kafka.Record;
 import io.vertx.core.json.Json;
@@ -19,8 +19,7 @@ import io.vertx.core.json.Json;
 @ApplicationScoped
 public class EventsProducer {
 
-    private static final int SEND_EVENT_EVERY_MILLIS = 100;
-    private static final Logger LOG = Logger.getLogger(EventsProducer.class);
+    private static final int SEND_EVENT_EVERY_MILLIS = 1000;
 
     @ConfigProperty(name = "producer.httpCodes")
     List<Integer> httpCodes;
@@ -30,7 +29,7 @@ public class EventsProducer {
 
     private Random random = new Random();
 
-    @Outgoing("login-http-response-values")
+    @Outgoing(WindowedLoginDeniedStream.LOGIN_ATTEMPTS_TOPIC)
     public Multi<Record<String, String>> generate() {
         return Multi.createFrom().ticks().every(Duration.ofMillis(SEND_EVENT_EVERY_MILLIS))
                 .onOverflow().drop()
@@ -38,8 +37,6 @@ public class EventsProducer {
                     String loginEndpoint = getRandomEndpointUrl();
                     String loginEndpointEnc = encodeId(loginEndpoint);
                     Integer httpCode = getRandomHttpCode();
-
-                    LOG.infov("Endpoint: {0} ID: {1}, HTTP-code: {2}", loginEndpoint, loginEndpointEnc, httpCode);
                     return Record
                             .of(loginEndpointEnc, Json.encode(new LoginAttempt(loginEndpointEnc, loginEndpoint, httpCode)));
                 });
