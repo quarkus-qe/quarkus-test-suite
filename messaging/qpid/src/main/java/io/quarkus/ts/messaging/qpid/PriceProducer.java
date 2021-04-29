@@ -1,4 +1,4 @@
-package io.quarkus.ts.openshift.messaging.qpid;
+package io.quarkus.ts.messaging.qpid;
 
 import java.util.Random;
 import java.util.concurrent.Executors;
@@ -7,7 +7,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSContext;
 import javax.jms.Session;
@@ -22,16 +21,15 @@ import io.quarkus.runtime.StartupEvent;
 public class PriceProducer implements Runnable {
 
     public static final int PRICES_MAX = 100;
-    public static final long INITIAL_DELAY = 500L;
-
-    @Inject
-    ConnectionFactory connectionFactory;
 
     private final Random random = new Random();
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
-    void onStart(@Observes StartupEvent ev) {
-        scheduler.scheduleWithFixedDelay(this, 0L, INITIAL_DELAY, TimeUnit.MILLISECONDS);
+    private ConnectionFactory connectionFactory;
+
+    void onStart(@Observes StartupEvent ev, ConnectionFactory connectionFactory) {
+        this.connectionFactory = connectionFactory;
+        this.scheduler.scheduleWithFixedDelay(this, 0L, 1L, TimeUnit.SECONDS);
     }
 
     void onStop(@Observes ShutdownEvent ev) {
@@ -41,7 +39,9 @@ public class PriceProducer implements Runnable {
     @Override
     public void run() {
         try (JMSContext context = connectionFactory.createContext(Session.AUTO_ACKNOWLEDGE)) {
-            context.createProducer().send(context.createQueue("prices"), Integer.toString(random.nextInt(PRICES_MAX)));
+            context.createProducer().send(context.createTopic("prices"), Integer.toString(random.nextInt(PRICES_MAX)));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

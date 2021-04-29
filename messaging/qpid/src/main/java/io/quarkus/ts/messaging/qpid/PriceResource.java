@@ -1,4 +1,4 @@
-package io.quarkus.ts.openshift.messaging.qpid;
+package io.quarkus.ts.messaging.qpid;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
