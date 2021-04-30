@@ -293,7 +293,7 @@
             <properties>
                 <quarkus.package.type>native</quarkus.package.type>
                 <quarkus.native.container-build>true</quarkus.native.container-build>
-                <quarkus.native.native-image-xmx>3g</quarkus.native.native-image-xmx>
+                <quarkus.native.native-image-xmx>4g</quarkus.native.native-image-xmx>
                 <quarkus.native.builder-image>quay.io/quarkus/ubi-quarkus-mandrel:21.0-java11</quarkus.native.builder-image>
             </properties>
         </profile>
