@@ -32,7 +32,8 @@
 
         <apache-httpclient-fluent.version>4.5.13</apache-httpclient-fluent.version>
         <apicurio.registry.utils.serde.version>1.3.2.Final</apicurio.registry.utils.serde.version>
-        <quarkiverse.apicurio.registry.client.version>0.0.2</quarkiverse.apicurio.registry.client.version>
+        <!-- New Version 0.0.2 of Apicurio does not work on Native with 1.X Quarkus version  -->
+        <quarkiverse.apicurio.registry.client.version>0.0.1</quarkiverse.apicurio.registry.client.version>
         <apache.avro.version>1.10.2</apache.avro.version>
         <checkstyle.version>8.42</checkstyle.version>
         <jjwt.version>0.11.2</jjwt.version>
