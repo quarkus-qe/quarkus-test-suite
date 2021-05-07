@@ -35,3 +35,5 @@
 | sql-db/mariadb | sql-db/sql-app |
 | sql-db/mssql | sql-db/sql-app |
 | sql-db/multiple-pus | sql-db/multiple-pus |
+| deployment-strategies/quarkus | http/http-minimum with tag 'use-quarkus-openshift-extension' |
+| deployment-strategies/quarkus-serverless | http/http-minimum with tag 'use-quarkus-openshift-extension' |
