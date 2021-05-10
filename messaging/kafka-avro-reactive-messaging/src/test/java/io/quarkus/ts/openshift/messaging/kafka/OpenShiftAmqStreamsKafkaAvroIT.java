@@ -13,8 +13,8 @@ import io.quarkus.test.services.containers.model.KafkaVendor;
 public class OpenShiftAmqStreamsKafkaAvroIT extends BaseKafkaAvroIT {
 
     @KafkaContainer(vendor = KafkaVendor.STRIMZI,
-            image = "registry.redhat.io/amq7/amq-streams-kafka-24-rhel7",
-            version = "1.5.0",
+            image = "${amq-streams.image}",
+            version = "${amq-streams.version}",
             withRegistry = true)
     static KafkaService kafka = new KafkaService();
 
