@@ -10,8 +10,7 @@ import io.quarkus.test.services.QuarkusApplication;
 @OpenShiftScenario
 @EnabledIfOpenShiftScenarioPropertyIsTrue
 public class AmqStreamsOpenShiftAlertEventsIT extends BaseOpenShiftAlertEventsIT {
-    @KafkaContainer(image = "registry.redhat.io/amq7/amq-streams-kafka-24-rhel7",
-            version = "1.5.0")
+    @KafkaContainer(image = "${amq-streams.image}", version = "${amq-streams.version}")
     static KafkaService kafka = new KafkaService();
 
     @QuarkusApplication

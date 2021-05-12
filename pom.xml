@@ -284,6 +284,11 @@
                                         <quarkus.native.builder-image>
                                             ${quarkus.native.builder-image}
                                         </quarkus.native.builder-image>
+                                        <!-- Product Supported -->
+                                        <amq-streams.image>
+                                            registry.redhat.io/amq7/amq-streams-kafka-24-rhel7
+                                        </amq-streams.image>
+                                        <amq-streams.version>1.7.0</amq-streams.version>
                                     </systemProperties>
                                 </configuration>
                             </execution>
