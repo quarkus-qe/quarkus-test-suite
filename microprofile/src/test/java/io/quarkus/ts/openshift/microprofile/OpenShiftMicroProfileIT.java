@@ -1,16 +1,18 @@
 package io.quarkus.ts.openshift.microprofile;
 
-import io.quarkus.test.scenarios.OpenShiftScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
-import io.quarkus.test.scenarios.annotations.EnabledIfOpenShiftScenarioPropertyIsTrue;
-import java.net.HttpURLConnection;
-import java.util.concurrent.TimeUnit;
-import org.junit.jupiter.api.Test;
-
 import static io.restassured.RestAssured.when;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
+
+import java.net.HttpURLConnection;
+import java.util.concurrent.TimeUnit;
+
+import org.junit.jupiter.api.Test;
+
+import io.quarkus.test.scenarios.OpenShiftScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
+import io.quarkus.test.scenarios.annotations.EnabledIfOpenShiftScenarioPropertyIsTrue;
 
 @OpenShiftScenario
 @EnabledIfOpenShiftScenarioPropertyIsTrue
@@ -50,7 +52,6 @@ public class OpenShiftMicroProfileIT extends MicroProfileIT {
                             " { \"${it.key}=${it.value}\".toString() }", hasItems(
                             "span.kind=server",
                             "component=jaxrs",
-                            "http.url=" + app.getHost() + ":80/client",
                             "http.method=GET",
                             "http.status_code=200"
                     ))
