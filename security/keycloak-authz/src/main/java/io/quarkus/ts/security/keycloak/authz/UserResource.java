@@ -8,8 +8,11 @@ import javax.ws.rs.core.MediaType;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
+import io.quarkus.security.Authenticated;
 import io.quarkus.security.identity.SecurityIdentity;
 
+// TODO: Adding @Authentication as a workaround for https://github.com/quarkusio/quarkus/issues/17164
+@Authenticated
 @Path("/user")
 public class UserResource {
     @Inject

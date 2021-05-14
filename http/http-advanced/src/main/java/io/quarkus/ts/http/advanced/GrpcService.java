@@ -1,13 +1,11 @@
 package io.quarkus.ts.http.advanced;
 
-import javax.inject.Singleton;
-
 import io.grpc.stub.StreamObserver;
 import io.quarkus.example.GreeterGrpc;
 import io.quarkus.example.HelloReply;
 import io.quarkus.example.HelloRequest;
 
-@Singleton
+@io.quarkus.grpc.GrpcService
 public class GrpcService extends GreeterGrpc.GreeterImplBase {
 
     @Override

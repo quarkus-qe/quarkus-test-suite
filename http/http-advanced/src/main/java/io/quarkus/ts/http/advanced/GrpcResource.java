@@ -9,13 +9,13 @@ import javax.ws.rs.core.MediaType;
 
 import io.quarkus.example.GreeterGrpc;
 import io.quarkus.example.HelloRequest;
-import io.quarkus.grpc.runtime.annotations.GrpcService;
+import io.quarkus.grpc.GrpcClient;
 
 @Path("/grpc")
 public class GrpcResource {
 
     @Inject
-    @GrpcService("hello")
+    @GrpcClient("hello")
     GreeterGrpc.GreeterBlockingStub client;
 
     @GET

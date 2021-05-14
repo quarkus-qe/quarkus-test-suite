@@ -9,7 +9,6 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
 
 @ApplicationScoped
@@ -42,7 +41,7 @@ public class ConsumerService {
     }
 
     private String receiveMessagesInQueue(String queueName) {
-        String price = StringUtils.EMPTY;
+        String price = "";
         try (JMSContext context = connectionFactory.createContext(Session.AUTO_ACKNOWLEDGE);
                 JMSConsumer consumer = context.createConsumer(context.createQueue(queueName))) {
             Message message = consumer.receive(CONSUMER_TIMEOUT);
