@@ -26,7 +26,7 @@
 
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-        <quarkus.platform.version>2.0.0.Alpha2</quarkus.platform.version>
+        <quarkus.platform.version>2.0.0.Alpha3</quarkus.platform.version>
         <quarkus-plugin.version>${quarkus.platform.version}</quarkus-plugin.version>
         <quarkus.qe.framework.version>0.0.2-SNAPSHOT</quarkus.qe.framework.version>
 
