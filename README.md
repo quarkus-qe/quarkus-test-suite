@@ -84,6 +84,7 @@ We use a Quarkus QE Test Framework to verify this test suite. For further inform
 
 For bare metal testing, test classes must be named `*IT`, executed by Failsafe.
 OpenShift tests should be named `OpenShift*IT`.
+DevMode tests should be named `DevMode*IT`.
 
 ### OpenShift Serverless / Knative
 
