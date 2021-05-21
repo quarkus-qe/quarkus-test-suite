@@ -65,18 +65,12 @@ public class MultiplePersistenceIT {
     @BeforeEach
     public void cleanUp() {
         if (latestFruitId != null) {
-            app.given()
-                    .delete("/fruit/" + latestFruitId)
-                    .then()
-                    .statusCode(HttpStatus.SC_NO_CONTENT);
+            app.given().delete("/fruit/" + latestFruitId);
             latestFruitId = null;
         }
 
         if (latestVegetableId != null) {
-            app.given()
-                    .delete("/vegetable/" + latestVegetableId)
-                    .then()
-                    .statusCode(HttpStatus.SC_NO_CONTENT);
+            app.given().delete("/vegetable/" + latestVegetableId);
             latestVegetableId = null;
         }
     }
