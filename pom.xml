@@ -35,6 +35,10 @@
         <quarkiverse.apicurio.registry.client.version>0.0.2</quarkiverse.apicurio.registry.client.version>
         <checkstyle.version>8.42</checkstyle.version>
         <jjwt.version>0.11.2</jjwt.version>
+
+        <tests.with.serverless>serverless</tests.with.serverless>
+        <tests.with.operator-scenarios>operator-scenarios</tests.with.operator-scenarios>
+        <exclusion.tests.with.tags>${tests.with.serverless},${tests.with.operator-scenarios}</exclusion.tests.with.tags>
     </properties>
 
     <modules>
@@ -308,7 +312,11 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>
                         <configuration>
-                            <excludedGroups>serverless</excludedGroups>
+                            <excludedGroups>serverless,operator-scenarios</excludedGroups>
+                            <excludedGroups>
+                                ${tests.with.serverless},
+                                ${tests.with.operator-scenarios}
+                            </excludedGroups>
                             <systemPropertyVariables>
                                 <ts.openshift.scenario.enabled>true</ts.openshift.scenario.enabled>
                             </systemPropertyVariables>
@@ -348,20 +356,23 @@
                     <name>include.serverless</name>
                 </property>
             </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-failsafe-plugin</artifactId>
-                        <configuration>
-                            <groups>serverless</groups>
-                            <systemPropertyVariables>
-                                <ts.openshift.scenario.enabled>true</ts.openshift.scenario.enabled>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
+            <properties>
+                <!-- So tests are not excluded -->
+                <tests.with.serverless>yes</tests.with.serverless>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>operator-scenarios</id>
+            <activation>
+                <property>
+                    <name>include.operator-scenarios</name>
+                </property>
+            </activation>
+            <properties>
+                <!-- So tests are not excluded -->
+                <tests.with.operator-scenarios>yes</tests.with.operator-scenarios>
+            </properties>
         </profile>
 
     </profiles>
