@@ -46,6 +46,21 @@ oc adm policy add-role-to-user edit qe -n openshift-user-workload-monitoring
 
 These requirements are necessary to verify the `micrometer/prometheus` and `micrometer/prometheus-kafka` tests. 
 
+- the OpenShift user must have permission to create Operators:
+
+```
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: install-operators-role
+rules:
+- apiGroups: ["operators.coreos.com"]
+  resources: ["operatorgroups"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+```
+
+These requirements are necessary to verify the tests with tag `include-operator-scenarios`.
+
 ## Running against Red Hat build of Quarkus
 
 When running against released Red Hat build of Quarkus make sure https://maven.repository.redhat.com/ga/ repository is defined in settings.xml.
@@ -95,6 +110,18 @@ The following command will execute the whole test suite including serverless tes
 
 ```
 ./mvnw clean verify -Dinclude.serverless
+```
+
+### OpenShift Operators
+
+The test suite contains a Maven profile activated using the `include.operator-scenarios` property or `operator-scenarios` profile name.
+This profile includes additional modules with serverless test coverage into the execution of the testsuite.
+Serverless test coverage supports both JVM and Native mode.
+
+The following command will execute the whole test suite including serverless tests:
+
+```
+./mvnw clean verify -Dinclude.operator-scenarios
 ```
 
 ## Existing tests
