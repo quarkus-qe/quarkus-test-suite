@@ -26,9 +26,6 @@ jobs:
           java-version: ${{ matrix.java }}
       - name: Build Quarkus QE Test Framework
         run: git clone https://github.com/quarkus-qe/quarkus-test-framework && cd quarkus-test-framework && mvn -B -s .github/mvn-settings.xml clean install -Pframework
-        # Install parent as other modules might need it
-      - name: Install Test Suite Parent
-        run: mvn -s .github/mvn-settings.xml clean install -pl .
       - name: Test in JVM mode
         run: |
           mvn -fae -V -B -s .github/mvn-settings.xml -fae clean verify
@@ -65,9 +62,6 @@ jobs:
           java-version: ${{ matrix.java }}
       - name: Build Quarkus QE Test Framework
         run: git clone https://github.com/quarkus-qe/quarkus-test-framework && cd quarkus-test-framework && mvn -B -s .github/mvn-settings.xml clean install -Pframework
-        # Install parent as other modules might need it
-      - name: Install Test Suite Parent
-        run: mvn -s .github/mvn-settings.xml clean install -pl .
       - name: Test in Native mode
         run: |
           mvn -fae -V -B -s .github/mvn-settings.xml -fae clean verify -Dnative \
