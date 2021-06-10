@@ -5,3 +5,6 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    ignore:
+      # For Quarkus Maven Plugin, updates are managed by Quarkus Bom dependency
+      - dependency-name: io.quarkus:quarkus-maven-plugin
