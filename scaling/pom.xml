@@ -14,7 +14,7 @@
     <artifactId>scaling</artifactId>
     <packaging>jar</packaging>
 
-    <name>Quarkus OpenShift TS: Scaling tests</name>
+    <name>Quarkus QE TS: Scaling tests</name>
 
     <dependencies>
         <dependency>

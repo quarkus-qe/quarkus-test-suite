@@ -3,12 +3,10 @@ package io.quarkus.ts.openshift.sqldb;
 import io.quarkus.test.bootstrap.DefaultService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
-import io.quarkus.test.scenarios.annotations.EnabledIfOpenShiftScenarioPropertyIsTrue;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
 @OpenShiftScenario
-@EnabledIfOpenShiftScenarioPropertyIsTrue
 public class OpenShiftMssqlDatabaseIT extends AbstractSqlDatabaseIT {
 
     static final int MSSQL_PORT = 1433;

@@ -18,7 +18,6 @@ import io.quarkus.test.bootstrap.Service;
 import io.quarkus.test.bootstrap.inject.OpenShiftClient;
 import io.quarkus.test.scenarios.OpenShiftDeploymentStrategy;
 import io.quarkus.test.scenarios.OpenShiftScenario;
-import io.quarkus.test.scenarios.annotations.EnabledIfOpenShiftScenarioPropertyIsTrue;
 import io.quarkus.test.services.QuarkusApplication;
 
 /**
@@ -27,8 +26,7 @@ import io.quarkus.test.services.QuarkusApplication;
  * - `prime_number_test_{uniqueId}`: with information about the calculation of the prime number.
  */
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
-@EnabledIfOpenShiftScenarioPropertyIsTrue
-public class PrimeNumberResourceOpenShiftIT {
+public class OpenShiftPrimeNumberResourceIT {
 
     static final String PRIME_NUMBER_MAX = "prime_number_max_%s";
 
@@ -47,7 +45,7 @@ public class PrimeNumberResourceOpenShiftIT {
     static final Integer ANY_VALUE = null;
 
     @QuarkusApplication
-    static RestService app = new RestService().onPostStart(PrimeNumberResourceOpenShiftIT::loadServiceMonitor);
+    static RestService app = new RestService().onPostStart(OpenShiftPrimeNumberResourceIT::loadServiceMonitor);
 
     @Inject
     static OpenShiftClient client;

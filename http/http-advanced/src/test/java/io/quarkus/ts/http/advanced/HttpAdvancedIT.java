@@ -27,7 +27,7 @@ import io.quarkus.test.bootstrap.KeycloakService;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
+import io.quarkus.test.scenarios.annotations.EnabledOnQuarkusVersion;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.http.advanced.clients.HealthClientService;
@@ -126,7 +126,7 @@ public class HttpAdvancedIT {
 
     @Test
     @DisplayName("Non-application endpoint move to /q/")
-    @DisabledOnQuarkusVersion(version = "2\\..*", reason = "Redirection is no longer supported in 2.x")
+    @EnabledOnQuarkusVersion(version = "1\\..*", reason = "Redirection is no longer supported in 2.x")
     public void nonAppRedirections() {
         List<String> endpoints = Arrays.asList("/openapi", "/swagger-ui", "/metrics/base", "/metrics/application",
                 "/metrics/vendor", "/metrics", "/health/group", "/health/well", "/health/ready", "/health/live",
@@ -153,7 +153,7 @@ public class HttpAdvancedIT {
     }
 
     @Test
-    @DisabledOnQuarkusVersion(version = "2\\..*", reason = "Redirection is no longer supported in 2.x")
+    @EnabledOnQuarkusVersion(version = "1\\..*", reason = "Redirection is no longer supported in 2.x")
     public void vertxHttpClientRedirection() throws InterruptedException, URISyntaxException {
         CountDownLatch done = new CountDownLatch(1);
         Uni<Integer> statusCode = WebClient.create(Vertx.vertx(), defaultVertxHttpClientOptions())

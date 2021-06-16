@@ -3,12 +3,10 @@ package io.quarkus.ts.security;
 import io.quarkus.test.bootstrap.KeycloakService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
-import io.quarkus.test.scenarios.annotations.EnabledIfOpenShiftScenarioPropertyIsTrue;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
 @OpenShiftScenario
-@EnabledIfOpenShiftScenarioPropertyIsTrue
 public class OpenShiftRhSso74OidcSecurityIT extends BaseOidcSecurityIT {
 
     static final int KEYCLOAK_PORT = 8080;
