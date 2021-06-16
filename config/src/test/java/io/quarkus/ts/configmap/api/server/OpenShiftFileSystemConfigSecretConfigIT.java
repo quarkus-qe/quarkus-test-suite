@@ -3,11 +3,11 @@ package io.quarkus.ts.configmap.api.server;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.services.QuarkusApplication;
 
-public class FileSystemConfigSecretOpenShiftIT extends BaseConfigOpenShiftIT {
+public class OpenShiftFileSystemConfigSecretConfigIT extends OpenShiftBaseConfigIT {
 
     @QuarkusApplication
     static RestService app = new RestService().withProperties("secret.api-server.properties")
-            .onPreStart(FileSystemConfigSecretOpenShiftIT::loadDefaultConfigSecret);
+            .onPreStart(OpenShiftFileSystemConfigSecretConfigIT::loadDefaultConfigSecret);
 
     @Override
     protected RestService getApp() {

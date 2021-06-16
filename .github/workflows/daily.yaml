@@ -4,8 +4,8 @@ on:
   schedule:
     - cron: '0 23 * * *'
 jobs:
-  build-jvm:
-    name: Daily build - JVM
+  build-dependencies:
+    name: Build Dependencies
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -24,8 +24,48 @@ jobs:
         uses: joschi/setup-jdk@e87a7cec853d2dd7066adf837fe12bf0f3d45e52
         with:
           java-version: ${{ matrix.java }}
+      - name: Build Quarkus main
+        run: |
+          git clone https://github.com/quarkusio/quarkus.git && cd quarkus && ./mvnw -B -s .github/mvn-settings.xml clean install -Dquickly
       - name: Build Quarkus QE Test Framework
         run: git clone https://github.com/quarkus-qe/quarkus-test-framework && cd quarkus-test-framework && mvn -B -s .github/mvn-settings.xml clean install -Pframework
+      - name: Tar Maven Repo
+        shell: bash
+        run: tar -I 'pigz -9' -cf maven-repo.tgz -C ~ .m2/repository
+      - name: Persist Maven Repo
+        uses: actions/upload-artifact@v1
+        with:
+          name: maven-repo
+          path: maven-repo.tgz
+  build-jvm:
+    name: Daily build - JVM
+    runs-on: ubuntu-latest
+    needs: build-dependencies
+    strategy:
+      matrix:
+        java: [ 11 ]
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Reclaim Disk Space
+        run: .github/ci-prerequisites.sh
+      - name: Install JDK {{ matrix.java }}
+        uses: joschi/setup-jdk@e87a7cec853d2dd7066adf837fe12bf0f3d45e52
+        with:
+          java-version: ${{ matrix.java }}
+      - name: Download Maven Repo
+        uses: actions/download-artifact@v1
+        with:
+          name: maven-repo
+          path: .
+      - name: Extract Maven Repo
+        shell: bash
+        run: tar -xzf maven-repo.tgz -C ~
       - name: Test in JVM mode
         run: |
           mvn -fae -V -B -s .github/mvn-settings.xml -fae clean verify
@@ -42,6 +82,7 @@ jobs:
   build-native:
     name: Daily build - Native
     runs-on: ubuntu-latest
+    needs: build-dependencies
     strategy:
       matrix:
         java: [ 11 ]
@@ -60,8 +101,14 @@ jobs:
         uses: joschi/setup-jdk@e87a7cec853d2dd7066adf837fe12bf0f3d45e52
         with:
           java-version: ${{ matrix.java }}
-      - name: Build Quarkus QE Test Framework
-        run: git clone https://github.com/quarkus-qe/quarkus-test-framework && cd quarkus-test-framework && mvn -B -s .github/mvn-settings.xml clean install -Pframework
+      - name: Download Maven Repo
+        uses: actions/download-artifact@v1
+        with:
+          name: maven-repo
+          path: .
+      - name: Extract Maven Repo
+        shell: bash
+        run: tar -xzf maven-repo.tgz -C ~
       - name: Test in Native mode
         run: |
           mvn -fae -V -B -s .github/mvn-settings.xml -fae clean verify -Dnative \

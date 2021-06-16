@@ -14,7 +14,7 @@
     <artifactId>microprofile</artifactId>
     <packaging>jar</packaging>
 
-    <name>Quarkus OpenShift TS: MicroProfile</name>
+    <name>Quarkus QE TS: MicroProfile</name>
 
     <dependencies>
         <dependency>

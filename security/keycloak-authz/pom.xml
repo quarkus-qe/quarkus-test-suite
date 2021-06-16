@@ -33,6 +33,7 @@
         <dependency>
             <groupId>io.quarkus.qe</groupId>
             <artifactId>quarkus-test-service-keycloak</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

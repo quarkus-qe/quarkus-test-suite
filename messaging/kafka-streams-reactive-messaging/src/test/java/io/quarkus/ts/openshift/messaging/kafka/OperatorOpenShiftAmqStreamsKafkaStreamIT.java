@@ -4,15 +4,13 @@ import org.junit.jupiter.api.Tag;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
-import io.quarkus.test.scenarios.annotations.EnabledIfOpenShiftScenarioPropertyIsTrue;
 import io.quarkus.test.services.Operator;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.services.operator.KafkaInstance;
 
 @Tag("operator-scenarios")
 @OpenShiftScenario
-@EnabledIfOpenShiftScenarioPropertyIsTrue
-public class OpenShiftOperatorAmqStreamsKafkaStreamIT extends BaseKafkaStreamIT {
+public class OperatorOpenShiftAmqStreamsKafkaStreamIT extends BaseKafkaStreamIT {
     @Operator(name = "amq-streams", source = "redhat-operators")
     static KafkaInstance kafka = new KafkaInstance();
 

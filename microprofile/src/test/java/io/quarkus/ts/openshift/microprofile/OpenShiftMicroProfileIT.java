@@ -12,10 +12,8 @@ import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
-import io.quarkus.test.scenarios.annotations.EnabledIfOpenShiftScenarioPropertyIsTrue;
 
 @OpenShiftScenario
-@EnabledIfOpenShiftScenarioPropertyIsTrue
 @DisabledOnQuarkusVersion(version = "1\\.3\\..*", reason = "https://github.com/quarkusio/quarkus/pull/7987")
 public class OpenShiftMicroProfileIT extends MicroProfileIT {
     private static final int EXPECTED_SPANS_SIZE = 3;

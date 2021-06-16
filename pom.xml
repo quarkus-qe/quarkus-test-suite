@@ -22,11 +22,11 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <compiler-plugin.version>3.8.1</compiler-plugin.version>
-        <surefire-plugin.version>2.22.2</surefire-plugin.version>
+        <failsafe-plugin.version>2.22.2</failsafe-plugin.version>
 
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-        <quarkus.platform.version>2.0.0.CR1</quarkus.platform.version>
+        <quarkus.platform.version>999-SNAPSHOT</quarkus.platform.version>
         <quarkus-plugin.version>${quarkus.platform.version}</quarkus-plugin.version>
         <quarkus.qe.framework.version>0.0.2-SNAPSHOT</quarkus.qe.framework.version>
 
@@ -36,9 +36,11 @@
         <checkstyle.version>8.43</checkstyle.version>
         <jjwt.version>0.11.2</jjwt.version>
 
-        <tests.with.serverless>serverless</tests.with.serverless>
-        <tests.with.operator-scenarios>operator-scenarios</tests.with.operator-scenarios>
-        <exclusion.tests.with.tags>${tests.with.serverless},${tests.with.operator-scenarios}</exclusion.tests.with.tags>
+        <!-- Failsafe inclusions/exclusions rules -->
+        <include.tests>**/*IT.java</include.tests>
+        <exclude.openshift.tests>**/OpenShift*IT.java</exclude.openshift.tests>
+        <exclude.serverless.openshift.tests>**/Serverless*OpenShift*IT.java</exclude.serverless.openshift.tests>
+        <exclude.operator.openshift.tests>**/Operator*OpenShift*IT.java</exclude.operator.openshift.tests>
     </properties>
 
     <modules>
@@ -162,6 +164,15 @@
     </dependencies>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>${failsafe-plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>io.quarkus</groupId>
@@ -183,21 +194,28 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>${surefire-plugin.version}</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>${surefire-plugin.version}</version>
                 <executions>
                     <execution>
                         <goals>
                             <goal>integration-test</goal>
                             <goal>verify</goal>
                         </goals>
+                        <configuration>
+                            <includes>
+                                <include>${include.tests}</include>
+                            </includes>
+                            <excludes>
+                                <exclude>${exclude.openshift.tests}</exclude>
+                                <exclude>${exclude.serverless.openshift.tests}</exclude>
+                                <exclude>${exclude.operator.openshift.tests}</exclude>
+                            </excludes>
+                        </configuration>
                     </execution>
                 </executions>
+                <configuration>
+                    <trimStackTrace>false</trimStackTrace>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -233,21 +251,6 @@
 
     <profiles>
         <profile>
-            <id>quarkus-core-only</id>
-            <activation>
-                <property>
-                    <name>quarkus-core-only</name>
-                </property>
-            </activation>
-            <properties>
-                <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
-                <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-                <quarkus.platform.version>999-SNAPSHOT</quarkus.platform.version>
-                <quarkus-plugin.version>999-SNAPSHOT</quarkus-plugin.version>
-            </properties>
-        </profile>
-
-        <profile>
             <id>native</id>
             <activation>
                 <property>
@@ -258,7 +261,6 @@
                 <plugins>
                     <plugin>
                         <artifactId>maven-failsafe-plugin</artifactId>
-                        <version>${surefire-plugin.version}</version>
                         <executions>
                             <execution>
                                 <configuration>
@@ -306,24 +308,9 @@
                 </property>
             </activation>
 
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-failsafe-plugin</artifactId>
-                        <configuration>
-                            <excludedGroups>serverless,operator-scenarios</excludedGroups>
-                            <excludedGroups>
-                                ${tests.with.serverless},
-                                ${tests.with.operator-scenarios}
-                            </excludedGroups>
-                            <systemPropertyVariables>
-                                <ts.openshift.scenario.enabled>true</ts.openshift.scenario.enabled>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
+            <properties>
+                <exclude.openshift.tests>no</exclude.openshift.tests>
+            </properties>
         </profile>
 
         <profile>
@@ -357,8 +344,7 @@
                 </property>
             </activation>
             <properties>
-                <!-- So tests are not excluded -->
-                <tests.with.serverless>yes</tests.with.serverless>
+                <exclude.serverless.openshift.tests>no</exclude.serverless.openshift.tests>
             </properties>
         </profile>
 
@@ -370,8 +356,7 @@
                 </property>
             </activation>
             <properties>
-                <!-- So tests are not excluded -->
-                <tests.with.operator-scenarios>yes</tests.with.operator-scenarios>
+                <exclude.operator.openshift.tests>no</exclude.operator.openshift.tests>
             </properties>
         </profile>
 

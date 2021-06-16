@@ -18,11 +18,9 @@ import io.quarkus.test.bootstrap.Service;
 import io.quarkus.test.bootstrap.inject.OpenShiftClient;
 import io.quarkus.test.scenarios.OpenShiftDeploymentStrategy;
 import io.quarkus.test.scenarios.OpenShiftScenario;
-import io.quarkus.test.scenarios.annotations.EnabledIfOpenShiftScenarioPropertyIsTrue;
 
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
-@EnabledIfOpenShiftScenarioPropertyIsTrue
-public abstract class BaseConfigOpenShiftIT {
+public abstract class OpenShiftBaseConfigIT {
 
     static final int ASSERT_TIMEOUT_MINUTES = 5;
     static final String CONFIGMAP = "configmap";

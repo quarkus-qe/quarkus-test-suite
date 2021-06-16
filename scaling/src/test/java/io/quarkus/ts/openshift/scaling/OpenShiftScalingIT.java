@@ -1,21 +1,5 @@
 package io.quarkus.ts.openshift.scaling;
 
-import io.quarkus.test.bootstrap.RestService;
-import io.quarkus.test.bootstrap.inject.OpenShiftClient;
-import io.quarkus.test.scenarios.OpenShiftScenario;
-import io.quarkus.test.scenarios.annotations.EnabledIfOpenShiftScenarioPropertyIsTrue;
-import io.quarkus.test.services.QuarkusApplication;
-import io.restassured.response.ValidatableResponse;
-import java.time.Duration;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import javax.inject.Inject;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
-
 import static javax.ws.rs.core.Response.Status.OK;
 import static javax.ws.rs.core.Response.Status.SERVICE_UNAVAILABLE;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,8 +8,25 @@ import static org.awaitility.Awaitility.with;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 
+import java.time.Duration;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import io.quarkus.test.bootstrap.RestService;
+import io.quarkus.test.bootstrap.inject.OpenShiftClient;
+import io.quarkus.test.scenarios.OpenShiftScenario;
+import io.quarkus.test.services.QuarkusApplication;
+import io.restassured.response.ValidatableResponse;
+
 @OpenShiftScenario
-@EnabledIfOpenShiftScenarioPropertyIsTrue
 @TestMethodOrder(OrderAnnotation.class)
 public class OpenShiftScalingIT {
 
@@ -63,7 +64,6 @@ public class OpenShiftScalingIT {
         whenMakeRequestTo("/scaling", replicas);
     }
 
-
     /**
      * Workflow:
      * * Scale to two replicas and verify that both of the replicas are responding.
@@ -84,7 +84,6 @@ public class OpenShiftScalingIT {
         thenCheckReplicasAmount(1);
         whenMakeRequestTo("/scaling", replicas);
     }
-
 
     /**
      * Workflow:
