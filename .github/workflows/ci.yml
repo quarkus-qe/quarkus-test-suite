@@ -76,8 +76,8 @@ jobs:
         with:
           name: ci-artifacts
           path: artifacts-jvm${{ matrix.java }}.zip
-  build-released-native:
-    name: Native build - released Quarkus
+  build-native:
+    name: Native build - latest Quarkus
     runs-on: ubuntu-latest
     needs: build-dependencies
     strategy:
@@ -108,7 +108,7 @@ jobs:
         run: tar -xzf maven-repo.tgz -C ~
       - name: Build with Maven
         run: |
-          mvn -fae -V -B -s .github/mvn-settings.xml clean verify -Dquarkus.profile=native -Dquarkus.native.container-runtime=docker
+          mvn -fae -V -B -s .github/mvn-settings.xml clean verify -Dnative -Dquarkus.native.container-build=true -Dquarkus.native.native-image-xmx=4g
       - name: Zip Artifacts
         if: failure()
         run: |
