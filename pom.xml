@@ -35,12 +35,14 @@
         <quarkiverse.apicurio.registry.client.version>0.0.2</quarkiverse.apicurio.registry.client.version>
         <checkstyle.version>8.43</checkstyle.version>
         <jjwt.version>0.11.2</jjwt.version>
+        <profile.id>jvm</profile.id>
 
         <!-- Failsafe inclusions/exclusions rules -->
         <include.tests>**/*IT.java</include.tests>
         <exclude.openshift.tests>**/OpenShift*IT.java</exclude.openshift.tests>
         <exclude.serverless.openshift.tests>**/Serverless*OpenShift*IT.java</exclude.serverless.openshift.tests>
         <exclude.operator.openshift.tests>**/Operator*OpenShift*IT.java</exclude.operator.openshift.tests>
+        <exclude.quarkus.cli.tests>**/QuarkusCli*IT.java</exclude.quarkus.cli.tests>
     </properties>
 
     <modules>
@@ -70,6 +72,7 @@
         <module>security/keycloak-oidc-client</module>
         <module>sql-db/sql-app</module>
         <module>sql-db/multiple-pus</module>
+        <module>quarkus-cli</module>
     </modules>
 
     <dependencyManagement>
@@ -211,6 +214,9 @@
                                 <exclude>${exclude.serverless.openshift.tests}</exclude>
                                 <exclude>${exclude.operator.openshift.tests}</exclude>
                             </excludes>
+                            <systemProperties>
+                                <profile.id>${profile.id}</profile.id>
+                            </systemProperties>
                         </configuration>
                     </execution>
                 </executions>
@@ -292,6 +298,7 @@
                 </plugins>
             </build>
             <properties>
+                <profile.id>native</profile.id>
                 <quarkus.package.type>native</quarkus.package.type>
                 <quarkus.native.container-build>true</quarkus.native.container-build>
                 <quarkus.native.native-image-xmx>4g</quarkus.native.native-image-xmx>
@@ -358,6 +365,18 @@
             </activation>
             <properties>
                 <exclude.operator.openshift.tests>no</exclude.operator.openshift.tests>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>quarkus-cli-tests</id>
+            <activation>
+                <property>
+                    <name>include.quarkus-cli-tests</name>
+                </property>
+            </activation>
+            <properties>
+                <exclude.quarkus.cli.tests>no</exclude.quarkus.cli.tests>
             </properties>
         </profile>
 
