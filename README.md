@@ -336,3 +336,9 @@ Test checks that the value gets updated.
 An OpenShift test verifying that an OpenShift deployment with a Quarkus application scales up and down.
 
 This test could be extended with some metric gathering.
+
+### `quarkus-cli`
+
+Verifies all the Quarkus CLI features: https://quarkus.io/version/main/guides/cli-tooling
+
+In order to enable this module, the test suite must be executed with `-Dinclude.quarkus-cli-tests`. The Quarkus CLI is expected to be called `quarkus`. We can configure the test suite to use another Quarkus CLI binary name using `-Dts.quarkus.cli.cmd=/path/to/quarkus-dev-cli`.
