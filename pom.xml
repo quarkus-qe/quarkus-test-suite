@@ -117,7 +117,7 @@
             <dependency>
                 <groupId>org.amqphub.quarkus</groupId>
                 <artifactId>quarkus-qpid-jms</artifactId>
-                <version>0.24.0</version>
+                <version>0.25.0</version>
             </dependency>
             <dependency>
                 <groupId>io.jsonwebtoken</groupId>
