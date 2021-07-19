@@ -123,7 +123,7 @@ public class ArtemisJtaIT {
                             .extract().body().asString());
         }
         LOG.info("Retrieved data from queues: " + actual);
-        assertThat("Expected list " + expected.toString() + " does not match th actual one: " + actual.toString(),
+        assertThat("Expected list " + expected + " does not match th actual one: " + actual,
                 expected.equals(actual));
     }
 
