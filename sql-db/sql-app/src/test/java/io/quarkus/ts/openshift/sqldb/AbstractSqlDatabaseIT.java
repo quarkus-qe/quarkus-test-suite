@@ -28,8 +28,8 @@ public abstract class AbstractSqlDatabaseIT {
     private static final int TEN = 10;
     private static final int ELEVEN = 11;
 
-    private static final int VALID_ID = 8;
-    private static final int INVALID_ID = 999;
+    private static final long VALID_ID = 8l;
+    private static final long INVALID_ID = 999l;
 
     @Test
     @Order(ONE)
@@ -93,7 +93,7 @@ public abstract class AbstractSqlDatabaseIT {
     @Order(FIVE)
     public void createBadPayload() {
         Book book = new Book();
-        book.id = Long.valueOf(INVALID_ID);
+        book.id = INVALID_ID;
         book.title = "foo";
         book.author = "bar";
 
@@ -111,7 +111,7 @@ public abstract class AbstractSqlDatabaseIT {
     @Order(SIX)
     public void update() {
         Book book = new Book();
-        book.id = Long.valueOf(VALID_ID);
+        book.id = VALID_ID;
         book.title = "Schismatrix";
         book.author = "Bruce Sterling";
 
@@ -137,7 +137,7 @@ public abstract class AbstractSqlDatabaseIT {
     @Order(SEVEN)
     public void updateWithUnknownId() {
         Book book = new Book();
-        book.id = Long.valueOf(INVALID_ID);
+        book.id = INVALID_ID;
         book.title = "foo";
         book.author = "bar";
 
