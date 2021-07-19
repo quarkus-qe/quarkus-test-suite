@@ -34,7 +34,7 @@ public class AmqpIT {
     /**
      * The producer sends a price every 1 sec {@link PriceProducer#generate()}.
      * Eventually, the consumer will get up to 10 prices (from 10 to 100) but it might receive more
-     * {@link PriceConsumer#process()}.
+     * {@link PriceConsumer#process(Integer price)}.
      */
     @Test
     public void testLastPrice() {
