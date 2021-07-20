@@ -27,19 +27,15 @@ public class DevModeHttpMinimumIT {
     @Test
     public void shouldDetectNewTests() {
         // At first, there are no tests annotated with @QuarkusTest
-        app.logs().assertContains("Tests paused, press [r] to resume");
+        app.logs().assertContains("Tests paused");
         // Now, we enable continuous testing via DEV UI
         app.enableContinuousTesting();
-        // We wait for Quarkus to run the tests
-        app.logs().assertContains("Running Tests for the first time");
         // But there are no tests yet
         app.logs().assertContains("No tests found");
         // We add a new test
         app.copyFile("src/test/resources/HelloResourceTest.java.template", "src/test/java/HelloResourceTest.java");
-        // And now, Quarkus find it and run it
-        app.logs().assertContains("Running 0/1");
         // So good so far!
-        app.logs().assertContains("All 1 tests are passing");
+        app.logs().assertContains("All 1 test is passing");
     }
 
     @Test
