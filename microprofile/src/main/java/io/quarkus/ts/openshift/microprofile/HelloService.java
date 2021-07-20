@@ -1,10 +1,13 @@
 package io.quarkus.ts.openshift.microprofile;
 
-import io.opentracing.Tracer;
 import java.util.concurrent.CompletionStage;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+
 import org.eclipse.microprofile.context.ManagedExecutor;
+
+import io.opentracing.Tracer;
 
 @ApplicationScoped
 public class HelloService {

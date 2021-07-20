@@ -97,7 +97,6 @@ public class BasicSecurityIT {
                 Arguments.of(ADMIN_USERNAME, ADMIN_PASSWORD, true),
                 Arguments.of(USER_USERNAME, UNKNOWN_PASSWORD, false),
                 Arguments.of(ADMIN_USERNAME, UNKNOWN_PASSWORD, false),
-                Arguments.of(UNKNOWN_USERNAME, UNKNOWN_PASSWORD, false)
-        );
+                Arguments.of(UNKNOWN_USERNAME, UNKNOWN_PASSWORD, false));
     }
 }

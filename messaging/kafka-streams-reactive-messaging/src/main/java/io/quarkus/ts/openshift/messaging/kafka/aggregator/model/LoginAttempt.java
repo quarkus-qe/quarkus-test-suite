@@ -14,7 +14,8 @@ public class LoginAttempt {
         this.code = code;
     }
 
-    public LoginAttempt() { }
+    public LoginAttempt() {
+    }
 
     public String getId() {
         return id;

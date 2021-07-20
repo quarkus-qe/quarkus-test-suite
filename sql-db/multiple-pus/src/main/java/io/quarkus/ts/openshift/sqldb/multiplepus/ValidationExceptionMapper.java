@@ -30,8 +30,7 @@ public class ValidationExceptionMapper implements ExceptionMapper<ConstraintViol
                 .type(MediaType.APPLICATION_JSON)
                 .entity(mapper.createObjectNode()
                         .put("code", UNPROCESSABLE_ENTITY)
-                        .set("error", errors)
-                )
+                        .set("error", errors))
                 .build();
     }
 }
