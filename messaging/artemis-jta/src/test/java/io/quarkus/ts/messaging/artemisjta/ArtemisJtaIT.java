@@ -138,9 +138,9 @@ public class ArtemisJtaIT {
     private void thenPriceIs(String pricePath, String expected) {
         await().pollInterval(1, TimeUnit.SECONDS)
                 .atMost(ASSERT_TIMEOUT_SECONDS, TimeUnit.SECONDS).untilAsserted(() -> app.given().when()
-                .get(pricePath)
-                .then()
-                .statusCode(HttpStatus.SC_OK)
-                .body(equalTo(expected)));
+                        .get(pricePath)
+                        .then()
+                        .statusCode(HttpStatus.SC_OK)
+                        .body(equalTo(expected)));
     }
 }

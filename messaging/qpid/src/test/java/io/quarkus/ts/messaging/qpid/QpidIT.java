@@ -33,12 +33,11 @@ public class QpidIT {
     @Test
     public void testLastPrice() {
         await().atMost(ASSERT_TIMEOUT_MINUTES, TimeUnit.MINUTES).untilAsserted(() -> {
-            String value =
-                    app.given()
-                            .get("/prices/last")
-                            .then()
-                            .statusCode(HttpStatus.SC_OK)
-                            .extract().body().asString();
+            String value = app.given()
+                    .get("/prices/last")
+                    .then()
+                    .statusCode(HttpStatus.SC_OK)
+                    .extract().body().asString();
 
             int intValue = Integer.parseInt(value);
             assertThat(intValue, greaterThanOrEqualTo(0));

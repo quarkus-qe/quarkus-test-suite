@@ -105,32 +105,32 @@ public class QuarkusCliExtensionsIT {
     private void assertListOriginsOptionOutput(String expectedVersion) {
         // Origins only shows extension name ++ version. Reported by https://github.com/quarkusio/quarkus/issues/18062.
         assertTrue(result.getOutput().contains(AGROAL_EXTENSION_NAME)
-                        && result.getOutput().contains(expectedVersion)
-                        && !result.getOutput().contains(AGROAL_EXTENSION_ARTIFACT)
-                        && !result.getOutput().contains(AGROAL_EXTENSION_GUIDE),
+                && result.getOutput().contains(expectedVersion)
+                && !result.getOutput().contains(AGROAL_EXTENSION_ARTIFACT)
+                && !result.getOutput().contains(AGROAL_EXTENSION_GUIDE),
                 "--origins option output is unexpected. Version: " + expectedVersion + ". Output: " + result.getOutput());
     }
 
     private void assertListNameOptionOutput() {
         // Concise shows only the artifact id
         assertTrue(result.getOutput().contains(AGROAL_EXTENSION_ARTIFACT)
-                        && !result.getOutput().contains(AGROAL_EXTENSION_NAME),
+                && !result.getOutput().contains(AGROAL_EXTENSION_NAME),
                 "--name option output is unexpected. Output: " + result.getOutput());
     }
 
     private void assertListConciseOptionOutput() {
         // Concise shows extension name ++ artifact id
         assertTrue(result.getOutput().contains(AGROAL_EXTENSION_NAME)
-                        && result.getOutput().contains(AGROAL_EXTENSION_ARTIFACT)
-                        && !result.getOutput().contains(AGROAL_EXTENSION_GUIDE),
+                && result.getOutput().contains(AGROAL_EXTENSION_ARTIFACT)
+                && !result.getOutput().contains(AGROAL_EXTENSION_GUIDE),
                 "--concise option output is unexpected. Output: " + result.getOutput());
     }
 
     private void assertListFullOptionOutput() {
         // Full should show also the origins. Reported by https://github.com/quarkusio/quarkus/issues/18062.
         assertTrue(result.getOutput().contains(AGROAL_EXTENSION_NAME)
-                        && result.getOutput().contains(AGROAL_EXTENSION_ARTIFACT)
-                        && result.getOutput().contains(AGROAL_EXTENSION_GUIDE),
+                && result.getOutput().contains(AGROAL_EXTENSION_ARTIFACT)
+                && result.getOutput().contains(AGROAL_EXTENSION_GUIDE),
                 "--full option output is unexpected. Output: " + result.getOutput());
     }
 

@@ -40,9 +40,10 @@ public class AmqpIT {
     public void testLastPrice() {
         await().pollInterval(1, TimeUnit.SECONDS)
                 .atMost(ASSERT_TIMEOUT_SECONDS, TimeUnit.SECONDS).untilAsserted(() -> {
-            String response = app.given().get("/price")
-                    .then().statusCode(HttpStatus.SC_OK).extract().asString();
-            assertTrue(EXPECTED_PRICES.stream().anyMatch(response::contains), "Expected prices not found in " + response);
-        });
+                    String response = app.given().get("/price")
+                            .then().statusCode(HttpStatus.SC_OK).extract().asString();
+                    assertTrue(EXPECTED_PRICES.stream().anyMatch(response::contains),
+                            "Expected prices not found in " + response);
+                });
     }
 }

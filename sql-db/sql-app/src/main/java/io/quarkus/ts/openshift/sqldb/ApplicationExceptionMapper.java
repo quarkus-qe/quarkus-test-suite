@@ -22,8 +22,7 @@ public class ApplicationExceptionMapper implements ExceptionMapper<Exception> {
                 .entity(new ObjectMapper().createObjectNode()
                         .put("code", code)
                         .put("error", exception.getMessage())
-                        .toString()
-                )
+                        .toString())
                 .build();
     }
 }

@@ -1,18 +1,20 @@
 package io.quarkus.ts.openshift.microprofile;
 
+import static org.awaitility.Awaitility.with;
+import static org.hamcrest.CoreMatchers.is;
+
+import java.net.HttpURLConnection;
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
+
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
 import io.quarkus.test.bootstrap.JaegerService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.JaegerContainer;
 import io.quarkus.test.services.QuarkusApplication;
-import java.net.HttpURLConnection;
-import java.time.Duration;
-import java.util.concurrent.TimeUnit;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-
-import static org.awaitility.Awaitility.with;
-import static org.hamcrest.CoreMatchers.is;
 
 @QuarkusScenario
 public class MicroProfileIT {

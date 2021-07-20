@@ -1,13 +1,14 @@
 package io.quarkus.ts.openshift.scaling;
 
-import io.quarkus.runtime.StartupEvent;
-import org.jboss.logging.Logger;
-
 import javax.enterprise.event.Observes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+
+import org.jboss.logging.Logger;
+
+import io.quarkus.runtime.StartupEvent;
 
 @Path("/scaling")
 public class ScalingResource {

@@ -1,15 +1,17 @@
 package io.quarkus.ts.openshift.microprofile;
 
+import static java.util.concurrent.CompletableFuture.completedFuture;
+
 import java.util.concurrent.CompletionStage;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+
 import org.eclipse.microprofile.faulttolerance.Asynchronous;
 import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
-
-import static java.util.concurrent.CompletableFuture.completedFuture;
 
 @RegisterRestClient(baseUri = "http://microprofile-test:8080/")
 public interface HelloClient {

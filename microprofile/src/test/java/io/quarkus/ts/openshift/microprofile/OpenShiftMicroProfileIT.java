@@ -35,44 +35,42 @@ public class OpenShiftMicroProfileIT extends MicroProfileIT {
                     .body("data[0].spans.operationName", hasItems(
                             "GET:io.quarkus.ts.openshift.microprofile.ClientResource.get",
                             "GET",
-                            "GET:io.quarkus.ts.openshift.microprofile.HelloResource.get"
-                    ))
+                            "GET:io.quarkus.ts.openshift.microprofile.HelloResource.get"))
                     .body("data[0].spans.logs.fields.value.flatten()", hasItems(
                             "ClientResource called",
                             "HelloResource called",
                             "HelloService called",
-                            "HelloService async processing"
-                    ))
+                            "HelloService async processing"))
                     .body("data[0].spans.find { "
                             +
                             "it.operationName == 'GET:io.quarkus.ts.openshift.microprofile.ClientResource.get' }.tags.collect"
                             +
-                            " { \"${it.key}=${it.value}\".toString() }", hasItems(
-                            "span.kind=server",
-                            "component=jaxrs",
-                            "http.method=GET",
-                            "http.status_code=200"
-                    ))
+                            " { \"${it.key}=${it.value}\".toString() }",
+                            hasItems(
+                                    "span.kind=server",
+                                    "component=jaxrs",
+                                    "http.method=GET",
+                                    "http.status_code=200"))
                     .body("data[0].spans.find {"
                             +
-                            " it.operationName == 'GET' }.tags.collect { \"${it.key}=${it.value}\".toString() }", hasItems(
-                            "span.kind=client",
-                            "component=jaxrs",
-                            "http.url=http://localhost:8080/hello",
-                            "http.method=GET",
-                            "http.status_code=200"
-                    ))
+                            " it.operationName == 'GET' }.tags.collect { \"${it.key}=${it.value}\".toString() }",
+                            hasItems(
+                                    "span.kind=client",
+                                    "component=jaxrs",
+                                    "http.url=http://localhost:8080/hello",
+                                    "http.method=GET",
+                                    "http.status_code=200"))
                     .body("data[0].spans.find { "
                             +
                             "it.operationName == 'GET:io.quarkus.ts.openshift.microprofile.HelloResource.get' }.tags.collect "
                             +
-                            "{ \"${it.key}=${it.value}\".toString() }", hasItems(
-                            "span.kind=server",
-                            "component=jaxrs",
-                            "http.url=http://localhost:8080/hello",
-                            "http.method=GET",
-                            "http.status_code=200"
-                    ));
+                            "{ \"${it.key}=${it.value}\".toString() }",
+                            hasItems(
+                                    "span.kind=server",
+                                    "component=jaxrs",
+                                    "http.url=http://localhost:8080/hello",
+                                    "http.method=GET",
+                                    "http.status_code=200"));
         });
     }
 }
