@@ -83,8 +83,6 @@ mvn -fae clean verify \
  -Dmaven.repo.local=/Users/rsvoboda/Downloads/rh-quarkus-1.7.1.GA-maven-repository/maven-repository
 ```
 
-If you want to run the tests using ephemeral namespaces, go to the [Running tests in ephemeral namespaces](#running-tests-in-ephemeral-namespaces) section for more information.
-
 ## Branching Strategy
 
 The `main` branch is always meant for latest upstream/downstream development. For each downstream major.minor version, there's a corresponding maintenance branch:
