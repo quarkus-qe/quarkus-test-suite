@@ -1,29 +1,21 @@
-<?xml version="1.0"?>
-<project
-        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-        xmlns="http://maven.apache.org/POM/4.0.0"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>io.quarkus.ts.qe</groupId>
     <artifactId>parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-
     <name>Quarkus QE TS: Parent</name>
-
     <properties>
         <maven.compiler.parameters>true</maven.compiler.parameters>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
-
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-
         <compiler-plugin.version>3.8.1</compiler-plugin.version>
         <failsafe-plugin.version>2.22.2</failsafe-plugin.version>
-
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
         <quarkus.platform.version>999-SNAPSHOT</quarkus.platform.version>
@@ -33,10 +25,16 @@
         <apache-httpclient-fluent.version>4.5.13</apache-httpclient-fluent.version>
         <apicurio.registry.utils.serde.version>1.3.2.Final</apicurio.registry.utils.serde.version>
         <quarkiverse.apicurio.registry.client.version>0.0.2</quarkiverse.apicurio.registry.client.version>
+        <formatter-maven-plugin.version>2.15.0</formatter-maven-plugin.version>
+        <impsort-maven-plugin.version>1.6.0</impsort-maven-plugin.version>
+        <xml-format-maven-plugin.version>3.1.2</xml-format-maven-plugin.version>
         <checkstyle.version>8.44</checkstyle.version>
         <jjwt.version>0.11.2</jjwt.version>
         <profile.id>jvm</profile.id>
-
+        <!-- Default values for format -->
+        <src.format.goal>format</src.format.goal>
+        <src.sort.goal>sort</src.sort.goal>
+        <xml.format.goal>xml-format</xml.format.goal>
         <!-- Failsafe inclusions/exclusions rules -->
         <include.tests>**/*IT.java</include.tests>
         <exclude.openshift.tests>**/OpenShift*IT.java</exclude.openshift.tests>
@@ -44,7 +42,6 @@
         <exclude.operator.openshift.tests>**/Operator*OpenShift*IT.java</exclude.operator.openshift.tests>
         <exclude.quarkus.cli.tests>**/QuarkusCli*IT.java</exclude.quarkus.cli.tests>
     </properties>
-
     <modules>
         <module>config</module>
         <module>http/http-minimum</module>
@@ -74,7 +71,6 @@
         <module>sql-db/multiple-pus</module>
         <module>quarkus-cli</module>
     </modules>
-
     <dependencyManagement>
         <dependencies>
             <!-- TODO: com.squareup.retrofit2:retrofit:2.9.0 should be removed on Quarkus 2.0.0.Alphas-->
@@ -83,7 +79,6 @@
                 <artifactId>retrofit</artifactId>
                 <version>2.9.0</version>
             </dependency>
-
             <dependency>
                 <groupId>${quarkus.platform.group-id}</groupId>
                 <artifactId>${quarkus.platform.artifact-id}</artifactId>
@@ -91,7 +86,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
             <dependency>
                 <groupId>io.quarkus.qe</groupId>
                 <artifactId>quarkus-test-parent</artifactId>
@@ -136,7 +130,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
     <dependencies>
         <dependency>
             <groupId>io.quarkus.qe</groupId>
@@ -166,7 +159,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
     <build>
         <pluginManagement>
             <plugins>
@@ -225,6 +217,73 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>net.revelc.code.formatter</groupId>
+                <artifactId>formatter-maven-plugin</artifactId>
+                <version>${formatter-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>${src.format.goal}</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <artifactId>quarkus-ide-config</artifactId>
+                        <groupId>io.quarkus</groupId>
+                        <version>${quarkus.platform.version}</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <configFile>eclipse-format.xml</configFile>
+                    <lineEnding>LF</lineEnding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>net.revelc.code</groupId>
+                <artifactId>impsort-maven-plugin</artifactId>
+                <version>${impsort-maven-plugin.version}</version>
+                <configuration>
+                    <!-- store outside of target to speed up formatting when mvn clean is used -->
+                    <cachedir>.cache</cachedir>
+                    <groups>java.,javax.,org.,com.,io.</groups>
+                    <staticGroups>*</staticGroups>
+                    <removeUnused>true</removeUnused>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>${src.sort.goal}</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>au.com.acegi</groupId>
+                <artifactId>xml-format-maven-plugin</artifactId>
+                <version>${xml-format-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>${xml.format.goal}</goal>
+                        </goals>
+                        <configuration>
+                            <indentSize>4</indentSize>
+                            <excludes>
+                                <!-- Exclude files from target folder -->
+                                <exclude>**/target/**/*.xml</exclude>
+                                <!-- Exclude Quarkus main repository -->
+                                <exclude>**/quarkus/**/*.xml</exclude>
+                                <!-- Exclude .idea -->
+                                <exclude>.idea/**</exclude>
+                                <!-- Exclude .github -->
+                                <exclude>.github/**</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>${maven-checkstyle-plugin.version}</version>
@@ -255,7 +314,6 @@
             </plugin>
         </plugins>
     </build>
-
     <profiles>
         <profile>
             <id>native</id>
@@ -272,22 +330,17 @@
                             <execution>
                                 <configuration>
                                     <systemProperties>
-                                        <native.image.path>
-                                            ${project.build.directory}/${project.build.finalName}-runner
+                                        <native.image.path>${project.build.directory}/${project.build.finalName}-runner
                                         </native.image.path>
                                         <quarkus.package.type>${quarkus.package.type}</quarkus.package.type>
-                                        <quarkus.native.container-build>
-                                            ${quarkus.native.container-build}
+                                        <quarkus.native.container-build>${quarkus.native.container-build}
                                         </quarkus.native.container-build>
-                                        <quarkus.native.native-image-xmx>
-                                            ${quarkus.native.native-image-xmx}
+                                        <quarkus.native.native-image-xmx>${quarkus.native.native-image-xmx}
                                         </quarkus.native.native-image-xmx>
-                                        <quarkus.native.builder-image>
-                                            ${quarkus.native.builder-image}
+                                        <quarkus.native.builder-image>${quarkus.native.builder-image}
                                         </quarkus.native.builder-image>
                                         <!-- Product Supported -->
-                                        <amq-streams.image>
-                                            registry.redhat.io/amq7/amq-streams-kafka-24-rhel7
+                                        <amq-streams.image>registry.redhat.io/amq7/amq-streams-kafka-24-rhel7
                                         </amq-streams.image>
                                         <amq-streams.version>1.7.0</amq-streams.version>
                                     </systemProperties>
@@ -305,7 +358,6 @@
                 <quarkus.native.builder-image>quay.io/quarkus/ubi-quarkus-mandrel:21.0-java11</quarkus.native.builder-image>
             </properties>
         </profile>
-
         <profile>
             <!-- You need to be connected to an OpenShift instance to activate this
                 profile! -->
@@ -315,12 +367,10 @@
                     <name>openshift</name>
                 </property>
             </activation>
-
             <properties>
                 <exclude.openshift.tests>no</exclude.openshift.tests>
             </properties>
         </profile>
-
         <profile>
             <id>redhat-registry</id>
             <activation>
@@ -328,7 +378,6 @@
                     <name>openshift</name>
                 </property>
             </activation>
-
             <build>
                 <plugins>
                     <plugin>
@@ -343,7 +392,6 @@
                 </plugins>
             </build>
         </profile>
-
         <profile>
             <id>serverless</id>
             <activation>
@@ -355,7 +403,6 @@
                 <exclude.serverless.openshift.tests>no</exclude.serverless.openshift.tests>
             </properties>
         </profile>
-
         <profile>
             <id>operator-scenarios</id>
             <activation>
@@ -367,7 +414,6 @@
                 <exclude.operator.openshift.tests>no</exclude.operator.openshift.tests>
             </properties>
         </profile>
-
         <profile>
             <id>quarkus-cli-tests</id>
             <activation>
@@ -379,6 +425,18 @@
                 <exclude.quarkus.cli.tests>no</exclude.quarkus.cli.tests>
             </properties>
         </profile>
-
+        <profile>
+            <id>validate-format</id>
+            <activation>
+                <property>
+                    <name>validate-format</name>
+                </property>
+            </activation>
+            <properties>
+                <src.format.goal>validate</src.format.goal>
+                <src.sort.goal>check</src.sort.goal>
+                <xml.format.goal>xml-check</xml.format.goal>
+            </properties>
+        </profile>
     </profiles>
 </project>

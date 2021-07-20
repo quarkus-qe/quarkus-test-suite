@@ -33,6 +33,36 @@ jobs:
         with:
           name: maven-repo
           path: maven-repo.tgz
+  linux-validate-format:
+    name: Linux - Validate format
+    runs-on: ubuntu-latest
+    needs: build-dependencies
+    strategy:
+      matrix:
+        java: [ 11 ]
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Install JDK {{ matrix.java }}
+        uses: joschi/setup-jdk@e87a7cec853d2dd7066adf837fe12bf0f3d45e52
+        with:
+          java-version: ${{ matrix.java }}
+      - name: Download Maven Repo
+        uses: actions/download-artifact@v1
+        with:
+          name: maven-repo
+          path: .
+      - name: Extract Maven Repo
+        shell: bash
+        run: tar -xzf maven-repo.tgz -C ~
+      - name: Build with Maven
+        run: |
+          mvn -V -B -s .github/mvn-settings.xml verify -Dvalidate-format -DskipTests -DskipITs
   build-jvm:
     name: JVM build - latest Quarkus
     runs-on: ubuntu-latest
