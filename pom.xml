@@ -45,6 +45,7 @@
         <module>config</module>
         <module>http/http-minimum</module>
         <module>http/http-advanced</module>
+        <module>http/jaxrs</module>
         <module>scaling</module>
         <module>micrometer/prometheus</module>
         <module>micrometer/prometheus-kafka</module>
