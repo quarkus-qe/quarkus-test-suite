@@ -25,7 +25,7 @@
         <quarkiverse.apicurio.registry.client.version>0.0.2</quarkiverse.apicurio.registry.client.version>
         <formatter-maven-plugin.version>2.15.0</formatter-maven-plugin.version>
         <impsort-maven-plugin.version>1.6.0</impsort-maven-plugin.version>
-        <xml-format-maven-plugin.version>3.1.2</xml-format-maven-plugin.version>
+        <xml-format-maven-plugin.version>3.2.0</xml-format-maven-plugin.version>
         <checkstyle.version>8.44</checkstyle.version>
         <jjwt.version>0.11.2</jjwt.version>
         <profile.id>jvm</profile.id>
