@@ -127,7 +127,7 @@ public class QuarkusCliSpecialCharsIT {
     }
 
     private void whenCreateAppAt(String folder) {
-        result = cliClient.run("create", "app", "--artifact-id=" + ARTIFACT_ID, "--output-directory=" + folder);
+        result = cliClient.run("create", "app", "--output-directory=" + folder, ARTIFACT_ID);
     }
 
     private void thenResultIsSuccessful() {
