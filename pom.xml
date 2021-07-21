@@ -29,6 +29,7 @@
         <xml-format-maven-plugin.version>3.2.0</xml-format-maven-plugin.version>
         <checkstyle.version>8.44</checkstyle.version>
         <jjwt.version>0.11.2</jjwt.version>
+        <camel-quarkus-bom.version>2.0.0</camel-quarkus-bom.version>
         <profile.id>jvm</profile.id>
         <!-- Default values for format -->
         <src.format.goal>format</src.format.goal>
@@ -75,6 +76,7 @@
         <module>sql-db/sql-app</module>
         <module>sql-db/multiple-pus</module>
         <module>quarkus-cli</module>
+        <module>kamelet</module>
     </modules>
     <dependencyManagement>
         <dependencies>
@@ -95,6 +97,13 @@
                 <groupId>io.quarkus.qe</groupId>
                 <artifactId>quarkus-test-parent</artifactId>
                 <version>${quarkus.qe.framework.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel.quarkus</groupId>
+                <artifactId>camel-quarkus-bom</artifactId>
+                <version>${camel-quarkus-bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
