@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.builder.Version;
 import io.quarkus.test.bootstrap.QuarkusCliClient;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
@@ -29,7 +28,7 @@ public class QuarkusCliExtensionsIT {
     static final String AGROAL_EXTENSION_NAME = "Agroal - Database connection pool";
     static final String AGROAL_EXTENSION_ARTIFACT = "quarkus-agroal";
     static final String AGROAL_EXTENSION_GUIDE = "https://quarkus.io/guides/datasource";
-    static final List<String> EXPECTED_PLATFORM_VERSIONS = Arrays.asList("1.13.4.Final", "1.13.7.Final");
+    static final List<String> EXPECTED_PLATFORM_VERSIONS = Arrays.asList("2.0.0.Final", "2.1.0.CR1");
 
     @Inject
     static QuarkusCliClient cliClient;
@@ -72,7 +71,7 @@ public class QuarkusCliExtensionsIT {
     public void shouldListExtensionsUsingOtherPlatformVersions() {
         for (String expectedVersion : EXPECTED_PLATFORM_VERSIONS) {
             whenGetListExtensions("--origins", "--platform-bom=io.quarkus:quarkus-bom:" + expectedVersion);
-            assertListOriginsOptionOutput(expectedVersion);
+            assertListOriginsOptionOutput();
         }
     }
 
@@ -99,16 +98,11 @@ public class QuarkusCliExtensionsIT {
     }
 
     private void assertListOriginsOptionOutput() {
-        assertListOriginsOptionOutput(Version.getVersion());
-    }
-
-    private void assertListOriginsOptionOutput(String expectedVersion) {
         // Origins only shows extension name ++ version. Reported by https://github.com/quarkusio/quarkus/issues/18062.
         assertTrue(result.getOutput().contains(AGROAL_EXTENSION_NAME)
-                && result.getOutput().contains(expectedVersion)
                 && !result.getOutput().contains(AGROAL_EXTENSION_ARTIFACT)
                 && !result.getOutput().contains(AGROAL_EXTENSION_GUIDE),
-                "--origins option output is unexpected. Version: " + expectedVersion + ". Output: " + result.getOutput());
+                "--origins option output is unexpected. Output: " + result.getOutput());
     }
 
     private void assertListNameOptionOutput() {
