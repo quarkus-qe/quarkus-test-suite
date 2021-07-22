@@ -171,7 +171,7 @@ jobs:
           done
 
           MODULES_ARG="${CHANGED// /,}"
-          if [[ -n ${MODULES} ]]; then
+          if [[ -n ${MODULES_ARG} ]]; then
             mvn -fae -V -B -s .github/mvn-settings.xml -fae -pl $MODULES_ARG clean verify -Dnative \
                         -Dquarkus.native.container-build=true -Dquarkus.native.native-image-xmx=4g \
                         -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli"
