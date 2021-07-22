@@ -20,12 +20,13 @@
         <quarkus.platform.version>999-SNAPSHOT</quarkus.platform.version>
         <quarkus-plugin.version>${quarkus.platform.version}</quarkus-plugin.version>
         <quarkus.qe.framework.version>0.0.3</quarkus.qe.framework.version>
+        <quarkus-qpid-jms.version>0.25.0</quarkus-qpid-jms.version>
         <apache-httpclient-fluent.version>4.5.13</apache-httpclient-fluent.version>
         <apicurio.registry.utils.serde.version>1.3.2.Final</apicurio.registry.utils.serde.version>
         <quarkiverse.apicurio.registry.client.version>0.0.2</quarkiverse.apicurio.registry.client.version>
-        <formatter-maven-plugin.version>2.15.0</formatter-maven-plugin.version>
-        <impsort-maven-plugin.version>1.6.0</impsort-maven-plugin.version>
-        <xml-format-maven-plugin.version>3.1.2</xml-format-maven-plugin.version>
+        <formatter-maven-plugin.version>2.16.0</formatter-maven-plugin.version>
+        <impsort-maven-plugin.version>1.6.2</impsort-maven-plugin.version>
+        <xml-format-maven-plugin.version>3.2.0</xml-format-maven-plugin.version>
         <checkstyle.version>8.44</checkstyle.version>
         <jjwt.version>0.11.2</jjwt.version>
         <profile.id>jvm</profile.id>
@@ -109,7 +110,7 @@
             <dependency>
                 <groupId>org.amqphub.quarkus</groupId>
                 <artifactId>quarkus-qpid-jms</artifactId>
-                <version>0.24.0</version>
+                <version>${quarkus-qpid-jms.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.jsonwebtoken</groupId>
