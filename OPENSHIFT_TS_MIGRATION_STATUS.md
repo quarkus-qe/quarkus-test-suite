@@ -38,3 +38,6 @@
 | deployment-strategies/quarkus | http/http-minimum with tag 'use-quarkus-openshift-extension' |
 | deployment-strategies/quarkus-serverless | http/http-minimum with tag 'use-quarkus-openshift-extension' |
 | lifecycle-application | lifecycle-application |
+| external-applications | external-applications/todo-demo-app |
+| external-applications | external-applications/quarkus-workshop-super-heroes |
+| external-applications | external-applications/quickstart-using-s2i |

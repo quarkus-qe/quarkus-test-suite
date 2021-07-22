@@ -72,6 +72,8 @@
         <module>security/vertx-jwt</module>
         <module>sql-db/sql-app</module>
         <module>sql-db/multiple-pus</module>
+        <module>lifecycle-application</module>
+        <module>external-applications</module>
         <module>quarkus-cli</module>
         <module>kamelet</module>
     </modules>
@@ -187,6 +189,7 @@
                 <version>${quarkus-plugin.version}</version>
                 <executions>
                     <execution>
+                        <id>build</id>
                         <goals>
                             <goal>build</goal>
                             <goal>generate-code</goal>
