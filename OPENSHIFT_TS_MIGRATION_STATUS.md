@@ -28,7 +28,7 @@
 | security/keycloak-jwt | security/jwt |
 | security/keycloak-multitenant | security/keycloak-multitenant |
 | security/keycloak-aouth2 | security/keycloak-aouth2 |
-| security/keycloak-oidc-client | security/keycloak-oidc-client |
+| security/keycloak-oidc-client | security/keycloak-oidc-client-basic |
 | security/keycloak-webapp | security/keycloak-webapp |
 | sql-db/postgresql | sql-db/sql-app |
 | sql-db/mysql | sql-db/sql-app |

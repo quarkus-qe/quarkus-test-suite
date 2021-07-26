@@ -68,7 +68,8 @@
         <module>security/keycloak-webapp</module>
         <module>security/keycloak-oauth2</module>
         <module>security/keycloak-multitenant</module>
-        <module>security/keycloak-oidc-client</module>
+        <module>security/keycloak-oidc-client-basic</module>
+        <module>security/keycloak-oidc-client-extended</module>
         <module>security/vertx-jwt</module>
         <module>sql-db/sql-app</module>
         <module>sql-db/multiple-pus</module>
