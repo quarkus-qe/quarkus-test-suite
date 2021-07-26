@@ -45,7 +45,11 @@
         <module>config</module>
         <module>http/http-minimum</module>
         <module>http/http-advanced</module>
+<<<<<<< HEAD
         <module>http/jaxrs</module>
+=======
+        <module>http/reactive-routes</module>
+>>>>>>> 589a5ec... Add http/reactive_routes modules
         <module>scaling</module>
         <module>micrometer/prometheus</module>
         <module>micrometer/prometheus-kafka</module>
