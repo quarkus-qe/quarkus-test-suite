@@ -377,3 +377,21 @@ This test could be extended with some metric gathering.
 Verifies all the Quarkus CLI features: https://quarkus.io/version/main/guides/cli-tooling
 
 In order to enable this module, the test suite must be executed with `-Dinclude.quarkus-cli-tests`. The Quarkus CLI is expected to be called `quarkus`. We can configure the test suite to use another Quarkus CLI binary name using `-Dts.quarkus.cli.cmd=/path/to/quarkus-dev-cli`.
+
+### `Kamelet`
+
+Quarkus-kamelet provide you support to interacting with Camel routes templates.
+The aim of this module is to cover the following Kamelet scenarios:
+* Camel producers, those scenarios where your service produces events and are consumed by a camel route
+* Camel consumers, those scenarios where your service consumes a camel route
+* Chain routes multiples routes
+* Load application properties as routes bodies
+* Validate Kamelet resources as ocp/k8s kamelet yamls(routes-temapltes, routes-bindings...)
+
+Project folder structure
+
+* `/resources/kamelets` contains kamelets resources as templates or KameletBindings. Also, there are groovy scripts 
+in order to instantiate these templates by your self (as an example). 
+
+* `KameletRoutes` contains templates that could be invoked (tested) directly by code. So is not 
+need it to be deployed into ocp or some other platform. 
