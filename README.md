@@ -133,7 +133,13 @@ It also verifies multiple deployment strategies like:
 - Using OpenShift quarkus extension and Docker Build strategy
 
 ### `http-advanced`
-Verifies Server/Client http_2/1.1, Grpc and http redirections. 
+Verifies Server/Client http_2/1.1, Grpc and http redirections.
+
+### `jaxrs`
+Simple bootstrap project created by *quarkus-maven-plugin*  
+#### Additions
+* *@Deprecated* annotation has been added for test regression purposes to ensure `java.lang` annotations are allowed for resources
+* Resource with multipart body support, provided parts are text, image and binary data, charset checked with `us-ascii` and `utf-8`
 
 ### `config`
 
