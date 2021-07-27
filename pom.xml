@@ -78,6 +78,7 @@
         <module>sql-db/panache-flyway</module>
         <module>lifecycle-application</module>
         <module>external-applications</module>
+        <module>scheduling/quartz</module>
         <module>quarkus-cli</module>
         <module>kamelet</module>
     </modules>

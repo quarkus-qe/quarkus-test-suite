@@ -460,6 +460,13 @@ function properly on OpenShift, as well as the database integrations.
 
 This test mimics the quickstart tutorial provided in OpenShift.
 
+### `scheduling/quartz`
+
+Quartz is an open source job-scheduling framework.
+We cover the following two scenarios:
+- Scenario from guide: https://quarkus.io/guides/quartz
+- Failover scenario where will run two instances of the same scheduled job. Then, it simulates a failover of one of the instances and then verify that the second instance continue working as expected.
+
 ### `quarkus-cli`
 
 Verifies all the Quarkus CLI features: https://quarkus.io/version/main/guides/cli-tooling
