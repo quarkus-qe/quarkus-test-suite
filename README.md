@@ -178,6 +178,13 @@ Tests:
 Checks that the application can read configuration from a ConfigMap and a Secret.
 The ConfigMap/Secret is exposed by mounting it into the container file system or the Kubernetes API server.
 
+### `properties`
+
+Module that covers the runtime configuration to ensure the changes take effect. The configuration that is covered is:
+- Allow disabling/enabling `Swagger/GraphQL/Heatlh/OpenAPI` endpoints on DEV, JVM and Native modes
+- Properties from YAML and external files
+- Properties from Consul
+
 ### `sql-db/sql-app`
 
 Verifies that the application can connect to a SQL database and persist data using Hibernate ORM with Panache.
