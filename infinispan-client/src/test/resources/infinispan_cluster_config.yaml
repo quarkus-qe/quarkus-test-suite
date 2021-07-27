@@ -1,0 +1,20 @@
+apiVersion: infinispan.org/v1
+kind: Infinispan
+metadata:
+  name: totally-random-infinispan-cluster-name
+  namespace: datagrid-cluster
+spec:
+  replicas: 1
+  service:
+    type: Cache
+  container:
+    extraJvmOpts: "-XX:NativeMemoryTracking=summary"
+    cpu: "2000m"
+    memory: 2Gi
+  security:
+    endpointSecretName: connect-secret
+    endpointEncryption:
+      type: Secret
+      certSecretName: tls-secret
+  expose:
+    type: LoadBalancer

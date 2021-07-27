@@ -41,3 +41,4 @@
 | external-applications | external-applications/todo-demo-app |
 | external-applications | external-applications/quarkus-workshop-super-heroes |
 | external-applications | external-applications/quickstart-using-s2i |
+| infinispan-client | infinispan-client |
