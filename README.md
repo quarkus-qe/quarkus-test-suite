@@ -135,6 +135,9 @@ It also verifies multiple deployment strategies like:
 ### `http-advanced`
 Verifies Server/Client http_2/1.1, Grpc and http redirections.
 
+### `http-static`
+Verifies access to static pages and big static files over http.
+
 ### `jaxrs`
 Simple bootstrap project created by *quarkus-maven-plugin*  
 #### Additions
@@ -441,4 +444,4 @@ Project folder structure
 in order to instantiate these templates by your self (as an example). 
 
 * `KameletRoutes` contains templates that could be invoked (tested) directly by code. So is not 
-need it to be deployed into ocp or some other platform. 
+need it to be deployed into ocp or some other platform.
