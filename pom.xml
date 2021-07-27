@@ -50,6 +50,7 @@
         <module>http/http-static</module>
         <module>http/jaxrs</module>
         <module>http/reactive-routes</module>
+        <module>http/servlet-undertow</module>
         <module>scaling</module>
         <module>micrometer/prometheus</module>
         <module>micrometer/prometheus-kafka</module>

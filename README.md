@@ -135,8 +135,14 @@ It also verifies multiple deployment strategies like:
 ### `http-advanced`
 Verifies Server/Client http_2/1.1, Grpc and http redirections.
 
+
 ### `http-static`
 Verifies access to static pages and big static files over http.
+
+### `servlet-undertow`
+This module covers basic scenarios about HTTP servlets under `quarkus-undertow` server more in details:
+- Http session eviction
+- Undertow web.xml configuration
 
 ### `jaxrs`
 Simple bootstrap project created by *quarkus-maven-plugin*  
