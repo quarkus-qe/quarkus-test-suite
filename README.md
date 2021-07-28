@@ -328,6 +328,16 @@ There is a PrimeNumberResource that checks whether an integer is prime or not. T
 
 Where `{uniqueId}` is an unique identifier that is calculated at startup time to uniquely identify the metrics of the application.
 
+This module also covers the usage of `MeterRegistry` and `MicroProfile API`: 
+                                     
+- The `MeterRegistry` approach includes three scenarios: 
+`simple`: single call will increment the counter.
+`forloop`: will increment the counter a number of times.
+`forloop parallel`: will increment the counter a number of times using a parallel flow.
+- The `MicroProfile API` approach will include only the `simple` scenario.
+
+Moreover, we also cover the `HTTP Server` metrics in order to verify the `count`, `sum` and `count` metrics work as expected.
+
 In order to run this module, the OpenShift user must have permission to create ServiceMonitor CRDs and access to the `openshift-user-workload-monitoring` namespace. See [Other Prerequisites](#other-prerequisites) section.
 
 ### `micrometer/prometheus-kafka`
