@@ -14,3 +14,4 @@
 | 302-quarkus-vertx-jwt | security/vertx-jwt|
 | 304-quarkus-vertx-routes | http/reactive-routes |
 | 601-spring-data-primitive-types | spring/spring-data-primitive-types |
+| 602-spring-data-rest | spring/spring-data-rest |
