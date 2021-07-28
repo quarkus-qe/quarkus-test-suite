@@ -153,7 +153,7 @@ This module covers some basic scenarios around reactive routes in general and al
 Checks that the application can read configuration from a ConfigMap and a Secret.
 The ConfigMap/Secret is exposed by mounting it into the container file system or the Kubernetes API server.
 
-### `sql-db`
+### `sql-db/sql-app`
 
 Verifies that the application can connect to a SQL database and persist data using Hibernate ORM with Panache.
 The application also uses RESTEasy to expose a RESTful API, Jackson for JSON serialization, and Hibernate Validator to validate inputs.
@@ -163,7 +163,6 @@ There are actually coverage scenarios `sql-app` directory:
 - `mysql`: same for MysQL
 - `mariadb`: same for MariaDB
 - `mssql`: same for MSSQL
-- `multiple-pus`: An application with two persistence units defined in `application.properties`.
 
 All the tests deploy a SQL database directly into OpenShift, alongside the application.
 This might not be recommended for production, but is good enough for test.
@@ -178,6 +177,12 @@ Container images used in the tests are:
   - version 10.2: `registry.access.redhat.com/rhscl/mariadb-102-rhel7`
   - version 10.3: `registry.redhat.io/rhscl/mariadb-103-rhel7` (only if `ts.authenticated-registry` is set)
 - MSSQL: `mcr.microsoft.com/mssql/rhel/server`
+
+### `sql-db/multiple-pus`
+
+Verifies that the application can connect to multiple SQL databases and persist data using Hibernate ORM with Panache.
+The application also uses RESTEasy to expose a RESTful API, Jackson for JSON serialization, and Hibernate Validator to validate inputs.
+The multiple persistence units are defined in `application.properties`.
 
 ### `security/basic`
 
