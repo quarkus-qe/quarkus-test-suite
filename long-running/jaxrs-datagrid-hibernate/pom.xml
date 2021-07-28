@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.quarkus.ts.qe</groupId>
+        <artifactId>parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../..</relativePath>
+    </parent>
+    <artifactId>jaxrs-datagrid-hibernate</artifactId>
+    <packaging>jar</packaging>
+    <name>Quarkus QE TS: long-running: jaxrs-datagrid-hibernate</name>
+    <dependencies>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-resteasy</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-resteasy-jackson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-micrometer-registry-prometheus</artifactId>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <systemProperties>
+                                <ts.long-running.duration.min>10</ts.long-running.duration.min>
+                                <ts.long-running.cool-down.duration.min>3</ts.long-running.cool-down.duration.min>
+                                <ts.long-running.poll.ms>100</ts.long-running.poll.ms>
+                                <ts.long-running.warming-up.iterations>20</ts.long-running.warming-up.iterations>
+                                <ts.long-running.memory-leak.threshold.percentage>30</ts.long-running.memory-leak.threshold.percentage>
+                                <ts.long-running.garbage-collector.await.sec>300</ts.long-running.garbage-collector.await.sec>
+                            </systemProperties>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

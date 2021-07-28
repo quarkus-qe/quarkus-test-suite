@@ -466,5 +466,16 @@
                 <xml.format.goal>xml-check</xml.format.goal>
             </properties>
         </profile>
+        <profile>
+            <id>long-running</id>
+            <activation>
+                <property>
+                    <name>long-running</name>
+                </property>
+            </activation>
+            <modules>
+                <module>long-running/jaxrs-datagrid-hibernate</module>
+            </modules>
+        </profile>
     </profiles>
 </project>
