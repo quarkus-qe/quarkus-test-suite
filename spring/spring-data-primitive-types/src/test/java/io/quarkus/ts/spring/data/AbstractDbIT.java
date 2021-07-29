@@ -1,4 +1,4 @@
-package io.quarkus.ts.spring.data.primitivetypes.data;
+package io.quarkus.ts.spring.data;
 
 import io.quarkus.test.bootstrap.DefaultService;
 import io.quarkus.test.bootstrap.RestService;
@@ -18,7 +18,7 @@ public class AbstractDbIT {
             .withProperty("POSTGRESQL_DATABASE", POSTGRESQL_DATABASE);
 
     @QuarkusApplication
-    static final RestService app = new RestService()
+    public static final RestService app = new RestService()
             .withProperty("quarkus.datasource.username", POSTGRESQL_USER)
             .withProperty("quarkus.datasource.password", POSTGRESQL_PASSWORD)
             .withProperty("quarkus.datasource.jdbc.url",

@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.ts.spring.data.AbstractDbIT;
 import io.restassured.http.Headers;
 import io.restassured.response.Response;
 

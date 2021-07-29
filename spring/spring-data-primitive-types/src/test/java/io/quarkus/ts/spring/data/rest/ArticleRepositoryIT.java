@@ -13,6 +13,7 @@ import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.ts.spring.data.AbstractDbIT;
 import io.restassured.response.Response;
 
 @QuarkusScenario

@@ -14,6 +14,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.ts.spring.data.AbstractDbIT;
 import io.quarkus.ts.spring.data.primitivetypes.data.model.Book;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
