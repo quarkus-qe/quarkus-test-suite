@@ -12,3 +12,11 @@ INSERT INTO cat(id, color, breed, distinctive, birthDay, died, deathReason) VALU
 INSERT INTO cat(id, color, breed, distinctive, birthDay, died, deathReason) VALUES (3, 'White', 'Turkish Angora', true, '2019-06-22 19:10:25-07', null, null);
 INSERT INTO cat(id, color, breed, distinctive, birthDay, died, deathReason) VALUES (4, null , 'British Shorthair', false, '2020-01-22 19:10:25-07', '2020-01-22 19:10:25-07', 'covid19');
 INSERT INTO cat(id, color, breed, distinctive, birthDay, died, deathReason) VALUES (5, 'Black' , 'Bombay Cat', true, '2020-02-22 19:10:25-07', '2020-03-22 19:10:25-07', 'covid19');
+
+
+INSERT INTO library(name) VALUES('Library1');
+
+INSERT INTO article(name, author, library_id) VALUES ('Aeneid','Virgil', 1);
+INSERT INTO article(name, author, library_id) VALUES ('Beach House','James Patterson',1);
+INSERT INTO article(name, author) VALUES ('Cadillac Desert','Marc Reisner');
+INSERT INTO article(name, author) VALUES ('Dagon and Other Macabre Tales','H.P. Lovecraft ');
