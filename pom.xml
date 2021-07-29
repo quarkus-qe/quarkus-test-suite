@@ -51,6 +51,7 @@
         <module>http/jaxrs</module>
         <module>http/reactive-routes</module>
         <module>http/servlet-undertow</module>
+        <module>javaee-like-getting-started</module>
         <module>scaling</module>
         <module>micrometer/prometheus</module>
         <module>micrometer/prometheus-kafka</module>
