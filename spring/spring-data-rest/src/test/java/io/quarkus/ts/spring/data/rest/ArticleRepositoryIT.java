@@ -16,14 +16,14 @@ import io.quarkus.test.scenarios.QuarkusScenario;
 import io.restassured.response.Response;
 
 @QuarkusScenario
-class BookRepositoryIT extends AbstractDbIT {
+class ArticleRepositoryIT extends AbstractDbIT {
 
     @Test
     void testAllRepositoryMethods() throws InterruptedException {
-        //GET - List all books (should have all 4 books the database has initially)
+        //GET - List all articles (should have all 4 articles the database has initially)
         app.given()
                 .accept("application/json")
-                .when().get("/books")
+                .when().get("/articles")
                 .then()
                 .statusCode(200)
                 .body(
@@ -32,38 +32,38 @@ class BookRepositoryIT extends AbstractDbIT {
                         containsString("Cadillac Desert"),
                         containsString("Dagon and Other Macabre Tales"));
 
-        //POST - Create a new Book
+        //POST - Create a new Article
         app.given()
                 .contentType("application/json")
                 .accept("application/json")
                 .body("{\"name\": \"Early Asimov\", \"author\": \"Isaac Asimov\"}")
-                .when().post("/books")
+                .when().post("/articles")
                 .then()
                 .statusCode(201)
                 .body(containsString("Early Asimov"))
                 .body("id", notNullValue())
                 .extract().body().jsonPath().getString("id");
 
-        //PUT - Update a new Book
+        //PUT - Update a new Article
         app.given()
                 .contentType("application/json")
                 .accept("application/json")
                 .body("{\"name\": \"Early Asimov 2nd Edition\", \"author\": \"Isaac Asimov\"}")
-                .when().put("/books/5")
+                .when().put("/articles/5")
                 .then()
                 .statusCode(204);
 
-        //GET{id} - Find new book by id
+        //GET{id} - Find new article by id
         app.given()
-                .when().get("/books/id/5")
+                .when().get("/articles/id/5")
                 .then()
                 .statusCode(200)
                 .body(
                         containsString("Early Asimov 2nd Edition"));
 
-        //DELETE - Try to delete a book via HTTP (method not allowed)
+        //DELETE - Try to delete a article via HTTP (method not allowed)
         app.given()
-                .when().delete("/books/5")
+                .when().delete("/articles/5")
                 .then()
                 .statusCode(405);
 
@@ -72,7 +72,7 @@ class BookRepositoryIT extends AbstractDbIT {
                 .accept("application/json")
                 .queryParam("size", "2")
                 .queryParam("page", "0")
-                .when().get("/books")
+                .when().get("/articles")
                 .then()
                 .statusCode(200)
                 .body(
@@ -83,7 +83,7 @@ class BookRepositoryIT extends AbstractDbIT {
                         not(containsString("Early Asimov 2nd Edition")));
 
         //Test repository sorting
-        List<String> bookNamesSortedDesc = new ArrayList<>(Arrays.asList(
+        List<String> articleNamesSortedDesc = new ArrayList<>(Arrays.asList(
                 "Early Asimov 2nd Edition",
                 "Dagon and Other Macabre Tales",
                 "Cadillac Desert",
@@ -92,22 +92,22 @@ class BookRepositoryIT extends AbstractDbIT {
         Response response = app.given()
                 .accept("application/json")
                 .queryParam("sort", "-name")
-                .when().get("/books")
+                .when().get("/articles")
                 .then()
                 .statusCode(200).extract().response();
-        List<String> bookNamesRepositorySortedDesc = response.jsonPath().getList("name");
+        List<String> articleNamesRepositorySortedDesc = response.jsonPath().getList("name");
 
-        assertEquals(bookNamesSortedDesc, bookNamesRepositorySortedDesc);
+        assertEquals(articleNamesSortedDesc, articleNamesRepositorySortedDesc);
 
     }
 
     @Test
     void testRepositoryValidator() throws InterruptedException {
-        //Try to add a book with invalid constraints
+        //Try to add a article with invalid constraints
         app.given()
                 .contentType("application/json")
                 .body("{\"name\": \"Q\", \"author\": \"Li\"}")
-                .when().post("/books")
+                .when().post("/articles")
                 .then()
                 .statusCode(HttpStatus.SC_BAD_REQUEST)
                 .body(containsString("length must be between 2 and 50"));

@@ -9,21 +9,21 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 
-@RepositoryRestResource(exported = false, path = "books", collectionResourceRel = "books")
-public interface BookRepository extends PagingAndSortingRepository<Book, Long> {
+@RepositoryRestResource(exported = false, path = "articles", collectionResourceRel = "articles")
+public interface ArticleRepository extends PagingAndSortingRepository<Article, Long> {
 
     @Override
     @RestResource(exported = true)
-    Page<Book> findAll(Pageable pageable);
+    Page<Article> findAll(Pageable pageable);
 
     @RestResource(exported = true)
-    List<Book> findByOrderByNameDesc();
+    List<Article> findByOrderByNameDesc();
 
     @Override
     @RestResource(path = "id")
-    Optional<Book> findById(Long id);
+    Optional<Article> findById(Long id);
 
     @Override
     @RestResource()
-    Book save(Book book);
+    Article save(Article article);
 }

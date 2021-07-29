@@ -25,7 +25,7 @@ public class Library {
 
     @JsonManagedReference
     @OneToMany(mappedBy = "library", cascade = CascadeType.ALL)
-    private List<Book> books = new ArrayList<>();
+    private List<Article> articles = new ArrayList<>();
 
     public Library() {
     }
@@ -50,11 +50,11 @@ public class Library {
         this.name = name;
     }
 
-    public List<Book> getBooks() {
-        return books;
+    public List<Article> getArticles() {
+        return articles;
     }
 
-    public void setBooks(List<Book> books) {
-        this.books = books;
+    public void setArticles(List<Article> articles) {
+        this.articles = articles;
     }
 }

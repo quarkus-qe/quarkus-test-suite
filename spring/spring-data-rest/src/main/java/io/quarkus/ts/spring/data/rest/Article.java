@@ -14,7 +14,7 @@ import org.hibernate.validator.constraints.Length;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
-public class Book {
+public class Article {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,10 +33,10 @@ public class Book {
     @JoinColumn(name = "library_id")
     private Library library;
 
-    public Book() {
+    public Article() {
     }
 
-    public Book(String name, String author) {
+    public Article(String name, String author) {
         this.name = name;
         this.author = author;
     }
