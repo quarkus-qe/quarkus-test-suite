@@ -83,6 +83,7 @@
         <module>scheduling/quartz</module>
         <module>quarkus-cli</module>
         <module>kamelet</module>
+        <module>spring/spring-data-primitive-types</module>
     </modules>
     <dependencyManagement>
         <dependencies>
