@@ -135,8 +135,14 @@ It also verifies multiple deployment strategies like:
 ### `http-advanced`
 Verifies Server/Client http_2/1.1, Grpc and http redirections.
 
+
 ### `http-static`
 Verifies access to static pages and big static files over http.
+
+### `servlet-undertow`
+This module covers basic scenarios about HTTP servlets under `quarkus-undertow` server more in details:
+- Http session eviction
+- Undertow web.xml configuration
 
 ### `jaxrs`
 Simple bootstrap project created by *quarkus-maven-plugin*  
@@ -202,6 +208,29 @@ Container images used in the tests are:
 Verifies that the application can connect to multiple SQL databases and persist data using Hibernate ORM with Panache.
 The application also uses RESTEasy to expose a RESTful API, Jackson for JSON serialization, and Hibernate Validator to validate inputs.
 The multiple persistence units are defined in `application.properties`.
+
+### `sql-db/panache-flyway`
+
+Module that test whether we can setup a REST API using ORM Panache with Flyway and a MySQL database. Moreover, it covers XA transactions.
+
+Topics covered here:
+- https://quarkus.io/guides/hibernate-orm-panache
+- https://quarkus.io/guides/rest-data-panache
+- https://quarkus.io/guides/flyway
+
+Base application:
+- Define multiple datasources (https://quarkus.io/guides/datasource#multiple-datasources): default (transactions enabled), `with-xa` (transactions xa).
+- Define Panache entity `ApplicationEntity` and its respective REST resource `ApplicationResource` (https://quarkus.io/guides/rest-data-panache).
+- Define a REST resource `DataSourceResource` that provides info about the datasources.
+
+Additional tests:
+- Rest Data with Panache test according to https://github.com/quarkus-qe/quarkus-test-plans/blob/main/QUARKUS-976.md  
+Additional UserEntity is a simple JPA entity that was created with aim to avoid inheritance of PanacheEntity methods
+and instead test the additional combination of JPA entity + PanacheRepository + PanacheRepositoryResource, where
+PanacheRepository is a facade class. Facade class can override certain methods to change the default behaviour of the
+PanacheRepositoryResource methods.
+
+- AgroalPoolTest, will cover how the db pool is managed in terms of IDLE-timeout, max connections and concurrency. 
 
 ### `security/basic`
 
@@ -455,6 +484,13 @@ function properly on OpenShift, as well as the database integrations.
 #### `quickstart-using-s2i`
 
 This test mimics the quickstart tutorial provided in OpenShift.
+
+### `scheduling/quartz`
+
+Quartz is an open source job-scheduling framework.
+We cover the following two scenarios:
+- Scenario from guide: https://quarkus.io/guides/quartz
+- Failover scenario where will run two instances of the same scheduled job. Then, it simulates a failover of one of the instances and then verify that the second instance continue working as expected.
 
 ### `quarkus-cli`
 
