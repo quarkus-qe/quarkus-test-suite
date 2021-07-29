@@ -5,9 +5,11 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import io.quarkus.ts.spring.data.primitivetypes.data.model.Book;
 
+@RepositoryRestResource(exported = false)
 public interface BookRepository extends CrudRepository<Book, Integer> {
 
     //This is for regression test for https://github.com/quarkusio/quarkus/pull/9192

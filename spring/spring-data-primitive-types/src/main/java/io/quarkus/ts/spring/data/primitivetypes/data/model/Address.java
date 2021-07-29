@@ -2,12 +2,13 @@ package io.quarkus.ts.spring.data.primitivetypes.data.model;
 
 import java.util.List;
 
-import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "address")
@@ -19,7 +20,7 @@ public class Address {
 
     private String zipCode;
 
-    @JsonbTransient
+    @JsonIgnore
     @OneToMany(mappedBy = "publisherAddress")
     private List<Book> books;
 
