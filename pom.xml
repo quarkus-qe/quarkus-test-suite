@@ -88,7 +88,6 @@
         <module>quarkus-cli</module>
         <module>kamelet</module>
         <module>spring/spring-data</module>
-        <module>spring/spring-data-rest</module>
     </modules>
     <dependencyManagement>
         <dependencies>
