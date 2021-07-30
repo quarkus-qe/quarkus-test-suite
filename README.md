@@ -68,7 +68,7 @@ When running against released Red Hat build of Quarkus make sure https://maven.r
 Example command for released Red Hat build of Quarkus:
 ```
 mvn -fae clean verify \
- -Dts.authenticated-registry \
+ -Dts.redhat.registry.enabled \
  -Dversion.quarkus=1.3.4.Final-redhat-00004 \
  -Dquarkus.platform.group-id=com.redhat.quarkus
 ```
@@ -77,7 +77,7 @@ Example command for not yet released version of Red Hat build of Quarkus:
 
 ```
 mvn -fae clean verify \
- -Dts.authenticated-registry \
+ -Dts.redhat.registry.enabled \
  -Dversion.quarkus=1.7.1.Final-redhat-00001 \
  -Dquarkus.platform.group-id=com.redhat.quarkus \
  -Dmaven.repo.local=/Users/rsvoboda/Downloads/rh-quarkus-1.7.1.GA-maven-repository/maven-repository
@@ -202,12 +202,12 @@ Container images used in the tests are:
 
 - PostgreSQL:
   - version 10: `registry.access.redhat.com/rhscl/postgresql-10-rhel7`
-  - version 12: `registry.redhat.io/rhscl/postgresql-12-rhel7` (only if `ts.authenticated-registry` is set)
+  - version 12: `registry.redhat.io/rhscl/postgresql-12-rhel7` (only if `ts.redhat.registry.enabled` is set)
 - MySQL:
   - version 8.0: `registry.access.redhat.com/rhscl/mysql-80-rhel7`
 - MariaDB:
   - version 10.2: `registry.access.redhat.com/rhscl/mariadb-102-rhel7`
-  - version 10.3: `registry.redhat.io/rhscl/mariadb-103-rhel7` (only if `ts.authenticated-registry` is set)
+  - version 10.3: `registry.redhat.io/rhscl/mariadb-103-rhel7` (only if `ts.redhat.registry.enabled` is set)
 - MSSQL: `mcr.microsoft.com/mssql/rhel/server`
 
 ### `sql-db/multiple-pus`
@@ -523,11 +523,9 @@ in order to instantiate these templates by your self (as an example).
 * `KameletRoutes` contains templates that could be invoked (tested) directly by code. So is not 
 need it to be deployed into ocp or some other platform.
 
-
 ### `spring/spring-data-primitive-types`
 - Spring Data JPA: CRUD repository operation (default and custom), mapped superclass, query over embedded camelCase field, HTTP response filter.
 - Spring DI: presence of Spring-defined beans in CDI context, injected transitive dependencies, multiple ways of retrieving the beans.
-
 
 ### `spring/spring-data-rest`
 Verifies functionality of Spring Data REST extension in following areas:
@@ -535,3 +533,30 @@ Verifies functionality of Spring Data REST extension in following areas:
 - Usage together with Hibernate Validator constraints.
 - Pagination and sorting.
 - 1:m entity relationship.
+
+### `infinispan-client`
+
+Verifies the way of the sharing cache by Datagrid operator and Infinispan cluster and data consistency after failures.
+
+#### Prerequisites
+- Datagrid operator installed in `datagrid-operator` namespace. This needs cluster-admin rights to install.
+- The operator supports only single-namespace so it has to watch another well-known namespace `datagrid-cluster`. 
+This namespace must be created by "qe" user or this user must have access to it because tests are connecting to it.
+- These namespaces should be prepared after the Openshift installation - See [Installing Data Grid Operator](https://access.redhat.com/documentation/en-us/red_hat_data_grid/8.1/html/running_data_grid_on_openshift/installation)
+
+Tests create an Infinispan cluster in the `datagrid-cluster` namespace. Cluster is created before tests by `infinispan_cluster_config.yaml`. 
+To allow parallel runs of tests this cluster is renamed for every test run - along with configmap `infinispan-config`. The configmap contains 
+configuration property `quarkus.infinispan-client.server-list`. Value of this property is a path to the infinispan cluster from test namespace, 
+its structure is `infinispan-cluster-name.datagrid-cluster-namespace.svc.cluster.local:11222`. It is because the testsuite uses dynamically generated 
+namespaces for tests. So this path is needed for the tests to find Infinispan cluster in another namespace.
+
+The Infinispan cluster needs 2 special secrets - tls-secret with TLS certificate and connect-secret with the credentials.
+TLS certificate is a substitution of `secrets/signing-key` in openshift-service-ca namespace, which "qe" user cannot use (doesn't have rights on it). 
+Clientcert secret is generated for "qe" from the tls-secret mentioned above.
+
+Infinispan client tests use the cache directly with `@Inject` and `@RemoteCache`. Through the JAX-RS endpoint, we send data into the cache and retrieve it through another JAX-RS endpoint. 
+The next tests are checking a simple fail-over - first client (application) fail, then Infinispan cluster (cache) fail. Tests kill first the Quarkus pod then Infinispan cluster pod and then check data.
+For the Quarkus application, pod killing is used the same approach as in configmap tests. For the Infinispan cluster, pod killing is updated its YAML snipped and uploaded with zero replicas.
+By default, when the Infinispan server is down and the application can't open a connection, it tries to connect again, up to 10 times (max_retries) and gives up after 60s (connect_timeout).
+Because of that we are using the `hotrod-client.properties` file where are the max_retries and connect_timeout reduced. Without this the application will be still trying to connect to the Infinispan server next 10 minutes and the incremented number can appear later.
+The last three tests are for testing of the multiple client access to the cache. We simulate the second client by deploying the second deployment config, Service, and Route for these tests. These are copied from the `openshift.yml` file. 
