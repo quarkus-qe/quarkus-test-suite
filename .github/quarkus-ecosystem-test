@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -e
+
+# run the tests on JVM
+mvn -fae -V -B -s .github/mvn-settings.xml -fae clean verify
+
+# run the tests on Native
+mvn -fae -V -B -s .github/mvn-settings.xml -fae clean verify -Dnative -Dquarkus.native.container-build=true -Dquarkus.native.native-image-xmx=5g
