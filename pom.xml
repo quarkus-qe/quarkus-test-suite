@@ -242,6 +242,7 @@
                                 <exclude>${exclude.openshift.tests}</exclude>
                                 <exclude>${exclude.serverless.openshift.tests}</exclude>
                                 <exclude>${exclude.operator.openshift.tests}</exclude>
+                                <exclude>${exclude.quarkus.cli.tests}</exclude>
                             </excludes>
                             <systemProperties>
                                 <profile.id>${profile.id}</profile.id>
