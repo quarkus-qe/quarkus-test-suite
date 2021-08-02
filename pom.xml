@@ -52,6 +52,7 @@
         <module>http/jaxrs</module>
         <module>http/reactive-routes</module>
         <module>http/servlet-undertow</module>
+        <module>http/vertx-web-client</module>
         <module>javaee-like-getting-started</module>
         <module>scaling</module>
         <module>micrometer/prometheus</module>

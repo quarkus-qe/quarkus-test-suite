@@ -154,6 +154,14 @@ Simple bootstrap project created by *quarkus-maven-plugin*
 This module covers some basic scenarios around reactive routes in general and also:
 - Validation on request params, request body and responses.
 
+### `vertx-web-client`
+Vert.x Mutiny webClient exploratory test.
+* Vert.x WebClient
+* Quarkus Resteasy Mutiny / Jsonb
+* Quarkus configuration converters
+* Exception mapper
+
+Also see http/vertx-web-client/README.md
 
 ### `javaee-like-getting-started`
 
@@ -174,7 +182,6 @@ Tests:
 - Test to cover the functionality of the Fallback feature and ensure the associated metrics are properly updated. 
 
 ### `config`
-
 Checks that the application can read configuration from a ConfigMap and a Secret.
 The ConfigMap/Secret is exposed by mounting it into the container file system or the Kubernetes API server.
 
