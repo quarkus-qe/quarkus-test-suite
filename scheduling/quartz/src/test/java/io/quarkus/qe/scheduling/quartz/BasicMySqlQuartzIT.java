@@ -7,11 +7,9 @@ import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
-@DisabledOnNative(reason = "Due to the workaround added in mysql.properties, this is not working on Native")
 public class BasicMySqlQuartzIT extends BaseMySqlQuartzIT {
 
     @QuarkusApplication

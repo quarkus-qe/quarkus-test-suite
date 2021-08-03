@@ -51,7 +51,6 @@ public class ChuckNorrisResourceIT {
 
     @JaegerContainer(image = "jaegertracing/all-in-one:latest", tracePort = TRACE_PORT, restPort = REST_PORT, expectedLog = "\"Health Check state change\",\"status\":\"ready\"")
     static final JaegerService jaeger = new JaegerService();
-    private final String jaegerEndpoint = jaeger.getRestUrl();
 
     @Container(image = "rodolpheche/wiremock", port = 8080, expectedLog = "verbose")
     static DefaultService wiremock = new DefaultService();
@@ -144,7 +143,7 @@ public class ChuckNorrisResourceIT {
                 .queryParam("lookback", lookBack)
                 .queryParam("service", serviceName)
                 .queryParam("operation", operationName)
-                .get(jaegerEndpoint);
+                .get(jaeger.getRestUrl());
     }
 
     private void thenStatusCodeMustBe(int expectedStatusCode) {

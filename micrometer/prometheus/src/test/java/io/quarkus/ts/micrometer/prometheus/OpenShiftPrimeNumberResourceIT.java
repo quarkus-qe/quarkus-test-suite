@@ -110,6 +110,6 @@ public class OpenShiftPrimeNumberResourceIT {
     }
 
     private static void loadServiceMonitor(Service app) {
-        client.apply(app, Paths.get("target/test-classes/service-monitor.yaml"));
+        client.apply(Paths.get("target/test-classes/service-monitor.yaml"));
     }
 }

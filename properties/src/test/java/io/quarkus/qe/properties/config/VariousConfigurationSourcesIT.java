@@ -28,7 +28,7 @@ public class VariousConfigurationSourcesIT {
 
     @Test
     public void testYamlPropertiesByInterface() {
-        // Property 'protagonist.hobby' overridden by ./configsource.properties file that has higher ordinal(priority)
+        // Property 'protagonist.hobby' overridden by ./configsource.prop file that has higher ordinal(priority)
         given()
                 .when().get("/hello/protagonist")
                 .then()
