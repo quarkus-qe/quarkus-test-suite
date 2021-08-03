@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -37,11 +36,11 @@ public class OpenApiIT extends BaseIT {
     private static final Path JSON_FILE_NAME_FULL_PATH = Paths.get(directory + JSON_FILE_NAME);
 
     private static final String EXPECTED_TAGS = "[{\"name\":\"Ping\",\"description\":\"Ping API\"},{\"name\":\"Pong\",\"description\":\"Pong API\"}]";
-    private static final String EXPECTED_INFO = "{\"title\":\"Generated API\",\"version\":\"1.0\"}";
+    private static final String EXPECTED_INFO = "{\"title\":\"security-keycloak-oidc-client-extended API\",\"version\":\"1.0.0-SNAPSHOT\"}";
 
     // QUARKUS-716
     @Test
-    public void testJsonOpenApiPathAccessResource() throws IOException, URISyntaxException {
+    public void testJsonOpenApiPathAccessResource() throws IOException {
         assertTrue(Files.exists(JSON_FILE_NAME_FULL_PATH), JSON_FILE_NAME_FULL_PATH + " doesn't exist.");
         assertContent(toJson(JSON_FILE_NAME_FULL_PATH));
     }
