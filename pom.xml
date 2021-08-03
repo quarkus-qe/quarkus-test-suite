@@ -28,7 +28,7 @@
         <formatter-maven-plugin.version>2.16.0</formatter-maven-plugin.version>
         <impsort-maven-plugin.version>1.6.2</impsort-maven-plugin.version>
         <xml-format-maven-plugin.version>3.2.0</xml-format-maven-plugin.version>
-        <checkstyle.version>8.44</checkstyle.version>
+        <checkstyle.version>8.45</checkstyle.version>
         <jjwt.version>0.11.2</jjwt.version>
         <camel-quarkus-bom.version>2.1.0</camel-quarkus-bom.version>
         <profile.id>jvm</profile.id>
@@ -52,6 +52,7 @@
         <module>http/jaxrs</module>
         <module>http/reactive-routes</module>
         <module>http/servlet-undertow</module>
+        <module>http/vertx-web-client</module>
         <module>javaee-like-getting-started</module>
         <module>scaling</module>
         <module>micrometer/prometheus</module>
@@ -242,6 +243,7 @@
                                 <exclude>${exclude.openshift.tests}</exclude>
                                 <exclude>${exclude.serverless.openshift.tests}</exclude>
                                 <exclude>${exclude.operator.openshift.tests}</exclude>
+                                <exclude>${exclude.quarkus.cli.tests}</exclude>
                             </excludes>
                             <systemProperties>
                                 <profile.id>${profile.id}</profile.id>

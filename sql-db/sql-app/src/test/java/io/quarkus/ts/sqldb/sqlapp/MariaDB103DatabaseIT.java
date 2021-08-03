@@ -24,7 +24,7 @@ public class MariaDB103DatabaseIT extends AbstractSqlDatabaseIT {
             .withProperty("MYSQL_DATABASE", MYSQL_DATABASE);
 
     @QuarkusApplication
-    static RestService app = new RestService().withProperties("mariadb.properties")
+    static RestService app = new RestService().withProperties("mariadb_app.properties")
             .withProperty("quarkus.datasource.username", MYSQL_USER)
             .withProperty("quarkus.datasource.password", MYSQL_PASSWORD)
             .withProperty("quarkus.datasource.jdbc.url",
