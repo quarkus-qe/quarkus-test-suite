@@ -14,11 +14,9 @@ import io.quarkus.qe.scheduling.quartz.failover.ExecutionService;
 import io.quarkus.qe.scheduling.quartz.failover.ExecutionsResource;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
-@DisabledOnNative(reason = "Due to the workaround added in mysql.properties, this is not working on Native")
 public class AnnotationScheduledJobsMySqlQuartzIT extends BaseMySqlQuartzIT {
 
     static final String NODE_ONE_NAME = "node-one";

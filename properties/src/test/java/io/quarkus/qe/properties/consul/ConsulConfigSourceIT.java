@@ -10,15 +10,20 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 
 import io.quarkus.test.bootstrap.ConsulService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.bootstrap.Service;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
+@DisabledOnNative(reason = "TODO: Caused by https://github.com/quarkus-qe/quarkus-test-framework/issues/169")
+@DisabledOnOs(value = OS.WINDOWS, disabledReason = "Windows does not support Linux Containers / Testcontainers")
 public class ConsulConfigSourceIT {
 
     private static final String CUSTOM_PROPERTY = "welcome.message";

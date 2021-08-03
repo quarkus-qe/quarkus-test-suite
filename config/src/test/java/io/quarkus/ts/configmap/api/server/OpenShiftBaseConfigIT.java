@@ -42,7 +42,7 @@ public abstract class OpenShiftBaseConfigIT {
                 .body("content", is("Hello Albert Einstein from " + getConfigType()));
 
         // Update config map
-        applyConfig(getApp(), getConfigType() + "-update");
+        applyConfig(getConfigType() + "-update");
         getApp().restart();
 
         await().atMost(ASSERT_TIMEOUT_MINUTES, TimeUnit.MINUTES).untilAsserted(() -> {
@@ -51,7 +51,7 @@ public abstract class OpenShiftBaseConfigIT {
         });
 
         // Wrong config map
-        applyConfig(getApp(), getConfigType() + "-broken");
+        applyConfig(getConfigType() + "-broken");
         getApp().restart();
 
         await().atMost(ASSERT_TIMEOUT_MINUTES, TimeUnit.MINUTES).untilAsserted(() -> {
@@ -64,14 +64,14 @@ public abstract class OpenShiftBaseConfigIT {
     protected abstract String getConfigType();
 
     protected static void loadDefaultConfigMap(Service service) {
-        applyConfig(service, CONFIGMAP);
+        applyConfig(CONFIGMAP);
     }
 
     protected static void loadDefaultConfigSecret(Service service) {
-        applyConfig(service, SECRET);
+        applyConfig(SECRET);
     }
 
-    private static void applyConfig(Service service, String name) {
-        openshift.apply(service, Paths.get(new File("target/test-classes/" + name + ".yaml").toURI()));
+    private static void applyConfig(String name) {
+        openshift.apply(Paths.get(new File("target/test-classes/" + name + ".yaml").toURI()));
     }
 }

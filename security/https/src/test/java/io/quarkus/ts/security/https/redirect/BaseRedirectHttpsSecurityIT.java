@@ -20,21 +20,13 @@ import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
-import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.security.https.utils.Certificates;
 import io.quarkus.ts.security.https.utils.HttpsAssertions;
-import io.quarkus.vertx.http.runtime.HttpConfiguration;
 
-@QuarkusScenario
-public class RedirectHttpsSecurityIT {
+public abstract class BaseRedirectHttpsSecurityIT {
     // not using RestAssured because we want 100% control over certificate & hostname verification
 
     static final char[] CLIENT_PASSWORD = "client-password".toCharArray();
-
-    @QuarkusApplication(ssl = true)
-    static RestService app = new RestService()
-            .withProperty("quarkus.http.insecure-requests", HttpConfiguration.InsecureRequests.REDIRECT.name());
 
     @Test
     public void https() throws IOException, GeneralSecurityException {
@@ -82,7 +74,9 @@ public class RedirectHttpsSecurityIT {
         }
     }
 
+    protected abstract RestService getApp();
+
     private String url(Protocol protocol) {
-        return app.getHost(protocol) + ":" + app.getPort(protocol) + "/hello/simple";
+        return getApp().getHost(protocol) + ":" + getApp().getPort(protocol) + "/hello/simple";
     }
 }

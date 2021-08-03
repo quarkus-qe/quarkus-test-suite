@@ -12,7 +12,7 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 public class CustomConfigSource implements ConfigSource {
 
     private static final int ORDINAL = 999;
-    private static final String PROPERTIES_FILE = "/configsource.properties";
+    private static final String PROPERTIES_FILE = "/configsource.prop";
 
     private final Properties customProperties = new Properties();
 
