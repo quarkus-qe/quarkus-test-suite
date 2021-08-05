@@ -19,6 +19,7 @@ import io.quarkus.test.bootstrap.QuarkusCliRestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 
+@Tag("QUARKUS-960")
 @Tag("quarkus-cli")
 @QuarkusScenario
 @DisabledOnQuarkusVersion(version = "1\\..*", reason = "Quarkus CLI has been reworked in 2.x")
@@ -31,6 +32,8 @@ public class QuarkusCliCreateApplicationIT {
     @Inject
     static QuarkusCliClient cliClient;
 
+    @Tag("QUARKUS-1071")
+    @Tag("QUARKUS-1072")
     @Test
     public void shouldCreateApplicationOnJvm() {
         // Create application
@@ -45,6 +48,26 @@ public class QuarkusCliCreateApplicationIT {
         app.given().get().then().statusCode(HttpStatus.SC_OK);
     }
 
+    @Tag("QUARKUS-1073")
+    @Tag("QUARKUS-1070")
+    @Test
+    public void shouldCreateApplicationOnJvmFromMultipleBoms() {
+        // Create application using:
+        // 1. Kogito dependencies
+        // 2. Prettytime dependencies
+        // It will result into several boms added: quarkus-bom and kogito-bom.
+        // Also, it verifies that quarkiverse dependencies can be added too.
+        QuarkusCliRestService app = cliClient.createApplication("app", "kogito-quarkus-rules", "prettytime");
+
+        // Should build on Jvm
+        QuarkusCliClient.Result result = app.buildOnJvm();
+        assertTrue(result.isSuccessful(), "The application didn't build on JVM. Output: " + result.getOutput());
+        assertTrue(result.getOutput().contains("Installed features: "
+                + "[cdi, kogito-rules, pretty-time, resteasy, resteasy-jackson, servlet, smallrye-context-propagation]"),
+                "Unexpected installed features. Output: " + result.getOutput());
+    }
+
+    @Tag("QUARKUS-1071")
     @Test
     public void shouldCreateApplicationWithCodeStarter() {
         // Create application with Resteasy Jackson
@@ -58,6 +81,7 @@ public class QuarkusCliCreateApplicationIT {
         untilAsserted(() -> app.given().get("/greeting").then().statusCode(HttpStatus.SC_OK).and().body(is("Hello Spring")));
     }
 
+    @Tag("QUARKUS-1071")
     @Test
     public void shouldAddAndRemoveExtensions() {
         // Create application
@@ -87,6 +111,8 @@ public class QuarkusCliCreateApplicationIT {
         untilAsserted(() -> app.given().get("/q/health").then().statusCode(HttpStatus.SC_NOT_FOUND));
     }
 
+    @Tag("QUARKUS-1071")
+    @Tag("QUARKUS-1072")
     @Test
     @EnabledIfSystemProperty(named = "profile.id", matches = "native")
     public void shouldBuildApplicationOnNative() {

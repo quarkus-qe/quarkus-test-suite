@@ -8,10 +8,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import io.quarkus.builder.Version;
 import io.quarkus.test.bootstrap.QuarkusCliClient;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
@@ -20,6 +20,7 @@ import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
  * Note that the extensions list enhancements have been already reported as part
  * of https://github.com/quarkusio/quarkus/issues/18062 and https://github.com/quarkusio/quarkus/issues/18064.
  */
+@Tag("QUARKUS-960")
 @Tag("quarkus-cli")
 @QuarkusScenario
 @DisabledOnQuarkusVersion(version = "1\\..*", reason = "Quarkus CLI has been reworked in 2.x")
@@ -28,7 +29,7 @@ public class QuarkusCliExtensionsIT {
     static final String AGROAL_EXTENSION_NAME = "Agroal - Database connection pool";
     static final String AGROAL_EXTENSION_ARTIFACT = "quarkus-agroal";
     static final String AGROAL_EXTENSION_GUIDE = "https://quarkus.io/guides/datasource";
-    static final List<String> EXPECTED_PLATFORM_VERSIONS = Arrays.asList("2.0.0.Final", "2.1.0.CR1");
+    static final List<String> EXPECTED_PLATFORM_VERSIONS = Arrays.asList("2.0.0.Final", "2.1.0.Final");
 
     @Inject
     static QuarkusCliClient cliClient;
@@ -75,16 +76,25 @@ public class QuarkusCliExtensionsIT {
         }
     }
 
-    @Disabled("Pending for clarification around the --stream option: https://github.com/quarkusio/quarkus/issues/18064")
     @Test
-    public void shouldListExtensionsUsingStream() {
-        // TODO
+    public void shouldListExtensionsUsingPlatformBom() {
+        whenGetListExtensions("--platform-bom", "io.quarkus:quarkus-bom:" + Version.getVersion());
+        assertListOriginsOptionOutput();
     }
 
-    @Disabled("Pending for clarification around the --installable option: https://github.com/quarkusio/quarkus/issues/18064")
+    @Test
+    public void shouldListExtensionsUsingStream() {
+        whenGetListExtensions("--stream", "2.0");
+        assertTrue(result.getOutput().contains("io.quarkus:quarkus-universe-bom::pom:2.0"));
+
+        whenGetListExtensions("--stream", "2.1");
+        assertTrue(result.getOutput().contains("io.quarkus.platform:quarkus-bom::pom:2.1"));
+    }
+
     @Test
     public void shouldListExtensionsUsingInstallable() {
-        // TODO
+        whenGetListExtensions("--installable");
+        assertListOriginsOptionOutput();
     }
 
     private void whenGetListExtensions(String... extraArgs) {
