@@ -6,11 +6,11 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnNative;
-import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
+import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusSnapshot;
 import io.quarkus.test.services.GitRepositoryQuarkusApplication;
 
 @DisabledOnNative
-@DisabledOnQuarkusVersion(version = "9\\..*", reason = "999-SNAPSHOT is not available in the Maven repositories in OpenShift")
+@DisabledOnQuarkusSnapshot(reason = "999-SNAPSHOT is not available in the Maven repositories in OpenShift")
 @OpenShiftScenario
 public class OpenShiftQuickstartUsingS2iIT {
     @GitRepositoryQuarkusApplication(repo = "https://github.com/quarkusio/quarkus-quickstarts.git", contextDir = "getting-started")

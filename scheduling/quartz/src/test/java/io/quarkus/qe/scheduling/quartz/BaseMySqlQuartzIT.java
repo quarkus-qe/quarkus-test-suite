@@ -4,6 +4,7 @@ import io.quarkus.test.bootstrap.DefaultService;
 import io.quarkus.test.services.Container;
 
 public abstract class BaseMySqlQuartzIT {
+    static final String MYSQL_PROPERTIES = "mysql.properties";
     static final String MYSQL_USER = "user";
     static final String MYSQL_PASSWORD = "user";
     static final String MYSQL_DATABASE = "mydb";

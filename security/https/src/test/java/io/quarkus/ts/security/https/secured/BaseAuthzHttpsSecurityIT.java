@@ -10,6 +10,7 @@ import javax.net.ssl.SSLContext;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
@@ -20,6 +21,7 @@ import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
+import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.ts.security.https.utils.Certificates;
 import io.quarkus.ts.security.https.utils.HttpsAssertions;
 
@@ -35,11 +37,7 @@ public abstract class BaseAuthzHttpsSecurityIT {
                 .loadKeyMaterial(new File(Certificates.CLIENT_KEYSTORE), CLIENT_PASSWORD, CLIENT_PASSWORD)
                 .loadTrustMaterial(new File(Certificates.CLIENT_TRUSTSTORE), CLIENT_PASSWORD)
                 .build();
-        try (CloseableHttpClient httpClient = HttpClients.custom()
-                .setSSLContext(sslContext)
-                .setSSLHostnameVerifier(new DefaultHostnameVerifier())
-                .build()) {
-
+        try (CloseableHttpClient httpClient = httpClient(sslContext)) {
             Executor executor = Executor.newInstance(httpClient);
 
             assertEquals("Hello CN=client, HTTPS: true, isUser: true, isGuest: false",
@@ -57,11 +55,7 @@ public abstract class BaseAuthzHttpsSecurityIT {
                 .loadKeyMaterial(new File(Certificates.GUESS_CLIENT_KEYSTORE), CLIENT_PASSWORD, CLIENT_PASSWORD)
                 .loadTrustMaterial(new File(Certificates.CLIENT_TRUSTSTORE), CLIENT_PASSWORD)
                 .build();
-        try (CloseableHttpClient httpClient = HttpClients.custom()
-                .setSSLContext(sslContext)
-                .setSSLHostnameVerifier(new DefaultHostnameVerifier())
-                .build()) {
-
+        try (CloseableHttpClient httpClient = httpClient(sslContext)) {
             Executor executor = Executor.newInstance(httpClient);
 
             assertEquals("Hello CN=guest-client, HTTPS: true, isUser: false, isGuest: true",
@@ -78,11 +72,7 @@ public abstract class BaseAuthzHttpsSecurityIT {
                 .setKeyStoreType(Certificates.PKCS12)
                 .loadKeyMaterial(new File(Certificates.CLIENT_KEYSTORE), CLIENT_PASSWORD, CLIENT_PASSWORD)
                 .build();
-        try (CloseableHttpClient httpClient = HttpClients.custom()
-                .setSSLContext(sslContext)
-                .setSSLHostnameVerifier(new DefaultHostnameVerifier())
-                .build()) {
-
+        try (CloseableHttpClient httpClient = httpClient(sslContext)) {
             HttpsAssertions.assertTlsHandshakeError(() -> {
                 Executor.newInstance(httpClient).execute(Request.Get(url(Protocol.HTTPS)));
             });
@@ -90,17 +80,14 @@ public abstract class BaseAuthzHttpsSecurityIT {
     }
 
     @Test
+    @DisabledOnNative(reason = "Takes too much time to validate this test on Native")
     public void httpsClientCertificateUnknownToServer() throws IOException, GeneralSecurityException {
         SSLContext sslContext = SSLContexts.custom()
                 .setKeyStoreType(Certificates.PKCS12)
                 .loadKeyMaterial(new File(Certificates.UNKNOWN_CLIENT_KEYSTORE), CLIENT_PASSWORD, CLIENT_PASSWORD)
                 .loadTrustMaterial(new File(Certificates.CLIENT_TRUSTSTORE), CLIENT_PASSWORD)
                 .build();
-        try (CloseableHttpClient httpClient = HttpClients.custom()
-                .setSSLContext(sslContext)
-                .setSSLHostnameVerifier(new DefaultHostnameVerifier())
-                .build()) {
-
+        try (CloseableHttpClient httpClient = httpClient(sslContext)) {
             Executor executor = Executor.newInstance(httpClient);
 
             HttpsAssertions.assertTls13OnlyHandshakeError(() -> {
@@ -125,6 +112,7 @@ public abstract class BaseAuthzHttpsSecurityIT {
         try (CloseableHttpClient httpClient = HttpClients.custom()
                 .setSSLContext(sslContext)
                 .setSSLHostnameVerifier(new DefaultHostnameVerifier())
+                .setDefaultRequestConfig(RequestConfig.custom().setExpectContinueEnabled(true).build())
                 .build()) {
 
             HttpsAssertions.assertTlsHandshakeError(() -> {
@@ -140,6 +128,14 @@ public abstract class BaseAuthzHttpsSecurityIT {
     }
 
     protected abstract RestService getApp();
+
+    private CloseableHttpClient httpClient(SSLContext sslContext) {
+        return HttpClients.custom()
+                .setSSLContext(sslContext)
+                .setSSLHostnameVerifier(new DefaultHostnameVerifier())
+                .setDefaultRequestConfig(RequestConfig.custom().setExpectContinueEnabled(true).build())
+                .build();
+    }
 
     private String url(Protocol protocol) {
         return getApp().getHost(protocol) + ":" + getApp().getPort(protocol) + "/hello/full";

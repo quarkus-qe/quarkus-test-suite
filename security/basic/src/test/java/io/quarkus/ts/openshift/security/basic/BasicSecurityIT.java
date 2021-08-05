@@ -1,5 +1,6 @@
 package io.quarkus.ts.openshift.security.basic;
 
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.anything;
 import static org.hamcrest.CoreMatchers.equalTo;
 
@@ -14,9 +15,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.services.QuarkusApplication;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 
@@ -30,9 +29,6 @@ public class BasicSecurityIT {
     static final String UNKNOWN_PASSWORD = "unknown";
     static final Set<String> USER_ROLE = new HashSet<>(Arrays.asList(ADMIN_USERNAME, USER_USERNAME));
     static final Set<String> ADMIN_ROLE = Collections.singleton(ADMIN_USERNAME);
-
-    @QuarkusApplication
-    static RestService app = new RestService();
 
     @ParameterizedTest(name = "[{index}] user {0}, known: {2}")
     @MethodSource("usernamePasswordCombinations")
@@ -82,7 +78,7 @@ public class BasicSecurityIT {
     }
 
     private ValidatableResponse test(String url, String username, String password) {
-        RequestSpecification test = app.given();
+        RequestSpecification test = given();
         if (username != null && password != null) {
             test = test.auth().basic(username, password);
         }

@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
+import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.ts.security.https.utils.Certificates;
 import io.quarkus.ts.security.https.utils.HttpsAssertions;
 
@@ -63,6 +64,7 @@ public abstract class BaseEnabledHttpsSecurityIT {
     }
 
     @Test
+    @DisabledOnNative(reason = "Takes too much time to validate this test on Native")
     public void httpsClientCertificateUnknownToServer() throws IOException, GeneralSecurityException {
         SSLContext sslContext = SSLContexts.custom()
                 .setKeyStoreType(Certificates.PKCS12)
@@ -74,9 +76,8 @@ public abstract class BaseEnabledHttpsSecurityIT {
                 .setSSLHostnameVerifier(new DefaultHostnameVerifier())
                 .build()) {
 
-            HttpsAssertions.assertTlsHandshakeError(() -> {
-                Executor.newInstance(httpClient).execute(Request.Get(url(Protocol.HTTPS)));
-            });
+            HttpsAssertions
+                    .assertTlsHandshakeError(() -> Executor.newInstance(httpClient).execute(Request.Get(url(Protocol.HTTPS))));
         }
     }
 
