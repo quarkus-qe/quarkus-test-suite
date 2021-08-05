@@ -13,7 +13,7 @@ import io.quarkus.test.services.QuarkusApplication;
 public class BasicMySqlQuartzIT extends BaseMySqlQuartzIT {
 
     @QuarkusApplication
-    static RestService app = new RestService().withProperties("application.properties", "mysql.properties")
+    static RestService app = new RestService().withProperties(MYSQL_PROPERTIES)
             .withProperty("quarkus.datasource.jdbc.url", BaseMySqlQuartzIT::mysqlJdbcUrl);
 
     @Test

@@ -14,13 +14,13 @@ import io.quarkus.test.bootstrap.DefaultService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnNative;
-import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
+import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusSnapshot;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.GitRepositoryQuarkusApplication;
 import io.restassured.http.ContentType;
 
 @DisabledOnNative
-@DisabledOnQuarkusVersion(version = "9\\..*", reason = "999-SNAPSHOT is not available in the Maven repositories in OpenShift")
+@DisabledOnQuarkusSnapshot(reason = "999-SNAPSHOT is not available in the Maven repositories in OpenShift")
 @OpenShiftScenario
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class OpenShiftWorkshopHeroesIT {

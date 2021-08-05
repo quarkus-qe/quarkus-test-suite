@@ -23,17 +23,17 @@ public class AnnotationScheduledJobsMySqlQuartzIT extends BaseMySqlQuartzIT {
     static final String NODE_TWO_NAME = "node-two";
 
     @QuarkusApplication(classes = { AnnotationScheduledJob.class, ExecutionEntity.class, ExecutionService.class })
-    static RestService one = new RestService().withProperties("application.properties", "mysql.properties")
+    static RestService one = new RestService().withProperties(MYSQL_PROPERTIES)
             .withProperty("owner.name", NODE_ONE_NAME)
             .withProperty("quarkus.datasource.jdbc.url", BaseMySqlQuartzIT::mysqlJdbcUrl);
 
     @QuarkusApplication(classes = { AnnotationScheduledJob.class, ExecutionEntity.class, ExecutionService.class })
-    static RestService two = new RestService().withProperties("application.properties", "mysql.properties")
+    static RestService two = new RestService().withProperties(MYSQL_PROPERTIES)
             .withProperty("owner.name", NODE_TWO_NAME)
             .withProperty("quarkus.datasource.jdbc.url", BaseMySqlQuartzIT::mysqlJdbcUrl);
 
     @QuarkusApplication(classes = { ExecutionsResource.class, ExecutionEntity.class })
-    static RestService app = new RestService().withProperties("application.properties", "mysql.properties")
+    static RestService app = new RestService().withProperties(MYSQL_PROPERTIES)
             .withProperty("quarkus.datasource.jdbc.url", BaseMySqlQuartzIT::mysqlJdbcUrl);
 
     @Test

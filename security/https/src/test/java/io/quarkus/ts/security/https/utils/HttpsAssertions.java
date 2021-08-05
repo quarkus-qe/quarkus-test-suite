@@ -10,6 +10,7 @@ import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLHandshakeException;
 
 import org.junit.jupiter.api.function.Executable;
+import org.opentest4j.AssertionFailedError;
 
 public final class HttpsAssertions {
     private HttpsAssertions() {
@@ -25,7 +26,9 @@ public final class HttpsAssertions {
             try {
                 executable.execute();
             } catch (Throwable e) {
-                if (!(e instanceof SSLHandshakeException)
+                if (e instanceof AssertionError || e instanceof AssertionFailedError) {
+                    sneakyThrow(e);
+                } else if (!(e instanceof SSLHandshakeException)
                         && !(e instanceof SSLException && e.getCause() instanceof SocketException)) {
                     fail(e);
                 }
@@ -35,7 +38,9 @@ public final class HttpsAssertions {
             try {
                 executable.execute();
             } catch (Throwable e) {
-                if (!(e instanceof SSLHandshakeException)) {
+                if (e instanceof AssertionError || e instanceof AssertionFailedError) {
+                    sneakyThrow(e);
+                } else if (!(e instanceof SSLHandshakeException)) {
                     fail(e);
                 }
             }

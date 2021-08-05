@@ -17,15 +17,14 @@ import io.quarkus.test.bootstrap.ConsulService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.bootstrap.Service;
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
-@DisabledOnNative(reason = "TODO: Caused by https://github.com/quarkus-qe/quarkus-test-framework/issues/169")
 @DisabledOnOs(value = OS.WINDOWS, disabledReason = "Windows does not support Linux Containers / Testcontainers")
 public class ConsulConfigSourceIT {
 
+    private static final String CONSUL_KEY = "config/app";
     private static final String CUSTOM_PROPERTY = "welcome.message";
 
     @Container(image = "quay.io/bitnami/consul:1.9.3", expectedLog = "Synced node info", port = 8500)
@@ -34,7 +33,7 @@ public class ConsulConfigSourceIT {
     @QuarkusApplication
     static RestService app = new RestService()
             .withProperty("quarkus.consul-config.enabled", "true")
-            .withProperty("quarkus.consul-config.properties-value-keys", "config/app")
+            .withProperty("quarkus.consul-config.properties-value-keys", CONSUL_KEY)
             .withProperty("quarkus.consul-config.agent.host-port", () -> consul.getConsulEndpoint());
 
     @Test
@@ -66,7 +65,7 @@ public class ConsulConfigSourceIT {
             String propertiesContent = IOUtils.toString(ConsulConfigSourceIT.class.getClassLoader()
                     .getResourceAsStream("application.properties"), StandardCharsets.UTF_8);
             propertiesContent += "\n" + CUSTOM_PROPERTY + "=" + value;
-            consul.loadPropertiesFromString(propertiesContent);
+            consul.loadPropertiesFromString(CONSUL_KEY, propertiesContent);
         } catch (IOException e) {
             Assertions.fail("Failed to load application.properties");
         }

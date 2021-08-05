@@ -3,8 +3,12 @@ package io.quarkus.ts.http.minimum;
 import static org.hamcrest.CoreMatchers.is;
 
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 
 import io.quarkus.test.bootstrap.DevModeQuarkusService;
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -16,6 +20,7 @@ import io.quarkus.test.utils.AwaitilityUtils;
 @QuarkusScenario
 @DisabledOnNative
 @DisabledOnQuarkusVersion(version = "1\\..*", reason = "Continuous Testing was entered in 2.x")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class DevModeHttpMinimumIT {
 
     static final String HELLO_IN_ENGLISH = "Hello, %s!";
@@ -25,15 +30,14 @@ public class DevModeHttpMinimumIT {
     @DevModeQuarkusApplication
     static DevModeQuarkusService app = new DevModeQuarkusService();
 
-    @Disabled("TODO: Fix flaky test: https://github.com/quarkus-qe/quarkus-test-framework/issues/146")
     @Test
+    @Order(1)
+    @DisabledOnOs(value = OS.WINDOWS, disabledReason = "TODO: https://github.com/quarkus-qe/quarkus-test-framework/issues/162")
     public void shouldDetectNewTests() {
         // At first, there are no tests annotated with @QuarkusTest
         app.logs().assertContains("Tests paused");
         // Now, we enable continuous testing via DEV UI
         app.enableContinuousTesting();
-        // But there are no tests yet
-        app.logs().assertContains("No tests found");
         // We add a new test
         app.copyFile("src/test/resources/HelloResourceTest.java.template", "src/test/java/HelloResourceTest.java");
         // So good so far!
@@ -41,6 +45,7 @@ public class DevModeHttpMinimumIT {
     }
 
     @Test
+    @Order(2)
     public void shouldDetectChanges() {
         // Should say first Victor (the default name)
         app.given().get("/hello").then().statusCode(HttpStatus.SC_OK)
