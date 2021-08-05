@@ -8,16 +8,16 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.services.containers.model.KafkaVendor;
 
 @QuarkusScenario
-public class StrimziKafkaAvroIT extends BaseKafkaAvroIT {
+public class ConfluentKafkaAvroIT extends BaseKafkaAvroIT {
 
-    @KafkaContainer(vendor = KafkaVendor.STRIMZI, withRegistry = true)
-    static KafkaService kafka = new KafkaService();
+    @KafkaContainer(vendor = KafkaVendor.CONFLUENT, withRegistry = true)
+    static final KafkaService kafka = new KafkaService();
 
     @QuarkusApplication
-    static RestService app = new RestService()
-            .withProperties("strimzi-application.properties")
+    static final RestService app = new RestService()
+            .withProperties("confluent-application.properties")
             .withProperty("kafka.bootstrap.servers", kafka::getBootstrapUrl)
-            .withProperty("kafka.registry.url", kafka::getRegistryUrl);
+            .withProperty("confluent.registry.url", kafka::getRegistryUrl);
 
     @Override
     public RestService getApp() {
