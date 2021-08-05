@@ -4,6 +4,7 @@
 | 001-quarkus-getting-started-with-jaxrs | http/jaxrs |
 | 006-quartz-manually-scheduled-job | scheduling/quartz |
 | 003-quarkus-many-extensions | super-size/many-extensions |
+| 005-quarkus-and-maven-profiles | lifecycle-application |
 | 012-quarkus-kafka-streams | messaging/kafka-streams-reactive-messaging |
 | 013-quarkus-oidc-restclient | security/keycloak-oidc-client-extended |
 | 017-quartz-cluster | scheduling/quartz |

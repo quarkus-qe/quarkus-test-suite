@@ -10,6 +10,11 @@
     <artifactId>lifecycle-application</artifactId>
     <packaging>jar</packaging>
     <name>Quarkus QE TS: Lifecycle Application</name>
+    <properties>
+        <!-- Using invalid Quarkus version to make sure the one defined in profile gets picked -->
+        <!-- Quarkus maven plugin had troubles to use stuff defined in profile -->
+        <quarkus.platform.version>9999999-SNAPSHOT</quarkus.platform.version>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -19,5 +24,29 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-openshift</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-spring-di</artifactId>
+            <version>1.3.2.Final-redhat-00001</version>
+        </dependency>
     </dependencies>
+    <profiles>
+        <profile>
+            <id>my-profile</id>
+            <activation>
+                <property>
+                    <name>!no-profile</name>
+                </property>
+            </activation>
+            <properties>
+                <quarkus.platform.version>999-SNAPSHOT</quarkus.platform.version>
+            </properties>
+            <repositories>
+                <repository>
+                    <id>red-hat-enterprise-maven-repository</id>
+                    <url>https://maven.repository.redhat.com/ga/</url>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
 </project>
