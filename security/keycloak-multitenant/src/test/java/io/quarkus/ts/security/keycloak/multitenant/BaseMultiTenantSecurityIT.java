@@ -62,7 +62,7 @@ public abstract class BaseMultiTenantSecurityIT {
     @EnumSource(value = Tenant.class, names = { "WEBAPP", "JWT" })
     public void testAuthenticationForWebAppTenants(Tenant webAppTenant) throws Exception {
         HtmlPage loginPage = webClient.getPage(getEndpointByTenant(webAppTenant));
-        assertEquals("Log in to " + REALM_DEFAULT, loginPage.getTitleText(),
+        assertEquals("Sign in to " + REALM_DEFAULT, loginPage.getTitleText(),
                 "Login page title should display application realm");
 
         TextPage resourcePage = whenLogin(loginPage, USER);

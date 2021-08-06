@@ -12,9 +12,4 @@ public class H2SqlDatabaseIT extends AbstractSqlDatabaseIT {
 
     @QuarkusApplication
     static RestService app = new RestService().withProperties("h2.properties");
-
-    @Override
-    protected RestService getApp() {
-        return app;
-    }
 }

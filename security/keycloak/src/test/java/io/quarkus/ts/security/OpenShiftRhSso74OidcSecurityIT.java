@@ -25,9 +25,4 @@ public class OpenShiftRhSso74OidcSecurityIT extends BaseOidcSecurityIT {
     protected KeycloakService getKeycloak() {
         return keycloak;
     }
-
-    @Override
-    protected RestService getApp() {
-        return app;
-    }
 }

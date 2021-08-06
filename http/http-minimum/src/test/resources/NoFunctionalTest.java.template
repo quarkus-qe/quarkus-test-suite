@@ -1,0 +1,16 @@
+package io.quarkus.ts.http.minimum;
+
+import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.RestAssured;
+
+@QuarkusTest
+public class NoFunctionalTest {
+    @Test
+    public void alwaysPass() {
+        Assertions.assertTrue(true);
+    }
+}

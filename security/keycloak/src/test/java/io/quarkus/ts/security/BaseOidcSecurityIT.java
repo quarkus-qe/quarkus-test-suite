@@ -1,5 +1,6 @@
 package io.quarkus.ts.security;
 
+import static io.restassured.RestAssured.given;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.startsWith;
@@ -12,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.keycloak.authorization.client.AuthzClient;
 
 import io.quarkus.test.bootstrap.KeycloakService;
-import io.quarkus.test.bootstrap.RestService;
 
 public abstract class BaseOidcSecurityIT {
 
@@ -31,7 +31,7 @@ public abstract class BaseOidcSecurityIT {
 
     @Test
     public void normalUserUserResource() {
-        getApp().given()
+        given()
                 .when()
                 .auth().oauth2(getToken(NORMAL_USER, NORMAL_USER))
                 .get("/user")
@@ -42,7 +42,7 @@ public abstract class BaseOidcSecurityIT {
 
     @Test
     public void normalUserUserResourceIssuer() {
-        getApp().given()
+        given()
                 .when()
                 .auth().oauth2(getToken(NORMAL_USER, NORMAL_USER))
                 .get("/user/issuer")
@@ -53,7 +53,7 @@ public abstract class BaseOidcSecurityIT {
 
     @Test
     public void normalUserAdminResource() {
-        getApp().given()
+        given()
                 .when()
                 .auth().oauth2(getToken(NORMAL_USER, NORMAL_USER))
                 .get("/admin")
@@ -63,7 +63,7 @@ public abstract class BaseOidcSecurityIT {
 
     @Test
     public void adminUserUserResource() {
-        getApp().given()
+        given()
                 .when()
                 .auth().oauth2(getToken(ADMIN_USER, ADMIN_USER))
                 .get("/user")
@@ -74,7 +74,7 @@ public abstract class BaseOidcSecurityIT {
 
     @Test
     public void adminUserAdminResource() {
-        getApp().given()
+        given()
                 .when()
                 .auth().oauth2(getToken(ADMIN_USER, ADMIN_USER))
                 .get("/admin")
@@ -85,7 +85,7 @@ public abstract class BaseOidcSecurityIT {
 
     @Test
     public void adminUserAdminResourceIssuer() {
-        getApp().given()
+        given()
                 .when()
                 .auth().oauth2(getToken(ADMIN_USER, ADMIN_USER))
                 .get("/admin/issuer")
@@ -96,7 +96,7 @@ public abstract class BaseOidcSecurityIT {
 
     @Test
     public void noUserUserResource() {
-        getApp().given()
+        given()
                 .when()
                 .get("/user")
                 .then()
@@ -105,7 +105,7 @@ public abstract class BaseOidcSecurityIT {
 
     @Test
     public void noUserAdminResource() {
-        getApp().given()
+        given()
                 .when()
                 .get("/admin")
                 .then()
@@ -119,7 +119,7 @@ public abstract class BaseOidcSecurityIT {
         // and the property `accessTokenLifespan` in the keycloak configuration,
         // we need to wait more than 5 seconds for the token expiration.
         await().atMost(1, TimeUnit.MINUTES).pollInterval(1, TimeUnit.SECONDS).untilAsserted(() -> {
-            getApp().given()
+            given()
                     .when()
                     .auth().oauth2(token)
                     .get("/user")
@@ -129,8 +129,6 @@ public abstract class BaseOidcSecurityIT {
     }
 
     protected abstract KeycloakService getKeycloak();
-
-    protected abstract RestService getApp();
 
     private String getToken(String userName, String password) {
         return authzClient.obtainAccessToken(userName, password).getToken();

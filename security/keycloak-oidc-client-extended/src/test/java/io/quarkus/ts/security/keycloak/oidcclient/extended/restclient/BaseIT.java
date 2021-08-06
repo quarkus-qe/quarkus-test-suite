@@ -16,7 +16,7 @@ public abstract class BaseIT {
     static final String CLIENT_ID_DEFAULT = "test-application-client";
     static final String CLIENT_SECRET_DEFAULT = "test-application-client-secret";
 
-    @Container(image = "quay.io/keycloak/keycloak:11.0.3", expectedLog = "Http management interface listening", port = KEYCLOAK_PORT)
+    @Container(image = "quay.io/keycloak/keycloak:14.0.0", expectedLog = "Http management interface listening", port = KEYCLOAK_PORT)
     static KeycloakService keycloak = new KeycloakService("/keycloak-realm.json", REALM_DEFAULT);
 
     @QuarkusApplication

@@ -153,7 +153,7 @@ public abstract class BaseWebappSecurityIT {
 
     private void thenRedirectToLoginPage() {
         assertTrue(page instanceof HtmlPage, "Should be in the Login page");
-        assertEquals("Log in to " + REALM_DEFAULT, ((HtmlPage) page).getTitleText(),
+        assertEquals("Sign in to " + REALM_DEFAULT, ((HtmlPage) page).getTitleText(),
                 "Login page title should display application realm");
     }
 
