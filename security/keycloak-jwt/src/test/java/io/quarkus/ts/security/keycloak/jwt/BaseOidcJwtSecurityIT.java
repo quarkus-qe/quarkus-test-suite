@@ -89,7 +89,7 @@ public abstract class BaseOidcJwtSecurityIT {
     }
 
     private void thenRedirectToLoginPage() {
-        assertEquals("Log in to " + REALM_DEFAULT, page.getTitleText(),
+        assertEquals("Sign in to " + REALM_DEFAULT, page.getTitleText(),
                 "Login page title should display application realm");
     }
 

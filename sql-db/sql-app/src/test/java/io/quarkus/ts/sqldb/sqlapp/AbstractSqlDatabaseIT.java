@@ -1,5 +1,6 @@
 package io.quarkus.ts.sqldb.sqlapp;
 
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
@@ -10,41 +11,30 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
-import io.quarkus.test.bootstrap.RestService;
 import io.restassured.http.ContentType;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public abstract class AbstractSqlDatabaseIT {
 
-    private static final int ONE = 1;
-    private static final int TWO = 2;
-    private static final int THREE = 3;
-    private static final int FOUR = 4;
-    private static final int FIVE = 5;
-    private static final int SIX = 6;
-    private static final int SEVEN = 7;
-    private static final int EIGHT = 8;
-    private static final int NINE = 9;
-    private static final int TEN = 10;
-    private static final int ELEVEN = 11;
+    private static final int EXPECTED_SIZE = 7;
 
     private static final int VALID_ID = 8;
     private static final int INVALID_ID = 999;
 
     @Test
-    @Order(ONE)
+    @Order(1)
     public void getAll() {
-        getApp().given()
+        given()
                 .get("/book")
                 .then()
                 .statusCode(HttpStatus.SC_OK)
-                .body("", hasSize(SEVEN));
+                .body("", hasSize(EXPECTED_SIZE));
     }
 
     @Test
-    @Order(TWO)
+    @Order(2)
     public void get() {
-        getApp().given()
+        given()
                 .get("/book/7")
                 .then()
                 .statusCode(HttpStatus.SC_OK)
@@ -53,13 +43,13 @@ public abstract class AbstractSqlDatabaseIT {
     }
 
     @Test
-    @Order(THREE)
+    @Order(3)
     public void create() {
         Book book = new Book();
         book.title = "Neuromancer";
         book.author = "William Gibson";
 
-        getApp().given()
+        given()
                 .contentType(ContentType.JSON)
                 .body(book)
                 .post("/book")
@@ -69,7 +59,7 @@ public abstract class AbstractSqlDatabaseIT {
                 .body("title", equalTo("Neuromancer"))
                 .body("author", equalTo("William Gibson"));
 
-        getApp().given()
+        given()
                 .get("/book/8")
                 .then()
                 .statusCode(HttpStatus.SC_OK)
@@ -78,9 +68,9 @@ public abstract class AbstractSqlDatabaseIT {
     }
 
     @Test
-    @Order(FOUR)
+    @Order(4)
     public void createInvalidPayload() {
-        getApp().given()
+        given()
                 .contentType(ContentType.TEXT)
                 .body("")
                 .post("/book")
@@ -90,14 +80,14 @@ public abstract class AbstractSqlDatabaseIT {
     }
 
     @Test
-    @Order(FIVE)
+    @Order(5)
     public void createBadPayload() {
         Book book = new Book();
         book.id = Long.valueOf(INVALID_ID);
         book.title = "foo";
         book.author = "bar";
 
-        getApp().given()
+        given()
                 .contentType(ContentType.JSON)
                 .body(book)
                 .post("/book")
@@ -108,14 +98,14 @@ public abstract class AbstractSqlDatabaseIT {
     }
 
     @Test
-    @Order(SIX)
+    @Order(6)
     public void update() {
         Book book = new Book();
         book.id = Long.valueOf(VALID_ID);
         book.title = "Schismatrix";
         book.author = "Bruce Sterling";
 
-        getApp().given()
+        given()
                 .contentType(ContentType.JSON)
                 .body(book)
                 .put("/book/8")
@@ -125,7 +115,7 @@ public abstract class AbstractSqlDatabaseIT {
                 .body("title", equalTo("Schismatrix"))
                 .body("author", equalTo("Bruce Sterling"));
 
-        getApp().given()
+        given()
                 .get("/book/" + VALID_ID)
                 .then()
                 .statusCode(HttpStatus.SC_OK)
@@ -134,14 +124,14 @@ public abstract class AbstractSqlDatabaseIT {
     }
 
     @Test
-    @Order(SEVEN)
+    @Order(7)
     public void updateWithUnknownId() {
         Book book = new Book();
         book.id = Long.valueOf(INVALID_ID);
         book.title = "foo";
         book.author = "bar";
 
-        getApp().given()
+        given()
                 .contentType(ContentType.JSON)
                 .body(book)
                 .put("/book/999")
@@ -152,9 +142,9 @@ public abstract class AbstractSqlDatabaseIT {
     }
 
     @Test
-    @Order(EIGHT)
+    @Order(8)
     public void updateInvalidPayload() {
-        getApp().given()
+        given()
                 .contentType(ContentType.TEXT)
                 .body("")
                 .put("/book/8")
@@ -164,11 +154,11 @@ public abstract class AbstractSqlDatabaseIT {
     }
 
     @Test
-    @Order(NINE)
+    @Order(9)
     public void updateBadPayload() {
         Book book = new Book();
 
-        getApp().given()
+        given()
                 .contentType(ContentType.JSON)
                 .body(book)
                 .put("/book/8")
@@ -179,14 +169,14 @@ public abstract class AbstractSqlDatabaseIT {
     }
 
     @Test
-    @Order(TEN)
+    @Order(10)
     public void delete() {
-        getApp().given()
+        given()
                 .delete("/book/8")
                 .then()
                 .statusCode(HttpStatus.SC_NO_CONTENT);
 
-        getApp().given()
+        given()
                 .get("/book/8")
                 .then()
                 .statusCode(HttpStatus.SC_NOT_FOUND)
@@ -195,15 +185,13 @@ public abstract class AbstractSqlDatabaseIT {
     }
 
     @Test
-    @Order(ELEVEN)
+    @Order(11)
     public void deleteWithUnknownId() {
-        getApp().given()
+        given()
                 .delete("/book/999")
                 .then()
                 .statusCode(HttpStatus.SC_NOT_FOUND)
                 .body("code", equalTo(HttpStatus.SC_NOT_FOUND))
                 .body("error", equalTo("book '999' not found"));
     }
-
-    protected abstract RestService getApp();
 }

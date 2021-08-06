@@ -29,9 +29,4 @@ public class MariaDB103DatabaseIT extends AbstractSqlDatabaseIT {
             .withProperty("quarkus.datasource.password", MYSQL_PASSWORD)
             .withProperty("quarkus.datasource.jdbc.url",
                     () -> database.getHost().replace("http", "jdbc:mariadb") + ":" + database.getPort() + "/" + MYSQL_DATABASE);
-
-    @Override
-    protected RestService getApp() {
-        return app;
-    }
 }

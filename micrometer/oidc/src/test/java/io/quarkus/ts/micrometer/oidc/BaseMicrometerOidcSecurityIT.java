@@ -29,7 +29,7 @@ public abstract class BaseMicrometerOidcSecurityIT {
 
     static final int KEYCLOAK_PORT = 8080;
 
-    @Container(image = "quay.io/keycloak/keycloak:11.0.3", expectedLog = "Http management interface listening", port = KEYCLOAK_PORT)
+    @Container(image = "quay.io/keycloak/keycloak:14.0.0", expectedLog = "Http management interface listening", port = KEYCLOAK_PORT)
     static KeycloakService keycloak = new KeycloakService("/keycloak-realm.json", REALM_DEFAULT);
 
     private AuthzClient authzClient;

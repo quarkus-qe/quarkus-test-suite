@@ -27,9 +27,4 @@ public class Postgresql10DatabaseIT extends AbstractSqlDatabaseIT {
             .withProperty("quarkus.datasource.jdbc.url",
                     () -> database.getHost().replace("http", "jdbc:postgresql") + ":" + database.getPort() + "/"
                             + POSTGRESQL_DATABASE);
-
-    @Override
-    protected RestService getApp() {
-        return app;
-    }
 }

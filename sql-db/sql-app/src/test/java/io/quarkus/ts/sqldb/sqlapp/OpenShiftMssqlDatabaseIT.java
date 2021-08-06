@@ -16,9 +16,4 @@ public class OpenShiftMssqlDatabaseIT extends AbstractSqlDatabaseIT {
 
     @QuarkusApplication
     static RestService app = new RestService().withProperties("mssql.properties");
-
-    @Override
-    protected RestService getApp() {
-        return app;
-    }
 }

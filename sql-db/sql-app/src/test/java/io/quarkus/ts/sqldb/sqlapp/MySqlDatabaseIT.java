@@ -26,9 +26,4 @@ public class MySqlDatabaseIT extends AbstractSqlDatabaseIT {
             .withProperty("quarkus.datasource.password", MYSQL_PASSWORD)
             .withProperty("quarkus.datasource.jdbc.url",
                     () -> database.getHost().replace("http", "jdbc:mysql") + ":" + database.getPort() + "/" + MYSQL_DATABASE);
-
-    @Override
-    protected RestService getApp() {
-        return app;
-    }
 }

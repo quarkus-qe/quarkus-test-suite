@@ -16,7 +16,8 @@ public class OperatorOpenShiftAmqStreamsKafkaStreamIT extends BaseKafkaStreamIT 
 
     @QuarkusApplication
     static RestService app = new RestService()
-            .withProperty("kafka.bootstrap.servers", kafka::getBootstrapUrl);
+            .withProperty("kafka.bootstrap.servers", kafka::getBootstrapUrl)
+            .withProperty("quarkus.kafka-streams.bootstrap-servers", kafka::getBootstrapUrl);
 
     @Override
     public RestService getApp() {

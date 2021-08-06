@@ -1,4 +1,4 @@
-package io.quarkus.ts.sqldb.sqlapp;
+package io.quarkus.ts.openshift.messaging.kafka;
 
 import org.junit.jupiter.api.Tag;
 
@@ -10,8 +10,16 @@ import io.quarkus.test.services.DevModeQuarkusApplication;
 @Tag("QUARKUS-1026")
 @QuarkusScenario
 @DisabledOnNativeImage
-public class DevModePostgresqlIT extends AbstractSqlDatabaseIT {
+public class DevModeKafkaStreamIT extends BaseKafkaStreamIT {
 
+    /**
+     * Kafka must be started using DEV services when running in DEV mode
+     */
     @DevModeQuarkusApplication
-    static RestService app = new RestService().withProperties("postgresql.properties");
+    static RestService app = new RestService();
+
+    @Override
+    public RestService getApp() {
+        return app;
+    }
 }
