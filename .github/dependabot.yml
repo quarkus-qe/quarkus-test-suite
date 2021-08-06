@@ -8,3 +8,5 @@ updates:
     ignore:
       # For Quarkus Maven Plugin, updates are managed by Quarkus Bom dependency
       - dependency-name: io.quarkus:quarkus-maven-plugin
+      # This dependency is used in `lifecycle-application` to verify Maven errors, we need to ignore it
+      - dependency-name: io.quarkus:quarkus-spring-di
