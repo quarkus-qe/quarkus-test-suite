@@ -27,6 +27,7 @@
                 </property>
             </activation>
             <properties>
+                <!-- To not build the module on Native -->
                 <quarkus.package.type>fast-jar</quarkus.package.type>
             </properties>
         </profile>

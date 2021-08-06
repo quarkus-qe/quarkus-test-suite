@@ -231,7 +231,8 @@ jobs:
       - name: Build in Native mode
         shell: bash
         run: |
-          mvn -fae -s .github/mvn-settings.xml clean verify -Dnative -Dquarkus.native.container-build=false
+          # Running only http/http-minimum as after some time, it gives disk full in Windows when running on Native.
+          mvn -fae -s .github/mvn-settings.xml clean verify -Dnative -Dquarkus.native.container-build=false -pl http/http-minimum
       - name: Zip Artifacts
         shell: bash
         if: failure()
