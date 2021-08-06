@@ -12,7 +12,7 @@ import javax.inject.Inject;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 
 import io.quarkus.test.bootstrap.QuarkusCliClient;
 import io.quarkus.test.bootstrap.QuarkusCliRestService;
@@ -23,7 +23,8 @@ import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 @Tag("quarkus-cli")
 @QuarkusScenario
 @DisabledOnQuarkusVersion(version = "1\\..*", reason = "Quarkus CLI has been reworked in 2.x")
-public class QuarkusCliCreateApplicationIT {
+@DisabledIfSystemProperty(named = "profile.id", matches = "native", disabledReason = "Only for JVM verification")
+public class QuarkusCliCreateJvmApplicationIT {
 
     static final String RESTEASY_EXTENSION = "quarkus-resteasy";
     static final String SMALLRYE_HEALTH_EXTENSION = "quarkus-smallrye-health";
@@ -109,19 +110,6 @@ public class QuarkusCliCreateApplicationIT {
         // The health endpoint should be now gone
         app.start();
         untilAsserted(() -> app.given().get("/q/health").then().statusCode(HttpStatus.SC_NOT_FOUND));
-    }
-
-    @Tag("QUARKUS-1071")
-    @Tag("QUARKUS-1072")
-    @Test
-    @EnabledIfSystemProperty(named = "profile.id", matches = "native")
-    public void shouldBuildApplicationOnNative() {
-        // Create application
-        QuarkusCliRestService app = cliClient.createApplication("app");
-
-        // Should build on Native
-        QuarkusCliClient.Result result = app.buildOnNative();
-        assertTrue(result.isSuccessful(), "The application didn't build on Native. Output: " + result.getOutput());
     }
 
     private void assertInstalledExtensions(QuarkusCliRestService app, String... expectedExtensions) {

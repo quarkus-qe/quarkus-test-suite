@@ -14,9 +14,11 @@ import io.quarkus.qe.scheduling.quartz.failover.ExecutionService;
 import io.quarkus.qe.scheduling.quartz.failover.ExecutionsResource;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
+@DisabledOnNative(reason = "Due to high native build execution time for the three Quarkus services")
 public class AnnotationScheduledJobsMySqlQuartzIT extends BaseMySqlQuartzIT {
 
     static final String NODE_ONE_NAME = "node-one";

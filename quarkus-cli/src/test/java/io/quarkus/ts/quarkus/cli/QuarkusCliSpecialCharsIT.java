@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import io.quarkus.test.bootstrap.QuarkusCliClient;
@@ -19,6 +20,7 @@ import io.quarkus.test.utils.FileUtils;
 @Tag("quarkus-cli")
 @QuarkusScenario
 @DisabledOnQuarkusVersion(version = "1\\..*", reason = "Quarkus CLI has been reworked in 2.x")
+@DisabledIfSystemProperty(named = "profile.id", matches = "native", disabledReason = "Only for JVM verification")
 public class QuarkusCliSpecialCharsIT {
 
     static final String FOLDER_WITH_SPACES = "s p a c e s";
