@@ -5,8 +5,10 @@
 | 006-quartz-manually-scheduled-job | scheduling/quartz |
 | 003-quarkus-many-extensions | super-size/many-extensions |
 | 005-quarkus-and-maven-profiles | lifecycle-application |
+| 011-quarkus-panache-rest-flyway | sql-db/panache-flyway |
 | 012-quarkus-kafka-streams | messaging/kafka-streams-reactive-messaging |
 | 013-quarkus-oidc-restclient | security/keycloak-oidc-client-extended |
+| 014-quarkus-panache-with-transactions-xa | sql-db/panache-flyway |
 | 017-quartz-cluster | scheduling/quartz |
 | 018-quarkus-runtime-properties | properties |
 | 019-quarkus-consul | properties |
