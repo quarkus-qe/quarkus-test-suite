@@ -1,5 +1,6 @@
 package io.quarkus.ts.quarkus.cli;
 
+import static io.quarkus.test.bootstrap.QuarkusCliClient.CreateApplicationRequest.defaults;
 import static io.quarkus.test.utils.AwaitilityUtils.untilAsserted;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -58,7 +59,8 @@ public class QuarkusCliCreateJvmApplicationIT {
         // 2. Prettytime dependencies
         // It will result into several boms added: quarkus-bom and kogito-bom.
         // Also, it verifies that quarkiverse dependencies can be added too.
-        QuarkusCliRestService app = cliClient.createApplication("app", "kogito-quarkus-rules", "prettytime");
+        QuarkusCliRestService app = cliClient.createApplication("app",
+                defaults().withExtensions("kogito-quarkus-rules", "prettytime"));
 
         // Should build on Jvm
         QuarkusCliClient.Result result = app.buildOnJvm();
@@ -72,7 +74,8 @@ public class QuarkusCliCreateJvmApplicationIT {
     @Test
     public void shouldCreateApplicationWithCodeStarter() {
         // Create application with Resteasy Jackson
-        QuarkusCliRestService app = cliClient.createApplication("app", RESTEASY_SPRING_WEB_EXTENSION);
+        QuarkusCliRestService app = cliClient.createApplication("app",
+                defaults().withExtensions(RESTEASY_SPRING_WEB_EXTENSION));
 
         // Verify By default, it installs only "quarkus-resteasy"
         assertInstalledExtensions(app, RESTEASY_SPRING_WEB_EXTENSION);
