@@ -87,8 +87,7 @@
         <module>super-size/many-extensions</module>
         <module>quarkus-cli</module>
         <module>kamelet</module>
-        <module>spring/spring-data-primitive-types</module>
-        <module>spring/spring-data-rest</module>
+        <module>spring/spring-data</module>
     </modules>
     <dependencyManagement>
         <dependencies>

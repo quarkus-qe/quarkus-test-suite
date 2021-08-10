@@ -534,16 +534,15 @@ in order to instantiate these templates by your self (as an example).
 * `KameletRoutes` contains templates that could be invoked (tested) directly by code. So is not 
 need it to be deployed into ocp or some other platform.
 
-### `spring/spring-data-primitive-types`
+### `spring/spring-data`
 - Spring Data JPA: CRUD repository operation (default and custom), mapped superclass, query over embedded camelCase field, HTTP response filter.
 - Spring DI: presence of Spring-defined beans in CDI context, injected transitive dependencies, multiple ways of retrieving the beans.
+- Spring Data REST verifies functionality of Spring Data REST extension in following areas:
+  - Automatic export of CRUD operations, manually restrict export of repo operations.
+  - Usage together with Hibernate Validator constraints.
+  - Pagination and sorting.
+  - 1:m entity relationship.
 
-### `spring/spring-data-rest`
-Verifies functionality of Spring Data REST extension in following areas:
-- Automatic export of CRUD operations, manually restrict export of repo operations.
-- Usage together with Hibernate Validator constraints.
-- Pagination and sorting.
-- 1:m entity relationship.
 
 ### `infinispan-client`
 
