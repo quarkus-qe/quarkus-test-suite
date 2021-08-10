@@ -1,5 +1,5 @@
 {
-  "namespace": "io.quarkus.ts.openshift.messaging.kafka",
+  "namespace": "io.quarkus.ts.messaging.kafka",
   "type": "record",
   "name": "StockPrice",
   "fields": [
