@@ -88,6 +88,7 @@
         <module>quarkus-cli</module>
         <module>kamelet</module>
         <module>spring/spring-data</module>
+        <module>logging/jboss</module>
     </modules>
     <dependencyManagement>
         <dependencies>

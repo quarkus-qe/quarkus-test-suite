@@ -196,6 +196,14 @@ Module that covers the runtime configuration to ensure the changes take effect. 
 - Properties from YAML and external files
 - Properties from Consul
 
+### `logging/jboss`
+
+Module that covers the logging functionality using JBoss Logging Manager. The following scenarios are covered:
+- Usage of `quarkus-logging-json` extension
+- Inject the `Logger` instance in beans
+- Inject a `Logger` instance using a custom category
+- Setting up the log level property for logger instances 
+
 ### `sql-db/sql-app`
 
 Verifies that the application can connect to a SQL database and persist data using Hibernate ORM with Panache.
