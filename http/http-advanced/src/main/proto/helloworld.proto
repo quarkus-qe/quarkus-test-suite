@@ -6,6 +6,13 @@ option java_outer_classname = "HelloWorldProto";
 
 package helloworld;
 
+// The streaming service definition
+service Streaming {
+    rpc ServerStream (HelloRequest) returns (stream HelloReply) {}
+    rpc ClientStream (stream HelloRequest) returns (HelloReply) {}
+    rpc BidirectionalStream (stream HelloRequest) returns (stream HelloReply) {}
+}
+
 // The greeting service definition.
 service Greeter {
     // Sends a greeting
