@@ -463,6 +463,16 @@ There is an EventsProducer that generate login status events every 100ms.
 A Kafka stream called `WindowedLoginDeniedStream`  will aggregate these events in fixed time windows of 3 seconds. 
 So if the number of wrong access excess a threshold, then a new alert event is thrown. All aggregated events(not only unauthorized) are persisted. 
 
+- Quarkus Grateful Shutdown for Kafka connectors
+
+This scenario covers the fix for [QUARKUS-858](https://issues.redhat.com/browse/QUARKUS-858): Avoid message loss during the graceful shutdown (SIGTERM) of the Kafka connector.
+The test will confirm that no messages are lost when the `grateful-shutdown` is enabled. In the other hand, when this property is disabled, messages might be lost.
+
+- Reactive Kafka and Kafka Streams SSL
+
+All current tests are running under a secured Kafka by SSL. 
+Kafka streams pipeline is configured by `quarkus.kafka-streams.ssl` prefix property, but reactive Kafka producer/consumer is configured by `kafka` prefix as you can see on `SslStrimziKafkaTestResource` 
+
 ### `messaging/kafka-avro-reactive-messaging`
 
 Verifies that `Quarkus Kafka` + `Apicurio Kakfa Registry`(AVRO) and `Quarkus SmallRye Reactive Messaging` extensions work as expected. 

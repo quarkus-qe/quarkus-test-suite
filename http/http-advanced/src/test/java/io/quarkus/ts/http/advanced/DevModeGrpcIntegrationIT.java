@@ -11,13 +11,13 @@ import io.quarkus.example.GreeterGrpc;
 import io.quarkus.example.HelloReply;
 import io.quarkus.example.HelloRequest;
 import io.quarkus.test.bootstrap.GrpcService;
-import io.quarkus.test.junit.DisabledOnNativeImage;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.DevModeQuarkusApplication;
 
 @Tag("QUARKUS-1026")
 @QuarkusScenario
-@DisabledOnNativeImage
+@DisabledOnNative
 public class DevModeGrpcIntegrationIT {
 
     static final String NAME = "QE";
