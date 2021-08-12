@@ -135,7 +135,6 @@ It also verifies multiple deployment strategies like:
 ### `http-advanced`
 Verifies Server/Client http_2/1.1, Grpc and http redirections.
 
-
 ### `http-static`
 Verifies access to static pages and big static files over http.
 
@@ -146,6 +145,13 @@ This module covers basic scenarios about HTTP servlets under `quarkus-undertow` 
 
 ### `jaxrs`
 Simple bootstrap project created by *quarkus-maven-plugin*  
+
+### `http/rest-client`
+Verifies Rest Client configuration using `quarkus-rest-client-jaxb` (XML support) and `quarkus-rest-client-jsonb` (JSON support).
+This module will setup a very minimal configuration (only `quarkus-resteasy`) and have four endpoints:
+- Two endpoints to get a book in JSON and XML formats.
+- Two endpoints to get the value of the previous endpoints using the rest client interface. 
+
 #### Additions
 * *@Deprecated* annotation has been added for test regression purposes to ensure `java.lang` annotations are allowed for resources
 * Resource with multipart body support, provided parts are text, image and binary data, charset checked with `us-ascii` and `utf-8`
