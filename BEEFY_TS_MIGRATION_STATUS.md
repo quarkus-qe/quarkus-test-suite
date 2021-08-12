@@ -20,6 +20,7 @@
 | 201-large-static-content | http/http-static |
 | 300-quarkus-vertx-webclient | http/vertx-web-client |
 | 302-quarkus-vertx-jwt | security/vertx-jwt|
+| 303-quarkus-vertx-sql | sql-db/vertx-sql |
 | 304-quarkus-vertx-routes | http/reactive-routes |
 | 601-spring-data-primitive-types | spring/spring-data |
 | 602-spring-data-rest | spring/spring-data |
