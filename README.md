@@ -229,6 +229,9 @@ Container images used in the tests are:
   - version 10.3: `registry.redhat.io/rhscl/mariadb-103-rhel7` (only if `ts.redhat.registry.enabled` is set)
 - MSSQL: `mcr.microsoft.com/mssql/rhel/server`
 
+### sql-db/vertx-sql
+Quarkus / Vertx SQL exploratory testing. A flight search engine in order to test Quarkus Reactive SQL extensions. A detailed description can be found in sql-db/vertx-sql/README.md
+
 ### `sql-db/multiple-pus`
 
 Verifies that the application can connect to multiple SQL databases and persist data using Hibernate ORM with Panache.
