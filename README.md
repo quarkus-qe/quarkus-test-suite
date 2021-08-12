@@ -572,6 +572,14 @@ Covers two areas related to Spring Web:
   - Custom error handlers.
   - Cooperation with Qute templating engine.
 
+### `spring/spring-properties`
+Exploratory testing for the `quarkus-spring-boot-properties` Quarkus extension. The application consists of a REST endpoint
+with some different approaches to inject properties.
+
+Current limitations:
+- Relaxing name convention is not supported and it won't be supported: https://github.com/quarkusio/quarkus/issues/12483
+- The annotation `@ConstructorBinding` is not supported yet: https://github.com/quarkusio/quarkus/issues/19364
+
 ### `infinispan-client`
 
 Verifies the way of the sharing cache by Datagrid operator and Infinispan cluster and data consistency after failures.
