@@ -129,7 +129,10 @@ jobs:
           chmod +x ./quarkus-dev-cli
       - name: Test in Native mode
         run: |
-          mvn -fae -V -B -s .github/mvn-settings.xml -fae clean verify -Dnative \
+          # Skip module due to high time execution on Native
+          MODULES="-pl '!sql-db/sql-app'"
+
+          mvn -fae -V -B -s .github/mvn-settings.xml $MODULES -fae clean verify -Dnative \
             -Dquarkus.native.builder-image=quay.io/quarkus/${{ matrix.image }} \
             -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli"
       - name: Zip Artifacts
