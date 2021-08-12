@@ -92,6 +92,7 @@
         <module>kamelet</module>
         <module>spring/spring-data</module>
         <module>spring/spring-web</module>
+        <module>spring/spring-properties</module>
         <module>logging/jboss</module>
         <module>cache/caffeine</module>
         <module>cache/spring</module>
