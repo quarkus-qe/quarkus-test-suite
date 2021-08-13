@@ -17,7 +17,7 @@ public class MariaDB103DatabaseIT extends AbstractSqlDatabaseIT {
     static final String MYSQL_DATABASE = "mydb";
     static final int MYSQL_PORT = 3306;
 
-    @Container(image = "registry.redhat.io/rhscl/mariadb-103-rhel7", port = MYSQL_PORT, expectedLog = "Only MySQL server logs after this point")
+    @Container(image = "${mariadb.103.image}", port = MYSQL_PORT, expectedLog = "Only MySQL server logs after this point")
     static DefaultService database = new DefaultService()
             .withProperty("MYSQL_USER", MYSQL_USER)
             .withProperty("MYSQL_PASSWORD", MYSQL_PASSWORD)

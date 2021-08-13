@@ -34,13 +34,14 @@ public class MultiplePersistenceIT {
     static final int EXPECTED_VEGETABLES_SIZE = 7;
     static final long INVALID_ID = 999L;
 
-    @Container(image = "registry.access.redhat.com/rhscl/mariadb-102-rhel7", port = MARIADB_PORT, expectedLog = "Only MySQL server logs after this point")
+    @Container(image = "${mariadb.102.image}", port = MARIADB_PORT, expectedLog = "Only MySQL server logs after this point")
     static DefaultService mariadb = new DefaultService()
             .withProperty("MYSQL_USER", MARIADB_USER)
             .withProperty("MYSQL_PASSWORD", MARIADB_PASSWORD)
-            .withProperty("MYSQL_DATABASE", MARIADB_DATABASE);
+            .withProperty("MYSQL_DATABASE", MARIADB_DATABASE)
+            .withProperty("MARIADB_ROOT_PASSWORD", MARIADB_PASSWORD);
 
-    @Container(image = "registry.access.redhat.com/rhscl/postgresql-10-rhel7", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
+    @Container(image = "${postgresql.10.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
     static DefaultService postgresql = new DefaultService()
             .withProperty("POSTGRESQL_USER", POSTGRESQL_USER)
             .withProperty("POSTGRESQL_PASSWORD", POSTGRESQL_PASSWORD)

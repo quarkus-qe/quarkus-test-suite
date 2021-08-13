@@ -11,7 +11,7 @@ public class AbstractDbIT {
     static final String POSTGRESQL_DATABASE = "mydb";
     static final int POSTGRESQL_PORT = 5432;
 
-    @Container(image = "registry.access.redhat.com/rhscl/postgresql-10-rhel7", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
+    @Container(image = "${postgresql.10.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
     static final DefaultService database = new DefaultService()
             .withProperty("POSTGRESQL_USER", POSTGRESQL_USER)
             .withProperty("POSTGRESQL_PASSWORD", POSTGRESQL_PASSWORD)

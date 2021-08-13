@@ -18,6 +18,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import io.quarkus.test.bootstrap.DefaultService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 import io.restassured.response.Response;
@@ -29,6 +30,8 @@ import io.vertx.mutiny.ext.web.client.HttpResponse;
 import io.vertx.mutiny.ext.web.client.WebClient;
 import io.vertx.mutiny.ext.web.client.predicate.ResponsePredicate;
 
+@DisabledOnNative(reason = "This test is randomly failing in Native. "
+        + "Reported by https://github.com/quarkus-qe/quarkus-test-suite/issues/175")
 @QuarkusScenario
 @TestMethodOrder(OrderAnnotation.class)
 public class PostgresPoolIT {
@@ -43,11 +46,11 @@ public class PostgresPoolIT {
      */
     private static final int DATASOURCE_MAX_SIZE = 5;
 
-    @Container(image = "quay.io/rhoar_qe/postgres", port = 5432, expectedLog = "database system is ready to accept connections")
+    @Container(image = "${postgresql.10.image}", port = 5432, expectedLog = "listening on IPv4 address")
     static DefaultService postgres = new DefaultService()
-            .withProperty("POSTGRES_USER", "test")
-            .withProperty("POSTGRES_PASSWORD", "test")
-            .withProperty("POSTGRES_DB", POSTGRESQL_DATABASE);
+            .withProperty("POSTGRESQL_USER", "test")
+            .withProperty("POSTGRESQL_PASSWORD", "test")
+            .withProperty("POSTGRESQL_DATABASE", POSTGRESQL_DATABASE);
 
     @QuarkusApplication
     static final RestService app = new RestService()

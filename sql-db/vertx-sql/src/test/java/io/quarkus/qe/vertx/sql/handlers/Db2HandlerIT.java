@@ -10,7 +10,7 @@ import io.quarkus.test.services.QuarkusApplication;
 public class Db2HandlerIT extends CommonTestCases {
     private static final String DATABASE = "amadeus";
 
-    @Container(image = "quay.io/pjgg/db2:11.5.5.0", port = 50000, expectedLog = "Setup has completed")
+    @Container(image = "${db2.image}", port = 50000, expectedLog = "Setup has completed")
     static DefaultService db2 = new DefaultService()
             .withProperty("LICENSE", "accept")
             .withProperty("DB2INST1_PASSWORD", "test")

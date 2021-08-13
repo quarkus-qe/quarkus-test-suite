@@ -27,7 +27,7 @@ public class ConsulConfigSourceIT {
     private static final String CONSUL_KEY = "config/app";
     private static final String CUSTOM_PROPERTY = "welcome.message";
 
-    @Container(image = "quay.io/bitnami/consul:1.9.3", expectedLog = "Synced node info", port = 8500)
+    @Container(image = "${consul.image}", expectedLog = "Synced node info", port = 8500)
     static ConsulService consul = new ConsulService().onPostStart(ConsulConfigSourceIT::onLoadConfigureConsul);
 
     @QuarkusApplication

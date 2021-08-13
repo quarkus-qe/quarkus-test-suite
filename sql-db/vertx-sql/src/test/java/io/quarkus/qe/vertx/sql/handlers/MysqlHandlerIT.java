@@ -10,7 +10,7 @@ import io.quarkus.test.services.QuarkusApplication;
 public class MysqlHandlerIT extends CommonTestCases {
     private static final String DATABASE = "amadeus";
 
-    @Container(image = "quay.io/bitnami/mysql:5.7.32", port = 3306, expectedLog = "MySQL Community Server")
+    @Container(image = "${mysql.57.image}", port = 3306, expectedLog = "ready for connections")
     static DefaultService mysql = new DefaultService()
             .withProperty("MYSQL_ROOT_PASSWORD", "test")
             .withProperty("MYSQL_USER", "test")

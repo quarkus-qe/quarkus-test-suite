@@ -11,7 +11,7 @@ public class OpenShiftMssqlDatabaseIT extends AbstractSqlDatabaseIT {
 
     static final int MSSQL_PORT = 1433;
 
-    @Container(image = "mcr.microsoft.com/mssql/rhel/server", port = MSSQL_PORT, expectedLog = "Service Broker manager has started")
+    @Container(image = "${mssql.image}", port = MSSQL_PORT, expectedLog = "Service Broker manager has started")
     static DefaultService mssql = new DefaultService();
 
     @QuarkusApplication
