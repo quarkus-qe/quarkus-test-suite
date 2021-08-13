@@ -11,7 +11,7 @@ public class BaseIT {
     static final String MYSQL_DATABASE = "test";
     static final int MYSQL_PORT = 3306;
 
-    @Container(image = "quay.io/bitnami/mysql:5.7.32", port = MYSQL_PORT, expectedLog = "ready for connections")
+    @Container(image = "${mysql.57.image}", port = MYSQL_PORT, expectedLog = "ready for connections")
     static DefaultService database = new DefaultService()
             .withProperty("MYSQL_USER", MYSQL_USER)
             .withProperty("MYSQL_PASSWORD", MYSQL_PASSWORD)

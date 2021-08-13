@@ -230,9 +230,9 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <systemProperties>
+                    <systemPropertyVariables>
                         <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-                    </systemProperties>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
             <plugin>
@@ -254,9 +254,21 @@
                                 <exclude>${exclude.operator.openshift.tests}</exclude>
                                 <exclude>${exclude.quarkus.cli.tests}</exclude>
                             </excludes>
-                            <systemProperties>
+                            <systemPropertyVariables>
                                 <profile.id>${profile.id}</profile.id>
-                            </systemProperties>
+                                <!-- Services used in test suite -->
+                                <keycloak.image>quay.io/keycloak/keycloak:14.0.0</keycloak.image>
+                                <rhsso.73.image>registry.access.redhat.com/redhat-sso-7/sso73-openshift</rhsso.73.image>
+                                <postgresql.10.image>registry.access.redhat.com/rhscl/postgresql-10-rhel7</postgresql.10.image>
+                                <mysql.57.image>quay.io/bitnami/mysql:5.7.32</mysql.57.image>
+                                <mysql.80.image>registry.access.redhat.com/rhscl/mysql-80-rhel7</mysql.80.image>
+                                <mariadb.102.image>registry.access.redhat.com/rhscl/mariadb-102-rhel7</mariadb.102.image>
+                                <mssql.image>mcr.microsoft.com/mssql/rhel/server</mssql.image>
+                                <db2.image>quay.io/pjgg/db2:11.5.5.0</db2.image>
+                                <redis.image>quay.io/bitnami/redis:6.0</redis.image>
+                                <wiremock.image>quay.io/ocpmetal/wiremock</wiremock.image>
+                                <consul.image>quay.io/bitnami/consul:1.9.3</consul.image>
+                            </systemPropertyVariables>
                         </configuration>
                     </execution>
                 </executions>
@@ -386,16 +398,13 @@
                         <executions>
                             <execution>
                                 <configuration>
-                                    <systemProperties>
+                                    <systemPropertyVariables>
                                         <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
                                         <quarkus.package.type>${quarkus.package.type}</quarkus.package.type>
                                         <quarkus.native.container-build>${quarkus.native.container-build}</quarkus.native.container-build>
                                         <quarkus.native.native-image-xmx>${quarkus.native.native-image-xmx}</quarkus.native.native-image-xmx>
                                         <quarkus.native.builder-image>${quarkus.native.builder-image}</quarkus.native.builder-image>
-                                        <!-- Product Supported -->
-                                        <amq-streams.image>registry.redhat.io/amq7/amq-streams-kafka-27-rhel7</amq-streams.image>
-                                        <amq-streams.version>1.7.0</amq-streams.version>
-                                    </systemProperties>
+                                    </systemPropertyVariables>
                                 </configuration>
                             </execution>
                         </executions>
@@ -438,6 +447,12 @@
                         <configuration>
                             <systemPropertyVariables>
                                 <ts.redhat.registry.enabled>true</ts.redhat.registry.enabled>
+                                <!-- Product Services -->
+                                <rhsso.74.image>registry.redhat.io/rh-sso-7/sso74-openshift-rhel8</rhsso.74.image>
+                                <postgresql.12.image>registry.redhat.io/rhscl/postgresql-12-rhel7</postgresql.12.image>
+                                <mariadb.103.image>registry.redhat.io/rhscl/mariadb-103-rhel7</mariadb.103.image>
+                                <amq-streams.image>registry.redhat.io/amq7/amq-streams-kafka-27-rhel7</amq-streams.image>
+                                <amq-streams.version>1.7.0</amq-streams.version>
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>

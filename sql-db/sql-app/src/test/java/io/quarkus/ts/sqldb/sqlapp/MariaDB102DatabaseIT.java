@@ -14,11 +14,11 @@ public class MariaDB102DatabaseIT extends AbstractSqlDatabaseIT {
     static final String MARIADB_DATABASE = "mydb";
     static final int MARIADB_PORT = 3306;
 
-    @Container(image = "registry.access.redhat.com/rhscl/mariadb-102-rhel7", port = MARIADB_PORT, expectedLog = "Only MySQL server logs after this point")
+    @Container(image = "${mariadb.102.image}", port = MARIADB_PORT, expectedLog = "Only MySQL server logs after this point")
     static DefaultService database = new DefaultService()
             .withProperty("MYSQL_USER", MARIADB_USER)
-            .withProperty("MYSQL_PASSWORD", MARIADB_PASSWORD)
-            .withProperty("MYSQL_DATABASE", MARIADB_DATABASE);
+            .withProperty("MYSQL_DATABASE", MARIADB_DATABASE)
+            .withProperty("MYSQL_PASSWORD", MARIADB_PASSWORD);
 
     @QuarkusApplication
     static RestService app = new RestService().withProperties("mariadb_app.properties")

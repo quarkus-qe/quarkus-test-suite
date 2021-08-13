@@ -9,7 +9,7 @@
     </parent>
     <artifactId>vertx-sql</artifactId>
     <packaging>jar</packaging>
-    <name>Quarkus QE TS: SQL Database: exploratory testing</name>
+    <name>Quarkus QE TS: SQL Database: Vert.x SQL</name>
     <dependencies>
         <dependency>
             <groupId>io.quarkus</groupId>

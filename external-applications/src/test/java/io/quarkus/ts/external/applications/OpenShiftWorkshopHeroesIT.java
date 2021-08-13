@@ -9,6 +9,7 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import io.quarkus.test.bootstrap.DefaultService;
 import io.quarkus.test.bootstrap.RestService;
@@ -23,6 +24,7 @@ import io.restassured.http.ContentType;
 @DisabledOnQuarkusSnapshot(reason = "999-SNAPSHOT is not available in the Maven repositories in OpenShift")
 @OpenShiftScenario
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
 public class OpenShiftWorkshopHeroesIT {
     private static String heroId;
 
@@ -42,7 +44,7 @@ public class OpenShiftWorkshopHeroesIT {
     private static final String POSTGRESQL_DATABASE = "heroes-database";
     private static final int POSTGRESQL_PORT = 5432;
 
-    @Container(image = "registry.redhat.io/rhscl/postgresql-12-rhel7", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
+    @Container(image = "${postgresql.12.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
     static DefaultService database = new DefaultService()
             .withProperty("POSTGRESQL_USER", POSTGRESQL_USER)
             .withProperty("POSTGRESQL_PASSWORD", POSTGRESQL_PASSWORD)

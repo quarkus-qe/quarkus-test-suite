@@ -10,11 +10,11 @@ import io.quarkus.test.services.QuarkusApplication;
 public class PostgresqlHandlerIT extends CommonTestCases {
     private static final String POSTGRESQL_DATABASE = "amadeus";
 
-    @Container(image = "quay.io/rhoar_qe/postgres", port = 5432, expectedLog = "listening on IPv4 address")
+    @Container(image = "${postgresql.10.image}", port = 5432, expectedLog = "listening on IPv4 address")
     static DefaultService postgres = new DefaultService()
-            .withProperty("POSTGRES_USER", "test")
-            .withProperty("POSTGRES_PASSWORD", "test")
-            .withProperty("POSTGRES_DB", POSTGRESQL_DATABASE);
+            .withProperty("POSTGRESQL_USER", "test")
+            .withProperty("POSTGRESQL_PASSWORD", "test")
+            .withProperty("POSTGRESQL_DATABASE", POSTGRESQL_DATABASE);
 
     @QuarkusApplication
     static final RestService app = new RestService()

@@ -33,7 +33,7 @@ public abstract class AbstractCommonIT {
     Replicant replicant;
     Vertx vertx;
 
-    @Container(image = "quay.io/bitnami/redis:6.0", port = REDIS_PORT, expectedLog = "Ready to accept connections")
+    @Container(image = "${redis.image}", port = REDIS_PORT, expectedLog = "Ready to accept connections")
     static DefaultService redis = new DefaultService().withProperty("ALLOW_EMPTY_PASSWORD", "YES");
 
     @QuarkusApplication
