@@ -24,3 +24,4 @@
 | 304-quarkus-vertx-routes | http/reactive-routes |
 | 601-spring-data-primitive-types | spring/spring-data |
 | 602-spring-data-rest | spring/spring-data |
+| 603-spring-web-smallrye-openapi | spring/spring-web |

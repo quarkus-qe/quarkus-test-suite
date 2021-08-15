@@ -90,6 +90,7 @@
         <module>quarkus-cli</module>
         <module>kamelet</module>
         <module>spring/spring-data</module>
+        <module>spring/spring-web</module>
         <module>logging/jboss</module>
         <module>cache/caffeine</module>
     </modules>

@@ -564,6 +564,13 @@ need it to be deployed into ocp or some other platform.
   - Pagination and sorting.
   - 1:m entity relationship.
 
+### `spring/spring-web`
+Covers two areas related to Spring Web:
+- Proper behavior of SmallRye OpenAPI - correct content types in OpenAPI endpoint output (`/q/openapi`).
+- Spring Boot Bootstrap application which uses Spring Web features.
+  - CRUD endpoints.
+  - Custom error handlers.
+  - Cooperation with Qute templating engine.
 
 ### `infinispan-client`
 
