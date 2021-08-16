@@ -91,6 +91,7 @@
         <module>kamelet</module>
         <module>spring/spring-data</module>
         <module>logging/jboss</module>
+        <module>cache/caffeine</module>
     </modules>
     <dependencyManagement>
         <dependencies>
