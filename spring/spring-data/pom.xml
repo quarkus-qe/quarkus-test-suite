@@ -9,7 +9,7 @@
     </parent>
     <artifactId>spring-data</artifactId>
     <packaging>jar</packaging>
-    <name>Quarkus QE TS: spring-data</name>
+    <name>Quarkus QE TS: Spring: Spring Data</name>
     <dependencies>
         <dependency>
             <groupId>io.quarkus</groupId>
