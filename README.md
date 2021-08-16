@@ -578,3 +578,12 @@ For the Quarkus application, pod killing is used the same approach as in configm
 By default, when the Infinispan server is down and the application can't open a connection, it tries to connect again, up to 10 times (max_retries) and gives up after 60s (connect_timeout).
 Because of that we are using the `hotrod-client.properties` file where are the max_retries and connect_timeout reduced. Without this the application will be still trying to connect to the Infinispan server next 10 minutes and the incremented number can appear later.
 The last three tests are for testing of the multiple client access to the cache. We simulate the second client by deploying the second deployment config, Service, and Route for these tests. These are copied from the `openshift.yml` file. 
+
+### `cache/caffeine`
+
+Verifies the `quarkus-cache` extension using `@CacheResult`, `@CacheInvalidate`, `@CacheInvalidateAll` and `@CacheKey`.
+It covers different usages: 
+1. from an application scoped service
+2. from a request scoped service
+3. from a blocking endpoint
+4. from a reactive endpoint 
