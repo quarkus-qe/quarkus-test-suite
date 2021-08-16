@@ -29,7 +29,7 @@ public class PoolApplication {
                 .transform(iterator -> iterator.hasNext() ? iterator.next().getLong("active_con") : null);
     }
 
-    @Route(methods = Route.HttpMethod.PUT, path = "/connect")
+    @Route(methods = Route.HttpMethod.GET, path = "/connect")
     public Uni<Long> newConnection() {
         // Make just one extra query and Hold "Idle + 1 sec" in order to release inactive connections.
         return postgresql.preparedQuery("SELECT CURRENT_TIMESTAMP").execute()

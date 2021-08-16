@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -18,28 +19,23 @@ import org.junit.jupiter.api.TestMethodOrder;
 import io.quarkus.test.bootstrap.DefaultService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
-import io.restassured.response.Response;
 import io.smallrye.mutiny.Uni;
 import io.vertx.core.json.JsonArray;
 import io.vertx.ext.web.client.WebClientOptions;
 import io.vertx.mutiny.core.Vertx;
+import io.vertx.mutiny.core.buffer.Buffer;
 import io.vertx.mutiny.ext.web.client.HttpResponse;
 import io.vertx.mutiny.ext.web.client.WebClient;
 import io.vertx.mutiny.ext.web.client.predicate.ResponsePredicate;
 
-@DisabledOnNative(reason = "This test is randomly failing in Native. "
-        + "Reported by https://github.com/quarkus-qe/quarkus-test-suite/issues/175")
 @QuarkusScenario
 @TestMethodOrder(OrderAnnotation.class)
 public class PostgresPoolIT {
-    private static final String POSTGRESQL_DATABASE = "amadeus";
 
-    static final int TIMEOUT_SEC = 60;
-    static final int HTTP_OK = 200;
-    static WebClient httpClient;
+    private static final String POSTGRESQL_DATABASE = "amadeus";
+    private static final int TIMEOUT_SEC = 60;
 
     /*
      * Value is taken from quarkus.datasource.reactive.max-size. Unfortunately, property injection is not supported.
@@ -68,6 +64,8 @@ public class PostgresPoolIT {
             // Disable Flyway for DB2
             .withProperty("quarkus.flyway.db2.migrate-at-start", "false");
 
+    static WebClient httpClient;
+
     @BeforeAll
     public static void beforeAll() {
         httpClient = WebClient.create(Vertx.vertx(), new WebClientOptions());
@@ -81,13 +79,11 @@ public class PostgresPoolIT {
         CountDownLatch done = new CountDownLatch(events);
 
         for (int i = 0; i < events; i++) {
-            Uni<Boolean> connectionsReUsed = makeHttpReq(httpClient, "airlines/", HTTP_OK).flatMap(body -> {
-                Long activeConnections = activeConnections();
-                if (null == activeConnections) {
-                    throw new RuntimeException("Oh No! no postgres active connections found!");
-                }
-                return Uni.createFrom().item(checkDbActiveConnections(activeConnections));
-            });
+            Uni<Boolean> connectionsReUsed = makeHttpReqAsJson(httpClient, "airlines/", HttpStatus.SC_OK)
+                    .flatMap(body -> activeConnections()
+                            .onItem().ifNull()
+                            .failWith(() -> new RuntimeException("Oh No! no postgres active connections found!"))
+                            .onItem().ifNotNull().transform(this::checkDbActiveConnections));
 
             connectionsReUsed.subscribe().with(reUsed -> {
                 assertTrue(reUsed, "More postgres SQL connections than pool max-size property");
@@ -108,14 +104,11 @@ public class PostgresPoolIT {
         CountDownLatch done = new CountDownLatch(events);
 
         for (int i = 0; i < events; i++) {
-            Uni<Long> activeConnectionsAmount = makeHttpReq(httpClient, "airlines/", HTTP_OK)
-                    .flatMap(body -> {
-                        Long activeConnections = activeConnections();
-                        if (null == activeConnections) {
-                            throw new RuntimeException("Oh No! no postgres active connections found!");
-                        }
-                        return Uni.createFrom().item(activeConnections);
-                    });
+            Uni<Long> activeConnectionsAmount = makeHttpReqAsJson(httpClient, "airlines/", HttpStatus.SC_OK)
+                    .flatMap(body -> activeConnections()
+                            .onItem().ifNull()
+                            .failWith(() -> new RuntimeException("Oh No! no postgres active connections found!"))
+                            .onItem().ifNotNull().transformToUni(resp -> activeConnections()));
 
             activeConnectionsAmount.subscribe().with(amount -> {
                 // be sure that you have more than 1 connections
@@ -127,27 +120,45 @@ public class PostgresPoolIT {
         done.await(TIMEOUT_SEC, TimeUnit.SECONDS);
         assertEquals(done.getCount(), 0, String.format("Missing %d events.", events - done.getCount()));
 
-        Long connectionsAmount = addAnotherConection();
-        assertEquals(1, connectionsAmount, "Idle doesn't remove IDLE expired connections!.");
+        // Make just one extra query and Hold "Idle + 1 sec" in order to release inactive connections.
+        Uni<Long> activeConnectionAmount = selectActiveConnectionsAfterConnection();
+
+        CountDownLatch doneIdleExpired = new CountDownLatch(1);
+        activeConnectionAmount.subscribe().with(connectionsAmount -> {
+            // At this point you should just have one connection -> SELECT CURRENT_TIMESTAMP
+            assertEquals(1, connectionsAmount, "Idle doesn't remove IDLE expired connections!.");
+            if (connectionsAmount == 1) {
+                doneIdleExpired.countDown();
+            }
+        });
+
+        doneIdleExpired.await(TIMEOUT_SEC, TimeUnit.SECONDS);
+        assertEquals(doneIdleExpired.getCount(), 0, "Missing doneIdleExpired query.");
     }
 
-    private Long activeConnections() {
-        Response response = app.given().get("/pool/connections");
-        return response.body().as(Long.class);
+    private Uni<Long> activeConnections() {
+        return makeHttpReqAsLong(httpClient, "/pool/connections", HttpStatus.SC_OK);
     }
 
-    private Long addAnotherConection() {
-        Response response = app.given().put("/pool/connect");
-        return response.body().as(Long.class);
+    private Uni<Long> selectActiveConnectionsAfterConnection() {
+        return makeHttpReqAsLong(httpClient, "/pool/connect", HttpStatus.SC_OK);
     }
 
-    protected Uni<JsonArray> makeHttpReq(WebClient httpClient, String path, int expectedStatus) {
+    private Uni<Long> makeHttpReqAsLong(WebClient httpClient, String path, int expectedStatus) {
+        return makeHttpReq(httpClient, path, expectedStatus).map(HttpResponse::bodyAsString).map(Long::parseLong);
+    }
+
+    private Uni<JsonArray> makeHttpReqAsJson(WebClient httpClient, String path, int expectedStatus) {
+        return makeHttpReq(httpClient, path, expectedStatus).map(HttpResponse::bodyAsJsonArray);
+    }
+
+    private Uni<HttpResponse<Buffer>> makeHttpReq(WebClient httpClient, String path, int expectedStatus) {
         return httpClient.getAbs(getAppEndpoint() + path)
                 .expect(ResponsePredicate.status(expectedStatus))
-                .send().map(HttpResponse::bodyAsJsonArray);
+                .send();
     }
 
-    protected String getAppEndpoint() {
+    private String getAppEndpoint() {
         return app.getHost() + ":" + app.getPort() + "/";
     }
 
