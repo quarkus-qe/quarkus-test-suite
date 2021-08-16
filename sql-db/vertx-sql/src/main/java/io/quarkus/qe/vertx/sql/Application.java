@@ -50,9 +50,9 @@ public class Application {
     @IfBuildProfile("mysql")
     MySQLPool mysql;
 
-    @IfBuildProfile("db2")
     @Inject
     @Named("db2")
+    @IfBuildProfile("db2")
     DB2Pool db2;
 
     void onStart(@Observes StartupEvent ev) {
