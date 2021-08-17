@@ -613,3 +613,13 @@ It covers different usages:
 2. from a request scoped service
 3. from a blocking endpoint
 4. from a reactive endpoint 
+
+### `cache/spring`
+
+Verifies the `quarkus-spring-cache` extension using `@Cacheable`, `@CacheEvict` and `@CachePut`.
+It covers different usages: 
+1. from an application scoped service
+2. from a request scoped service
+3. from a REST controller endpoint (using `@RestController)
+
+More information about this extension in https://quarkus.io/guides/spring-cache.

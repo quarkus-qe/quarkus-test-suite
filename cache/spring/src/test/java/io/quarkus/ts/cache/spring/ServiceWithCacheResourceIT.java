@@ -1,7 +1,7 @@
-package io.quarkus.ts.cache.caffeine.cache.caffeine;
+package io.quarkus.ts.cache.spring;
 
-import static io.quarkus.ts.cache.caffeine.ServiceWithCacheResource.APPLICATION_SCOPE_SERVICE_PATH;
-import static io.quarkus.ts.cache.caffeine.ServiceWithCacheResource.REQUEST_SCOPE_SERVICE_PATH;
+import static io.quarkus.ts.cache.spring.ServiceWithCacheResource.APPLICATION_SCOPE_SERVICE_PATH;
+import static io.quarkus.ts.cache.spring.ServiceWithCacheResource.REQUEST_SCOPE_SERVICE_PATH;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -17,18 +17,16 @@ public class ServiceWithCacheResourceIT {
 
     private static final String SERVICE_APPLICATION_SCOPE_PATH = "/services/" + APPLICATION_SCOPE_SERVICE_PATH;
     private static final String SERVICE_REQUEST_SCOPE_PATH = "/services/" + REQUEST_SCOPE_SERVICE_PATH;
-    private static final String RESOURCE_BLOCKING_API_PATH = "/api/blocking";
-    private static final String RESOURCE_REACTIVE_API_PATH = "/api/reactive";
+    private static final String REST_CONTROLLER_API_PATH = "/api";
 
     private static final String PREFIX_ONE = "prefix1";
     private static final String PREFIX_TWO = "prefix2";
 
     /**
-     * Check whether the `@CacheResult` annotation works when used in a service.
+     * Check whether the `@Cacheable` annotation works when used in a service.
      */
     @ParameterizedTest
-    @ValueSource(strings = { SERVICE_APPLICATION_SCOPE_PATH, SERVICE_REQUEST_SCOPE_PATH, RESOURCE_BLOCKING_API_PATH,
-            RESOURCE_REACTIVE_API_PATH })
+    @ValueSource(strings = { SERVICE_APPLICATION_SCOPE_PATH, SERVICE_REQUEST_SCOPE_PATH, REST_CONTROLLER_API_PATH })
     public void shouldGetTheSameValueAlwaysWhenGettingValueFromPath(String path) {
         // We call the service endpoint
         String value = getFromPath(path);
@@ -38,11 +36,10 @@ public class ServiceWithCacheResourceIT {
     }
 
     /**
-     * Check whether the `@CacheInvalidate` annotation invalidates the cache when used in a service.
+     * Check whether the `@CacheEvict` annotation invalidates the cache when used in a service.
      */
     @ParameterizedTest
-    @ValueSource(strings = { SERVICE_APPLICATION_SCOPE_PATH, SERVICE_REQUEST_SCOPE_PATH, RESOURCE_BLOCKING_API_PATH,
-            RESOURCE_REACTIVE_API_PATH })
+    @ValueSource(strings = { SERVICE_APPLICATION_SCOPE_PATH, SERVICE_REQUEST_SCOPE_PATH, REST_CONTROLLER_API_PATH })
     public void shouldGetDifferentValueWhenInvalidateCacheFromPath(String path) {
         // We call the service endpoint
         String value = getFromPath(path);
@@ -55,11 +52,10 @@ public class ServiceWithCacheResourceIT {
     }
 
     /**
-     * Check whether the `@CacheResult` annotation works when used in a service.
+     * Check whether the `@Cacheable` annotation works when used in a service.
      */
     @ParameterizedTest
-    @ValueSource(strings = { SERVICE_APPLICATION_SCOPE_PATH, SERVICE_REQUEST_SCOPE_PATH, RESOURCE_BLOCKING_API_PATH,
-            RESOURCE_REACTIVE_API_PATH })
+    @ValueSource(strings = { SERVICE_APPLICATION_SCOPE_PATH, SERVICE_REQUEST_SCOPE_PATH, REST_CONTROLLER_API_PATH })
     public void shouldGetTheSameValueForSamePrefixesWhenGettingValueFromPath(String path) {
         // We call the service endpoint
         String value = getValueFromPathUsingPrefix(path, PREFIX_ONE);
@@ -73,11 +69,10 @@ public class ServiceWithCacheResourceIT {
     }
 
     /**
-     * Check whether the `@CacheInvalidate` annotation does not invalidate all the caches
+     * Check whether the `@CacheEvict` annotation does not invalidate all the caches
      */
     @ParameterizedTest
-    @ValueSource(strings = { SERVICE_APPLICATION_SCOPE_PATH, SERVICE_REQUEST_SCOPE_PATH, RESOURCE_BLOCKING_API_PATH,
-            RESOURCE_REACTIVE_API_PATH })
+    @ValueSource(strings = { SERVICE_APPLICATION_SCOPE_PATH, SERVICE_REQUEST_SCOPE_PATH, REST_CONTROLLER_API_PATH })
     public void shouldGetTheSameValuesEvenAfterCallingToCacheInvalidateFromPath(String path) {
         // We call the service endpoints
         String valueOfPrefix1 = getValueFromPathUsingPrefix(path, PREFIX_ONE);
@@ -92,11 +87,10 @@ public class ServiceWithCacheResourceIT {
     }
 
     /**
-     * Check whether the `@CacheInvalidate` and `@CacheKey` annotations work as expected.
+     * Check whether the `@CacheEvict` annotation work as expected using a key.
      */
     @ParameterizedTest
-    @ValueSource(strings = { SERVICE_APPLICATION_SCOPE_PATH, SERVICE_REQUEST_SCOPE_PATH, RESOURCE_BLOCKING_API_PATH,
-            RESOURCE_REACTIVE_API_PATH })
+    @ValueSource(strings = { SERVICE_APPLICATION_SCOPE_PATH, SERVICE_REQUEST_SCOPE_PATH, REST_CONTROLLER_API_PATH })
     public void shouldGetDifferentValueWhenInvalidateCacheOnlyForOnePrefixFromPath(String path) {
         // We call the service endpoints
         String valueOfPrefix1 = getValueFromPathUsingPrefix(path, PREFIX_ONE);
@@ -112,11 +106,10 @@ public class ServiceWithCacheResourceIT {
     }
 
     /**
-     * Check whether the `@CacheInvalidateAll` annotation works as expected.
+     * Check whether the `@CacheEvict(allEntries=true)` annotation works as expected.
      */
     @ParameterizedTest
-    @ValueSource(strings = { SERVICE_APPLICATION_SCOPE_PATH, SERVICE_REQUEST_SCOPE_PATH, RESOURCE_BLOCKING_API_PATH,
-            RESOURCE_REACTIVE_API_PATH })
+    @ValueSource(strings = { SERVICE_APPLICATION_SCOPE_PATH, SERVICE_REQUEST_SCOPE_PATH, REST_CONTROLLER_API_PATH })
     public void shouldGetDifferentValueWhenInvalidateAllTheCacheFromPath(String path) {
         // We call the service endpoints
         String value = getFromPath(path);
@@ -130,6 +123,40 @@ public class ServiceWithCacheResourceIT {
         assertNotEquals(value, getFromPath(path));
         assertNotEquals(valueOfPrefix1, getValueFromPathUsingPrefix(path, PREFIX_ONE));
         assertNotEquals(valueOfPrefix2, getValueFromPathUsingPrefix(path, PREFIX_TWO));
+    }
+
+    /**
+     * Check whether the `@CachePut` annotation works as expected.
+     */
+    @ParameterizedTest
+    @ValueSource(strings = { SERVICE_APPLICATION_SCOPE_PATH, SERVICE_REQUEST_SCOPE_PATH, REST_CONTROLLER_API_PATH })
+    public void shouldPutAnEntryInCache(String path) {
+        // Overwrite value
+        resetValueInCache(path);
+
+        // Then, the value should be the one from the reset cache endpoint
+        assertEquals(BaseServiceWithCache.DEFAULT_CACHE_VALUE, getFromPath(path));
+    }
+
+    /**
+     * Check whether the `@CachePut` annotation works as expected using the prefix endpoints
+     */
+    @ParameterizedTest
+    @ValueSource(strings = { SERVICE_APPLICATION_SCOPE_PATH, SERVICE_REQUEST_SCOPE_PATH, REST_CONTROLLER_API_PATH })
+    public void shouldPutAnEntryUsingPrefixInCache(String path) {
+        // Overwrite value
+        resetValueInCacheFromPath(path, PREFIX_ONE);
+
+        // Then, the value should be the one from the put value endpoint
+        assertEquals(BaseServiceWithCache.DEFAULT_CACHE_VALUE, getValueFromPathUsingPrefix(path, PREFIX_ONE));
+    }
+
+    private void resetValueInCacheFromPath(String path, String prefix) {
+        resetValueInCache(path + "/using-prefix/" + prefix);
+    }
+
+    private void resetValueInCache(String path) {
+        postFromPath(path + "/cache/reset");
     }
 
     private void invalidateCacheAllFromPath(String path) {
@@ -157,10 +184,7 @@ public class ServiceWithCacheResourceIT {
     }
 
     private void postFromPath(String path) {
-        given()
-                .when().post(path)
-                .then()
-                .statusCode(HttpStatus.SC_NO_CONTENT);
+        given().when().post(path);
     }
 
 }
