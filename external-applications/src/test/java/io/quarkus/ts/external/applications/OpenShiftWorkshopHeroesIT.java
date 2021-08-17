@@ -20,7 +20,7 @@ import io.quarkus.test.services.Container;
 import io.quarkus.test.services.GitRepositoryQuarkusApplication;
 import io.restassured.http.ContentType;
 
-@DisabledOnNative
+@DisabledOnNative(reason = "S2i is not supported on Native yet: https://github.com/quarkus-qe/quarkus-test-framework/issues/206")
 @DisabledOnQuarkusSnapshot(reason = "999-SNAPSHOT is not available in the Maven repositories in OpenShift")
 @OpenShiftScenario
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
