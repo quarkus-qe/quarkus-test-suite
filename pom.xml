@@ -465,6 +465,7 @@
                 <module>spring/spring-properties</module>
                 <module>spring/spring-cloud-config</module>
                 <module>cache/spring</module>
+                <module>scheduling/spring</module>
             </modules>
         </profile>
         <profile>

@@ -541,6 +541,10 @@ We cover the following two scenarios:
 - Scenario from guide: https://quarkus.io/guides/quartz
 - Failover scenario where will run two instances of the same scheduled job. Then, it simulates a failover of one of the instances and then verify that the second instance continue working as expected.
 
+### `scheduling/spring`
+
+We cover the following scenario from guide: https://quarkus.io/guides/spring-scheduled with some adjustments to use only Spring API.
+
 ### `quarkus-cli`
 
 Verifies all the Quarkus CLI features: https://quarkus.io/version/main/guides/cli-tooling
