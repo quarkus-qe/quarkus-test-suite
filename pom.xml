@@ -463,6 +463,7 @@
                 <module>spring/spring-web</module>
                 <module>spring/spring-properties</module>
                 <module>cache/spring</module>
+                <module>scheduling/spring</module>
             </modules>
         </profile>
         <profile>
