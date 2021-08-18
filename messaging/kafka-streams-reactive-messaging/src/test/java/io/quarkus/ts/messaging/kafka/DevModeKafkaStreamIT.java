@@ -1,12 +1,14 @@
 package io.quarkus.ts.messaging.kafka;
 
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.DevModeQuarkusApplication;
 
 @Tag("QUARKUS-1026")
+@Tag("QUARKUS-959")
 @QuarkusScenario
 public class DevModeKafkaStreamIT extends BaseKafkaStreamTest {
 
@@ -20,5 +22,10 @@ public class DevModeKafkaStreamIT extends BaseKafkaStreamTest {
     @Override
     protected String getAppUrl() {
         return app.getHost() + ":" + app.getPort();
+    }
+
+    @Test
+    public void kafkaContainerShouldBeStarted() {
+        app.logs().assertContains("Creating container for image: vectorized/redpanda");
     }
 }
