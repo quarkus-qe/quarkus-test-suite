@@ -5,18 +5,18 @@ import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.DevModeQuarkusApplication;
 
 @Tag("QUARKUS-959")
-@Tag("QUARKUS-1026")
 @QuarkusScenario
-public class DevModePostgresqlIT extends AbstractSqlDatabaseIT {
+public class DevModeMariadbIT extends AbstractSqlDatabaseIT {
 
     @DevModeQuarkusApplication
-    static RestService app = new RestService().withProperties("postgresql.properties");
+    static RestService app = new RestService().withProperties("mariadb_app.properties");
 
     @Test
-    public void postgresqlContainerShouldBeStarted() {
-        app.logs().assertContains("Creating container for image: postgres");
+    public void mariadbContainerShouldBeStarted() {
+        app.logs().assertContains("Creating container for image: mariadb");
     }
 }
