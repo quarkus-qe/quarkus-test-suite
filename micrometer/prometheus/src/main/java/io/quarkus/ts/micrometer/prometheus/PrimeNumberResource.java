@@ -1,5 +1,6 @@
 package io.quarkus.ts.micrometer.prometheus;
 
+import java.util.UUID;
 import java.util.concurrent.atomic.LongAccumulator;
 import java.util.function.Supplier;
 
@@ -9,8 +10,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.commons.lang3.RandomStringUtils;
-
 import io.micrometer.core.instrument.MeterRegistry;
 
 @Path("/")
@@ -18,7 +17,7 @@ public class PrimeNumberResource {
     private static final int THREE = 3;
     private final LongAccumulator highestPrime = new LongAccumulator(Long::max, 0);
     private final MeterRegistry registry;
-    private final String uniqueId = RandomStringUtils.randomAlphabetic(5);
+    private final String uniqueId = UUID.randomUUID().toString().substring(0, 5);
 
     PrimeNumberResource(MeterRegistry registry) {
         this.registry = registry;
