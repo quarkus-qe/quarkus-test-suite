@@ -581,6 +581,10 @@ Covers two areas related to Spring Web:
   - CRUD endpoints.
   - Custom error handlers.
   - Cooperation with Qute templating engine.
+  
+### `spring/spring-cloud-config`
+
+Verifies that we can use an external Spring Cloud Server to inject configuration in our Quarkus applications.
 
 ### `spring/spring-properties`
 Exploratory testing for the `quarkus-spring-boot-properties` Quarkus extension. The application consists of a REST endpoint
