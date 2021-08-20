@@ -8,35 +8,32 @@ import org.apache.http.HttpStatus;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.qe.scheduling.quartz.failover.AnnotationScheduledJob;
 import io.quarkus.qe.scheduling.quartz.failover.ExecutionEntity;
-import io.quarkus.qe.scheduling.quartz.failover.ExecutionService;
-import io.quarkus.qe.scheduling.quartz.failover.ExecutionsResource;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
-@DisabledOnNative(reason = "Due to high native build execution time for the three Quarkus services")
 public class AnnotationScheduledJobsMySqlQuartzIT extends BaseMySqlQuartzIT {
 
     static final String NODE_ONE_NAME = "node-one";
     static final String NODE_TWO_NAME = "node-two";
 
-    @QuarkusApplication(classes = { AnnotationScheduledJob.class, ExecutionEntity.class, ExecutionService.class })
+    @QuarkusApplication
     static RestService one = new RestService().withProperties(MYSQL_PROPERTIES)
             .withProperty("owner.name", NODE_ONE_NAME)
             .withProperty("quarkus.datasource.jdbc.url", BaseMySqlQuartzIT::mysqlJdbcUrl);
 
-    @QuarkusApplication(classes = { AnnotationScheduledJob.class, ExecutionEntity.class, ExecutionService.class })
+    @QuarkusApplication
     static RestService two = new RestService().withProperties(MYSQL_PROPERTIES)
             .withProperty("owner.name", NODE_TWO_NAME)
             .withProperty("quarkus.datasource.jdbc.url", BaseMySqlQuartzIT::mysqlJdbcUrl);
 
-    @QuarkusApplication(classes = { ExecutionsResource.class, ExecutionEntity.class })
+    @QuarkusApplication
     static RestService app = new RestService().withProperties(MYSQL_PROPERTIES)
-            .withProperty("quarkus.datasource.jdbc.url", BaseMySqlQuartzIT::mysqlJdbcUrl);
+            .withProperty("quarkus.datasource.jdbc.url", BaseMySqlQuartzIT::mysqlJdbcUrl)
+            // Disable scheduler, so this app behaves as viewer of the two nodes.
+            .withProperty("quarkus.scheduler.enabled", "false");
 
     @Test
     public void testClusteringEnvironmentWithUniqueJobs() {

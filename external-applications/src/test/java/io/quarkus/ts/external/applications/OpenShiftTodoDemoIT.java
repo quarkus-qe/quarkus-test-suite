@@ -9,7 +9,7 @@ import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusSnapshot;
 import io.quarkus.test.services.GitRepositoryQuarkusApplication;
 
-@DisabledOnNative
+@DisabledOnNative(reason = "S2i is not supported on Native yet: https://github.com/quarkus-qe/quarkus-test-framework/issues/206")
 @DisabledOnQuarkusSnapshot(reason = "999-SNAPSHOT is not available in the Maven repositories in OpenShift")
 @OpenShiftScenario
 public class OpenShiftTodoDemoIT {

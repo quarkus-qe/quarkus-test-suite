@@ -4,12 +4,10 @@ import org.junit.jupiter.api.Tag;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.DevModeQuarkusApplication;
 
 @Tag("QUARKUS-1026")
 @QuarkusScenario
-@DisabledOnNative
 public class DevModeKafkaStreamIT extends BaseKafkaStreamTest {
 
     /**

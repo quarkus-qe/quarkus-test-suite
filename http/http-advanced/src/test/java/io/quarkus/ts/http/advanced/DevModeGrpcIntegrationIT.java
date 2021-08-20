@@ -32,7 +32,6 @@ import io.quarkus.example.HelloRequest;
 import io.quarkus.test.bootstrap.GrpcService;
 import io.quarkus.test.logging.Log;
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.DevModeQuarkusApplication;
 import io.restassured.response.Response;
 
@@ -43,7 +42,6 @@ import okhttp3.WebSocket;
 @Tag("QUARKUS-1026")
 @Tag("QUARKUS-1094")
 @QuarkusScenario
-@DisabledOnNative
 public class DevModeGrpcIntegrationIT {
 
     static final String NAME = "QE";

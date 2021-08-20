@@ -2,12 +2,10 @@ package io.quarkus.qe.properties.toggle;
 
 import io.quarkus.test.bootstrap.DevModeQuarkusService;
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.DevModeQuarkusApplication;
 import io.restassured.specification.RequestSpecification;
 
 @QuarkusScenario
-@DisabledOnNative
 public class ToggleablePropertiesOnDevModeIT extends BaseToggleablePropertiesIT {
 
     private static final String APPLICATION_PROPERTIES = "src/main/resources/application.properties";

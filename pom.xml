@@ -43,60 +43,8 @@
         <exclude.serverless.openshift.tests>**/Serverless*OpenShift*IT.java</exclude.serverless.openshift.tests>
         <exclude.operator.openshift.tests>**/Operator*OpenShift*IT.java</exclude.operator.openshift.tests>
         <exclude.quarkus.cli.tests>**/QuarkusCli*IT.java</exclude.quarkus.cli.tests>
+        <exclude.quarkus.devmode.tests>no</exclude.quarkus.devmode.tests>
     </properties>
-    <modules>
-        <module>config</module>
-        <module>properties</module>
-        <module>http/http-minimum</module>
-        <module>http/http-advanced</module>
-        <module>http/http-static</module>
-        <module>http/jaxrs</module>
-        <module>http/reactive-routes</module>
-        <module>http/rest-client</module>
-        <module>http/servlet-undertow</module>
-        <module>http/vertx-web-client</module>
-        <module>javaee-like-getting-started</module>
-        <module>scaling</module>
-        <module>micrometer/prometheus</module>
-        <module>micrometer/prometheus-kafka</module>
-        <module>micrometer/oidc</module>
-        <module>messaging/artemis</module>
-        <module>messaging/artemis-jta</module>
-        <module>messaging/amqp-reactive</module>
-        <module>messaging/qpid</module>
-        <module>messaging/kafka-streams-reactive-messaging</module>
-        <module>messaging/kafka-avro-reactive-messaging</module>
-        <module>microprofile</module>
-        <module>security/basic</module>
-        <module>security/https</module>
-        <module>security/jwt</module>
-        <module>security/keycloak</module>
-        <module>security/keycloak-authz</module>
-        <module>security/keycloak-jwt</module>
-        <module>security/keycloak-webapp</module>
-        <module>security/keycloak-oauth2</module>
-        <module>security/keycloak-multitenant</module>
-        <module>security/keycloak-oidc-client-basic</module>
-        <module>security/keycloak-oidc-client-extended</module>
-        <module>security/vertx-jwt</module>
-        <module>sql-db/sql-app</module>
-        <module>sql-db/multiple-pus</module>
-        <module>sql-db/panache-flyway</module>
-        <module>sql-db/vertx-sql</module>
-        <module>lifecycle-application</module>
-        <module>external-applications</module>
-        <module>scheduling/quartz</module>
-        <module>infinispan-client</module>
-        <module>super-size/many-extensions</module>
-        <module>quarkus-cli</module>
-        <module>kamelet</module>
-        <module>spring/spring-data</module>
-        <module>spring/spring-web</module>
-        <module>spring/spring-properties</module>
-        <module>logging/jboss</module>
-        <module>cache/caffeine</module>
-        <module>cache/spring</module>
-    </modules>
     <dependencyManagement>
         <dependencies>
             <!-- TODO: com.squareup.retrofit2:retrofit:2.9.0 should be removed on Quarkus 2.0.0.Alphas-->
@@ -257,6 +205,7 @@
                                 <exclude>${exclude.serverless.openshift.tests}</exclude>
                                 <exclude>${exclude.operator.openshift.tests}</exclude>
                                 <exclude>${exclude.quarkus.cli.tests}</exclude>
+                                <exclude>${exclude.quarkus.devmode.tests}</exclude>
                             </excludes>
                             <systemPropertyVariables>
                                 <profile.id>${profile.id}</profile.id>
@@ -389,6 +338,134 @@
     </repositories>
     <profiles>
         <profile>
+            <id>root-modules</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>all-modules</name>
+                </property>
+            </activation>
+            <modules>
+                <module>config</module>
+                <module>properties</module>
+                <module>javaee-like-getting-started</module>
+                <module>scaling</module>
+                <module>microprofile</module>
+                <module>lifecycle-application</module>
+                <module>external-applications</module>
+                <module>scheduling/quartz</module>
+                <module>infinispan-client</module>
+                <module>super-size/many-extensions</module>
+                <module>quarkus-cli</module>
+                <module>kamelet</module>
+                <module>logging/jboss</module>
+                <module>cache/caffeine</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>http-modules</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>all-modules</name>
+                </property>
+            </activation>
+            <modules>
+                <module>http/http-minimum</module>
+                <module>http/http-advanced</module>
+                <module>http/http-static</module>
+                <module>http/jaxrs</module>
+                <module>http/reactive-routes</module>
+                <module>http/rest-client</module>
+                <module>http/servlet-undertow</module>
+                <module>http/vertx-web-client</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>security-modules</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>all-modules</name>
+                </property>
+            </activation>
+            <modules>
+                <module>security/basic</module>
+                <module>security/https</module>
+                <module>security/jwt</module>
+                <module>security/keycloak</module>
+                <module>security/keycloak-authz</module>
+                <module>security/keycloak-jwt</module>
+                <module>security/keycloak-webapp</module>
+                <module>security/keycloak-oauth2</module>
+                <module>security/keycloak-multitenant</module>
+                <module>security/keycloak-oidc-client-basic</module>
+                <module>security/keycloak-oidc-client-extended</module>
+                <module>security/vertx-jwt</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>messaging-modules</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>all-modules</name>
+                </property>
+            </activation>
+            <modules>
+                <module>messaging/artemis</module>
+                <module>messaging/artemis-jta</module>
+                <module>messaging/amqp-reactive</module>
+                <module>messaging/qpid</module>
+                <module>messaging/kafka-streams-reactive-messaging</module>
+                <module>messaging/kafka-avro-reactive-messaging</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>micrometer-modules</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>all-modules</name>
+                </property>
+            </activation>
+            <modules>
+                <module>micrometer/prometheus</module>
+                <module>micrometer/prometheus-kafka</module>
+                <module>micrometer/oidc</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>sql-db-modules</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>all-modules</name>
+                </property>
+            </activation>
+            <modules>
+                <module>sql-db/sql-app</module>
+                <module>sql-db/multiple-pus</module>
+                <module>sql-db/panache-flyway</module>
+                <module>sql-db/vertx-sql</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>spring-modules</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>all-modules</name>
+                </property>
+            </activation>
+            <modules>
+                <module>spring/spring-data</module>
+                <module>spring/spring-web</module>
+                <module>spring/spring-properties</module>
+                <module>cache/spring</module>
+            </modules>
+        </profile>
+        <profile>
             <id>native</id>
             <activation>
                 <property>
@@ -420,7 +497,8 @@
                 <quarkus.package.type>native</quarkus.package.type>
                 <quarkus.native.container-build>true</quarkus.native.container-build>
                 <quarkus.native.native-image-xmx>4g</quarkus.native.native-image-xmx>
-                <quarkus.native.builder-image>quay.io/quarkus/ubi-quarkus-mandrel:21.0-java11</quarkus.native.builder-image>
+                <quarkus.native.builder-image>quay.io/quarkus/ubi-quarkus-mandrel:21.2-java11</quarkus.native.builder-image>
+                <exclude.quarkus.devmode.tests>**/*DevMode*IT.java</exclude.quarkus.devmode.tests>
             </properties>
         </profile>
         <profile>

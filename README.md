@@ -13,6 +13,10 @@ Running the tests amounts to standard `mvn clean verify`.
 This will use a specific Quarkus version, which can be modified by setting the `quarkus.platform.version` property.
 Alternatively, you can use `-Dquarkus-core-only` to run the test suite against Quarkus `999-SNAPSHOT`.
 In that case, make sure you have built Quarkus locally prior to running the tests.
+Moreover, all the modules are grouped by types: `http`, `security`, `messaging`... Hence we can run a concrete set of scenarios 
+just by selecting the right profile: `-P http-modules` or `-P security-modules`. Take into account that if you are selecting 
+another profile as OpenShift (`mvn clean verify -Dopenshift`), you need to explicitly to add `-Dall-modules` to include all 
+the modules in all the profiles.
 
 Since this is standard Quarkus configuration, it's possible to override using a system property.
 Therefore, if you want to run the tests with a different Java S2I image, run `mvn clean verify -Dquarkus.s2i.base-jvm-image=...`.
@@ -108,7 +112,7 @@ Serverless test coverage supports both JVM and Native mode.
 The following command will execute the whole test suite including serverless tests:
 
 ```
-./mvnw clean verify -Dinclude.serverless
+./mvnw clean verify -Dall-modules -Dinclude.serverless
 ```
 
 ### OpenShift Operators
@@ -120,7 +124,7 @@ Serverless test coverage supports both JVM and Native mode.
 The following command will execute the whole test suite including serverless tests:
 
 ```
-./mvnw clean verify -Dinclude.operator-scenarios
+./mvnw clean verify -Dall-modules -Dinclude.operator-scenarios
 ```
 
 ## Existing tests
@@ -541,7 +545,7 @@ We cover the following two scenarios:
 
 Verifies all the Quarkus CLI features: https://quarkus.io/version/main/guides/cli-tooling
 
-In order to enable this module, the test suite must be executed with `-Dinclude.quarkus-cli-tests`. The Quarkus CLI is expected to be called `quarkus`. We can configure the test suite to use another Quarkus CLI binary name using `-Dts.quarkus.cli.cmd=/path/to/quarkus-dev-cli`.
+In order to enable this module, the test suite must be executed with `-DallModules -Dinclude.quarkus-cli-tests`. The Quarkus CLI is expected to be called `quarkus`. We can configure the test suite to use another Quarkus CLI binary name using `-Dts.quarkus.cli.cmd=/path/to/quarkus-dev-cli`.
 
 ### `Kamelet`
 
