@@ -172,7 +172,8 @@ jobs:
 
           MODULES_ARG="${CHANGED// /,}"
           if [[ -n ${MODULES_ARG} ]]; then
-            mvn -fae -V -B -s .github/mvn-settings.xml -fae -pl $MODULES_ARG clean verify -Dnative \
+            echo "Running modules: ${MODULES_ARG}"
+            mvn -fae -V -B -s .github/mvn-settings.xml -fae -Dall-modules -pl $MODULES_ARG clean verify -Dnative \
                         -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli"
           fi
       - name: Zip Artifacts

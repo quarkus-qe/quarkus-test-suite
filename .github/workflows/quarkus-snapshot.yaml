@@ -22,6 +22,13 @@ jobs:
     name: "Build against latest Quarkus snapshot"
     runs-on: ubuntu-latest
     if: github.actor == 'quarkusbot' || github.actor == 'Sgitario' || github.actor == 'rsvoboda'
+    strategy:
+      matrix:
+        profiles: [ "!http-modules,!security-modules,!sql-db-modules,!messaging-modules",
+                    "http-modules",
+                    "security-modules",
+                    "sql-db-modules",
+                    "messaging-modules"]
 
     steps:
       - name: Install yq
@@ -47,3 +54,4 @@ jobs:
         run: ./ecosystem-ci/setup-and-test
         env:
           ECOSYSTEM_CI_TOKEN: ${{ secrets.ECOSYSTEM_CI_TOKEN }}
+          MAVEN_PROFILES: ${{ matrix.profiles }}
