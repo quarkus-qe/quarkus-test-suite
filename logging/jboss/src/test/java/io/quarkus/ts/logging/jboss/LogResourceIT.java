@@ -1,10 +1,8 @@
 package io.quarkus.ts.logging.jboss;
 
-import java.util.List;
 import java.util.function.BiConsumer;
 
 import org.jboss.logging.Logger;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -33,7 +31,7 @@ public class LogResourceIT {
         app.logs().assertContains(EXPECTED_JSON_MESSAGE);
 
         disableJsonFormatLogging();
-        assertDoesNotContain(EXPECTED_JSON_MESSAGE);
+        app.logs().assertDoesNotContain(EXPECTED_JSON_MESSAGE);
     }
 
     @Test
@@ -58,8 +56,8 @@ public class LogResourceIT {
         addMessageInFieldWithCustomCategoryLog(Logger.Level.DEBUG, MESSAGE + "category1");
 
         // As it's DEBUG level, none should be shown
-        assertDoesNotContain(MESSAGE + "field1");
-        assertDoesNotContain(MESSAGE + "category1");
+        app.logs().assertDoesNotContain(MESSAGE + "field1");
+        app.logs().assertDoesNotContain(MESSAGE + "category1");
 
         // Let's configure only the log with custom category to show DEBUG messages
         setPropertyTo("quarkus.log.category.\"" + LogResource.CUSTOM_CATEGORY + "\".level", Logger.Level.DEBUG.name());
@@ -69,7 +67,7 @@ public class LogResourceIT {
         addMessageInFieldWithCustomCategoryLog(Logger.Level.DEBUG, MESSAGE + "category2");
 
         // Now, the message should be shown only in the logger of the custom category
-        assertDoesNotContain(MESSAGE + "field2");
+        app.logs().assertDoesNotContain(MESSAGE + "field2");
         app.logs().assertContains(MESSAGE + "category2");
     }
 
@@ -80,7 +78,7 @@ public class LogResourceIT {
 
         // By default, DEBUG messages should not be shown
         writer.accept(Logger.Level.DEBUG, MESSAGE + "2");
-        assertDoesNotContain(MESSAGE + "2");
+        app.logs().assertDoesNotContain(MESSAGE + "2");
 
         // Set level to DEBUG
         setLogLevelTo(Logger.Level.DEBUG);
@@ -114,14 +112,5 @@ public class LogResourceIT {
         app.stop();
         app.withProperty(property, value);
         app.start();
-    }
-
-    /**
-     * TODO: This method will be included in the Test Framework API in 0.0.7.
-     */
-    private void assertDoesNotContain(String unexpectedLog) {
-        List<String> actualLogs = app.getLogs();
-        Assertions.assertTrue(actualLogs.stream().noneMatch(line -> line.contains(unexpectedLog)),
-                "Log does contain " + unexpectedLog + ". Full logs: " + actualLogs);
     }
 }
