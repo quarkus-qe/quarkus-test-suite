@@ -39,9 +39,7 @@ import io.vertx.core.http.HttpVersion;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.net.JksOptions;
 import io.vertx.ext.web.client.WebClientOptions;
-import io.vertx.mutiny.core.Vertx;
 import io.vertx.mutiny.ext.web.client.HttpResponse;
-import io.vertx.mutiny.ext.web.client.WebClient;
 import io.vertx.mutiny.ext.web.client.predicate.ResponsePredicate;
 import io.vertx.mutiny.ext.web.client.predicate.ResponsePredicateResult;
 
@@ -82,8 +80,9 @@ public class HttpAdvancedIT {
     @DisplayName("Http/2 Server test")
     public void http2Server() throws InterruptedException, URISyntaxException {
         CountDownLatch done = new CountDownLatch(1);
-        Uni<JsonObject> content = WebClient.create(Vertx.vertx(), defaultVertxHttpClientOptions())
-                .getAbs(getAppEndpoint() + "/hello").expect(ResponsePredicate.create(this::isHttp2x))
+        Uni<JsonObject> content = app.mutiny(defaultVertxHttpClientOptions())
+                .getAbs(getAppEndpoint() + "/hello")
+                .expect(ResponsePredicate.create(this::isHttp2x))
                 .expect(ResponsePredicate.status(Response.Status.OK.getStatusCode())).send()
                 .map(HttpResponse::bodyAsJsonObject).ifNoItem().after(Duration.ofSeconds(TIMEOUT_SEC)).fail()
                 .onFailure().retry().atMost(RETRY);
@@ -156,8 +155,9 @@ public class HttpAdvancedIT {
     @EnabledOnQuarkusVersion(version = "1\\..*", reason = "Redirection is no longer supported in 2.x")
     public void vertxHttpClientRedirection() throws InterruptedException, URISyntaxException {
         CountDownLatch done = new CountDownLatch(1);
-        Uni<Integer> statusCode = WebClient.create(Vertx.vertx(), defaultVertxHttpClientOptions())
-                .getAbs(getAppEndpoint() + "/health").send().map(HttpResponse::statusCode).ifNoItem()
+        Uni<Integer> statusCode = app.mutiny(defaultVertxHttpClientOptions())
+                .getAbs(getAppEndpoint() + "/health").send()
+                .map(HttpResponse::statusCode).ifNoItem()
                 .after(Duration.ofSeconds(TIMEOUT_SEC)).fail().onFailure().retry().atMost(RETRY);
 
         statusCode.subscribe().with(httpStatusCode -> {
