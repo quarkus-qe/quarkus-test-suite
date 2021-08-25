@@ -62,7 +62,7 @@ jobs:
         run: tar -xzf maven-repo.tgz -C ~
       - name: Build with Maven
         run: |
-          mvn -V -B -s .github/mvn-settings.xml verify -Dvalidate-format -DskipTests -DskipITs
+          mvn -V -B -s .github/mvn-settings.xml verify -Dall-modules -Dvalidate-format -DskipTests -DskipITs
   linux-build-jvm-latest:
     name: PR - Linux - JVM build - Latest Version
     runs-on: ubuntu-latest
@@ -104,7 +104,7 @@ jobs:
           EOF
           chmod +x ./quarkus-dev-cli
       - name: Build with Maven
-        run: mvn -fae -V -B -s .github/mvn-settings.xml clean verify -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli"
+        run: mvn -fae -V -B -s .github/mvn-settings.xml clean verify -Dall-modules -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli"
       - name: Zip Artifacts
         if: failure()
         run: |
