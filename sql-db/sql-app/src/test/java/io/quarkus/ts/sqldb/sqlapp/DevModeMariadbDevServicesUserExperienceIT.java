@@ -40,7 +40,7 @@ public class DevModeMariadbDevServicesUserExperienceIT {
     public void verifyMysqlImage() {
         Image postgresImg = DockerUtils.getImage(MARIA_DB_NAME, MARIA_DB_VERSION);
         Assertions.assertFalse(postgresImg.getId().isEmpty(), String.format("%s:%s not found. " +
-                        "Notice that user set his own custom image by 'quarkus.datasource.devservices.image-name' property",
+                "Notice that user set his own custom image by 'quarkus.datasource.devservices.image-name' property",
                 MARIA_DB_NAME, MARIA_DB_VERSION));
     }
 }

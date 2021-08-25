@@ -39,7 +39,7 @@ public class DevModePostgresqlDevServiceUserExperienceIT {
     public void verifyPostgresqlImage() {
         Image postgresImg = DockerUtils.getImage(POSTGRES_NAME, POSTGRESQL_VERSION);
         Assertions.assertFalse(postgresImg.getId().isEmpty(), String.format("%s:%s not found. " +
-                        "Notice that user set his own custom image by 'quarkus.datasource.devservices.image-name' property",
+                "Notice that user set his own custom image by 'quarkus.datasource.devservices.image-name' property",
                 POSTGRES_NAME, POSTGRESQL_VERSION));
     }
 }

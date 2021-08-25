@@ -40,7 +40,7 @@ public class DevModeMysqlDevServiceUserExperienceIT {
     public void verifyMysqlImage() {
         Image postgresImg = DockerUtils.getImage(MYSQL_NAME, MYSQL_VERSION);
         Assertions.assertFalse(postgresImg.getId().isEmpty(), String.format("%s:%s not found. " +
-                        "Notice that user set his own custom image by 'quarkus.datasource.devservices.image-name' property",
+                "Notice that user set his own custom image by 'quarkus.datasource.devservices.image-name' property",
                 MYSQL_NAME, MYSQL_VERSION));
     }
 }
