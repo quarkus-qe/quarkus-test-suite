@@ -129,26 +129,29 @@ The following command will execute the whole test suite including serverless tes
 
 ## Existing tests
 
-### `http-minimum`
+### `http/http-minimum`
 Verifies that you can deploy a simple HTTP endpoint to OpenShift and access it.
 It also verifies multiple deployment strategies like:
 - Serverless
 - Using OpenShift quarkus extension
 - Using OpenShift quarkus extension and Docker Build strategy
 
-### `http-advanced`
+### `http/http-advanced`
 Verifies Server/Client http_2/1.1, Grpc and http redirections.
 
-### `http-static`
+### `http/http-static`
 Verifies access to static pages and big static files over http.
 
-### `servlet-undertow`
+### `http/servlet-undertow`
 This module covers basic scenarios about HTTP servlets under `quarkus-undertow` server more in details:
 - Http session eviction
 - Undertow web.xml configuration
 
-### `jaxrs`
+### `http/jaxrs`
 Simple bootstrap project created by *quarkus-maven-plugin*  
+
+### `http/jaxrs-reactive`
+RESTEasy Reactive equivalent of `http/jaxrs`. Tests simple and multipart endpoints.
 
 ### `http/rest-client`
 Verifies Rest Client configuration using `quarkus-rest-client-jaxb` (XML support) and `quarkus-rest-client-jsonb` (JSON support).
@@ -160,11 +163,11 @@ This module will setup a very minimal configuration (only `quarkus-resteasy`) an
 * *@Deprecated* annotation has been added for test regression purposes to ensure `java.lang` annotations are allowed for resources
 * Resource with multipart body support, provided parts are text, image and binary data, charset checked with `us-ascii` and `utf-8`
 
-### `reactive-routes`
+### `http/reactive-routes`
 This module covers some basic scenarios around reactive routes in general and also:
 - Validation on request params, request body and responses.
 
-### `vertx-web-client`
+### `http/vertx-web-client`
 Vert.x Mutiny webClient exploratory test.
 * Vert.x WebClient
 * Quarkus Resteasy Mutiny / Jsonb

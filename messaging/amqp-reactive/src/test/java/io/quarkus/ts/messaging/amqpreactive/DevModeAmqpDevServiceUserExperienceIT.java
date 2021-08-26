@@ -37,7 +37,7 @@ public class DevModeAmqpDevServiceUserExperienceIT {
     public void verifyAmqpImage() {
         Image postgresImg = DockerUtils.getImage(AMQP_IMAGE, AMQP_VERSION);
         Assertions.assertFalse(postgresImg.getId().isEmpty(), String.format("%s:%s not found. " +
-                        "Notice that user set his own custom image by 'quarkus.keycloak.devservices.image-name' property",
+                "Notice that user set his own custom image by 'quarkus.keycloak.devservices.image-name' property",
                 AMQP_IMAGE, AMQP_VERSION));
     }
 }

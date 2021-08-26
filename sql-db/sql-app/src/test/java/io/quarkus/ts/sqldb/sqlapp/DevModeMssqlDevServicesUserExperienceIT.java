@@ -41,7 +41,7 @@ public class DevModeMssqlDevServicesUserExperienceIT {
     public void verifyMssqlImage() {
         Image postgresImg = DockerUtils.getImage(MSSQL_NAME, MSSQL_VERSION);
         Assertions.assertFalse(postgresImg.getId().isEmpty(), String.format("%s:%s not found. " +
-                        "Notice that user set his own custom image by 'quarkus.datasource.devservices.image-name' property",
+                "Notice that user set his own custom image by 'quarkus.datasource.devservices.image-name' property",
                 MSSQL_NAME, MSSQL_VERSION));
     }
 }

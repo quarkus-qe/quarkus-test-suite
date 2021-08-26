@@ -35,7 +35,7 @@ public class DevModeRedPandaDevServiceUserExperienceIT {
     public void verifyRedPandaImage() {
         Image postgresImg = DockerUtils.getImage(RED_PANDA_IMAGE, RED_PANDA_VERSION);
         Assertions.assertFalse(postgresImg.getId().isEmpty(), String.format("%s:%s not found. " +
-                        "Notice that user set his own custom image by 'quarkus.datasource.devservices.image-name' property",
+                "Notice that user set his own custom image by 'quarkus.datasource.devservices.image-name' property",
                 RED_PANDA_IMAGE, RED_PANDA_VERSION));
     }
 }

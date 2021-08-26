@@ -376,6 +376,7 @@
                 <module>http/http-advanced</module>
                 <module>http/http-static</module>
                 <module>http/jaxrs</module>
+                <module>http/jaxrs-reactive</module>
                 <module>http/reactive-routes</module>
                 <module>http/rest-client</module>
                 <module>http/servlet-undertow</module>
