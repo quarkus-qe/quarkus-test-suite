@@ -30,8 +30,7 @@ public class DevModeKeycloakDevServiceUserExperienceIT {
         app.logs().assertContains("Pulling docker image: quay.io/keycloak/keycloak");
         app.logs().assertContains("Please be patient; this may take some time but only needs to be done once");
         app.logs().assertContains("Starting to pull image");
-        // TODO https://github.com/quarkusio/quarkus/issues/19485
-        //app.logs().assertContains("Dev Services for Keycloak started");
+        app.logs().assertContains("Dev Services for Keycloak started");
     }
 
     @Test
