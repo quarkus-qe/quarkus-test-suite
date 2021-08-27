@@ -31,8 +31,7 @@ public class DevModePostgresqlDevServiceUserExperienceIT {
         app.logs().assertContains("Pulling docker image: postgres");
         app.logs().assertContains("Please be patient; this may take some time but only needs to be done once");
         app.logs().assertContains("Starting to pull image");
-        // TODO https://github.com/quarkusio/quarkus/issues/19573
-        //app.logs().assertContains("Dev Services for postgres started");
+        app.logs().assertContains("Dev Services for PostgreSQL started");
     }
 
     @Test

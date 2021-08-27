@@ -32,8 +32,7 @@ public class DevModeMariadbDevServicesUserExperienceIT {
         app.logs().assertContains("Pulling docker image: mariadb");
         app.logs().assertContains("Please be patient; this may take some time but only needs to be done once");
         app.logs().assertContains("Starting to pull image");
-        // TODO https://github.com/quarkusio/quarkus/issues/19573
-        //app.logs().assertContains("Dev Services for mariadb started");
+        app.logs().assertContains("Dev Services for MariaDB started");
     }
 
     @Test

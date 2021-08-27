@@ -33,8 +33,7 @@ public class DevModeMssqlDevServicesUserExperienceIT {
         app.logs().assertContains("Pulling docker image: " + MSSQL_NAME + ":" + MSSQL_VERSION);
         app.logs().assertContains("Please be patient; this may take some time but only needs to be done once");
         app.logs().assertContains("Starting to pull image");
-        //TODO https://github.com/quarkusio/quarkus/issues/19573
-        //app.logs().assertContains("Dev Services for Mssql started");
+        app.logs().assertContains("Dev Services for Microsoft SQL Server started");
     }
 
     @Test
