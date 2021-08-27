@@ -63,7 +63,7 @@ rules:
   verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 ```
 
-These requirements are necessary to verify the tests with tag `include-operator-scenarios`.
+These requirements are necessary to verify the tests using Operators.
 
 ## Running against Red Hat build of Quarkus
 
