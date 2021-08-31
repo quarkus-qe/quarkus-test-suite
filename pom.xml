@@ -31,7 +31,7 @@
         <xml-format-maven-plugin.version>3.2.0</xml-format-maven-plugin.version>
         <checkstyle.version>8.45.1</checkstyle.version>
         <jjwt.version>0.11.2</jjwt.version>
-        <camel-quarkus-bom.version>2.1.0</camel-quarkus-bom.version>
+        <camel-quarkus-bom.version>2.2.0</camel-quarkus-bom.version>
         <profile.id>jvm</profile.id>
         <!-- Default values for format -->
         <src.format.goal>format</src.format.goal>
