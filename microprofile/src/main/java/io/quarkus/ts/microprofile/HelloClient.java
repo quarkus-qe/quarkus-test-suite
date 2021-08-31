@@ -1,4 +1,4 @@
-package io.quarkus.ts.openshift.microprofile;
+package io.quarkus.ts.microprofile;
 
 import static java.util.concurrent.CompletableFuture.completedFuture;
 
