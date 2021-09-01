@@ -14,6 +14,7 @@ import io.quarkus.test.utils.DockerUtils;
 @Tag("QUARKUS-1080")
 @QuarkusScenario
 public class DevModeReactiveMysqlDevServiceUserExperienceIT {
+
     private static final String MYSQL_VERSION = "5.6.51";
     private static final String MYSQL_NAME = "mysql";
 
