@@ -1,6 +1,5 @@
 package io.quarkus.qe.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
@@ -43,9 +42,9 @@ public class Book extends Record {
         return Multi.createFrom().iterable(rows).onItem().transform(Book::from);
     }
 
-    public static Multi<Book> findAll(PgPool client) {
-        return client.query("SELECT * FROM book").execute().onItem()
-                .transformToMulti(Book::fromSet);
+    public static Uni<List<Book>> findAll(PgPool client) {
+        return toList(client.query("SELECT * FROM book").execute().onItem()
+                .transformToMulti(Book::fromSet));
     }
 
     public Uni<Long> save(PgPool client) {
@@ -58,10 +57,6 @@ public class Book extends Record {
         return client.preparedQuery("SELECT id, title, author FROM book WHERE id = $1").execute(Tuple.of(id))
                 .onItem().transform(RowSet::iterator)
                 .onItem().transform(iterator -> iterator.hasNext() ? from(iterator.next()) : null);
-    }
-
-    public static Uni<List<Book>> findAllAsList(PgPool client) {
-        return findAll(client).collect().in(ArrayList::new, List::add);
     }
 
     public String getTitle() {
