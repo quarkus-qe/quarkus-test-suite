@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import io.quarkus.builder.Version;
 import io.quarkus.test.bootstrap.QuarkusCliClient;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusSnapshot;
 import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 
 /**
@@ -84,13 +86,12 @@ public class QuarkusCliExtensionsIT {
         assertListOriginsOptionOutput();
     }
 
+    @DisabledOnQuarkusSnapshot(reason = "999-SNAPSHOT is not pushed into the platform site")
     @Test
     public void shouldListExtensionsUsingStream() {
-        whenGetListExtensions("--stream", "2.0");
-        assertTrue(result.getOutput().contains("io.quarkus:quarkus-universe-bom::pom:2.0"));
-
-        whenGetListExtensions("--stream", "2.1");
-        assertTrue(result.getOutput().contains("io.quarkus.platform:quarkus-bom::pom:2.1"));
+        String streamVersion = getCurrentStreamVersion();
+        whenGetListExtensions("--stream", streamVersion);
+        assertTrue(result.getOutput().contains("io.quarkus.platform:quarkus-bom::pom:" + streamVersion));
     }
 
     @Test
@@ -142,5 +143,10 @@ public class QuarkusCliExtensionsIT {
 
     private void assertResultIsSuccessful() {
         assertTrue(result.isSuccessful(), "Extensions list command didn't work. Output: " + result.getOutput());
+    }
+
+    private String getCurrentStreamVersion() {
+        String[] version = Version.getVersion().split(Pattern.quote("."));
+        return String.format("%s.%s", version[0], version[1]);
     }
 }
