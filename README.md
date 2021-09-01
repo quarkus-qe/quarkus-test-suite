@@ -246,8 +246,9 @@ Container images used in the tests are:
 ### `sql-db/vertx-sql`
 Quarkus / Vertx SQL exploratory testing. A flight search engine in order to test Quarkus Reactive SQL extensions. A detailed description can be found in sql-db/vertx-sql/README.md
 
-### `sql-db/reactive-postgresql`
+### `sql-db/reactive-vanilla`
 Verifies `quarkus-reactive-pg-client` extension and DevServices integration
+Verifies `quarkus-reactive-mysql-client` extension and DevServices integration
 
 ### `sql-db/multiple-pus`
 
