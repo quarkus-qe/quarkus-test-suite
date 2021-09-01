@@ -21,8 +21,8 @@ import io.quarkus.runtime.StartupEvent;
 import io.smallrye.mutiny.Uni;
 import io.vertx.mutiny.pgclient.PgPool;
 
-@Path("/book")
-public class BookResource {
+@Path("/book/postgresql")
+public class BookResource extends CommonResource {
 
     private static final Logger LOG = Logger.getLogger(BookResource.class);
 
@@ -31,25 +31,13 @@ public class BookResource {
 
     // TODO remove this onStart once this issue is resolved: https://github.com/quarkusio/quarkus/issues/19766
     void onStart(@Observes StartupEvent ev) {
-        postgresql.query("DROP TABLE IF EXISTS book").execute()
-                .flatMap(r -> postgresql
-                        .query("CREATE TABLE book (id SERIAL PRIMARY KEY, title TEXT NOT NULL, author TEXT NOT NULL)")
-                        .execute())
-                .flatMap(r -> postgresql.query("INSERT INTO book (title, author) VALUES ('Foundation', 'Isaac Asimov')")
-                        .execute())
-                .flatMap(r -> postgresql
-                        .query("INSERT INTO book (title, author) VALUES ('2001: A Space Odyssey', 'Arthur C. Clarke')")
-                        .execute())
-                .flatMap(r -> postgresql
-                        .query("INSERT INTO book (title, author) VALUES ('Stranger in a Strange Land', 'Robert A. Heinlein')")
-                        .execute())
-                .subscribe().with(item -> LOG.info("Book table created"));
+        setUpDB(postgresql, "book");
     }
 
     @GET
     @Produces(APPLICATION_JSON)
-    public Uni<Response> getAllBooks() {
-        return Book.findAllAsList(postgresql)
+    public Uni<Response> getAll() {
+        return Book.findAll(postgresql)
                 .onItem().transform(books -> Response.ok(Record.toJsonStringify(books)).build());
     }
 

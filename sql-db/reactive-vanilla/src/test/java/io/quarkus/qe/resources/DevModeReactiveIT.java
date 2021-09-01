@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.qe.model.Book;
+import io.quarkus.qe.model.NoteBook;
+import io.quarkus.qe.model.Record;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.DevModeQuarkusApplication;
@@ -19,7 +21,7 @@ import io.vertx.core.json.JsonObject;
 
 @Tag("QUARKUS-1080")
 @QuarkusScenario
-public class DevModeReactivePostgresqlIT {
+public class DevModeReactiveIT {
 
     @DevModeQuarkusApplication
     static RestService app = new RestService();
@@ -27,7 +29,7 @@ public class DevModeReactivePostgresqlIT {
     @Test
     public void verifyReactivePostgresqlRetrieveEntities() {
         given()
-                .when().get("/book")
+                .when().get("/book/postgresql")
                 .then()
                 .statusCode(HttpStatus.SC_OK)
                 .body("$.size()", greaterThan(2));
@@ -36,7 +38,7 @@ public class DevModeReactivePostgresqlIT {
     @Test
     public void verifyReactivePostgresqlRetrieveById() {
         given()
-                .when().get("/book/1")
+                .when().get("/book/postgresql/1")
                 .then()
                 .statusCode(HttpStatus.SC_OK);
     }
@@ -44,15 +46,38 @@ public class DevModeReactivePostgresqlIT {
     @Test
     public void verifyReactivePostgresqlCreateEntity() {
         Book book = new Book("Sin noticias de Gurb", "Eduardo Mendoza");
-        createBook(book);
+        createRecord("/book/postgresql", book);
     }
 
-    private static void createBook(Book book) {
+    @Test
+    public void verifyReactiveMysqlRetrieveEntities() {
         given()
-                .body(JsonObject.mapFrom(book).encode())
+                .when().get("/notebook/mysql")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body("$.size()", greaterThan(2));
+    }
+
+    @Test
+    public void verifyReactiveMysqlRetrieveById() {
+        given()
+                .when().get("/notebook/mysql/1")
+                .then()
+                .statusCode(HttpStatus.SC_OK);
+    }
+
+    @Test
+    public void verifyReactiveMysqlCreateEntity() {
+        NoteBook noteBook = new NoteBook("Sin noticias de Gurb", "Eduardo Mendoza");
+        createRecord("/notebook/mysql", noteBook);
+    }
+
+    private static void createRecord(String path, Record record) {
+        given()
+                .body(JsonObject.mapFrom(record).encode())
                 .header("Content-Type", MediaType.APPLICATION_JSON)
                 .when()
-                .post("/book")
+                .post(path)
                 .then()
                 .statusCode(HttpStatus.SC_CREATED)
                 .header("Location", not(empty()));

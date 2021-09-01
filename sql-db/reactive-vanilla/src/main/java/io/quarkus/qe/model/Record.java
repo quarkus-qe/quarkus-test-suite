@@ -1,8 +1,11 @@
 package io.quarkus.qe.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
+import io.smallrye.mutiny.Multi;
+import io.smallrye.mutiny.Uni;
 import io.vertx.core.json.Json;
 
 @RegisterForReflection
@@ -33,5 +36,9 @@ public class Record {
 
     public static String toJsonStringify(List<? extends Record> records) {
         return Json.encode(records);
+    }
+
+    public static <T> Uni<List<T>> toList(Multi<T> records) {
+        return records.collect().in(ArrayList::new, List::add);
     }
 }
