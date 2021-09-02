@@ -16,8 +16,9 @@
             <artifactId>quarkus-hibernate-orm-rest-data-panache</artifactId>
         </dependency>
         <dependency>
+            <!-- workaround for https://github.com/quarkusio/quarkus/issues/19875-->
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-resteasy-jackson</artifactId>
+            <artifactId>quarkus-resteasy-reactive-jackson</artifactId>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
