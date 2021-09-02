@@ -152,7 +152,9 @@ Simple bootstrap project created by *quarkus-maven-plugin*
 
 ### `http/jaxrs-reactive`
 RESTEasy Reactive equivalent of `http/jaxrs`. Tests simple and multipart endpoints.
-Additional coverage: execution model (blocking vs. non-blocking) of endpoints based on method signature.
+Additional coverage:
+- Execution model (blocking vs. non-blocking) of endpoints based on method signature.
+- HTTP Caching features.
 
 ### `http/rest-client`
 Verifies Rest Client configuration using `quarkus-rest-client-jaxb` (XML support) and `quarkus-rest-client-jsonb` (JSON support).
