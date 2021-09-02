@@ -9,6 +9,7 @@ import com.github.dockerjava.api.model.Image;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.DevModeQuarkusApplication;
+import io.quarkus.test.utils.DockerUtils;
 import io.quarkus.test.utils.SocketUtils;
 
 @Tag("QUARKUS-959")
