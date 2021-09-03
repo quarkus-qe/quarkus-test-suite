@@ -156,6 +156,7 @@ Additional coverage:
 - Execution model (blocking vs. non-blocking) of endpoints based on method signature.
 - HTTP Caching features.
 - Advanced JSON serialization.
+- REST Client reactive - support for POJO JSON serialization in multipart forms.
 
 ### `http/rest-client`
 Verifies Rest Client configuration using `quarkus-rest-client-jaxb` (XML support) and `quarkus-rest-client-jsonb` (JSON support).
