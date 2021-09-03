@@ -12,6 +12,7 @@ import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 import io.restassured.response.ValidatableResponse;
 
 @QuarkusScenario
@@ -38,6 +39,7 @@ public class HttpCachingResourceIT {
                                 containsString("private"))));
     }
 
+    @DisabledOnQuarkusVersion(version = "2.2.1.*", reason = "https://github.com/quarkusio/quarkus/issues/19822")
     @Test
     public void shouldGetNoCacheUnqualified() {
         whenGet("/nocache-unqualified").header(HttpHeaders.CACHE_CONTROL, is("no-cache"));
