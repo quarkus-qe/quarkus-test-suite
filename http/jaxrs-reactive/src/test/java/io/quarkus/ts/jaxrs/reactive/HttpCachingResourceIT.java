@@ -9,12 +9,14 @@ import java.util.List;
 
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 import io.restassured.response.ValidatableResponse;
 
+@Tag("QUARKUS-1075")
 @QuarkusScenario
 public class HttpCachingResourceIT {
     private static final String BASE_PATH = "/http-caching";
