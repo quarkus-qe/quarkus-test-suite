@@ -5,6 +5,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -13,6 +14,7 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.QuarkusApplication;
 
+@Tag("QUARKUS-1075")
 @QuarkusScenario
 public class ExecutionModelResourceIT {
     public static final String THREAD_BLOCKED = "io.vertx.core.VertxException: Thread blocked";
