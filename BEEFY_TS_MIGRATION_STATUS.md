@@ -4,7 +4,9 @@
 | 001-quarkus-getting-started-with-jaxrs | http/jaxrs |
 | 006-quartz-manually-scheduled-job | scheduling/quartz |
 | 003-quarkus-many-extensions | super-size/many-extensions |
+| 004-quarkus-HHH-and-HV | sql-db/hibernate |
 | 005-quarkus-and-maven-profiles | lifecycle-application |
+| 010-quarkus-opentracing-reactive-grpc | monitoring/opentracing-reactive-grpc |
 | 011-quarkus-panache-rest-flyway | sql-db/panache-flyway |
 | 012-quarkus-kafka-streams | messaging/kafka-streams-reactive-messaging |
 | 013-quarkus-oidc-restclient | security/keycloak-oidc-client-extended |
