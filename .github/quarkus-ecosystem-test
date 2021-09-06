@@ -2,7 +2,7 @@
 set -e
 
 # run the tests on JVM
-mvn -fae -V -B -s .github/mvn-settings.xml -fae clean verify -P $MAVEN_PROFILES
+mvn -fae -V -B -s .github/mvn-settings.xml -fae clean verify -P $MAVEN_PROFILES -Dquarkus.platform.version=999-SNAPSHOT
 
 # run the tests on Native
-mvn -fae -V -B -s .github/mvn-settings.xml -fae clean verify -P $MAVEN_PROFILES -Dnative -Dquarkus.native.container-build=true -Dquarkus.native.native-image-xmx=5g
+mvn -fae -V -B -s .github/mvn-settings.xml -fae clean verify -P $MAVEN_PROFILES -Dnative -Dquarkus.native.container-build=true -Dquarkus.native.native-image-xmx=5g -Dquarkus.platform.version=999-SNAPSHOT
