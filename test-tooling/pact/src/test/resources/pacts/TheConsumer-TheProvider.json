@@ -1,0 +1,39 @@
+{
+  "consumer": {
+    "name": "TheConsumer"
+  },
+  "provider": {
+    "name": "TheProvider"
+  },
+  "messages": [
+    {
+      "description": "a message with a payload",
+      "metaData": {
+        "contentType": "application/json"
+      },
+      "contents": {
+        "payload": "thePayload"
+      },
+      "matchingRules": {
+        "body": {
+          "$.payload": {
+            "matchers": [
+              {
+                "match": "type"
+              }
+            ],
+            "combine": "AND"
+          }
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "3.0.0"
+    },
+    "pact-jvm": {
+      "version": "4.0.6"
+    }
+  }
+}
