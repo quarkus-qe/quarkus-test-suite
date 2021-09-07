@@ -534,6 +534,12 @@ There is an EventsProducer that generate stock prices events every 1s. The event
 A Kafka consumer will read these events serialized by AVRO and change an `status` property to `COMPLETED`. 
 The streams of completed events will be exposed through an SSE endpoint. 
 
+### `messaging/kafka-producer`
+
+This scenario is focus on issues related only to Kafka producer. 
+Verifies that Kafka producer doesn't block the main thread  and also doesn't takes more time than `mp.messaging.outgoing.<CHANNEL>.max.block.ms`, and also
+doesn't retry more times than `mp.messaging.outgoing.<CHANNEL>.retries`
+
 ### `messaging/qpid`
 
 Verifies that JMS server is up and running and Quarkus can communicate with this service.
