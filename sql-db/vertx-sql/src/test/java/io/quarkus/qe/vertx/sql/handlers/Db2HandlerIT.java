@@ -29,11 +29,7 @@ public class Db2HandlerIT extends CommonTestCases {
                             db2.getPort() + "/" + DATABASE)
             .withProperty("app.selected.db", "db2")
             // Enable Flyway for DB2
-            .withProperty("quarkus.flyway.db2.migrate-at-start", "true")
-            // Disable Flyway for MySQL
-            .withProperty("quarkus.flyway.mysql.migrate-at-start", "false")
-            // Disable Flyway for Postgresql
-            .withProperty("quarkus.flyway.migrate-at-start", "false");
+            .withProperty("quarkus.flyway.db2.migrate-at-start", "true");
 
     @Override
     public RestService app() {
