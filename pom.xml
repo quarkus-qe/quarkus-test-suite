@@ -412,6 +412,7 @@
                 <module>messaging/qpid</module>
                 <module>messaging/kafka-streams-reactive-messaging</module>
                 <module>messaging/kafka-avro-reactive-messaging</module>
+                <module>messaging/kafka-producer</module>
             </modules>
         </profile>
         <profile>
