@@ -650,3 +650,8 @@ It covers different usages:
 3. from a REST controller endpoint (using `@RestController)
 
 More information about this extension in https://quarkus.io/guides/spring-cache.
+
+
+### `test-tooling/pact`
+
+Verifies, that quarkus works correctly with third-party tool called Pact-JVM

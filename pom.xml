@@ -472,6 +472,18 @@
             </modules>
         </profile>
         <profile>
+            <id>test-tooling</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>all-modules</name>
+                </property>
+            </activation>
+            <modules>
+                <module>test-tooling/pact</module>
+            </modules>
+        </profile>
+        <profile>
             <id>native</id>
             <activation>
                 <property>

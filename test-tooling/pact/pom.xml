@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.quarkus.ts.qe</groupId>
+        <artifactId>parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../..</relativePath>
+    </parent>
+    <artifactId>pact</artifactId>
+    <packaging>jar</packaging>
+    <name>Quarkus QE TS: Test Tooling: Pact</name>
+    <properties>
+        <pact.version>4.0.10</pact.version>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>au.com.dius</groupId>
+            <artifactId>pact-jvm-consumer-junit5</artifactId>
+            <version>${pact.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>au.com.dius</groupId>
+            <artifactId>pact-jvm-consumer-java8</artifactId>
+            <version>${pact.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>au.com.dius</groupId>
+            <artifactId>pact-jvm-provider-junit5</artifactId>
+            <version>${pact.version}</version>
+        </dependency>
+        <!-- Required for native compilation -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-resteasy-reactive</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-arc</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
