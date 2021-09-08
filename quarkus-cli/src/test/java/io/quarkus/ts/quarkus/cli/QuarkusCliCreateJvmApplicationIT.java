@@ -115,6 +115,22 @@ public class QuarkusCliCreateJvmApplicationIT {
         untilAsserted(() -> app.given().get("/q/health").then().statusCode(HttpStatus.SC_NOT_FOUND));
     }
 
+    @Tag("QUARKUS-1255")
+    @Test
+    public void shouldCreateJacocoReportsFromApplicationOnJvm() {
+        QuarkusCliRestService app = cliClient.createApplication("app-with-jacoco", defaults().withExtensions("jacoco"));
+
+        QuarkusCliClient.Result result = app.buildOnJvm();
+        assertTrue(result.isSuccessful(), "The application didn't build on JVM. Output: " + result.getOutput());
+        assertTrue(result.getOutput().contains("Installed features: [cdi, jacoco, resteasy, smallrye-context-propagation]"),
+                "Unexpected installed features. Output: " + result.getOutput());
+
+        assertTrue(app.getServiceFolder().resolve("target/jacoco-report/index.html").toFile().exists(),
+                "JaCoCo report directory doesn't exist");
+        assertTrue(app.getServiceFolder().resolve("target/jacoco-quarkus.exec").toFile().exists(),
+                "JaCoCo exec file doesn't exist");
+    }
+
     private void assertInstalledExtensions(QuarkusCliRestService app, String... expectedExtensions) {
         List<String> extensions = app.getInstalledExtensions();
         Stream.of(expectedExtensions).forEach(expectedExtension -> assertTrue(extensions.contains(expectedExtension),
