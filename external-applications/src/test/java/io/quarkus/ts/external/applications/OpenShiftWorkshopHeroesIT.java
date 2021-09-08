@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
-import io.quarkus.test.bootstrap.DefaultService;
+import io.quarkus.test.bootstrap.PostgresqlService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusSnapshot;
@@ -37,25 +37,17 @@ public class OpenShiftWorkshopHeroesIT {
     private static final int DEFAULT_LEVEL = 42;
     private static final int UPDATED_LEVEL = 43;
 
-    private static final String POSTGRESQL_USER = "superman";
-    private static final String POSTGRESQL_PASSWORD = "superman";
-    private static final String POSTGRESQL_DATABASE = "heroes-database";
     private static final int POSTGRESQL_PORT = 5432;
 
     @Container(image = "${postgresql.12.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
-    static DefaultService database = new DefaultService()
-            .withProperty("POSTGRESQL_USER", POSTGRESQL_USER)
-            .withProperty("POSTGRESQL_PASSWORD", POSTGRESQL_PASSWORD)
-            .withProperty("POSTGRESQL_DATABASE", POSTGRESQL_DATABASE);
+    static PostgresqlService database = new PostgresqlService();
 
     @GitRepositoryQuarkusApplication(repo = "https://github.com/quarkusio/quarkus-workshops.git", contextDir = "quarkus-workshop-super-heroes/super-heroes/rest-hero", mavenArgs = "-Dquarkus.package.type=uber-jar -DskipTests")
     static final RestService app = new RestService()
             .withProperty("quarkus.http.port", "8080")
-            .withProperty("quarkus.datasource.username", POSTGRESQL_USER)
-            .withProperty("quarkus.datasource.password", POSTGRESQL_PASSWORD)
-            .withProperty("quarkus.datasource.jdbc.url",
-                    () -> database.getHost().replace("http", "jdbc:postgresql") + ":" + database.getPort() + "/"
-                            + POSTGRESQL_DATABASE);
+            .withProperty("quarkus.datasource.username", database.getUser())
+            .withProperty("quarkus.datasource.password", database.getPassword())
+            .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl);
 
     @Test
     public void testHello() {
