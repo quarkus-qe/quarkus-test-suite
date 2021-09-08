@@ -6,9 +6,9 @@ import static org.hamcrest.Matchers.is;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.restassured.http.ContentType;
 
-public interface PricingRulesSpec extends RestClient {
+public interface PricingRulesSpec {
     default void retrieveAllPricingRules() {
-        app().given().accept(ContentType.JSON)
+        given().accept(ContentType.JSON)
                 .when()
                 .get("/pricingRules/")
                 .then()
