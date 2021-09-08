@@ -36,7 +36,7 @@ import io.vertx.mutiny.sqlclient.RowSet;
 @QuarkusTest
 @TestProfile(PostgresqlTestProfile.class)
 @TestMethodOrder(OrderAnnotation.class)
-public class PostgresPoolTest {
+public class PostgresPoolIT {
 
     private static final int EVENTS = 25000;
     private static final int TIMEOUT_SEC = 60;
