@@ -9,7 +9,8 @@ import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.test.bootstrap.DefaultService;
+import io.quarkus.test.bootstrap.MariaDbService;
+import io.quarkus.test.bootstrap.PostgresqlService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
@@ -21,13 +22,7 @@ import io.restassured.http.ContentType;
 @QuarkusScenario
 public class MultiplePersistenceIT {
 
-    static final String MARIADB_USER = "user";
-    static final String MARIADB_PASSWORD = "user";
-    static final String MARIADB_DATABASE = "mydb";
     static final int MARIADB_PORT = 3306;
-    static final String POSTGRESQL_USER = "user";
-    static final String POSTGRESQL_PASSWORD = "user";
-    static final String POSTGRESQL_DATABASE = "mydb";
     static final int POSTGRESQL_PORT = 5432;
 
     static final int EXPECTED_FRUITS_SIZE = 7;
@@ -35,30 +30,19 @@ public class MultiplePersistenceIT {
     static final long INVALID_ID = 999L;
 
     @Container(image = "${mariadb.102.image}", port = MARIADB_PORT, expectedLog = "Only MySQL server logs after this point")
-    static DefaultService mariadb = new DefaultService()
-            .withProperty("MYSQL_USER", MARIADB_USER)
-            .withProperty("MYSQL_PASSWORD", MARIADB_PASSWORD)
-            .withProperty("MYSQL_DATABASE", MARIADB_DATABASE)
-            .withProperty("MARIADB_ROOT_PASSWORD", MARIADB_PASSWORD);
+    static MariaDbService mariadb = new MariaDbService();
 
     @Container(image = "${postgresql.10.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
-    static DefaultService postgresql = new DefaultService()
-            .withProperty("POSTGRESQL_USER", POSTGRESQL_USER)
-            .withProperty("POSTGRESQL_PASSWORD", POSTGRESQL_PASSWORD)
-            .withProperty("POSTGRESQL_DATABASE", POSTGRESQL_DATABASE);
+    static PostgresqlService postgresql = new PostgresqlService();
 
     @QuarkusApplication
     static RestService app = new RestService()
-            .withProperty("MARIA_DB_USERNAME", MARIADB_USER)
-            .withProperty("MARIA_DB_PASSWORD", MARIADB_PASSWORD)
-            .withProperty("MARIA_DB_DATABASE", MARIADB_DATABASE)
-            .withProperty("MARIA_DB_JDBC_URL",
-                    () -> mariadb.getHost().replace("http", "jdbc:mariadb") + ":" + mariadb.getPort())
-            .withProperty("POSTGRESQL_USERNAME", POSTGRESQL_USER)
-            .withProperty("POSTGRESQL_PASSWORD", POSTGRESQL_PASSWORD)
-            .withProperty("POSTGRESQL_DATABASE", POSTGRESQL_DATABASE)
-            .withProperty("POSTGRESQL_JDBC_URL",
-                    () -> postgresql.getHost().replace("http", "jdbc:postgresql") + ":" + postgresql.getPort());
+            .withProperty("MARIA_DB_USERNAME", mariadb.getUser())
+            .withProperty("MARIA_DB_PASSWORD", mariadb.getPassword())
+            .withProperty("MARIA_DB_JDBC_URL", mariadb::getJdbcUrl)
+            .withProperty("POSTGRESQL_USERNAME", postgresql.getUser())
+            .withProperty("POSTGRESQL_PASSWORD", postgresql.getPassword())
+            .withProperty("POSTGRESQL_JDBC_URL", postgresql::getJdbcUrl);
 
     private static Integer latestFruitId;
     private static Integer latestVegetableId;
