@@ -76,7 +76,7 @@ jobs:
           chmod +x ./quarkus-dev-cli
       - name: Test in JVM mode
         run: |
-          mvn -fae -V -B -s .github/mvn-settings.xml -fae clean verify -Dall-modules -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli" -Dquarkus.platform.version=999-SNAPSHOT
+          mvn -fae -V -B -s .github/mvn-settings.xml -fae clean verify -Dall-modules -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli"
       - name: Zip Artifacts
         if: failure()
         run: |
@@ -134,7 +134,7 @@ jobs:
           chmod +x ./quarkus-dev-cli
       - name: Test in Native mode
         run: |
-          mvn -fae -V -B -s .github/mvn-settings.xml -P ${{ matrix.profiles }} -fae clean verify -Dquarkus.platform.version=999-SNAPSHOT -Dnative \
+          mvn -fae -V -B -s .github/mvn-settings.xml -P ${{ matrix.profiles }} -fae clean verify -Dnative \
             -Dquarkus.native.builder-image=quay.io/quarkus/${{ matrix.image }} \
             -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli"
       - name: Zip Artifacts
@@ -177,7 +177,7 @@ jobs:
       - name: Build in JVM mode
         shell: bash
         run: |
-          mvn -fae -s .github/mvn-settings.xml clean verify -Dquarkus.platform.version=999-SNAPSHOT
+          mvn -fae -s .github/mvn-settings.xml clean verify
       - name: Zip Artifacts
         shell: bash
         if: failure()
@@ -237,7 +237,7 @@ jobs:
         shell: bash
         run: |
           # Running only http/http-minimum as after some time, it gives disk full in Windows when running on Native.
-          mvn -fae -s .github/mvn-settings.xml clean verify -Dall-modules -Dquarkus.platform.version=999-SNAPSHOT -Dnative -Dquarkus.native.container-build=false -pl http/http-minimum
+          mvn -fae -s .github/mvn-settings.xml clean verify -Dall-modules -Dnative -Dquarkus.native.container-build=false -pl http/http-minimum
       - name: Zip Artifacts
         shell: bash
         if: failure()

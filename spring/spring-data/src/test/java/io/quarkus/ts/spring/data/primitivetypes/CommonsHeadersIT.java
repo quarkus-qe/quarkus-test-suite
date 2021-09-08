@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -62,6 +63,7 @@ public class CommonsHeadersIT extends AbstractDbIT {
 
     //This is for regression test for https://github.com/quarkusio/quarkus/pull/12234
     @Test
+    @Disabled("Session ID is not supported in Reactive Resteasy. Reported https://github.com/quarkusio/quarkus/issues/20003")
     @DisplayName("session scope")
     public void testSessionScope() {
         final Response first = app.given().get("/cat/customFindDistinctivePrimitive/2");
