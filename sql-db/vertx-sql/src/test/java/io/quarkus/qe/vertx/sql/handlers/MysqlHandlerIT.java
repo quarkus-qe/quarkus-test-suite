@@ -21,9 +21,4 @@ public class MysqlHandlerIT extends CommonTestCases {
             .withProperty("app.selected.db", "mysql")
             // Enable Flyway for MySQL
             .withProperty("quarkus.flyway.mysql.migrate-at-start", "true");
-
-    @Override
-    public RestService app() {
-        return app;
-    }
 }

@@ -21,9 +21,4 @@ public class PostgresqlHandlerIT extends CommonTestCases {
             .withProperty("app.selected.db", "postgresql")
             // Enable Flyway for Postgresql
             .withProperty("quarkus.flyway.migrate-at-start", "true");
-
-    @Override
-    public RestService app() {
-        return app;
-    }
 }

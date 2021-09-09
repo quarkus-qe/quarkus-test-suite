@@ -38,11 +38,6 @@ public class MSsqlHandlerIT extends CommonTestCases {
             .withProperty("quarkus.flyway.mssql.migrate-at-start", "true");
 
     @Override
-    public RestService app() {
-        return app;
-    }
-
-    @Override
     public void basketScenario() {
 
     }
