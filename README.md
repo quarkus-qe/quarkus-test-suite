@@ -315,13 +315,21 @@ Restrictions are defined using common annotations (`@RolesAllowed` etc.).
 
 A simple Keycloak realm with 1 client (protected application), 2 users and 2 roles is provided in `test-realm.json`.
 
-### `security/keycloak-authz`
+### `security/keycloak-authz-classic`
 
 Verifies token-based authn and URL-based authz.
 Authentication is OIDC, and Keycloak is used for issuing and verifying tokens.
 Authorization is based on URL patterns, and Keycloak is used for defining and enforcing restrictions.
 
 A simple Keycloak realm with 1 client (protected application), 2 users, 2 roles and 2 protected resources is provided in `test-realm.json`.
+
+### `security/keycloak-authz-reactive`
+QUARKUS-1257 - Verifies authenticated endpoints with a generic body in parent class 
+Verifies token-based authn and URL-based authz.
+Authentication is OIDC, and Keycloak is used for issuing and verifying tokens.
+Authorization is based on URL patterns, and Keycloak is used for defining and enforcing restrictions.
+
+A simple Keycloak realm with 1 client (protected application), 2 users, 2 roles and 3 protected resources is provided in `test-realm.json`.
 
 ### `security/keycloak-webapp`
 

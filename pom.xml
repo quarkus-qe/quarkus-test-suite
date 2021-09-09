@@ -385,7 +385,8 @@
                 <module>security/https</module>
                 <module>security/jwt</module>
                 <module>security/keycloak</module>
-                <module>security/keycloak-authz</module>
+                <module>security/keycloak-authz-classic</module>
+                <module>security/keycloak-authz-reactive</module>
                 <module>security/keycloak-jwt</module>
                 <module>security/keycloak-webapp</module>
                 <module>security/keycloak-oauth2</module>
