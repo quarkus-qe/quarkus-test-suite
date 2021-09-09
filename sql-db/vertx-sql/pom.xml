@@ -37,11 +37,15 @@
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-jdbc-db2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
             <artifactId>quarkus-reactive-mssql-client</artifactId>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-jdbc-db2</artifactId>
+            <artifactId>quarkus-jdbc-mssql</artifactId>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
