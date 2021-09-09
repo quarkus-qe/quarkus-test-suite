@@ -2,9 +2,41 @@ name: "Pull Request CI"
 on:
   - pull_request
 jobs:
+  build-dependencies:
+    name: Build Dependencies
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [ 11 ]
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Reclaim Disk Space
+        run: .github/ci-prerequisites.sh
+      - name: Install JDK {{ matrix.java }}
+        uses: joschi/setup-jdk@e87a7cec853d2dd7066adf837fe12bf0f3d45e52
+        with:
+          java-version: ${{ matrix.java }}
+      - name: Build Quarkus main
+        run: |
+          git clone https://github.com/quarkusio/quarkus.git && cd quarkus && ./mvnw -B -s .github/mvn-settings.xml clean install -Dquickly
+      - name: Tar Maven Repo
+        shell: bash
+        run: tar -I 'pigz -9' -cf maven-repo.tgz -C ~ .m2/repository
+      - name: Persist Maven Repo
+        uses: actions/upload-artifact@v1
+        with:
+          name: maven-repo
+          path: maven-repo.tgz
   linux-validate-format:
     name: Linux - Validate format
     runs-on: ubuntu-latest
+    needs: build-dependencies
     strategy:
       matrix:
         java: [ 11 ]
@@ -20,13 +52,21 @@ jobs:
         uses: joschi/setup-jdk@e87a7cec853d2dd7066adf837fe12bf0f3d45e52
         with:
           java-version: ${{ matrix.java }}
+      - name: Download Maven Repo
+        uses: actions/download-artifact@v1
+        with:
+          name: maven-repo
+          path: .
+      - name: Extract Maven Repo
+        shell: bash
+        run: tar -xzf maven-repo.tgz -C ~
       - name: Build with Maven
         run: |
           mvn -V -B -s .github/mvn-settings.xml verify -Dall-modules -Dvalidate-format -DskipTests -DskipITs
-  linux-build-jvm-released:
-    name: PR - Linux - JVM build - Released Version
+  linux-build-jvm-latest:
+    name: PR - Linux - JVM build - Latest Version
     runs-on: ubuntu-latest
-    needs: linux-validate-format
+    needs: [ build-dependencies, linux-validate-format ]
     strategy:
       matrix:
         java: [ 11 ]
@@ -45,19 +85,22 @@ jobs:
         uses: joschi/setup-jdk@e87a7cec853d2dd7066adf837fe12bf0f3d45e52
         with:
           java-version: openjdk${{ matrix.java }}
+      - name: Download Maven Repo
+        uses: actions/download-artifact@v1
+        with:
+          name: maven-repo
+          path: .
+      - name: Extract Maven Repo
+        shell: bash
+        run: tar -xzf maven-repo.tgz -C ~
       - name: Build Quarkus CLI
         run: |
-          git clone https://github.com/quarkusio/quarkus.git
-          cd quarkus
-          git checkout 2.2
-          mvn versions:set -DnewVersion=2.2.1.Final -DgenerateBackupPoms=false -pl .,build-parent,devtools/cli
-          cd devtools/cli
-          mvn -B -s ../../../.github/mvn-settings.xml clean install -Dquickly
+          git clone https://github.com/quarkusio/quarkus.git && cd quarkus/devtools/cli && mvn -B -s ../../../.github/mvn-settings.xml clean install -Dquickly
       - name: Install Quarkus CLI
         run: |
           cat <<EOF > ./quarkus-dev-cli
           #!/bin/bash
-          java -jar $PWD/quarkus/devtools/cli/target/quarkus-cli-2.2.1.Final-runner.jar "\$@"
+          java -jar $PWD/quarkus/devtools/cli/target/quarkus-cli-999-SNAPSHOT-runner.jar "\$@"
           EOF
           chmod +x ./quarkus-dev-cli
       - name: Build with Maven
@@ -65,16 +108,16 @@ jobs:
       - name: Zip Artifacts
         if: failure()
         run: |
-          zip -R artifacts-released-linux-jvm${{ matrix.java }}.zip '*-reports/*'
+          zip -R artifacts-latest-linux-jvm${{ matrix.java }}.zip '*-reports/*'
       - uses: actions/upload-artifact@v1
         if: failure()
         with:
           name: ci-artifacts
-          path: artifacts-released-linux-jvm${{ matrix.java }}.zip
-  linux-build-native-released:
-    name: PR - Linux - Native build - Released Version
+          path: artifacts-latest-linux-jvm${{ matrix.java }}.zip
+  linux-build-native-latest:
+    name: PR - Linux - Native build - Latest Version
     runs-on: ubuntu-latest
-    needs: linux-validate-format
+    needs: [ build-dependencies, linux-validate-format ]
     strategy:
       matrix:
         java: [ 11 ]
@@ -93,19 +136,22 @@ jobs:
         uses: joschi/setup-jdk@e87a7cec853d2dd7066adf837fe12bf0f3d45e52
         with:
           java-version: openjdk${{ matrix.java }}
+      - name: Download Maven Repo
+        uses: actions/download-artifact@v1
+        with:
+          name: maven-repo
+          path: .
+      - name: Extract Maven Repo
+        shell: bash
+        run: tar -xzf maven-repo.tgz -C ~
       - name: Build Quarkus CLI
         run: |
-          git clone https://github.com/quarkusio/quarkus.git
-          cd quarkus
-          git checkout 2.2
-          mvn versions:set -DnewVersion=2.2.1.Final -DgenerateBackupPoms=false -pl .,build-parent,devtools/cli
-          cd devtools/cli
-          mvn -B -s ../../../.github/mvn-settings.xml clean install -Dquickly
+          git clone https://github.com/quarkusio/quarkus.git && cd quarkus/devtools/cli && mvn -B -s ../../../.github/mvn-settings.xml clean install -Dquickly
       - name: Install Quarkus CLI
         run: |
           cat <<EOF > ./quarkus-dev-cli
           #!/bin/bash
-          java -jar $PWD/quarkus/devtools/cli/target/quarkus-cli-2.2.1.Final-runner.jar "\$@"
+          java -jar $PWD/quarkus/devtools/cli/target/quarkus-cli-999-SNAPSHOT-runner.jar "\$@"
           EOF
           chmod +x ./quarkus-dev-cli
       - id: files
@@ -133,16 +179,16 @@ jobs:
       - name: Zip Artifacts
         if: failure()
         run: |
-          zip -R artifacts-released-linux-native${{ matrix.java }}.zip '*-reports/*'
+          zip -R artifacts-latest-linux-native${{ matrix.java }}.zip '*-reports/*'
       - uses: actions/upload-artifact@v1
         if: failure()
         with:
           name: ci-artifacts
-          path: artifacts-released-linux-native${{ matrix.java }}.zip
-  windows-build-jvm-released:
-    name: PR - Windows - JVM build - Released Version
+          path: artifacts-latest-linux-native${{ matrix.java }}.zip
+  windows-build-jvm-latest:
+    name: PR - Windows - JVM build - Latest Version
     runs-on: windows-latest
-    needs: linux-validate-format
+    needs: [ build-dependencies, linux-validate-format ]
     strategy:
       matrix:
         java: [ 11 ]
@@ -158,6 +204,14 @@ jobs:
         uses: joschi/setup-jdk@e87a7cec853d2dd7066adf837fe12bf0f3d45e52
         with:
           java-version: ${{ matrix.java }}
+      - name: Download Maven Repo
+        uses: actions/download-artifact@v1
+        with:
+          name: maven-repo
+          path: .
+      - name: Extract Maven Repo
+        shell: bash
+        run: tar -xzf maven-repo.tgz -C ~
       - name: Build in JVM mode
         shell: bash
         run: |
@@ -167,10 +221,10 @@ jobs:
         if: failure()
         run: |
           # Disambiguate windows find from cygwin find
-          /usr/bin/find . -name '*-reports/*' -type d | tar -czf artifacts-released-windows-jvm${{ matrix.java }}.tar -T -
+          /usr/bin/find . -name '*-reports/*' -type d | tar -czf artifacts-latest-windows-jvm${{ matrix.java }}.tar -T -
       - name: Archive artifacts
         if: failure()
         uses: actions/upload-artifact@v1
         with:
           name: ci-artifacts
-          path: artifacts-released-windows-jvm${{ matrix.java }}.tar
+          path: artifacts-latest-windows-jvm${{ matrix.java }}.tar

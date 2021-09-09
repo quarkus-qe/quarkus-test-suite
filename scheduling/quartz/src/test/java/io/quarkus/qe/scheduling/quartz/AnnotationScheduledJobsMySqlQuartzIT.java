@@ -22,16 +22,16 @@ public class AnnotationScheduledJobsMySqlQuartzIT extends BaseMySqlQuartzIT {
     @QuarkusApplication
     static RestService one = new RestService().withProperties(MYSQL_PROPERTIES)
             .withProperty("owner.name", NODE_ONE_NAME)
-            .withProperty("quarkus.datasource.jdbc.url", BaseMySqlQuartzIT::mysqlJdbcUrl);
+            .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl);
 
     @QuarkusApplication
     static RestService two = new RestService().withProperties(MYSQL_PROPERTIES)
             .withProperty("owner.name", NODE_TWO_NAME)
-            .withProperty("quarkus.datasource.jdbc.url", BaseMySqlQuartzIT::mysqlJdbcUrl);
+            .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl);
 
     @QuarkusApplication
     static RestService app = new RestService().withProperties(MYSQL_PROPERTIES)
-            .withProperty("quarkus.datasource.jdbc.url", BaseMySqlQuartzIT::mysqlJdbcUrl)
+            .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl)
             // Disable scheduler, so this app behaves as viewer of the two nodes.
             .withProperty("quarkus.scheduler.enabled", "false");
 

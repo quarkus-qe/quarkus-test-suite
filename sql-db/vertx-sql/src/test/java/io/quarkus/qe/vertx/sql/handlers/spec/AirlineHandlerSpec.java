@@ -6,9 +6,9 @@ import static org.hamcrest.Matchers.is;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.restassured.http.ContentType;
 
-public interface AirlineHandlerSpec extends RestClient {
+public interface AirlineHandlerSpec {
     default void retrieveAllAirlines() {
-        app().given().accept(ContentType.JSON)
+        given().accept(ContentType.JSON)
                 .when()
                 .get("/airlines/")
                 .then()

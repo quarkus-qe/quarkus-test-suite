@@ -1,6 +1,5 @@
 package io.quarkus.qe.vertx.sql.handlers;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.qe.vertx.sql.handlers.spec.AirlineHandlerSpec;
@@ -8,7 +7,6 @@ import io.quarkus.qe.vertx.sql.handlers.spec.AirportHandlerSpec;
 import io.quarkus.qe.vertx.sql.handlers.spec.BasketHandlerSpec;
 import io.quarkus.qe.vertx.sql.handlers.spec.FlightsHandlerSpec;
 import io.quarkus.qe.vertx.sql.handlers.spec.PricingRulesSpec;
-import io.quarkus.test.bootstrap.RestService;
 
 public abstract class CommonTestCases implements
         PricingRulesSpec, FlightsHandlerSpec, BasketHandlerSpec, AirportHandlerSpec, AirlineHandlerSpec {
@@ -44,10 +42,5 @@ public abstract class CommonTestCases implements
     @Test
     public void airlineScenario() {
         retrieveAllAirlines();
-    }
-
-    @Override
-    public RestService app() {
-        throw new NotImplementedException(this.getClass().getName());
     }
 }

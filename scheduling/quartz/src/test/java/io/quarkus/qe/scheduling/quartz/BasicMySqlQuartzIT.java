@@ -14,7 +14,7 @@ public class BasicMySqlQuartzIT extends BaseMySqlQuartzIT {
 
     @QuarkusApplication
     static RestService app = new RestService().withProperties(MYSQL_PROPERTIES)
-            .withProperty("quarkus.datasource.jdbc.url", BaseMySqlQuartzIT::mysqlJdbcUrl);
+            .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl);
 
     @Test
     public void testAnnotationScheduledCounter() throws InterruptedException {

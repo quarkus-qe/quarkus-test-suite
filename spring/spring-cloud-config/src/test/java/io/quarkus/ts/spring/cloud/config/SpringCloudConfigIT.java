@@ -3,6 +3,7 @@ package io.quarkus.ts.spring.cloud.config;
 import static org.hamcrest.Matchers.is;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -24,8 +25,9 @@ public class SpringCloudConfigIT {
             .withProperty("quarkus.profile", "SpringCloudConfigIT")
             .withProperty("quarkus.spring-cloud-config.url", () -> spring.getHost() + ":" + spring.getPort());
 
+    @Tag("QUARKUS-1218")
     @ParameterizedTest
-    @ValueSource(strings = { "/jaxrs", "/spring" }) // TODO Disabled because https://github.com/quarkusio/quarkus/issues/19448: "/custom-mapping" })
+    @ValueSource(strings = { "/jaxrs", "/spring", "/custom-mapping" })
     public void shouldGetExpectedHelloMessage(String rootPath) {
         app.given().get(rootPath + "/hello").then()
                 .statusCode(HttpStatus.SC_OK)
