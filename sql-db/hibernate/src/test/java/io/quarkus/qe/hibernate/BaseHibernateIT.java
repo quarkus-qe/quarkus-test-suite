@@ -1,17 +1,14 @@
-package io.quarkus.qe.hibernate.transaction;
+package io.quarkus.qe.hibernate;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.test.bootstrap.RestService;
-import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.services.DevModeQuarkusApplication;
-
-@QuarkusScenario
-public class TransactionScopeBeanResourceIT {
+public abstract class BaseHibernateIT {
 
     private static final String TRANSACTION_SCOPE_BASE_PATH = "/transaction-scope";
 
@@ -19,11 +16,13 @@ public class TransactionScopeBeanResourceIT {
     private static final String TRUE = Boolean.TRUE.toString();
     private static final String FALSE = Boolean.FALSE.toString();
 
-    @DevModeQuarkusApplication
-    //TODO: simplify when https://github.com/quarkus-qe/quarkus-test-framework/issues/249 is resolved
-    static RestService app = new RestService().onPostStart(app -> {
-        app.logs().assertContains("Listening on");
-    });
+    /**
+     * Required data is pulled in from the `import.sql` resource.
+     */
+    @Test
+    public void shouldNotFailWithConstraints() {
+        given().when().get("/items/count").then().body(is("1"));
+    }
 
     @Test
     public void shouldPostConstructAndPreDestroyBeInvoked() {
@@ -31,6 +30,23 @@ public class TransactionScopeBeanResourceIT {
         whenInvokeBean();
         thenIsPostConstructInvoked();
         thenIsPreDestroyInvoked();
+    }
+
+    @Test
+    public void testJpaAndHibernateValidatorEndpoint() {
+        given()
+                .when().get("/hello")
+                .then()
+                .body(containsString("hello"))
+                .body(not(containsString("HV000041")));
+
+        // second request is where the issue appears
+        given()
+                .when().get("/hello")
+                .then()
+                .body(containsString("hello"))
+                .body(not(containsString("HV000041")))
+                .body(not(containsString("HV000")));
     }
 
     private void givenPostConstructAndPreDestroyAreNotInvoked() {
