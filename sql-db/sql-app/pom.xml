@@ -54,6 +54,33 @@
         </dependency>
     </dependencies>
     <profiles>
+        <!--
+        TODO: https://github.com/quarkusio/quarkus/issues/19055
+        io.quarkus:quarkus-jdbc-oracle dependency causes native build to fail when combined
+        with io.quarkus:quarkus-jdbc-postgresql.
+        Therefore it has been disabled for native profile. See profiles `default` and `native`
+        bellow.
+        -->
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>io.quarkus</groupId>
+                    <artifactId>quarkus-jdbc-oracle</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>native</id>
+            <activation>
+                <property>
+                    <name>native</name>
+                </property>
+            </activation>
+        </profile>
         <!-- Skipped on Windows as does not support Linux Containers / Testcontainers -->
         <profile>
             <id>skip-tests-on-windows</id>
