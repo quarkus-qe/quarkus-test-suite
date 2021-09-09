@@ -8,7 +8,7 @@
         <relativePath>../..</relativePath>
     </parent>
     <artifactId>sqldb-hibernate</artifactId>
-    <name>Quarkus QE TS: Hibernate features</name>
+    <name>Quarkus QE TS: Hibernate exploratory</name>
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
@@ -26,6 +26,11 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-hibernate-validator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus.qe</groupId>
+            <artifactId>quarkus-test-service-database</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <profiles>
