@@ -8,7 +8,6 @@ import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
 public class MSsqlHandlerIT extends CommonTestCases {
-    private static final String MSSQL_USER = "sa";
     private static final String MSSQL_PASSWORD = "QuArKuS_tEsT";
     private static final String DATABASE = "msdb";
     private static final int MSSQL_PORT = 1433;
@@ -27,18 +26,6 @@ public class MSsqlHandlerIT extends CommonTestCases {
                     () -> mssql.getHost().replace("http", "sqlserver") + ":" +
                             mssql.getPort() + "/" + DATABASE)
             .withProperty("app.selected.db", "mssql")
-            //            .withProperty("%mssql.app.selected.db", "mssql")
-            //            .withProperty("quarkus.datasource.mssql.reactive", "true")
-            //            .withProperty("quarkus.datasource.mssql.db-kind", "mssql")
-            //            .withProperty("quarkus.datasource.mssql.username", MSSQL_USER)
-            //            .withProperty("quarkus.datasource.mssql.password", MSSQL_PASSWORD)
-            //            .withProperty("quarkus.flyway.mssql.schemas", DATABASE)
-            //            .withProperty("quarkus.flyway.mssql.locations", "db/migration/mssql,db/migration/common")
             // Enable Flyway for MySQL
             .withProperty("quarkus.flyway.mssql.migrate-at-start", "true");
-
-    @Override
-    public void basketScenario() {
-
-    }
 }
