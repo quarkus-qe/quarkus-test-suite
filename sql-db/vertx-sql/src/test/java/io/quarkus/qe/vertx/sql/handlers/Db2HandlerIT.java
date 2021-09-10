@@ -1,6 +1,6 @@
 package io.quarkus.qe.vertx.sql.handlers;
 
-import io.quarkus.test.bootstrap.DefaultService;
+import io.quarkus.test.bootstrap.Db2Service;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
@@ -11,13 +11,7 @@ public class Db2HandlerIT extends CommonTestCases {
     private static final String DATABASE = "amadeus";
 
     @Container(image = "${db2.image}", port = 50000, expectedLog = "Setup has completed")
-    static DefaultService db2 = new DefaultService()
-            .withProperty("LICENSE", "accept")
-            .withProperty("DB2INST1_PASSWORD", "test")
-            .withProperty("DB2INSTANCE", "test")
-            .withProperty("AUTOCONFIG", "false")
-            .withProperty("ARCHIVE_LOGS", "false")
-            .withProperty("DBNAME", DATABASE);
+    static Db2Service db2 = new Db2Service().with("test", "test", DATABASE);
 
     @QuarkusApplication
     static final RestService app = new RestService()
