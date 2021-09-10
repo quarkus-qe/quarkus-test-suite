@@ -4,6 +4,7 @@ import java.util.function.BiConsumer;
 
 import org.jboss.logging.Logger;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -69,6 +70,23 @@ public class LogResourceIT {
         // Now, the message should be shown only in the logger of the custom category
         app.logs().assertDoesNotContain(MESSAGE + "field2");
         app.logs().assertContains(MESSAGE + "category2");
+    }
+
+    @Test
+    // TODO
+    // https://github.com/quarkusio/quarkus/issues/20066
+    @Disabled
+    public void checkDefaultLogMinLevel() {
+        app.given().when().get("/log").then().statusCode(204);
+
+        app.logs().assertContains("Fatal log example");
+        app.logs().assertContains("Error log example");
+        app.logs().assertContains("Warn log example");
+        app.logs().assertContains("Info log example");
+        app.logs().assertContains("Debug log example");
+
+        // the value of minimum logging level overrides the logging level
+        app.logs().assertDoesNotContain("Trace log example");
     }
 
     private void verifyLoggingRules(BiConsumer<Logger.Level, String> writer) {
