@@ -12,6 +12,7 @@ public class MSsqlHandlerIT extends CommonTestCases {
     private static final String DATABASE = "msdb";
     private static final int MSSQL_PORT = 1433;
 
+    //fixme Replace with SqlServerService when https://github.com/quarkus-qe/quarkus-test-framework/issues/251 will be solved
     @Container(image = "${mssql.image}", port = MSSQL_PORT, expectedLog = "Service Broker manager has started")
     static DefaultService mssql = new DefaultService()
             .withProperty("ACCEPT_EULA", "Y")
