@@ -221,6 +221,7 @@ Module that covers the logging functionality using JBoss Logging Manager. The fo
 - Inject the `Logger` instance in beans
 - Inject a `Logger` instance using a custom category
 - Setting up the log level property for logger instances 
+- Check default `quarkus.log.min-level` value
 
 ### `sql-db/hibernate`
 
