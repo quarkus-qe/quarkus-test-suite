@@ -2,7 +2,6 @@ package io.quarkus.ts.sqldb.sqlapp;
 
 import io.quarkus.test.bootstrap.DefaultService;
 import io.quarkus.test.bootstrap.RestService;
-import io.quarkus.test.bootstrap.SqlServerService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
@@ -27,5 +26,5 @@ public class OpenShiftMssqlDatabaseIT extends AbstractSqlDatabaseIT {
             .withProperty("quarkus.datasource.password", MSSQL_PASSWORD)
             .withProperty("quarkus.datasource.jdbc.url",
                     () -> mssql.getHost().replace("http", "jdbc:sqlserver") + ":" +
-                                  mssql.getPort() + ";databaseName=" + DATABASE);
+                            mssql.getPort() + ";databaseName=" + DATABASE);
 }
