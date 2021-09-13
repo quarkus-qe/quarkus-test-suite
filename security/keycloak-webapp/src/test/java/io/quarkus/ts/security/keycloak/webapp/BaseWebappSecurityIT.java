@@ -28,8 +28,10 @@ import io.quarkus.test.bootstrap.RestService;
 
 public abstract class BaseWebappSecurityIT {
 
-    static final String REALM_DEFAULT = "test-realm";
-    static final String CLIENT_ID_DEFAULT = "test-application-client";
+    protected static final String REALM_DEFAULT = "test-realm";
+    protected static final String CLIENT_ID_DEFAULT = "test-application-client";
+
+    private static final String LOGIN_REALM_REGEXP = ".*(Sign|Log) in to " + REALM_DEFAULT + ".*";
 
     private WebClient webClient;
     private Page page;
@@ -153,7 +155,7 @@ public abstract class BaseWebappSecurityIT {
 
     private void thenRedirectToLoginPage() {
         assertTrue(page instanceof HtmlPage, "Should be in the Login page");
-        assertEquals("Sign in to " + REALM_DEFAULT, ((HtmlPage) page).getTitleText(),
+        assertTrue(((HtmlPage) page).getTitleText().matches(LOGIN_REALM_REGEXP),
                 "Login page title should display application realm");
     }
 
