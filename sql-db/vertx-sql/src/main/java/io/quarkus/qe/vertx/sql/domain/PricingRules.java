@@ -72,7 +72,7 @@ public class PricingRules extends Record {
     }
 
     public static Multi<PricingRules> findAll(DbPoolService client) {
-        return client.query("SELECT * FROM " + client.getDatabaseName() + ".pricingRules").execute().onItem()
+        return client.query("SELECT * FROM " + client.getTableName("pricingRules")).execute().onItem()
                 .transformToMulti(PricingRules::fromSet);
     }
 

@@ -20,8 +20,10 @@ public class DbPoolService extends Pool {
         this.selectedDb = selectedDb;
     }
 
-    public String getDatabaseName() {
-        return databaseName;
+    public String getTableName(String table) {
+        return null == databaseName
+                ? table
+                : databaseName + "." + table;
     }
 
     public Uni<Long> save(String tableName, List<String> fieldsNames, List<Object> fieldsValues) {
@@ -30,9 +32,25 @@ public class DbPoolService extends Pool {
                 return saveMysql(tableName, fieldsNames, fieldsValues);
             case "db2":
                 return saveDb2(tableName, fieldsNames, fieldsValues);
+            case "mssql":
+                return saveMS(tableName, fieldsNames, fieldsValues);
             default:
                 return savePg(tableName, fieldsNames, fieldsValues);
         }
+    }
+
+    private Uni<Long> saveMS(String tableName, List<String> fieldsNames, List<Object> fieldsValues) {
+        return SqlClientHelper.inTransactionUni(this, tx -> {
+            String fields = tableFieldsToString(fieldsNames);
+            String values = tableFieldsValuesToString(fieldsValues);
+
+            return tx
+                    .preparedQuery(
+                            "INSERT INTO " + getTableName(tableName) + " (" + fields + ") VALUES (" + values
+                                    + "); SELECT SCOPE_IDENTITY() as id;")
+                    .execute()
+                    .map(r -> r.iterator().next().getLong("id"));
+        });
     }
 
     protected Uni<Long> savePg(String tableName, List<String> fieldsNames, List<Object> fieldsValues) {
@@ -41,7 +59,7 @@ public class DbPoolService extends Pool {
             String values = tableFieldsValuesToString(fieldsValues);
 
             return tx
-                    .preparedQuery("INSERT INTO " + getDatabaseName() + "." + tableName + " (" + fields + ") VALUES (" + values
+                    .preparedQuery("INSERT INTO " + getTableName(tableName) + " (" + fields + ") VALUES (" + values
                             + ") RETURNING id")
                     .execute().onItem().transform(id -> id.iterator().next().getLong("id"));
         });
@@ -54,7 +72,7 @@ public class DbPoolService extends Pool {
 
             return tx
                     .preparedQuery(
-                            "INSERT INTO " + getDatabaseName() + "." + tableName + " (" + fields + ") VALUES (" + values + ")")
+                            "INSERT INTO " + getTableName(tableName) + " (" + fields + ") VALUES (" + values + ")")
                     .execute()
                     .onItem().invoke(r -> this.query("SELECT LAST_INSERT_ID();"))
                     .onItem().transform(id -> (Long) id.getDelegate().property(LAST_INSERTED_ID));
@@ -67,7 +85,7 @@ public class DbPoolService extends Pool {
             String values = tableFieldsValuesToString(fieldsValues);
 
             return tx
-                    .preparedQuery("select id from NEW TABLE (INSERT INTO " + getDatabaseName() + "." + tableName + " ("
+                    .preparedQuery("select id from NEW TABLE (INSERT INTO " + getTableName(tableName) + " ("
                             + fields + ") VALUES (" + values + "))")
                     .execute().onItem().transform(id -> id.iterator().next().getLong("id"));
         });
@@ -88,5 +106,4 @@ public class DbPoolService extends Pool {
                     return content;
                 }).collect(Collectors.joining(",", "", ""));
     }
-
 }
