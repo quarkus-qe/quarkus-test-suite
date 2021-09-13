@@ -1,7 +1,7 @@
 package io.quarkus.ts.sqldb.sqlapp;
 
+import io.quarkus.test.bootstrap.DefaultService;
 import io.quarkus.test.bootstrap.RestService;
-import io.quarkus.test.bootstrap.SqlServerService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
@@ -9,16 +9,23 @@ import io.quarkus.test.services.QuarkusApplication;
 @QuarkusScenario
 public class MssqlDatabaseIT extends AbstractSqlDatabaseIT {
 
-    static final int MSSQL_PORT = 1433;
+    private static final String MSSQL_PASSWORD = "QuArKuS_tEsT";
+    private static final String DATABASE = "msdb";
+
+    private static final int MSSQL_PORT = 1433;
 
     @Container(image = "${mssql.image}", port = MSSQL_PORT, expectedLog = "Service Broker manager has started")
-    static SqlServerService mssql = new SqlServerService()
-            .withProperty("ACCEPT_EULA", "Y");
+    //fixme Replace with SqlServerService when https://github.com/quarkus-qe/quarkus-test-framework/issues/251 will be solved
+    static DefaultService mssql = new DefaultService()
+            .withProperty("ACCEPT_EULA", "Y")
+            .withProperty("SA_PASSWORD", MSSQL_PASSWORD);
 
     @QuarkusApplication
-    static RestService app = new RestService()
+    static final RestService app = new RestService()
             .withProperties("mssql.properties")
-            .withProperty("quarkus.datasource.username", mssql.getUser())
-            .withProperty("quarkus.datasource.password", mssql.getPassword())
-            .withProperty("quarkus.datasource.jdbc.url", mssql::getJdbcUrl);
+            .withProperty("quarkus.datasource.username", "sa")
+            .withProperty("quarkus.datasource.password", MSSQL_PASSWORD)
+            .withProperty("quarkus.datasource.jdbc.url",
+                    () -> mssql.getHost().replace("http", "jdbc:sqlserver") + ":" +
+                            mssql.getPort() + ";databaseName=" + DATABASE);
 }
