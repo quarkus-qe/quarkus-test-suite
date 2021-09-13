@@ -416,7 +416,7 @@
             </modules>
         </profile>
         <profile>
-            <id>micrometer-modules</id>
+            <id>monitoring-modules</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
                 <property>
@@ -427,6 +427,7 @@
                 <module>micrometer/prometheus</module>
                 <module>micrometer/prometheus-kafka</module>
                 <module>micrometer/oidc</module>
+                <module>monitoring/opentelemetry</module>
             </modules>
         </profile>
         <profile>
