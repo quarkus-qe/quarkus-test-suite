@@ -21,10 +21,13 @@ import io.vertx.core.impl.logging.Logger;
 import io.vertx.core.impl.logging.LoggerFactory;
 import io.vertx.core.json.jackson.DatabindCodec;
 import io.vertx.mutiny.db2client.DB2Pool;
+import io.vertx.mutiny.mssqlclient.MSSQLPool;
 import io.vertx.mutiny.mysqlclient.MySQLPool;
 import io.vertx.mutiny.pgclient.PgPool;
 
-/** Application is used as a main class in order to setup some global configuration */
+/**
+ * Application is used as a main class in order to setup some global configuration
+ */
 @ApplicationScoped
 public class Application {
 
@@ -55,6 +58,11 @@ public class Application {
     @IfBuildProfile("db2")
     DB2Pool db2;
 
+    @Inject
+    @Named("mssql")
+    @IfBuildProfile("mssql")
+    MSSQLPool mssql;
+
     void onStart(@Observes StartupEvent ev) {
         LOGGER.info("The application is starting with profile " + ProfileManager.getActiveProfile());
 
@@ -71,6 +79,8 @@ public class Application {
                 return new DbPoolService(mysql, mysqlDbName, selectedDB);
             case "db2":
                 return new DbPoolService(db2, "\"" + db2DbName + "\"", selectedDB);
+            case "mssql":
+                return new DbPoolService(mssql, null, selectedDB);
             default:
                 return new DbPoolService(postgresql, postgresqlDbName, selectedDB);
         }

@@ -20,9 +20,5 @@ public class MysqlHandlerIT extends CommonTestCases {
             .withProperty("quarkus.datasource.mysql.reactive.url", mysql::getReactiveUrl)
             .withProperty("app.selected.db", "mysql")
             // Enable Flyway for MySQL
-            .withProperty("quarkus.flyway.mysql.migrate-at-start", "true")
-            // Disable Flyway for Postgresql
-            .withProperty("quarkus.flyway.migrate-at-start", "false")
-            // Disable Flyway for DB2
-            .withProperty("quarkus.flyway.db2.migrate-at-start", "false");
+            .withProperty("quarkus.flyway.mysql.migrate-at-start", "true");
 }

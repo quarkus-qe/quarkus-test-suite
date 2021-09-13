@@ -56,7 +56,7 @@ public class Airport extends Record {
     }
 
     public static Multi<Airport> findAll(DbPoolService client) {
-        return client.query("SELECT * FROM " + client.getDatabaseName() + ".airports").execute().onItem()
+        return client.query("SELECT * FROM " + client.getTableName("airports")).execute().onItem()
                 .transformToMulti(Airport::fromSet);
     }
 
