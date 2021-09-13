@@ -20,12 +20,10 @@
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
         <quarkus.platform.version>2.2.2.Final</quarkus.platform.version>
         <quarkus-plugin.version>${quarkus.platform.version}</quarkus-plugin.version>
-        <quarkus.qe.framework.version>0.0.8</quarkus.qe.framework.version>
+        <quarkus.qe.framework.version>0.0.9</quarkus.qe.framework.version>
         <quarkus-qpid-jms.version>0.27.0</quarkus-qpid-jms.version>
         <quarkus-ide-config.version>2.2.2.Final</quarkus-ide-config.version>
         <apache-httpclient-fluent.version>4.5.13</apache-httpclient-fluent.version>
-        <apicurio.registry.utils.serde.version>1.3.2.Final</apicurio.registry.utils.serde.version>
-        <quarkiverse.apicurio.registry.client.version>0.0.2</quarkiverse.apicurio.registry.client.version>
         <confluent.kafka-avro-serializer.version>6.2.0</confluent.kafka-avro-serializer.version>
         <formatter-maven-plugin.version>2.16.0</formatter-maven-plugin.version>
         <impsort-maven-plugin.version>1.6.2</impsort-maven-plugin.version>
@@ -48,12 +46,6 @@
     </properties>
     <dependencyManagement>
         <dependencies>
-            <!-- TODO: com.squareup.retrofit2:retrofit:2.9.0 should be removed on Quarkus 2.0.0.Alphas-->
-            <dependency>
-                <groupId>com.squareup.retrofit2</groupId>
-                <artifactId>retrofit</artifactId>
-                <version>2.9.0</version>
-            </dependency>
             <dependency>
                 <groupId>${quarkus.platform.group-id}</groupId>
                 <artifactId>${quarkus.platform.artifact-id}</artifactId>
@@ -74,16 +66,6 @@
                 <version>${camel-quarkus-bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>io.apicurio</groupId>
-                <artifactId>apicurio-registry-utils-serde</artifactId>
-                <version>${apicurio.registry.utils.serde.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.quarkiverse.apicurio</groupId>
-                <artifactId>quarkiverse-apicurio-registry-client</artifactId>
-                <version>${quarkiverse.apicurio.registry.client.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.confluent</groupId>
@@ -246,7 +228,7 @@
                     <dependency>
                         <artifactId>quarkus-ide-config</artifactId>
                         <groupId>io.quarkus</groupId>
-                        <version>${quarkus.platform.version}</version>
+                        <version>${quarkus-ide-config.version}</version>
                     </dependency>
                 </dependencies>
                 <configuration>
@@ -447,11 +429,12 @@
                 </property>
             </activation>
             <modules>
+                <module>sql-db/hibernate</module>
                 <module>sql-db/sql-app</module>
                 <module>sql-db/multiple-pus</module>
                 <module>sql-db/panache-flyway</module>
                 <module>sql-db/vertx-sql</module>
-                <module>sql-db/reactive-postgresql</module>
+                <module>sql-db/reactive-vanilla</module>
             </modules>
         </profile>
         <profile>

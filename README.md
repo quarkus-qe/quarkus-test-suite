@@ -152,7 +152,10 @@ Simple bootstrap project created by *quarkus-maven-plugin*
 
 ### `http/jaxrs-reactive`
 RESTEasy Reactive equivalent of `http/jaxrs`. Tests simple and multipart endpoints.
-Additional coverage: execution model (blocking vs. non-blocking) of endpoints based on method signature.
+Additional coverage:
+- Execution model (blocking vs. non-blocking) of endpoints based on method signature.
+- HTTP Caching features.
+- Advanced JSON serialization.
 
 ### `http/rest-client`
 Verifies Rest Client configuration using `quarkus-rest-client-jaxb` (XML support) and `quarkus-rest-client-jsonb` (JSON support).
@@ -218,6 +221,17 @@ Module that covers the logging functionality using JBoss Logging Manager. The fo
 - Inject a `Logger` instance using a custom category
 - Setting up the log level property for logger instances 
 
+### `sql-db/hibernate`
+
+This module contains Hibernate integration scenarios.
+
+The features covered:
+* Reproducer for [14201](https://github.com/quarkusio/quarkus/issues/14201) and 
+  [14881](https://github.com/quarkusio/quarkus/issues/14881): possible data loss bug in hibernate. This is covered under 
+  the Java package `io.quarkus.qe.hibernate.items`.
+- Reproducer for [QUARKUS-661](https://issues.redhat.com/browse/QUARKUS-661): `@TransactionScoped` Context does not call 
+  `@Predestroy` on `TransactionScoped` beans. This is covered under the Java package `io.quarkus.qe.hibernate.transaction`.
+
 ### `sql-db/sql-app`
 
 Verifies that the application can connect to a SQL database and persist data using Hibernate ORM with Panache.
@@ -246,8 +260,9 @@ Container images used in the tests are:
 ### `sql-db/vertx-sql`
 Quarkus / Vertx SQL exploratory testing. A flight search engine in order to test Quarkus Reactive SQL extensions. A detailed description can be found in sql-db/vertx-sql/README.md
 
-### `sql-db/reactive-postgresql`
+### `sql-db/reactive-vanilla`
 Verifies `quarkus-reactive-pg-client` extension and DevServices integration
+Verifies `quarkus-reactive-mysql-client` extension and DevServices integration
 
 ### `sql-db/multiple-pus`
 

@@ -16,9 +16,9 @@ import io.quarkus.qe.vertx.sql.domain.Flight;
 import io.quarkus.qe.vertx.sql.domain.QueryFlightSearch;
 import io.restassured.http.ContentType;
 
-public interface FlightsHandlerSpec extends RestClient {
+public interface FlightsHandlerSpec {
     default void retrieveAllFlights() {
-        app().given().accept(ContentType.JSON)
+        given().accept(ContentType.JSON)
                 .when()
                 .get("/flights/")
                 .then()
@@ -27,7 +27,7 @@ public interface FlightsHandlerSpec extends RestClient {
     }
 
     default void retrieveFlightByOriginDestination() {
-        Flight[] flights = app().given().accept(ContentType.JSON)
+        Flight[] flights = given().accept(ContentType.JSON)
                 .when()
                 .get("/flights/origin/MAD/destination/CDG")
                 .then()
@@ -129,7 +129,7 @@ public interface FlightsHandlerSpec extends RestClient {
                 .withTo("BCN")
                 .build();
 
-        app().given().accept(ContentType.JSON)
+        given().accept(ContentType.JSON)
                 .body(query.toJsonStringify())
                 .when()
                 .put("/flights/search")
@@ -138,7 +138,7 @@ public interface FlightsHandlerSpec extends RestClient {
     }
 
     default List<Basket> thenMakeFlightSearchQuery(QueryFlightSearch query, int expectedStatus, int expectedAmount) {
-        return Arrays.asList(app().given().accept(ContentType.JSON)
+        return Arrays.asList(given().accept(ContentType.JSON)
                 .body(query.toJsonStringify())
                 .when()
                 .put("/flights/search")

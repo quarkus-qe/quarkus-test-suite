@@ -9,14 +9,14 @@ import io.quarkus.qe.vertx.sql.domain.Basket;
 import io.quarkus.qe.vertx.sql.domain.Passenger;
 import io.restassured.http.ContentType;
 
-public interface BasketHandlerSpec extends RestClient {
+public interface BasketHandlerSpec {
     default void basketCheckout() {
         Basket basket = new Basket();
         basket.setBillingPassenger(defaultPassenger());
         basket.setFlight("IB9961");
         basket.setPrice(437.52);
 
-        app().given().accept(ContentType.JSON).body(basket)
+        given().accept(ContentType.JSON).body(basket)
                 .when()
                 .post("/basket/checkout")
                 .then()
@@ -32,7 +32,7 @@ public interface BasketHandlerSpec extends RestClient {
 
         basket.getBillingPassenger().setNif(null);
 
-        app().given().accept(ContentType.JSON).body(basket)
+        given().accept(ContentType.JSON).body(basket)
                 .when()
                 .post("/basket/checkout")
                 .then()

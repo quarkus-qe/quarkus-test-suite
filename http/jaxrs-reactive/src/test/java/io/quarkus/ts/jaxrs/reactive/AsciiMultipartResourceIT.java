@@ -5,6 +5,7 @@ import static org.hamcrest.CoreMatchers.not;
 
 import java.nio.charset.StandardCharsets;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -14,6 +15,7 @@ import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.specification.MultiPartSpecification;
 
+@Tag("QUARKUS-1075")
 @QuarkusScenario
 public class AsciiMultipartResourceIT {
 

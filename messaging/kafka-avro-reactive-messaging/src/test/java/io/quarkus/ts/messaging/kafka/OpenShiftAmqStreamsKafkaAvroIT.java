@@ -13,11 +13,12 @@ import io.quarkus.test.services.containers.model.KafkaVendor;
 @EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
 public class OpenShiftAmqStreamsKafkaAvroIT extends BaseKafkaAvroIT {
 
-    @KafkaContainer(vendor = KafkaVendor.STRIMZI, image = "${amq-streams.image}", version = "${amq-streams.version}", withRegistry = true)
+    @KafkaContainer(vendor = KafkaVendor.STRIMZI, image = "${amq-streams.image}", version = "${amq-streams.version}", withRegistry = true, registryPath = "/apis/registry/v2")
     static KafkaService kafka = new KafkaService();
 
     @QuarkusApplication
     static RestService app = new RestService()
+            .withProperties("strimzi-application.properties")
             .withProperty("kafka.bootstrap.servers", kafka::getBootstrapUrl)
             .withProperty("kafka.registry.url", kafka::getRegistryUrl);
 
