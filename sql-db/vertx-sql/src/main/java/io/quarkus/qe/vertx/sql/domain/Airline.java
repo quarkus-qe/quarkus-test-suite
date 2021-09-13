@@ -71,7 +71,7 @@ public class Airline extends Record {
     }
 
     public static Multi<Airline> findAll(DbPoolService client) {
-        return client.query("SELECT * FROM " + client.getDatabaseName() + ".airlines").execute().onItem()
+        return client.query("SELECT * FROM " + client.getTableName("airlines")).execute().onItem()
                 .transformToMulti(Airline::fromSet);
     }
 

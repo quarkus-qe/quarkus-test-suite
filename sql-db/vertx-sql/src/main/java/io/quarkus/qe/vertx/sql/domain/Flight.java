@@ -55,7 +55,7 @@ public class Flight extends Record {
     }
 
     public static Multi<Flight> findAll(DbPoolService client) {
-        return client.query("SELECT * FROM " + client.getDatabaseName() + ".flights").execute().onItem()
+        return client.query("SELECT * FROM " + client.getTableName("flights")).execute().onItem()
                 .transformToMulti(Flight::fromSet);
     }
 
@@ -64,7 +64,7 @@ public class Flight extends Record {
     }
 
     public static Multi<Flight> findByOriginDestination(DbPoolService client, String origin, String destination) {
-        String query = String.format("SELECT * FROM " + client.getDatabaseName() + ".flights where %s = '%s' and %s = '%s'",
+        String query = String.format("SELECT * FROM " + client.getTableName("flights") + " where %s = '%s' and %s = '%s'",
                 QUALIFIED_ORIGIN_NAME, origin, QUALIFIED_DESTINATION_NAME, destination);
         return client.query(query).execute().onItem().transformToMulti(Flight::fromSet);
     }
