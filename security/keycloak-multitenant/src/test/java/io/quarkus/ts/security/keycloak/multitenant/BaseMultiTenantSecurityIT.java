@@ -26,8 +26,10 @@ import io.quarkus.test.bootstrap.RestService;
 
 public abstract class BaseMultiTenantSecurityIT {
 
-    static final String USER = "test-user";
-    static final String REALM_DEFAULT = "test-realm";
+    protected static final String USER = "test-user";
+    protected static final String REALM_DEFAULT = "test-realm";
+
+    private static final String LOGIN_REALM_REGEXP = ".*(Sign|Log) in to " + REALM_DEFAULT + ".*";
 
     private WebClient webClient;
 
@@ -62,7 +64,7 @@ public abstract class BaseMultiTenantSecurityIT {
     @EnumSource(value = Tenant.class, names = { "WEBAPP", "JWT" })
     public void testAuthenticationForWebAppTenants(Tenant webAppTenant) throws Exception {
         HtmlPage loginPage = webClient.getPage(getEndpointByTenant(webAppTenant));
-        assertEquals("Sign in to " + REALM_DEFAULT, loginPage.getTitleText(),
+        assertTrue(loginPage.getTitleText().matches(LOGIN_REALM_REGEXP),
                 "Login page title should display application realm");
 
         TextPage resourcePage = whenLogin(loginPage, USER);
