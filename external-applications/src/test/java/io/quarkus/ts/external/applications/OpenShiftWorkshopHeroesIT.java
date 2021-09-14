@@ -42,7 +42,7 @@ public class OpenShiftWorkshopHeroesIT {
     @Container(image = "${postgresql.12.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
     static PostgresqlService database = new PostgresqlService();
 
-    @GitRepositoryQuarkusApplication(repo = "https://github.com/quarkusio/quarkus-workshops.git", contextDir = "quarkus-workshop-super-heroes/super-heroes/rest-hero", mavenArgs = "-Dquarkus.package.type=uber-jar -DskipTests")
+    @GitRepositoryQuarkusApplication(repo = "https://github.com/quarkusio/quarkus-workshops.git", contextDir = "quarkus-workshop-super-heroes/super-heroes/rest-hero", mavenArgs = "-Dquarkus.package.type=uber-jar -DskipTests -Dquarkus.platform.artifact-id=quarkus-bom")
     static final RestService app = new RestService()
             .withProperty("quarkus.http.port", "8080")
             .withProperty("quarkus.datasource.username", database.getUser())

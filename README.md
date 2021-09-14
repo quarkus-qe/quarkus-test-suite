@@ -534,6 +534,12 @@ This test could be extended with some metric gathering.
 
 ### `external-applications`
 
+External applications need a base image which is used by OpenShift to build the app on. So, one base image needs to be supplied forJVM and Native:
+- For JVM: `ts.global.s2i.quarkus.jvm.builder.image`
+- For Native: `ts.global.s2i.quarkus.native.builder.image`
+
+These properties have default values set in the pom.xml file.
+
 It contains three applications:
 
 #### `todo-demo-app`
