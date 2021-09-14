@@ -25,6 +25,9 @@ jobs:
       - name: Build Quarkus main
         run: |
           git clone https://github.com/quarkusio/quarkus.git && cd quarkus && ./mvnw -B -s .github/mvn-settings.xml clean install -Dquickly
+      - name: Build Quarkus Test Suite Parent
+        run: |
+          mvn -V -B -s .github/mvn-settings.xml install -DskipTests -DskipITs -pl .
       - name: Tar Maven Repo
         shell: bash
         run: tar -I 'pigz -9' -cf maven-repo.tgz -C ~ .m2/repository
