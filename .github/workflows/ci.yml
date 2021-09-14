@@ -94,6 +94,8 @@ jobs:
             MODULES_MAVEN_PARAM="-pl ${MODULES_ARG}"
           fi
 
+          mvn -V -B -s .github/mvn-settings.xml install -DskipTests -DskipITs -pl .
+
           mvn -fae -V -B -s .github/mvn-settings.xml clean verify -Dall-modules -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli" $MODULES_MAVEN_PARAM
       - name: Zip Artifacts
         if: failure()
@@ -147,6 +149,8 @@ jobs:
         run: |
           if [[ -n ${MODULES_ARG} ]]; then
             echo "Running modules: ${MODULES_ARG}"
+            mvn -V -B -s .github/mvn-settings.xml install -DskipTests -DskipITs -pl .
+
             mvn -fae -V -B -s .github/mvn-settings.xml -fae -Dall-modules -pl $MODULES_ARG clean verify -Dnative \
                         -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli"
           fi
@@ -188,6 +192,8 @@ jobs:
             echo "Running modules: ${MODULES_ARG}"
             MODULES_MAVEN_PARAM="-pl ${MODULES_ARG}"
           fi
+
+          mvn -V -B -s .github/mvn-settings.xml install -DskipTests -DskipITs -pl .
 
           mvn -fae -s .github/mvn-settings.xml clean verify -Dall-modules $MODULES_MAVEN_PARAM
       - name: Zip Artifacts
