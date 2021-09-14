@@ -16,7 +16,7 @@ public class MssqlDatabaseIT extends AbstractSqlDatabaseIT {
 
     @Container(image = "${mssql.image}", port = MSSQL_PORT, expectedLog = "Service Broker manager has started")
     //fixme Replace with SqlServerService when https://github.com/quarkus-qe/quarkus-test-framework/issues/251 will be solved
-    static DefaultService mssql = new DefaultService()
+    static DefaultService database = new DefaultService()
             .withProperty("ACCEPT_EULA", "Y")
             .withProperty("SA_PASSWORD", MSSQL_PASSWORD);
 
@@ -26,6 +26,6 @@ public class MssqlDatabaseIT extends AbstractSqlDatabaseIT {
             .withProperty("quarkus.datasource.username", "sa")
             .withProperty("quarkus.datasource.password", MSSQL_PASSWORD)
             .withProperty("quarkus.datasource.jdbc.url",
-                    () -> mssql.getHost().replace("http", "jdbc:sqlserver") + ":" +
-                            mssql.getPort() + ";databaseName=" + DATABASE);
+                    () -> database.getHost().replace("http", "jdbc:sqlserver") + ":" +
+                            database.getPort() + ";databaseName=" + DATABASE);
 }
