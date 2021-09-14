@@ -335,7 +335,6 @@
                 <module>properties</module>
                 <module>javaee-like-getting-started</module>
                 <module>scaling</module>
-                <module>microprofile</module>
                 <module>lifecycle-application</module>
                 <module>external-applications</module>
                 <module>scheduling/quartz</module>
@@ -418,10 +417,11 @@
                 </property>
             </activation>
             <modules>
-                <module>micrometer/prometheus</module>
-                <module>micrometer/prometheus-kafka</module>
-                <module>micrometer/oidc</module>
+                <module>monitoring/micrometer-prometheus</module>
+                <module>monitoring/micrometer-prometheus-kafka</module>
+                <module>monitoring/micrometer-prometheus-oidc</module>
                 <module>monitoring/opentelemetry</module>
+                <module>monitoring/microprofile-opentracing</module>
             </modules>
         </profile>
         <profile>

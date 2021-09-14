@@ -428,7 +428,7 @@ this.router.get("/secured")
 * secure.helloWorld(rc): actual http endpoint (Rest layer).
 
 
-### `microprofile`
+### `monitoring/microprofile`
 
 Verifies combined usage of MicroProfile RestClient, Fault Tolerance and OpenTracing.
 
@@ -440,6 +440,16 @@ It is possible to enable/disable the "hello" endpoint, which controls whether Fa
 All HTTP endpoints and internal processing is asynchronous, so Context Propagation is also required.
 JAX-RS endpoints and RestClient calls are automatically traced with OpenTracing, and some additional logging into the OpenTracing spans is also done.
 Jaeger is deployed in an "all-in-one" configuration, and the OpenShift test verifies the stored traces.
+
+### `monitoring/opentelemetry`
+
+Testing OpenTelemetry with Jaeger components
+ - Extension `quarkus-opentelemetry` - responsible for traces generation in OpenTelemetry format
+ - Extension `quarkus-opentelemetry-exporter-jaeger` - responsible for traces export into Jaeger components (jaeger-agent, jaeger-collector)
+ - Extension `quarkus-opentelemetry-exporter-otlp` -responsible for traces export into OpenTelemetry components (opentelemetry-agent, opentelemetry-collector)
+ 
+Scenarios that test proper traces export to Jaeger components and context propagation.  
+See also `monitoring/opentelemetry/README.md`
 
 ### `micrometer/prometheus`
 
