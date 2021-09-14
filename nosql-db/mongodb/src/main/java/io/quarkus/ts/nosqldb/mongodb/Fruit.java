@@ -2,6 +2,8 @@ package io.quarkus.ts.nosqldb.mongodb;
 
 import java.util.Objects;
 
+import org.bson.Document;
+
 public class Fruit {
 
     private String name;
@@ -54,5 +56,15 @@ public class Fruit {
 
     public String getId() {
         return id;
+    }
+
+    public static Fruit fromDocument(Document document) {
+        return new Fruit(document.getString("name"), document.getString("description"));
+    }
+
+    public Document toDocument() {
+        return new Document()
+                .append("name", this.getName())
+                .append("description", this.getDescription());
     }
 }

@@ -18,21 +18,11 @@ public class ReactiveFruitService {
     ReactiveMongoClient mongoClient;
 
     public Uni<List<Fruit>> list() {
-        return getCollection().find()
-                .map(doc -> {
-                    Fruit fruit = new Fruit();
-                    fruit.setName(doc.getString("name"));
-                    fruit.setDescription(doc.getString("description"));
-                    return fruit;
-                }).collect().asList();
+        return getCollection().find().map(Fruit::fromDocument).collect().asList();
     }
 
     public Uni<Void> add(Fruit fruit) {
-        Document document = new Document()
-                .append("name", fruit.getName())
-                .append("description", fruit.getDescription());
-        return getCollection().insertOne(document)
-                .onItem().ignore().andContinueWithNull();
+        return getCollection().insertOne(fruit.toDocument()).onItem().ignore().andContinueWithNull();
     }
 
     private ReactiveMongoCollection<Document> getCollection() {

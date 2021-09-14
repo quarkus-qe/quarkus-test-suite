@@ -26,10 +26,7 @@ public class FruitCodec implements CollectibleCodec<Fruit> {
 
     @Override
     public void encode(BsonWriter writer, Fruit fruit, EncoderContext encoderContext) {
-        Document doc = new Document();
-        doc.put("name", fruit.getName());
-        doc.put("description", fruit.getDescription());
-        documentCodec.encode(writer, doc, encoderContext);
+        documentCodec.encode(writer, fruit.toDocument(), encoderContext);
     }
 
     @Override
@@ -58,12 +55,10 @@ public class FruitCodec implements CollectibleCodec<Fruit> {
     @Override
     public Fruit decode(BsonReader reader, DecoderContext decoderContext) {
         Document document = documentCodec.decode(reader, decoderContext);
-        Fruit fruit = new Fruit();
+        Fruit fruit = Fruit.fromDocument(document);
         if (document.getString("id") != null) {
             fruit.setId(document.getString("id"));
         }
-        fruit.setName(document.getString("name"));
-        fruit.setDescription(document.getString("description"));
         return fruit;
     }
 }
