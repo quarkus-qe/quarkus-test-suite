@@ -5,9 +5,9 @@
         <groupId>io.quarkus.ts.qe</groupId>
         <artifactId>parent</artifactId>
         <version>1.0.0-SNAPSHOT</version>
-        <relativePath>..</relativePath>
+        <relativePath>../..</relativePath>
     </parent>
-    <artifactId>microprofile</artifactId>
+    <artifactId>microprofile-opentracing</artifactId>
     <packaging>jar</packaging>
     <name>Quarkus QE TS: MicroProfile</name>
     <dependencies>
