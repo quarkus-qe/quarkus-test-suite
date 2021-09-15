@@ -20,12 +20,12 @@ public class FruitResource {
 
     @GET
     public List<Fruit> list() {
-        return fruitService.list();
+        return fruitService.listFruits();
     }
 
     @POST
     public List<Fruit> add(Fruit fruit) {
-        fruitService.add(fruit);
+        fruitService.addFruit(fruit);
         return list();
     }
 }
