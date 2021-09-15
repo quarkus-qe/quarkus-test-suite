@@ -21,7 +21,9 @@ jobs:
       - name: Install JDK {{ matrix.java }}
         uses: joschi/setup-jdk@e87a7cec853d2dd7066adf837fe12bf0f3d45e52
         with:
+          distribution: 'temurin'
           java-version: ${{ matrix.java }}
+          check-latest: true
       - name: Build Quarkus main
         run: |
           git clone https://github.com/quarkusio/quarkus.git && cd quarkus && ./mvnw -B -s .github/mvn-settings.xml clean install -Dquickly
@@ -51,7 +53,9 @@ jobs:
       - name: Install JDK {{ matrix.java }}
         uses: joschi/setup-jdk@e87a7cec853d2dd7066adf837fe12bf0f3d45e52
         with:
+          distribution: 'temurin'
           java-version: ${{ matrix.java }}
+          check-latest: true
       - name: Download Maven Repo
         uses: actions/download-artifact@v1
         with:
@@ -92,6 +96,7 @@ jobs:
   linux-build-jvm-latest:
     name: PR - Linux - JVM build - Latest Version
     runs-on: ubuntu-latest
+    timeout-minutes: 180
     needs: detect-test-suite-modules
     env:
       MODULES_ARG: ${{ needs.detect-test-suite-modules.outputs.MODULES_ARG }}
@@ -112,7 +117,9 @@ jobs:
         # Uses sha for added security since tags can be updated
         uses: joschi/setup-jdk@e87a7cec853d2dd7066adf837fe12bf0f3d45e52
         with:
-          java-version: openjdk${{ matrix.java }}
+          distribution: 'temurin'
+          java-version: ${{ matrix.java }}
+          check-latest: true
       - name: Download Maven Repo
         uses: actions/download-artifact@v1
         with:
@@ -172,7 +179,9 @@ jobs:
         # Uses sha for added security since tags can be updated
         uses: joschi/setup-jdk@e87a7cec853d2dd7066adf837fe12bf0f3d45e52
         with:
-          java-version: openjdk${{ matrix.java }}
+          distribution: 'temurin'
+          java-version: ${{ matrix.java }}
+          check-latest: true
       - name: Download Maven Repo
         uses: actions/download-artifact@v1
         with:
@@ -227,7 +236,9 @@ jobs:
       - name: Install JDK {{ matrix.java }}
         uses: joschi/setup-jdk@e87a7cec853d2dd7066adf837fe12bf0f3d45e52
         with:
+          distribution: 'temurin'
           java-version: ${{ matrix.java }}
+          check-latest: true
       - name: Download Maven Repo
         uses: actions/download-artifact@v1
         with:
