@@ -702,3 +702,12 @@ More information about this extension in https://quarkus.io/guides/spring-cache.
 ### `test-tooling/pact`
 
 Verifies, that quarkus works correctly with third-party tool called Pact-JVM
+
+### `nosql-db/mongodb`
+
+Test data operations on MongoDB: insert one document into a collection, list all documents in a collection, find documents from
+a collection using a filter and a projection. All tests are performed using:
+
+- MongoClient
+- MongoClient with BSON codec for all entities
+- ReactiveMongoClient (without codecs)
