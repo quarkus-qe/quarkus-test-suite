@@ -42,6 +42,9 @@ jobs:
     strategy:
       matrix:
         java: [ 11 ]
+        profiles: [ "root-modules,http-modules,security-modules,micrometer-modules,spring-modules,test-tooling-modules",
+                   "sql-db-modules",
+                   "messaging-modules"]
     steps:
       - uses: actions/checkout@v1
       - uses: actions/cache@v1
@@ -76,7 +79,7 @@ jobs:
           chmod +x ./quarkus-dev-cli
       - name: Test in JVM mode
         run: |
-          mvn -fae -V -B -s .github/mvn-settings.xml -fae clean verify -Dall-modules -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli"
+          mvn -fae -V -B -s .github/mvn-settings.xml -fae clean verify -P ${{ matrix.profiles }} -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli"
       - name: Zip Artifacts
         if: failure()
         run: |
@@ -95,7 +98,7 @@ jobs:
       matrix:
         java: [ 11 ]
         image: [ "ubi-quarkus-native-image:21.2-java11", "ubi-quarkus-mandrel:21.2-java11" ]
-        profiles: [ "!http-modules,!security-modules,!sql-db-modules,!messaging-modules",
+        profiles: [ "root-modules,micrometer-modules,spring-modules,test-tooling-modules",
                    "http-modules",
                    "security-modules",
                    "sql-db-modules",

@@ -464,7 +464,7 @@
             </modules>
         </profile>
         <profile>
-            <id>test-tooling</id>
+            <id>test-tooling-modules</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
                 <property>

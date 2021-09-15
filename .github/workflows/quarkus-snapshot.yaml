@@ -24,7 +24,7 @@ jobs:
     if: github.actor == 'quarkusbot' || github.actor == 'Sgitario' || github.actor == 'rsvoboda'
     strategy:
       matrix:
-        profiles: [ "!http-modules,!security-modules,!sql-db-modules,!messaging-modules",
+        profiles: [ "root-modules,micrometer-modules,spring-modules,test-tooling-modules",
                     "http-modules",
                     "security-modules",
                     "sql-db-modules",
