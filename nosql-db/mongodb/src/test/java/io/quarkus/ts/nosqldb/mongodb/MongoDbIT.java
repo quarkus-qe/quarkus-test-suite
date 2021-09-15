@@ -28,7 +28,7 @@ public class MongoDbIT {
 
     @ParameterizedTest
     @ValueSource(strings = { "/fruits", "/reactive_fruits", "/codec_fruits" })
-    public void testAddAndListFruit(String path) {
+    public void fruitsEndpoints(String path) {
         final Fruit fruit1 = new Fruit("fruit1", "fruit description 1");
         final Fruit fruit2 = new Fruit("fruit2", "fruit description 2");
 
@@ -50,7 +50,7 @@ public class MongoDbIT {
 
     @ParameterizedTest
     @ValueSource(strings = { "/fruit_baskets", "/reactive_fruit_baskets", "/codec_fruit_baskets" })
-    public void testAddAndListFruitBasket(String path) {
+    public void fruitBasketsEndpoints(String path) {
         final Fruit fruit1 = new Fruit("fruit1", "fruit description 1");
         final Fruit fruit2 = new Fruit("fruit2", "fruit description 2");
         final FruitBasket fruitBasket1 = new FruitBasket("null", null);
@@ -80,6 +80,16 @@ public class MongoDbIT {
                 .statusCode(HttpStatus.SC_OK)
                 .extract().body().jsonPath().getList(".", FruitBasket.class);
         Assertions.assertThat(fruitBaskets2).isEqualTo(fruitBaskets1);
+
+        List<FruitBasket> fruitBaskets3 = RestAssured.get(path + "/find-items/" + fruitBasket3.getName())
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .extract().body().jsonPath().getList(".", FruitBasket.class);
+        Assertions.assertThat(fruitBaskets3).isNotNull();
+        Assertions.assertThat(fruitBaskets3.size()).isEqualTo(1);
+        Assertions.assertThat(fruitBaskets3.get(0).getName()).isNull();
+        Assertions.assertThat(fruitBaskets3.get(0).getId()).isNull();
+        Assertions.assertThat(fruitBaskets3.get(0).getItems()).isEqualTo(fruitBasket3.getItems());
     }
 
     private List<Fruit> postFruit(String path, Fruit fruit) {

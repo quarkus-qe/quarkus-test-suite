@@ -6,9 +6,13 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.bson.conversions.Bson;
+
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Projections;
 
 @ApplicationScoped
 public class CodecFruitService implements FruitInterface {
@@ -35,9 +39,18 @@ public class CodecFruitService implements FruitInterface {
         add(CODEC_FRUIT_BASKET_COLLECTION_NAME, FruitBasket.class, fruitBasket);
     }
 
+    public List<FruitBasket> findFruitBasketsItemsOnly(String fruitBasketName) {
+        return list(CODEC_FRUIT_BASKET_COLLECTION_NAME, Filters.eq("name", fruitBasketName), Projections.include("items"),
+                FruitBasket.class);
+    }
+
     private <T> List<T> list(String collection, Class<T> clazz) {
+        return list(collection, Filters.empty(), null, clazz);
+    }
+
+    private <T> List<T> list(String collection, Bson filter, Bson projection, Class<T> clazz) {
         List<T> list = new ArrayList<>();
-        try (MongoCursor<T> cursor = getCollection(collection, clazz).find().iterator()) {
+        try (MongoCursor<T> cursor = getCollection(collection, clazz).find(filter).projection(projection).iterator()) {
             while (cursor.hasNext()) {
                 list.add(cursor.next());
             }

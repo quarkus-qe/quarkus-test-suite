@@ -25,6 +25,12 @@ public class ReactiveFruitBasketResource {
         return fruitService.listFruitBaskets();
     }
 
+    @GET
+    @Path("/find-items/{fruitBasketName}")
+    public Uni<List<FruitBasket>> findItems(String fruitBasketName) {
+        return fruitService.findFruitBasketsItemsOnly(fruitBasketName);
+    }
+
     @POST
     public Uni<List<FruitBasket>> add(FruitBasket fruitBasket) {
         return fruitService.addFruitBasket(fruitBasket)

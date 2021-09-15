@@ -23,6 +23,12 @@ public class CodecFruitBasketResource {
         return fruitService.listFruitBaskets();
     }
 
+    @GET
+    @Path("/find-items/{fruitBasketName}")
+    public List<FruitBasket> findItems(String fruitBasketName) {
+        return fruitService.findFruitBasketsItemsOnly(fruitBasketName);
+    }
+
     @POST
     public List<FruitBasket> add(FruitBasket fruitBasket) {
         fruitService.addFruitBasket(fruitBasket);

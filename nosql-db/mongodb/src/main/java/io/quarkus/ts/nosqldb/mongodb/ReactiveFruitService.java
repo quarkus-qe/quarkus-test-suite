@@ -7,7 +7,12 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Projections;
+
+import io.quarkus.mongodb.FindOptions;
 import io.quarkus.mongodb.reactive.ReactiveMongoClient;
 import io.quarkus.mongodb.reactive.ReactiveMongoCollection;
 import io.smallrye.mutiny.Uni;
@@ -37,8 +42,18 @@ public class ReactiveFruitService implements FruitInterface {
         return add(REACTIVE_FRUIT_BASKET_COLLECTION_NAME, fruitBasket.toDocument());
     }
 
+    public Uni<List<FruitBasket>> findFruitBasketsItemsOnly(String fruitBasketName) {
+        return list(REACTIVE_FRUIT_BASKET_COLLECTION_NAME, Filters.eq("name", fruitBasketName), Projections.include("items"),
+                FruitBasket::fromDocument);
+    }
+
     private <T> Uni<List<T>> list(String collection, Function<Document, T> converter) {
-        return getCollection(collection).find().map(converter).collect().asList();
+        return list(collection, Filters.empty(), null, converter);
+    }
+
+    private <T> Uni<List<T>> list(String collection, Bson filter, Bson projection, Function<Document, T> converter) {
+        return getCollection(collection).find(new FindOptions().filter(filter).projection(projection)).map(converter).collect()
+                .asList();
     }
 
     private Uni<Void> add(String collection, Document document) {
