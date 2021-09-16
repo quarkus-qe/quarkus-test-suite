@@ -42,7 +42,7 @@ jobs:
     strategy:
       matrix:
         java: [ 11 ]
-        profiles: [ "root-modules,http-modules,security-modules,micrometer-modules,spring-modules,test-tooling-modules",
+        profiles: [ "root-modules,http-modules,security-modules,monitoring-modules,spring-modules,test-tooling-modules",
                    "sql-db-modules",
                    "messaging-modules"]
     steps:
@@ -98,7 +98,7 @@ jobs:
       matrix:
         java: [ 11 ]
         image: [ "ubi-quarkus-native-image:21.2-java11", "ubi-quarkus-mandrel:21.2-java11" ]
-        profiles: [ "root-modules,micrometer-modules,spring-modules,test-tooling-modules",
+        profiles: [ "root-modules,monitoring-modules,spring-modules,test-tooling-modules",
                    "http-modules",
                    "security-modules",
                    "sql-db-modules",
