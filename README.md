@@ -710,4 +710,7 @@ a collection using a filter and a projection. All tests are performed using:
 
 - MongoClient
 - MongoClient with BSON codec for all entities
-- ReactiveMongoClient (without codecs)
+
+### `nosql-db/mongodb-reactive`
+
+Reactive equivalent of `nosql-db/mongodb`. Uses reactive ReactiveMongoClient (without codecs)
