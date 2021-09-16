@@ -1,9 +1,10 @@
 package io.quarkus.ts.nosqldb.mongodb;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
 
 import org.apache.http.HttpStatus;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -33,19 +34,19 @@ public class MongoDbIT {
         final Fruit fruit2 = new Fruit("fruit2", "fruit description 2");
 
         List<Fruit> fruits1 = postFruit(path, fruit1);
-        Assertions.assertThat(fruits1).isNotNull();
-        Assertions.assertThat(fruits1.size()).isEqualTo(1);
-        Assertions.assertThat(fruits1).contains(fruit1);
+        assertThat(fruits1).isNotNull();
+        assertThat(fruits1.size()).isEqualTo(1);
+        assertThat(fruits1).contains(fruit1);
 
         fruits1 = postFruit(path, fruit2);
-        Assertions.assertThat(fruits1.size()).isEqualTo(2);
-        Assertions.assertThat(fruits1).contains(fruit1, fruit2);
+        assertThat(fruits1.size()).isEqualTo(2);
+        assertThat(fruits1).contains(fruit1, fruit2);
 
         List<Fruit> fruits2 = RestAssured.get(path)
                 .then()
                 .statusCode(HttpStatus.SC_OK)
                 .extract().body().jsonPath().getList(".", Fruit.class);
-        Assertions.assertThat(fruits2).isEqualTo(fruits1);
+        assertThat(fruits2).isEqualTo(fruits1);
     }
 
     @ParameterizedTest
@@ -58,38 +59,38 @@ public class MongoDbIT {
         final FruitBasket fruitBasket3 = new FruitBasket("full", List.of(fruit1, fruit2));
 
         List<FruitBasket> fruitBaskets1 = postFruitBasket(path, fruitBasket1);
-        Assertions.assertThat(fruitBaskets1).isNotNull();
-        Assertions.assertThat(fruitBaskets1.size()).isEqualTo(1);
-        Assertions.assertThat(fruitBaskets1).contains(fruitBasket1);
-        Assertions.assertThat(fruitBaskets1.get(0).getItems()).isNull();
+        assertThat(fruitBaskets1).isNotNull();
+        assertThat(fruitBaskets1.size()).isEqualTo(1);
+        assertThat(fruitBaskets1).contains(fruitBasket1);
+        assertThat(fruitBaskets1.get(0).getItems()).isNull();
 
         fruitBaskets1 = postFruitBasket(path, fruitBasket2);
-        Assertions.assertThat(fruitBaskets1).isNotNull();
-        Assertions.assertThat(fruitBaskets1.size()).isEqualTo(2);
-        Assertions.assertThat(fruitBaskets1).contains(fruitBasket1, fruitBasket2);
-        Assertions.assertThat(fruitBaskets1.get(1).getItems()).isEmpty();
+        assertThat(fruitBaskets1).isNotNull();
+        assertThat(fruitBaskets1.size()).isEqualTo(2);
+        assertThat(fruitBaskets1).contains(fruitBasket1, fruitBasket2);
+        assertThat(fruitBaskets1.get(1).getItems()).isEmpty();
 
         fruitBaskets1 = postFruitBasket(path, fruitBasket3);
-        Assertions.assertThat(fruitBaskets1).isNotNull();
-        Assertions.assertThat(fruitBaskets1.size()).isEqualTo(3);
-        Assertions.assertThat(fruitBaskets1).contains(fruitBasket1, fruitBasket2, fruitBasket3);
-        Assertions.assertThat(fruitBaskets1.get(2).getItems()).contains(fruit1, fruit2);
+        assertThat(fruitBaskets1).isNotNull();
+        assertThat(fruitBaskets1.size()).isEqualTo(3);
+        assertThat(fruitBaskets1).contains(fruitBasket1, fruitBasket2, fruitBasket3);
+        assertThat(fruitBaskets1.get(2).getItems()).contains(fruit1, fruit2);
 
         List<FruitBasket> fruitBaskets2 = RestAssured.get(path)
                 .then()
                 .statusCode(HttpStatus.SC_OK)
                 .extract().body().jsonPath().getList(".", FruitBasket.class);
-        Assertions.assertThat(fruitBaskets2).isEqualTo(fruitBaskets1);
+        assertThat(fruitBaskets2).isEqualTo(fruitBaskets1);
 
         List<FruitBasket> fruitBaskets3 = RestAssured.get(path + "/find-items/" + fruitBasket3.getName())
                 .then()
                 .statusCode(HttpStatus.SC_OK)
                 .extract().body().jsonPath().getList(".", FruitBasket.class);
-        Assertions.assertThat(fruitBaskets3).isNotNull();
-        Assertions.assertThat(fruitBaskets3.size()).isEqualTo(1);
-        Assertions.assertThat(fruitBaskets3.get(0).getName()).isNull();
-        Assertions.assertThat(fruitBaskets3.get(0).getId()).isNull();
-        Assertions.assertThat(fruitBaskets3.get(0).getItems()).isEqualTo(fruitBasket3.getItems());
+        assertThat(fruitBaskets3).isNotNull();
+        assertThat(fruitBaskets3.size()).isEqualTo(1);
+        assertThat(fruitBaskets3.get(0).getName()).isNull();
+        assertThat(fruitBaskets3.get(0).getId()).isNull();
+        assertThat(fruitBaskets3.get(0).getItems()).isEqualTo(fruitBasket3.getItems());
     }
 
     private List<Fruit> postFruit(String path, Fruit fruit) {
