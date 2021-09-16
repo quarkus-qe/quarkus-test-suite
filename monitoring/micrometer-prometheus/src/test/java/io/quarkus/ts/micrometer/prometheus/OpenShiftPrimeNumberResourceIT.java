@@ -4,8 +4,13 @@ import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -19,6 +24,7 @@ import io.quarkus.test.bootstrap.inject.OpenShiftClient;
 import io.quarkus.test.scenarios.OpenShiftDeploymentStrategy;
 import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.test.utils.Command;
 
 /**
  * The application contains a `PrimeNumberResource` resource that generates a few metrics:
@@ -79,7 +85,7 @@ public class OpenShiftPrimeNumberResourceIT {
 
     private void thenMetricIsExposedInPrometheus(String name, Integer expected) throws Exception {
         await().ignoreExceptions().atMost(ASSERT_PROMETHEUS_TIMEOUT_MINUTES, TimeUnit.MINUTES).untilAsserted(() -> {
-            String output = client.execOnPod(PROMETHEUS_NAMESPACE, PROMETHEUS_POD, PROMETHEUS_CONTAINER, "curl",
+            String output = execOnPod(PROMETHEUS_NAMESPACE, PROMETHEUS_POD, PROMETHEUS_CONTAINER, "curl",
                     "http://localhost:9090/api/v1/query?query=" + primeNumberCustomMetricName(name));
 
             assertTrue(output.contains("\"status\":\"success\""), "Verify the status was ok");
@@ -107,6 +113,19 @@ public class OpenShiftPrimeNumberResourceIT {
 
     private String primeNumberCustomMetricName(String metricName) {
         return String.format(metricName, uniqueId);
+    }
+
+    // TODO: Will be fixed once either https://github.com/fabric8io/kubernetes-client/issues/3473 is fixed
+    // or when releasing test framework to 0.0.12.
+    private String execOnPod(String prometheusNamespace, String prometheusPod, String prometheusContainer, String... input)
+            throws IOException, InterruptedException {
+        List<String> output = new ArrayList<>();
+        List<String> args = new ArrayList<>();
+        args.addAll(Arrays.asList("oc", "exec", prometheusPod, "-c", prometheusContainer, "-n", prometheusNamespace));
+        args.addAll(Arrays.asList(input));
+        new Command(args).outputToLines(output).runAndWait();
+
+        return output.stream().collect(Collectors.joining(System.lineSeparator()));
     }
 
     private static void loadServiceMonitor(Service app) {
