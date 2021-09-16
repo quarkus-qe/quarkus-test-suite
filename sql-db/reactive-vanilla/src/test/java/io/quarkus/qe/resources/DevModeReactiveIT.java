@@ -8,6 +8,7 @@ import static org.hamcrest.Matchers.not;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -17,6 +18,7 @@ import io.quarkus.qe.model.Record;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.DevModeQuarkusApplication;
+import io.quarkus.test.utils.FileUtils;
 import io.vertx.core.json.JsonObject;
 
 @Tag("QUARKUS-1080")
@@ -25,6 +27,16 @@ public class DevModeReactiveIT {
 
     @DevModeQuarkusApplication
     static RestService app = new RestService();
+
+    // TODO: Workaround to free resources after application is use. It will be fixed in test framework 0.0.11.
+    @AfterAll
+    public static void deleteServiceFolder() {
+        try {
+            FileUtils.deletePath(app.getServiceFolder());
+        } catch (Exception ignored) {
+
+        }
+    }
 
     @Test
     public void verifyReactivePostgresqlRetrieveEntities() {

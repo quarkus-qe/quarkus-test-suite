@@ -1,5 +1,6 @@
 package io.quarkus.qe.resources;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -10,6 +11,7 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.DevModeQuarkusApplication;
 import io.quarkus.test.utils.DockerUtils;
+import io.quarkus.test.utils.FileUtils;
 
 @Tag("QUARKUS-1080")
 @QuarkusScenario
@@ -21,6 +23,16 @@ public class DevModeReactivePostgresqlDevServiceUserExperienceIT {
     static RestService app = new RestService()
             .withProperty("quarkus.datasource.devservices.image-name", POSTGRES_NAME + ":" + POSTGRESQL_VERSION)
             .onPreStart(s -> DockerUtils.removeImage(POSTGRES_NAME, POSTGRESQL_VERSION));
+
+    // TODO: Workaround to free resources after application is use. It will be fixed in test framework 0.0.11.
+    @AfterAll
+    public static void deleteServiceFolder() {
+        try {
+            FileUtils.deletePath(app.getServiceFolder());
+        } catch (Exception ignored) {
+
+        }
+    }
 
     @Test
     public void verifyIfUserIsInformedAboutReactivePostgresqlDevServicePulling() {

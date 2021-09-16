@@ -1,5 +1,6 @@
 package io.quarkus.ts.sqldb.sqlapp;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -10,6 +11,7 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.DevModeQuarkusApplication;
 import io.quarkus.test.utils.DockerUtils;
+import io.quarkus.test.utils.FileUtils;
 import io.quarkus.test.utils.SocketUtils;
 
 @Tag("QUARKUS-959")
@@ -28,6 +30,16 @@ public class DevModeMssqlDevServicesUserExperienceIT {
             .withProperty("quarkus.datasource.jdbc.driver", "com.microsoft.sqlserver.jdbc.SQLServerDriver")
             .withProperty("quarkus.hibernate-orm.database.generation", "none")
             .onPreStart(s -> DockerUtils.removeImage(MSSQL_NAME, MSSQL_VERSION));
+
+    // TODO: Workaround to free resources after application is use. It will be fixed in test framework 0.0.11.
+    @AfterAll
+    public static void deleteServiceFolder() {
+        try {
+            FileUtils.deletePath(app.getServiceFolder());
+        } catch (Exception ignored) {
+
+        }
+    }
 
     @Test
     public void verifyIfUserIsInformedAboutMssqlDevServicePulling() {
