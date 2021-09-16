@@ -1,5 +1,5 @@
 package io.quarkus.ts.nosqldb.mongodb;
 
-public interface FruitInterface {
+public interface MongoDaoInterface {
     String FRUIT_DB_NAME = "fruit";
 }

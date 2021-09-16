@@ -27,7 +27,7 @@ public class MongoDbIT {
             .withProperty("quarkus.mongodb.connection-string", database::getJdbcUrl);
 
     @ParameterizedTest
-    @ValueSource(strings = { "/fruits", "/reactive_fruits", "/codec_fruits" })
+    @ValueSource(strings = { "/fruits", "/codec_fruits" })
     public void fruitsEndpoints(String path) {
         final Fruit fruit1 = new Fruit("fruit1", "fruit description 1");
         final Fruit fruit2 = new Fruit("fruit2", "fruit description 2");
@@ -49,7 +49,7 @@ public class MongoDbIT {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "/fruit_baskets", "/reactive_fruit_baskets", "/codec_fruit_baskets" })
+    @ValueSource(strings = { "/fruit_baskets", "/codec_fruit_baskets" })
     public void fruitBasketsEndpoints(String path) {
         final Fruit fruit1 = new Fruit("fruit1", "fruit description 1");
         final Fruit fruit2 = new Fruit("fruit2", "fruit description 2");

@@ -16,22 +16,22 @@ import javax.ws.rs.core.MediaType;
 public class FruitBasketResource {
 
     @Inject
-    FruitService fruitService;
+    FruitBasketService fruitBasketService;
 
     @GET
-    public List<FruitBasket> list() {
-        return fruitService.listFruitBaskets();
+    public List<FruitBasket> getAllFruitBaskets() {
+        return fruitBasketService.listFruitBaskets();
     }
 
     @GET
     @Path("/find-items/{fruitBasketName}")
-    public List<FruitBasket> findItems(String fruitBasketName) {
-        return fruitService.findFruitBasketsItemsOnly(fruitBasketName);
+    public List<FruitBasket> findFruitBasketAndGetItems(String fruitBasketName) {
+        return fruitBasketService.findFruitBasketsItemsOnly(fruitBasketName);
     }
 
     @POST
-    public List<FruitBasket> add(FruitBasket fruitBasket) {
-        fruitService.addFruitBasket(fruitBasket);
-        return list();
+    public List<FruitBasket> addFruitBasket(FruitBasket fruitBasket) {
+        fruitBasketService.addFruitBasket(fruitBasket);
+        return getAllFruitBaskets();
     }
 }

@@ -19,13 +19,13 @@ public class CodecFruitResource {
     CodecFruitService fruitService;
 
     @GET
-    public List<Fruit> list() {
+    public List<Fruit> getAllFruits() {
         return fruitService.listFruits();
     }
 
     @POST
-    public List<Fruit> add(Fruit fruit) {
+    public List<Fruit> addFruit(Fruit fruit) {
         fruitService.addFruit(fruit);
-        return list();
+        return getAllFruits();
     }
 }
