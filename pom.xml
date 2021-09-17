@@ -520,6 +520,7 @@
                 </property>
             </activation>
             <properties>
+                <include.tests>**/*OpenShift*IT.java</include.tests>
                 <exclude.openshift.tests>no</exclude.openshift.tests>
             </properties>
         </profile>
