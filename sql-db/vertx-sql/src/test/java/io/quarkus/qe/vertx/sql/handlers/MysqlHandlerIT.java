@@ -16,6 +16,8 @@ public class MysqlHandlerIT extends CommonTestCases {
 
     @QuarkusApplication
     static final RestService app = new RestService()
+            .withProperty("quarkus.datasource.mysql.username", mysql.getUser())
+            .withProperty("quarkus.datasource.mysql.password", mysql.getPassword())
             .withProperty("quarkus.datasource.mysql.jdbc.url", mysql::getJdbcUrl)
             .withProperty("quarkus.datasource.mysql.reactive.url", mysql::getReactiveUrl)
             .withProperty("app.selected.db", "mysql")
