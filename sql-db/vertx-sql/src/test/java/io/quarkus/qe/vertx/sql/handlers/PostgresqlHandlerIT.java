@@ -16,6 +16,8 @@ public class PostgresqlHandlerIT extends CommonTestCases {
 
     @QuarkusApplication
     static final RestService app = new RestService()
+            .withProperty("quarkus.datasource.username", postgres.getUser())
+            .withProperty("quarkus.datasource.password", postgres.getPassword())
             .withProperty("quarkus.datasource.jdbc.url", postgres::getJdbcUrl)
             .withProperty("quarkus.datasource.reactive.url", postgres::getReactiveUrl)
             .withProperty("app.selected.db", "postgresql")
