@@ -416,6 +416,7 @@
                 <module>messaging/kafka-streams-reactive-messaging</module>
                 <module>messaging/kafka-avro-reactive-messaging</module>
                 <module>messaging/kafka-producer</module>
+                <module>messaging/infinispan-grpc-kafka</module>
             </modules>
         </profile>
         <profile>
