@@ -508,6 +508,10 @@ There is a PriceProducer that generates message every second, the value of the m
 PriceConsumer puts received number into ConcurrentLinkedQueue of Integers.
 State of this queue is exposed using PriceResource which is called from the test.
 
+### `messaging/infinispan-grpc-kafka`
+
+Module verifies that gRPC, Infinispan and Kafka extensions work together with SSL and SASL authentication.
+
 ### `messaging/kafka-streams-reactive-messaging`
 
 Verifies that `Quarkus Kafka Stream` and `Quarkus SmallRye Reactive Messaging` extensions works as expected. 
