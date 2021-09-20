@@ -646,7 +646,8 @@ Current limitations:
 
 ### `infinispan-client`
 
-Verifies the way of the sharing cache by Datagrid operator and Infinispan cluster and data consistency after failures.
+Verifies the way of the sharing cache by Datagrid operator and Infinispan cluster and data consistency after failures.  
+Verifies cache entries serialization, querying and cache eviction.
 
 #### Prerequisites
 - Datagrid operator installed in `datagrid-operator` namespace. This needs cluster-admin rights to install.
