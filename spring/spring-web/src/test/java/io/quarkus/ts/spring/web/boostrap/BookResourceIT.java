@@ -11,7 +11,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import io.quarkus.test.bootstrap.MariaDbService;
+import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.services.Container;
+import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.spring.web.AbstractDbIT;
 import io.quarkus.ts.spring.web.boostrap.persistence.model.Book;
 import io.restassured.response.Response;
@@ -21,9 +25,20 @@ public class BookResourceIT extends AbstractDbIT {
 
     private static final String API_ROOT = "/api/books";
 
+    static final int MARIADB_PORT = 3306;
+
+    @Container(image = "${mariadb.10.image}", port = MARIADB_PORT, expectedLog = "MariaDB init process done. Ready for start up")
+    static final MariaDbService database = new MariaDbService();
+
+    @QuarkusApplication
+    private static final RestService app = new RestService()
+            .withProperty("quarkus.datasource.username", database.getUser())
+            .withProperty("quarkus.datasource.password", database.getPassword())
+            .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl);
+
     @Test
     public void whenGetAllBooks_thenOK() {
-        final Response response = app.given().get(API_ROOT);
+        final Response response = getApp().given().get(API_ROOT);
         assertEquals(HttpStatus.OK.value(), response.getStatusCode());
     }
 
@@ -32,7 +47,7 @@ public class BookResourceIT extends AbstractDbIT {
         final Book book = createRandomBook();
         createBookAsUri(book);
 
-        final Response response = app.given().get(API_ROOT + "/title/" + book.getTitle());
+        final Response response = getApp().given().get(API_ROOT + "/title/" + book.getTitle());
         assertEquals(HttpStatus.OK.value(), response.getStatusCode());
         assertTrue(response.as(List.class)
                 .size() > 0);
@@ -43,7 +58,7 @@ public class BookResourceIT extends AbstractDbIT {
         final Book book = createRandomBook();
         final String location = createBookAsUri(book);
 
-        final Response response = app.given().get(location);
+        final Response response = getApp().given().get(location);
         assertEquals(HttpStatus.OK.value(), response.getStatusCode());
         assertEquals(book.getTitle(), response.jsonPath()
                 .get("title"));
@@ -51,7 +66,7 @@ public class BookResourceIT extends AbstractDbIT {
 
     @Test
     public void whenGetNotExistBookById_thenNotFound() {
-        final Response response = app.given().get(API_ROOT + "/" + randomNumeric(4));
+        final Response response = getApp().given().get(API_ROOT + "/" + randomNumeric(4));
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode());
     }
 
@@ -60,7 +75,7 @@ public class BookResourceIT extends AbstractDbIT {
     public void whenCreateNewBook_thenCreated() {
         final Book book = createRandomBook();
 
-        final Response response = app.given()
+        final Response response = getApp().given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(book)
                 .post(API_ROOT);
@@ -72,7 +87,7 @@ public class BookResourceIT extends AbstractDbIT {
         final Book book = createRandomBook();
         book.setAuthor(null);
 
-        final Response response = app.given()
+        final Response response = getApp().given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(book)
                 .post(API_ROOT);
@@ -86,13 +101,13 @@ public class BookResourceIT extends AbstractDbIT {
 
         book.setId(Long.parseLong(location.split("api/books/")[1]));
         book.setAuthor("newAuthor");
-        Response response = app.given()
+        Response response = getApp().given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(book)
                 .put(location);
         assertEquals(HttpStatus.OK.value(), response.getStatusCode());
 
-        response = app.given().get(location);
+        response = getApp().given().get(location);
         assertEquals(HttpStatus.OK.value(), response.getStatusCode());
         assertEquals("newAuthor", response.jsonPath()
                 .get("author"));
@@ -104,10 +119,10 @@ public class BookResourceIT extends AbstractDbIT {
         final Book book = createRandomBook();
         final String location = createBookAsUri(book);
 
-        Response response = app.given().delete(location);
+        Response response = getApp().given().delete(location);
         assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatusCode());
 
-        response = app.given().get(location);
+        response = getApp().given().get(location);
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode());
     }
 
@@ -121,7 +136,7 @@ public class BookResourceIT extends AbstractDbIT {
     }
 
     private String createBookAsUri(Book book) {
-        final Response response = app.given()
+        final Response response = getApp().given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(book)
                 .post(API_ROOT);
@@ -129,4 +144,8 @@ public class BookResourceIT extends AbstractDbIT {
                 .get("id");
     }
 
+    @Override
+    public RestService getApp() {
+        return app;
+    }
 }
