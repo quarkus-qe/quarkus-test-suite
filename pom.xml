@@ -199,12 +199,11 @@
                                 <ts.global.s2i.quarkus.jvm.builder.image>${ts.global.s2i.quarkus.jvm.builder.image}</ts.global.s2i.quarkus.jvm.builder.image>
                                 <ts.global.s2i.quarkus.native.builder.image>${ts.global.s2i.quarkus.native.builder.image}</ts.global.s2i.quarkus.native.builder.image>
                                 <!-- Services used in test suite -->
-                                <keycloak.image>quay.io/keycloak/keycloak:14.0.0</keycloak.image>
+                                <keycloak.image>quay.io/keycloak/keycloak:15.0.2</keycloak.image>
                                 <rhsso.73.image>registry.access.redhat.com/redhat-sso-7/sso73-openshift</rhsso.73.image>
-                                <postgresql.10.image>registry.access.redhat.com/rhscl/postgresql-10-rhel7</postgresql.10.image>
+                                <postgresql.13.image>quay.io/bitnami/postgresql:13.4.0</postgresql.13.image>
                                 <mysql.57.image>quay.io/bitnami/mysql:5.7.32</mysql.57.image>
-                                <mysql.80.image>registry.access.redhat.com/rhscl/mysql-80-rhel7</mysql.80.image>
-                                <mariadb.102.image>registry.access.redhat.com/rhscl/mariadb-102-rhel7</mariadb.102.image>
+                                <mariadb.10.image>quay.io/quarkusqeteam/mariadb:10.6.4</mariadb.10.image>
                                 <mssql.image>mcr.microsoft.com/mssql/rhel/server</mssql.image>
                                 <oracle.image>gvenzl/oracle-xe:18.4.0-slim</oracle.image>
                                 <db2.image>quay.io/quarkusqeteam/db2:11.5.5.0</db2.image>
@@ -557,8 +556,11 @@
                                 <ts.redhat.registry.enabled>true</ts.redhat.registry.enabled>
                                 <!-- Product Services -->
                                 <rhsso.74.image>registry.redhat.io/rh-sso-7/sso74-openshift-rhel8</rhsso.74.image>
+                                <postgresql.10.image>registry.access.redhat.com/rhscl/postgresql-10-rhel7</postgresql.10.image>
                                 <postgresql.12.image>registry.redhat.io/rhscl/postgresql-12-rhel7</postgresql.12.image>
+                                <mysql.80.image>registry.access.redhat.com/rhscl/mysql-80-rhel7</mysql.80.image>
                                 <mariadb.103.image>registry.redhat.io/rhscl/mariadb-103-rhel7</mariadb.103.image>
+                                <mariadb.102.image>registry.access.redhat.com/rhscl/mariadb-102-rhel7</mariadb.102.image>
                                 <amq-streams.image>registry.redhat.io/amq7/amq-streams-kafka-27-rhel7</amq-streams.image>
                                 <amq-streams.version>1.7.0</amq-streams.version>
                             </systemPropertyVariables>

@@ -1,23 +1,28 @@
 package io.quarkus.ts.spring.web.boostrap;
 
-import org.hamcrest.CoreMatchers;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-
+import io.quarkus.test.bootstrap.MariaDbService;
+import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.services.Container;
+import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.spring.web.AbstractDbIT;
-import io.restassured.http.ContentType;
 
 @QuarkusScenario
 public class HomePageIT extends AbstractDbIT {
-    private static final String APP_NAME = "Bootstrap Spring Boot";
 
-    @Test
-    public void shouldQuteReplaceWelcomePhrase() {
-        app.given().get("/")
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .contentType(ContentType.HTML)
-                .body(CoreMatchers.containsString(APP_NAME));
+    static final int MARIADB_PORT = 3306;
+
+    @Container(image = "${mariadb.10.image}", port = MARIADB_PORT, expectedLog = "MariaDB init process done. Ready for start up")
+    static final MariaDbService database = new MariaDbService();
+
+    @QuarkusApplication
+    private static final RestService app = new RestService()
+            .withProperty("quarkus.datasource.username", database.getUser())
+            .withProperty("quarkus.datasource.password", database.getPassword())
+            .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl);
+
+    @Override
+    public RestService getApp() {
+        return app;
     }
 }
