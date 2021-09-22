@@ -347,7 +347,9 @@ public class OperatorOpenShiftInfinispanCountersIT {
 
         // rename infinispan cluster and configmap
         adjustYml(CLUSTER_CONFIG, ORIGIN_CLUSTER_NAME, NEW_CLUSTER_NAME);
+        applyYaml(CLUSTER_CONFIG);
         adjustYml(CLUSTER_CONFIGMAP, ORIGIN_CLUSTER_NAME, NEW_CLUSTER_NAME);
+        applyYaml(CLUSTER_CONFIGMAP);
 
         try {
             new Command("oc", "-n", CLUSTER_NAMESPACE_NAME, "wait", "--for", "condition=wellFormed", "--timeout=300s",
@@ -361,6 +363,8 @@ public class OperatorOpenShiftInfinispanCountersIT {
     public static void deleteInfinispanCluster() {
         deleteYaml(CLUSTER_CONFIGMAP);
         deleteYaml(CLUSTER_CONFIG);
+        adjustYml(CLUSTER_CONFIG, NEW_CLUSTER_NAME, ORIGIN_CLUSTER_NAME);
+        adjustYml(CLUSTER_CONFIGMAP, NEW_CLUSTER_NAME, ORIGIN_CLUSTER_NAME);
     }
 
     /**
@@ -451,6 +455,7 @@ public class OperatorOpenShiftInfinispanCountersIT {
      */
     private void killInfinispanCluster() throws IOException, InterruptedException {
         adjustYml(CLUSTER_CONFIG, "replicas: 1", "replicas: 0");
+        applyYaml(CLUSTER_CONFIG);
         new Command("oc", "-n", CLUSTER_NAMESPACE_NAME, "wait", "--for", "condition=gracefulShutdown", "--timeout=300s",
                 "infinispan/" + NEW_CLUSTER_NAME).runAndWait();
     }
@@ -461,6 +466,7 @@ public class OperatorOpenShiftInfinispanCountersIT {
      */
     private void restartInfinispanCluster() throws IOException, InterruptedException {
         adjustYml(CLUSTER_CONFIG, "replicas: 0", "replicas: 1");
+        applyYaml(CLUSTER_CONFIG);
         new Command("oc", "-n", CLUSTER_NAMESPACE_NAME, "wait", "--for", "condition=wellFormed", "--timeout=360s",
                 "infinispan/" + NEW_CLUSTER_NAME).runAndWait();
     }
@@ -476,8 +482,6 @@ public class OperatorOpenShiftInfinispanCountersIT {
             String yamlContent = new String(Files.readAllBytes(yamlPath), charset);
             yamlContent = yamlContent.replace(originString, newString);
             Files.write(yamlPath, yamlContent.getBytes(charset));
-
-            applyYaml(yamlFile);
         } catch (IOException ex) {
             Assertions.fail("Fail to adjust YAML file. Caused by: " + ex.getMessage());
         }

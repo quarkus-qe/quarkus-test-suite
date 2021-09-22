@@ -27,18 +27,33 @@ public class InfinispanClientApp {
     @Inject
     RemoteCacheManager cacheManager;
 
-    private static final String CACHE_CONFIG = "<infinispan><cache-container>" +
+    private static final String MYCACHE_CACHE_CONFIG = "<infinispan><cache-container>" +
             "<distributed-cache name=\"%s\"></distributed-cache>" +
+            "</cache-container></infinispan>";
+
+    private static final String MYSHOP_CACHE_CONFIG = "<infinispan><cache-container>" +
+            "<distributed-cache name=\"%s\">" +
+            "<encoding>\n" +
+            "<key media-type=\"application/x-protostream\"/>\n" +
+            "<value media-type=\"application/x-protostream\"/>\n" +
+            "</encoding>" +
+            "<memory max-count=\"5\" when-full=\"REMOVE\"/>" +
+            "</distributed-cache>" +
             "</cache-container></infinispan>";
 
     void onStart(@Observes StartupEvent ev) {
         LOGGER.info("Create or get cache named mycache with the default configuration");
         RemoteCache<Object, Object> cache = cacheManager.administration().getOrCreateCache("mycache",
-                new XMLStringConfiguration(String.format(CACHE_CONFIG, "mycache")));
+                new XMLStringConfiguration(String.format(MYCACHE_CACHE_CONFIG, "mycache")));
         cache.addClientListener(new EventPrintListener());
         if (cache.isEmpty()) {
             cache.put("counter", 0);
         }
+
+        LOGGER.info("Create or get cache named myshop with the x-protostream configuration");
+        RemoteCache<Object, Object> myshop = cacheManager.administration().getOrCreateCache("myshop",
+                new XMLStringConfiguration(String.format(MYSHOP_CACHE_CONFIG, "myshop")));
+        cache.addClientListener(new EventPrintListener());
     }
 
     @ClientListener
