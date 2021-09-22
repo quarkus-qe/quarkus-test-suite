@@ -43,7 +43,7 @@ jobs:
     needs: build-dependencies
     strategy:
       matrix:
-        java: [ 11 ]
+        java: [ 11, 17 ]
         profiles: [ "root-modules,http-modules,security-modules,monitoring-modules,spring-modules,test-tooling-modules",
                    "sql-db-modules",
                    "messaging-modules"]
@@ -162,7 +162,7 @@ jobs:
     needs: build-dependencies
     strategy:
       matrix:
-        java: [ 11 ]
+        java: [ 11, 17 ]
     steps:
       - uses: actions/checkout@v1
       - uses: actions/cache@v1
