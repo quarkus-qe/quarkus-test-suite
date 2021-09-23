@@ -715,3 +715,9 @@ a collection using a filter and a projection. All tests are performed using:
 ### `nosql-db/mongodb-reactive`
 
 Reactive equivalent of `nosql-db/mongodb`. Uses reactive ReactiveMongoClient (without codecs)
+
+### `websockets/quarkus-websockets`
+Coverage for sending messages over websockets
+
+### `websockets/websockets-client`
+Coverage for sending messages over websockets with only a client library
