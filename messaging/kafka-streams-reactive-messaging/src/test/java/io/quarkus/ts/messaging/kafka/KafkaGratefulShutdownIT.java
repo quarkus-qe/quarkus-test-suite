@@ -25,6 +25,8 @@ import io.quarkus.ts.messaging.kafka.shutdown.SlowTopicResource;
 public class KafkaGratefulShutdownIT {
 
     private static final int TOTAL_MESSAGES = 10;
+    private static final String STRING_SERIALIZER = "org.apache.kafka.common.serialization.StringSerializer";
+    private static final String STRING_DESERIALIZER = "org.apache.kafka.common.serialization.StringDeserializer";
     private static final String GRATEFUL_SHUTDOWN_PROPERTY = "mp.messaging.incoming.slow.graceful-shutdown";
     private static final String KAFKA_LOG_PROPERTY = "quarkus.log.category.\"io.smallrye.reactive.messaging.kafka\".level";
     private static final String LAST_MESSAGE_LOG = "Processed Message " + TOTAL_MESSAGES;
@@ -37,6 +39,12 @@ public class KafkaGratefulShutdownIT {
     static RestService app = new RestService()
             .withProperty("kafka.bootstrap.servers", kafka::getBootstrapUrl)
             .withProperty("quarkus.kafka-streams.bootstrap-servers", kafka::getBootstrapUrl)
+            .withProperty("mp.messaging.outgoing.login-http-response-values.key.serializer", STRING_SERIALIZER)
+            .withProperty("mp.messaging.outgoing.login-http-response-values.value.serializer", STRING_SERIALIZER)
+            .withProperty("mp.messaging.incoming.login-denied.value.deserializer", STRING_DESERIALIZER)
+            .withProperty("mp.messaging.incoming.login-denied.key.deserializer", STRING_DESERIALIZER)
+            .withProperty("mp.messaging.outgoing.slow-topic.value.serializer", STRING_SERIALIZER)
+            .withProperty("mp.messaging.incoming.slow.value.deserializer", STRING_DESERIALIZER)
             .withProperty(KAFKA_LOG_PROPERTY, Level.DEBUG.getName());
 
     @Test
