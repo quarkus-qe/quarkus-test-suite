@@ -28,7 +28,7 @@ public class KStockPriceProducer {
 
     private Random random = new Random();
 
-    @Scheduled(every = "1s")
+    @Scheduled(cron = "{cron.expr}")
     public void generate() {
         IntStream.range(0, BATCH_SIZE).forEach(next -> {
             StockPrice event = StockPrice.newBuilder()
