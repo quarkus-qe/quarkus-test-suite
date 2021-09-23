@@ -4,16 +4,12 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.client.ClientBuilder;
@@ -27,7 +23,6 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.bootstrap.Service;
 import io.quarkus.test.bootstrap.inject.OpenShiftClient;
-import io.quarkus.test.utils.Command;
 
 public abstract class BaseOpenShiftAlertEventsIT {
 
@@ -90,7 +85,7 @@ public abstract class BaseOpenShiftAlertEventsIT {
 
     private void thenMetricIsExposedInPrometheus(String name, Predicate<String> valueMatcher) throws Exception {
         await().ignoreExceptions().atMost(ASSERT_PROMETHEUS_TIMEOUT_MINUTES, TimeUnit.MINUTES).untilAsserted(() -> {
-            String output = execOnPod(PROMETHEUS_NAMESPACE, PROMETHEUS_POD, PROMETHEUS_CONTAINER, "curl",
+            String output = client.execOnPod(PROMETHEUS_NAMESPACE, PROMETHEUS_POD, PROMETHEUS_CONTAINER, "curl",
                     "http://localhost:9090/api/v1/query?query=" + name);
 
             assertTrue(output.contains("\"status\":\"success\""), "Verify the status was ok");
@@ -129,19 +124,6 @@ public abstract class BaseOpenShiftAlertEventsIT {
 
     private Double extractValueFromMetric(String line) {
         return Double.parseDouble(line.substring(line.lastIndexOf(" ")));
-    }
-
-    // TODO: Will be fixed once either https://github.com/fabric8io/kubernetes-client/issues/3473 is fixed
-    // or when releasing test framework to 0.0.12.
-    private String execOnPod(String prometheusNamespace, String prometheusPod, String prometheusContainer, String... input)
-            throws IOException, InterruptedException {
-        List<String> output = new ArrayList<>();
-        List<String> args = new ArrayList<>();
-        args.addAll(Arrays.asList("oc", "exec", prometheusPod, "-c", prometheusContainer, "-n", prometheusNamespace));
-        args.addAll(Arrays.asList(input));
-        new Command(args).outputToLines(output).runAndWait();
-
-        return output.stream().collect(Collectors.joining(System.lineSeparator()));
     }
 
     protected static void loadServiceMonitor(Service app) {
