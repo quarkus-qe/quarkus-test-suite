@@ -103,7 +103,7 @@ jobs:
                    "http-modules",
                    "security-modules",
                    "sql-db-modules",
-                   "messaging-modules"]
+                   "messaging-modules,websockets-modules"]
     steps:
       - uses: actions/checkout@v1
       - uses: actions/cache@v1
