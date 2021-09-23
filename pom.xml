@@ -20,7 +20,7 @@
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
         <quarkus.platform.version>999-SNAPSHOT</quarkus.platform.version>
         <quarkus-plugin.version>${quarkus.platform.version}</quarkus-plugin.version>
-        <quarkus.qe.framework.version>0.0.11</quarkus.qe.framework.version>
+        <quarkus.qe.framework.version>0.0.12</quarkus.qe.framework.version>
         <quarkus-qpid-jms.version>0.27.0</quarkus-qpid-jms.version>
         <quarkus-ide-config.version>2.2.3.Final</quarkus-ide-config.version>
         <apache-httpclient-fluent.version>4.5.13</apache-httpclient-fluent.version>
