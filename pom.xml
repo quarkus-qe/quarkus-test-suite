@@ -491,6 +491,19 @@
             </modules>
         </profile>
         <profile>
+            <id>websockets-modules</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>all-modules</name>
+                </property>
+            </activation>
+            <modules>
+                <module>websockets/quarkus-websockets</module>
+                <module>websockets/websockets-client</module>
+            </modules>
+        </profile>
+        <profile>
             <id>native</id>
             <activation>
                 <property>

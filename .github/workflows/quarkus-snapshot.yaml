@@ -28,7 +28,7 @@ jobs:
                     "http-modules",
                     "security-modules",
                     "sql-db-modules",
-                    "messaging-modules"]
+                    "messaging-modules,websockets-modules"]
 
     steps:
       - name: Install yq
