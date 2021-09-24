@@ -24,7 +24,7 @@
         <quarkus-qpid-jms.version>0.27.0</quarkus-qpid-jms.version>
         <quarkus-ide-config.version>2.2.3.Final</quarkus-ide-config.version>
         <apache-httpclient-fluent.version>4.5.13</apache-httpclient-fluent.version>
-        <confluent.kafka-avro-serializer.version>6.2.0</confluent.kafka-avro-serializer.version>
+        <confluent.kafka-avro-serializer.version>6.2.1</confluent.kafka-avro-serializer.version>
         <formatter-maven-plugin.version>2.16.0</formatter-maven-plugin.version>
         <impsort-maven-plugin.version>1.6.2</impsort-maven-plugin.version>
         <xml-format-maven-plugin.version>3.2.0</xml-format-maven-plugin.version>
