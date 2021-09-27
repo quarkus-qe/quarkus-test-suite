@@ -7,21 +7,20 @@ import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 import io.quarkus.test.services.Dependency;
 import io.quarkus.test.services.QuarkusApplication;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 
 @QuarkusScenario
-@DisabledOnQuarkusVersion(version = "2\\.3.*", reason = "Test framework doesn't support dependencies for quarkus 2.3 and further")
-@DisabledOnQuarkusVersion(version = "999-SNAPSHOT", reason = "Test framework doesn't support dependencies for quarkus 2.3 and further")
 public class ClientIT {
 
+    // Adding `quarkus-websockets` extension
     @QuarkusApplication(dependencies = @Dependency(artifactId = "quarkus-websockets"))
     static final RestService server = new RestService();
 
-    @QuarkusApplication(dependencies = @Dependency(artifactId = "quarkus-websockets-client"))
+    // Using `quarkus-websockets-client` extension by default
+    @QuarkusApplication
     static final RestService client = new RestService()
             .withProperty("app.chat.uri", () -> server.getHost() + ":" + server.getPort());
 
