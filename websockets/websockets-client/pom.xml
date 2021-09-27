@@ -8,7 +8,7 @@
         <relativePath>../..</relativePath>
     </parent>
     <artifactId>websockets-client</artifactId>
-    <name>Quarkus QE TS: Messaging: Websockets client</name>
+    <name>Quarkus QE TS: Websockets: Isolated client</name>
     <dependencies>
         <dependency>
             <groupId>jakarta.websocket</groupId>
