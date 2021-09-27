@@ -15,10 +15,12 @@ import io.restassured.response.Response;
 @QuarkusScenario
 public class ClientIT {
 
+    // Adding `quarkus-websockets` extension
     @QuarkusApplication(dependencies = @Dependency(artifactId = "quarkus-websockets"))
     static final RestService server = new RestService();
 
-    @QuarkusApplication(dependencies = @Dependency(artifactId = "quarkus-websockets-client"))
+    // Using `quarkus-websockets-client` extension by default
+    @QuarkusApplication
     static final RestService client = new RestService()
             .withProperty("app.chat.uri", () -> server.getHost() + ":" + server.getPort());
 
