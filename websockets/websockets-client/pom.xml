@@ -11,8 +11,8 @@
     <name>Quarkus QE TS: Websockets: Isolated client</name>
     <dependencies>
         <dependency>
-            <groupId>jakarta.websocket</groupId>
-            <artifactId>jakarta.websocket-api</artifactId>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-websockets-client</artifactId>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
