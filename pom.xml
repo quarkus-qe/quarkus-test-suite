@@ -492,7 +492,7 @@
             </modules>
         </profile>
         <profile>
-            <id>websockets</id>
+            <id>websockets-modules</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
                 <property>
