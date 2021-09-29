@@ -20,9 +20,9 @@ import io.smallrye.mutiny.helpers.test.UniAssertSubscriber;
 public class BlockingProducerIT {
     private static final int TIMEOUT_SEC = 5;
     private static final int EVENTS = 100;
-    static final long KAFKA_MAX_BLOCK_MS = 100;
-    static final long DEVIATION_ERROR_MS = 80;
-    static final long KAFKA_MAX_BLOCK_TIME_MS = KAFKA_MAX_BLOCK_MS + DEVIATION_ERROR_MS;
+    static final long KAFKA_MAX_BLOCK_MS = 1000;
+    static final long NETWORK_DELAY_MS = 300;
+    static final long KAFKA_MAX_BLOCK_TIME_MS = KAFKA_MAX_BLOCK_MS + NETWORK_DELAY_MS;
 
     static CustomStrimziKafkaContainer kafkaContainer;
 
