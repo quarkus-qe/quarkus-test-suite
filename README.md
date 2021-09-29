@@ -524,6 +524,7 @@ This scenario covers the fix for [QUARKUS-858](https://issues.redhat.com/browse/
 The test will confirm that no messages are lost when the `grateful-shutdown` is enabled. In the other hand, when this property is disabled, messages might be lost.
 
 - Reactive Kafka and Kafka Streams SSL
+- Auto-detect serializers and deserializers for the Reactive Messaging Kafka Connector
 
 All current tests are running under a secured Kafka by SSL. 
 Kafka streams pipeline is configured by `quarkus.kafka-streams.ssl` prefix property, but reactive Kafka producer/consumer is configured by `kafka` prefix as you can see on `SslStrimziKafkaTestResource` 
