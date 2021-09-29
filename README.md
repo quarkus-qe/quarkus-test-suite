@@ -530,11 +530,13 @@ Kafka streams pipeline is configured by `quarkus.kafka-streams.ssl` prefix prope
 
 ### `messaging/kafka-avro-reactive-messaging`
 
-Verifies that `Quarkus Kafka` + `Apicurio Kakfa Registry`(AVRO) and `Quarkus SmallRye Reactive Messaging` extensions work as expected. 
+- Verifies that `Quarkus Kafka` + `Apicurio Kakfa Registry`(AVRO) and `Quarkus SmallRye Reactive Messaging` extensions work as expected. 
 
 There is an EventsProducer that generate stock prices events every 1s. The events are typed by an AVRO schema.  
 A Kafka consumer will read these events serialized by AVRO and change an `status` property to `COMPLETED`. 
 The streams of completed events will be exposed through an SSE endpoint. 
+
+- Verify random kafka group id 
 
 ### `messaging/kafka-producer`
 
