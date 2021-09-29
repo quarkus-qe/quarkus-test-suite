@@ -250,13 +250,13 @@ This might not be recommended for production, but is good enough for test.
 Container images used in the tests are:
 
 - PostgreSQL:
-  - version 10: `registry.access.redhat.com/rhscl/postgresql-10-rhel7`
+  - version 13: `quay.io/bitnami/postgresql:13.4.0`
   - version 12: `registry.redhat.io/rhscl/postgresql-12-rhel7` (only if `ts.redhat.registry.enabled` is set)
 - MySQL:
+  - version 5.7: `quay.io/bitnami/mysql:5.7.32`
   - version 8.0: `registry.access.redhat.com/rhscl/mysql-80-rhel7`
 - MariaDB:
-  - version 10.2: `registry.access.redhat.com/rhscl/mariadb-102-rhel7`
-  - version 10.3: `registry.redhat.io/rhscl/mariadb-103-rhel7` (only if `ts.redhat.registry.enabled` is set)
+  - version 10.6: `quay.io/quarkusqeteam/mariadb:10.6.4`
 - MSSQL: `mcr.microsoft.com/mssql/rhel/server`
 
 ### `sql-db/vertx-sql`

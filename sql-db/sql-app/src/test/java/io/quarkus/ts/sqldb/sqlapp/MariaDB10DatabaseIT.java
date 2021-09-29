@@ -1,7 +1,5 @@
 package io.quarkus.ts.sqldb.sqlapp;
 
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
-
 import io.quarkus.test.bootstrap.MariaDbService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -9,12 +7,11 @@ import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
-@EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
-public class MariaDB103DatabaseIT extends AbstractSqlDatabaseIT {
+public class MariaDB10DatabaseIT extends AbstractSqlDatabaseIT {
 
-    static final int MYSQL_PORT = 3306;
+    static final int MARIADB_PORT = 3306;
 
-    @Container(image = "${mariadb.103.image}", port = MYSQL_PORT, expectedLog = "Only MySQL server logs after this point")
+    @Container(image = "${mariadb.10.image}", port = MARIADB_PORT, expectedLog = "MariaDB init process done. Ready for start up")
     static MariaDbService database = new MariaDbService();
 
     @QuarkusApplication

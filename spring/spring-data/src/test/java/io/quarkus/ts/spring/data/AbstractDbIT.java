@@ -8,7 +8,7 @@ import io.quarkus.test.services.QuarkusApplication;
 public class AbstractDbIT {
     static final int POSTGRESQL_PORT = 5432;
 
-    @Container(image = "${postgresql.10.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
+    @Container(image = "${postgresql.13.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
     static final PostgresqlService database = new PostgresqlService();
 
     @QuarkusApplication

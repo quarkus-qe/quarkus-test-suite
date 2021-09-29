@@ -1,20 +1,24 @@
 package io.quarkus.ts.spring.web;
 
-import io.quarkus.test.bootstrap.MariaDbService;
+import org.hamcrest.CoreMatchers;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+
 import io.quarkus.test.bootstrap.RestService;
-import io.quarkus.test.services.Container;
-import io.quarkus.test.services.QuarkusApplication;
+import io.restassured.http.ContentType;
 
-public class AbstractDbIT {
-    static final int MARIADB_PORT = 3306;
+public abstract class AbstractDbIT {
 
-    @Container(image = "${mariadb.102.image}", port = MARIADB_PORT, expectedLog = "Only MySQL server logs after this point")
-    static final MariaDbService database = new MariaDbService();
+    private static final String APP_NAME = "Bootstrap Spring Boot";
 
-    @QuarkusApplication
-    public static final RestService app = new RestService()
-            .withProperty("quarkus.datasource.username", database.getUser())
-            .withProperty("quarkus.datasource.password", database.getPassword())
-            .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl);
+    @Test
+    public void shouldQuteReplaceWelcomePhrase() {
+        getApp().given().get("/")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .contentType(ContentType.HTML)
+                .body(CoreMatchers.containsString(APP_NAME));
+    }
 
+    public abstract RestService getApp();
 }
