@@ -51,11 +51,13 @@ public class Chat {
 
     private void broadcast(String message) {
         sessions.values().forEach(s -> {
-            s.getAsyncRemote().sendObject(message, result -> {
-                if (result.getException() != null) {
-                    System.out.println("Unable to send message: " + result.getException());
-                }
-            });
+            if (s.isOpen()) {
+                s.getAsyncRemote().sendObject(message, result -> {
+                    if (!result.isOK()) {
+                        LOG.error("Unable to send message: " + result.getException());
+                    }
+                });
+            }
         });
     }
 }
