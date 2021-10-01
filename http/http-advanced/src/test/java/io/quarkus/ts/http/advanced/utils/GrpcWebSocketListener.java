@@ -1,4 +1,4 @@
-package io.quarkus.ts.http.advanced;
+package io.quarkus.ts.http.advanced.utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +14,8 @@ import okhttp3.WebSocketListener;
 
 public class GrpcWebSocketListener extends WebSocketListener {
 
-    static Map<Integer, List<String>> serviceOutputMessagesMap = new ConcurrentHashMap<>();
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final Map<Integer, List<String>> serviceOutputMessagesMap = new ConcurrentHashMap<>();
 
     @Override
     public void onMessage(WebSocket webSocket, String text) {
@@ -29,5 +29,9 @@ public class GrpcWebSocketListener extends WebSocketListener {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Map<Integer, List<String>> getServiceOutputMessagesMap() {
+        return serviceOutputMessagesMap;
     }
 }

@@ -1,7 +1,6 @@
 package io.quarkus.ts.http.advanced;
 
 import static org.awaitility.Awaitility.await;
-import static org.awaitility.Awaitility.given;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -30,9 +29,11 @@ import io.quarkus.example.GreeterGrpc;
 import io.quarkus.example.HelloReply;
 import io.quarkus.example.HelloRequest;
 import io.quarkus.test.bootstrap.GrpcService;
+import io.quarkus.test.bootstrap.Service;
 import io.quarkus.test.logging.Log;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.DevModeQuarkusApplication;
+import io.quarkus.ts.http.advanced.utils.GrpcWebSocketListener;
 import io.restassured.response.Response;
 
 import okhttp3.OkHttpClient;
@@ -44,16 +45,16 @@ import okhttp3.WebSocket;
 @QuarkusScenario
 public class DevModeGrpcIntegrationIT {
 
-    static final String NAME = "QE";
+    private static final String NAME = "QE";
 
-    static final int UNARY_ID = 1;
-    static final int SERVER_STREAM_ID = 2;
-    static final int CLIENT_STREAM_ID = 3;
-    static final int BIDIRECTIONAL_STREAM_ID = 4;
-    static final int CLIENT_STREAM_NAMES_SUBMITTED_COUNT = 2;
-    static final int SERVER_STREAM_MESSAGES_RETURNED_COUNT = 5;
+    private static final int UNARY_ID = 1;
+    private static final int SERVER_STREAM_ID = 2;
+    private static final int CLIENT_STREAM_ID = 3;
+    private static final int BIDIRECTIONAL_STREAM_ID = 4;
+    private static final int CLIENT_STREAM_NAMES_SUBMITTED_COUNT = 2;
+    private static final int SERVER_STREAM_MESSAGES_RETURNED_COUNT = 5;
 
-    private final List<String> grpcSocketMessages = Arrays.asList(
+    private static final List<String> GRPC_SOCKET_MESSAGES = Arrays.asList(
             "{\"serviceName\":\"helloworld.Greeter\",\"methodName\":\"SayHello\",\"id\":" + UNARY_ID
                     + ",\"content\":\"{\\\"name\\\":\\\"Quarkus\\\"}\"}",
             "{\"serviceName\":\"helloworld.Streaming\",\"methodName\":\"ServerStream\",\"id\":" + SERVER_STREAM_ID
@@ -73,14 +74,12 @@ public class DevModeGrpcIntegrationIT {
     static final GrpcService app = (GrpcService) new GrpcService()
             .withProperty("quarkus.oidc.enabled", "false")
             .withProperty("quarkus.keycloak.policy-enforcer.enable", "false")
-            .withProperty("quarkus.keycloak.devservices.enabled", "false");
+            .withProperty("quarkus.keycloak.devservices.enabled", "false")
+            // Init webSocketListener and webSocket
+            .onPostStart(DevModeGrpcIntegrationIT::initDevUiGrpcWsClient);
 
-    OkHttpClient client = new OkHttpClient();
-
-    Request request = new Request.Builder()
-            .url("ws://localhost:" + app.getPort() + "/q/dev/grpc-test")
-            .build();
-    WebSocket webSocket = client.newWebSocket(request, new GrpcWebSocketListener());
+    static WebSocket webSocket;
+    static GrpcWebSocketListener webSocketListener;
 
     @Test
     public void testGrpcAsClient() {
@@ -97,11 +96,12 @@ public class DevModeGrpcIntegrationIT {
 
     @Test
     public void testGrpcDevUISocket() throws JsonProcessingException {
-        for (String message : grpcSocketMessages) {
+        for (String message : GRPC_SOCKET_MESSAGES) {
             webSocket.send(message);
         }
-        await().atMost(60, TimeUnit.SECONDS).until(() -> isGrpcStreamsCompleted());
-        checkGrpcDevUiOutput(GrpcWebSocketListener.serviceOutputMessagesMap);
+
+        await().atMost(60, TimeUnit.SECONDS).until(this::isGrpcStreamsCompleted);
+        checkGrpcDevUiOutput();
     }
 
     @Test
@@ -119,7 +119,9 @@ public class DevModeGrpcIntegrationIT {
                 "DevUI gRPC services view s incomplete");
     }
 
-    private void checkGrpcDevUiOutput(Map<Integer, List<String>> grpcOutputMap) throws JsonProcessingException {
+    private void checkGrpcDevUiOutput() throws JsonProcessingException {
+        Map<Integer, List<String>> grpcOutputMap = webSocketListener.getServiceOutputMessagesMap();
+
         List<String> messages;
         for (int streamId : grpcOutputMap.keySet()) {
             switch (streamId) {
@@ -155,7 +157,7 @@ public class DevModeGrpcIntegrationIT {
     private List<String> getMessagesByStreamId(int id) throws JsonProcessingException {
         List<String> messages = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
-        for (String payload : GrpcWebSocketListener.serviceOutputMessagesMap.get(id)) {
+        for (String payload : webSocketListener.getServiceOutputMessagesMap().get(id)) {
             ObjectNode node = objectMapper.readValue(payload, ObjectNode.class);
             JsonNode body;
             if ((body = node.get("body")) != null) {
@@ -171,10 +173,20 @@ public class DevModeGrpcIntegrationIT {
 
     private boolean isGrpcStreamsCompleted() {
         final int expectedCompletedStreams = 4;
-        long completedStreams = GrpcWebSocketListener.serviceOutputMessagesMap.entrySet()
-                .stream().map(entry -> entry.getValue())
+        long completedStreams = webSocketListener.getServiceOutputMessagesMap()
+                .values().stream()
                 .filter(list -> list.get(list.size() - 1).contains("COMPLETED"))
                 .count();
         return completedStreams == expectedCompletedStreams;
+    }
+
+    private static void initDevUiGrpcWsClient(Service service) {
+        webSocketListener = new GrpcWebSocketListener();
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url("ws://localhost:" + app.getPort() + "/q/dev/io.quarkus.quarkus-grpc/grpc-test")
+                .build();
+        webSocket = client.newWebSocket(request, webSocketListener);
     }
 }
