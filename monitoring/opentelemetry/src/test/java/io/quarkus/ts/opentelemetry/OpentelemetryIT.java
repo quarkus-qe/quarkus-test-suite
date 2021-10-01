@@ -32,7 +32,7 @@ public class OpentelemetryIT {
     @JaegerContainer(restPort = GRPC_COLLECTOR_PORT, expectedLog = "\"Health Check state change\",\"status\":\"ready\"")
     static final JaegerService jaeger = new JaegerService();
 
-    @QuarkusApplication(classes = PongResource.class)
+    @QuarkusApplication(classes = PongResource.class, properties = "pong.properties")
     static final RestService pongservice = new RestService()
             .withProperty("quarkus.application.name", "pongservice")
             .withProperty("quarkus.opentelemetry.tracer.exporter.jaeger.endpoint", jaeger::getRestUrl);

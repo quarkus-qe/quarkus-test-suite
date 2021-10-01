@@ -7,8 +7,8 @@
         <version>1.0.0-SNAPSHOT</version>
         <relativePath>../..</relativePath>
     </parent>
-    <artifactId>opentracing-reactive-grpc</artifactId>
-    <name>Quarkus QE TS: OpenTracing reactive GRPC</name>
+    <artifactId>monitoring-opentracing-reactive-grpc</artifactId>
+    <name>Quarkus QE TS: Monitoring: OpenTracing reactive GRPC</name>
     <dependencies>
         <dependency>
             <groupId>io.quarkus</groupId>
