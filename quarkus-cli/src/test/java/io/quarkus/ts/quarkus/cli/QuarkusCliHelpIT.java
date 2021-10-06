@@ -40,7 +40,7 @@ public class QuarkusCliHelpIT {
         CREATE_APP("create app", "Create a Quarkus application project."),
         BUILD("build", "Build the current project."),
         DEV("dev", "Run the current project in dev (live coding) mode."),
-        EXTENSION("extension", "Configure extensions of an existing project."),
+        EXTENSION("extension", "List platforms and extensions."),
         COMPLETION("completion", "bash/zsh completion:  source <(quarkus completion)"),
         VERSION("version", "Display version information");
 
