@@ -1,5 +1,7 @@
 package io.quarkus.ts.messaging.kafka;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -26,12 +28,24 @@ public class StockPriceEndpoint {
     @Channel("price-stream")
     Publisher<String> stockPrices;
 
+    @Inject
+    @Channel("price-stream-batch")
+    Publisher<List<String>> stockPricesBatch;
+
     @GET
     @Path("/stream")
     @Produces(MediaType.SERVER_SENT_EVENTS)
     @SseElementType(MediaType.APPLICATION_JSON)
     public Publisher<String> stream() {
         return stockPrices;
+    }
+
+    @GET
+    @Path("/stream-batch")
+    @Produces(MediaType.SERVER_SENT_EVENTS)
+    @SseElementType(MediaType.APPLICATION_JSON)
+    public Publisher<List<String>> streamBatch() {
+        return stockPricesBatch;
     }
 
     @POST
