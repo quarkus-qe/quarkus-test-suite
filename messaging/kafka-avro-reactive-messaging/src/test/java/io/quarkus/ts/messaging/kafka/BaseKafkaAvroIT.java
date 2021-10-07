@@ -2,8 +2,6 @@ package io.quarkus.ts.messaging.kafka;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -21,16 +19,23 @@ public abstract class BaseKafkaAvroIT {
 
     private static final int TIMEOUT_SEC = 25;
     private static final int EVENTS_AMOUNT = 3;
+    private static final int SINGLE = 1;
 
     private String endpoint;
     private Client client = ClientBuilder.newClient();
-    private List<String> receive = new CopyOnWriteArrayList<>();
     private boolean completed;
 
     @Test
     public void testAlertMonitorEventStream() throws InterruptedException {
         givenAnApplicationEndpoint(getEndpoint() + "/stock-price/stream");
-        whenRequestSomeEvents(EVENTS_AMOUNT);
+        whenRequestSomeEvents(EVENTS_AMOUNT, SINGLE);
+        thenVerifyAllEventsArrived();
+    }
+
+    @Test
+    public void batchMustBeGreaterThanSingleEvent() throws InterruptedException {
+        givenAnApplicationEndpoint(getEndpoint() + "/stock-price/stream-batch");
+        whenRequestSomeEvents(EVENTS_AMOUNT, 2);
         thenVerifyAllEventsArrived();
     }
 
@@ -40,14 +45,20 @@ public abstract class BaseKafkaAvroIT {
         this.endpoint = endpoint;
     }
 
-    private void whenRequestSomeEvents(int amount) throws InterruptedException {
+    private void whenRequestSomeEvents(int amount, int expectedItemsPerEvent) throws InterruptedException {
         WebTarget target = client.target(endpoint);
         CountDownLatch latch = new CountDownLatch(amount);
 
         SseEventSource source = SseEventSource.target(target).build();
         source.register(inboundSseEvent -> {
-            receive.add(inboundSseEvent.readData(String.class, MediaType.APPLICATION_JSON_TYPE));
-            latch.countDown();
+            if (expectedItemsPerEvent == SINGLE) {
+                latch.countDown();
+            } else {
+                String[] items = inboundSseEvent.readData(String[].class, MediaType.APPLICATION_JSON_TYPE);
+                if (items.length >= expectedItemsPerEvent) {
+                    latch.countDown();
+                }
+            }
         });
 
         source.open();
