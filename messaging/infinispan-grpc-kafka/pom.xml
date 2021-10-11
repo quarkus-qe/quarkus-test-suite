@@ -54,6 +54,16 @@
             <version>0.25.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.quarkus.qe</groupId>
+            <artifactId>quarkus-test-service-infinispan</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus.qe</groupId>
+            <artifactId>quarkus-test-service-kafka</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
