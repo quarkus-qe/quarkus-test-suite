@@ -65,9 +65,7 @@ public class QuarkusCliCreateJvmApplicationIT {
         // Should build on Jvm
         QuarkusCliClient.Result result = app.buildOnJvm();
         assertTrue(result.isSuccessful(), "The application didn't build on JVM. Output: " + result.getOutput());
-        assertTrue(result.getOutput().contains("Installed features: "
-                + "[cdi, kogito-rules, pretty-time, resteasy, resteasy-jackson, servlet, smallrye-context-propagation]"),
-                "Unexpected installed features. Output: " + result.getOutput());
+        assertInstalledExtensions(app, "kogito-quarkus-rules", "quarkus-prettytime");
     }
 
     @Tag("QUARKUS-1071")
@@ -122,8 +120,7 @@ public class QuarkusCliCreateJvmApplicationIT {
 
         QuarkusCliClient.Result result = app.buildOnJvm();
         assertTrue(result.isSuccessful(), "The application didn't build on JVM. Output: " + result.getOutput());
-        assertTrue(result.getOutput().contains("Installed features: [cdi, jacoco, resteasy, smallrye-context-propagation]"),
-                "Unexpected installed features. Output: " + result.getOutput());
+        assertInstalledExtensions(app, "quarkus-jacoco");
 
         assertTrue(app.getServiceFolder().resolve("target/jacoco-report/index.html").toFile().exists(),
                 "JaCoCo report directory doesn't exist");
