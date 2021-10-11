@@ -17,13 +17,17 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 public class SslKafkaProvider extends KafkaProviders {
 
-    private final static String SSL_TRUSTSTORE_PASSWORD_CONFIG_VALUE = "top-secret";
-
     @ConfigProperty(name = "kafka-client-ssl.bootstrap.servers", defaultValue = "localhost:9092")
     String sslKafkaBootStrap;
 
-    @ConfigProperty(name = "ssl-dir", defaultValue = "src/main/resources")
-    String sslDir;
+    @ConfigProperty(name = "kafka.ssl.truststore.location", defaultValue = "server.jks")
+    String trustStoreFile;
+
+    @ConfigProperty(name = "kafka.ssl.truststore.password", defaultValue = "top-secret")
+    String trustStorePassword;
+
+    @ConfigProperty(name = "kafka.ssl.truststore.type", defaultValue = "PKCS12")
+    String trustStoreType;
 
     @Produces
     @Named("kafka-consumer-ssl")
@@ -52,11 +56,11 @@ public class SslKafkaProvider extends KafkaProviders {
     }
 
     protected void sslSetup(Properties props) {
-        File tsFile = new File(sslDir + "/kafka-truststore.p12");
+        File tsFile = new File(trustStoreFile);
         props.setProperty(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SSL");
         props.setProperty(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, tsFile.getPath());
-        props.setProperty(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, SSL_TRUSTSTORE_PASSWORD_CONFIG_VALUE);
-        props.setProperty(SslConfigs.SSL_TRUSTSTORE_TYPE_CONFIG, "PKCS12");
+        props.setProperty(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, trustStorePassword);
+        props.setProperty(SslConfigs.SSL_TRUSTSTORE_TYPE_CONFIG, trustStoreType);
         props.setProperty(SslConfigs.SSL_ENDPOINT_IDENTIFICATION_ALGORITHM_CONFIG, "");
     }
 }

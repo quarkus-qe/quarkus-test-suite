@@ -20,7 +20,7 @@
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
         <quarkus.platform.version>999-SNAPSHOT</quarkus.platform.version>
         <quarkus-plugin.version>${quarkus.platform.version}</quarkus-plugin.version>
-        <quarkus.qe.framework.version>0.0.15</quarkus.qe.framework.version>
+        <quarkus.qe.framework.version>0.0.16</quarkus.qe.framework.version>
         <quarkus-qpid-jms.version>0.28.0</quarkus-qpid-jms.version>
         <quarkus-ide-config.version>2.3.0.Final</quarkus-ide-config.version>
         <apache-httpclient-fluent.version>4.5.13</apache-httpclient-fluent.version>
@@ -213,6 +213,8 @@
                                 <redis.image>quay.io/bitnami/redis:6.0</redis.image>
                                 <wiremock.image>quay.io/ocpmetal/wiremock</wiremock.image>
                                 <consul.image>quay.io/bitnami/consul:1.9.3</consul.image>
+                                <infinispan.image>infinispan/server:13.0</infinispan.image>
+                                <infinispan.expected-log>Infinispan Server.*started in</infinispan.expected-log>
                                 <spring.cloud.server.image>hyness/spring-cloud-config-server</spring.cloud.server.image>
                             </systemPropertyVariables>
                         </configuration>
