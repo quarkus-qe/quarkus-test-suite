@@ -4,12 +4,10 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
 
-@Disabled("Can't inject beans annotated with @ConfigProperties. Reported in https://github.com/quarkusio/quarkus/issues/20610")
 @QuarkusScenario
 public class BulkOfPropertiesIT {
 
