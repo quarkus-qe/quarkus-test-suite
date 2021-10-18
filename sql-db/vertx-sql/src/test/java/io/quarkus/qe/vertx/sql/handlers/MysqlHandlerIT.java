@@ -10,7 +10,7 @@ import io.quarkus.test.services.QuarkusApplication;
 public class MysqlHandlerIT extends CommonTestCases {
     private static final String DATABASE = "amadeus";
 
-    @Container(image = "${mysql.57.image}", port = 3306, expectedLog = "ready for connections")
+    @Container(image = "${mysql.80.image}", port = 3306, expectedLog = "Only MySQL server logs after this point")
     static MySqlService mysql = new MySqlService()
             .with("test", "test", DATABASE);
 
