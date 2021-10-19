@@ -11,7 +11,6 @@ import javax.inject.Inject;
 
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Message;
-import org.jboss.logging.Logger;
 
 import io.smallrye.reactive.messaging.MutinyEmitter;
 import io.smallrye.reactive.messaging.kafka.api.OutgoingKafkaRecordMetadata;
@@ -19,8 +18,6 @@ import io.vertx.ext.web.RoutingContext;
 
 @ApplicationScoped
 public class KafkaBlockingProducer {
-
-    private static final Logger LOG = Logger.getLogger(KafkaBlockingProducer.class);
 
     @Inject
     @Channel("test")

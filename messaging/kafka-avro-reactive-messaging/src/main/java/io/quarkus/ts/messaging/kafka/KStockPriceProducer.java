@@ -45,8 +45,6 @@ public class KStockPriceProducer {
         return (success, failure) -> {
             if (failure != null) {
                 LOG.info(String.format("D'oh! %s", failure.getMessage()));
-            } else {
-                LOG.info(String.format("Message sent successfully. Owner %s", owner));
             }
         };
     }

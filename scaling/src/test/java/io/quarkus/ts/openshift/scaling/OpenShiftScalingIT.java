@@ -103,8 +103,6 @@ public class OpenShiftScalingIT {
                     app.given()
                             .when().get("/scaling")
                             .then()
-                            .log().body()
-                            .log().status()
                             .statusCode(OK.getStatusCode());
                 });
     }
