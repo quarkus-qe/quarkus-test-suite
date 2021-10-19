@@ -54,7 +54,6 @@ public abstract class AbstractCommonIT {
                 .when()
                 .post("/bladeRunner/")
                 .then()
-                .log().body()
                 .statusCode(200);
 
         replicant = defaultReplicant();

@@ -106,7 +106,7 @@ public class RestClientInPingPongResourcesIT extends BaseIT {
         given()
                 .auth().oauth2(createToken())
                 .when().get(pingEndpoint)
-                .then().log().all().statusCode(HttpStatus.SC_OK)
+                .then().statusCode(HttpStatus.SC_OK)
                 .body(is("ping pong"));
     }
 

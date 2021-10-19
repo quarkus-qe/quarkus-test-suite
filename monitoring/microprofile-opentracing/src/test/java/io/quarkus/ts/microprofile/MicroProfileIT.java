@@ -58,8 +58,6 @@ public class MicroProfileIT {
                             .get("/client")
                             .then()
                             .statusCode(HttpURLConnection.HTTP_OK)
-                            .log().body()
-                            .log().status()
                             .body(is("Client got: Hello, World!"));
                 });
     }
@@ -74,8 +72,6 @@ public class MicroProfileIT {
                     .get(jaeger.getTraceUrl() + "?service=" + SERVICE_NAME)
                     .then()
                     .statusCode(HttpURLConnection.HTTP_OK)
-                    .log().body()
-                    .log().status()
                     .body("data", hasSize(EXPECTED_DATA_SIZE))
                     .body("data[0].spans", hasSize(EXPECTED_SPANS_SIZE))
                     .body("data[0].spans.operationName", hasItems(
@@ -133,8 +129,6 @@ public class MicroProfileIT {
                     app.given().log().uri().when()
                             .get("/client/fallback")
                             .then()
-                            .log().body()
-                            .log().status()
                             .statusCode(HttpURLConnection.HTTP_OK)
                             .body(is("Client got: Fallback"));
                 });
