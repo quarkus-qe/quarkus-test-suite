@@ -20,7 +20,7 @@
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
         <quarkus.platform.version>999-SNAPSHOT</quarkus.platform.version>
         <quarkus.qe.framework.version>0.0.16</quarkus.qe.framework.version>
-        <quarkus-qpid-jms.version>0.28.0</quarkus-qpid-jms.version>
+        <quarkus-qpid-jms.version>0.29.0</quarkus-qpid-jms.version>
         <quarkus-ide-config.version>2.4.0.Final</quarkus-ide-config.version>
         <apache-httpclient-fluent.version>4.5.13</apache-httpclient-fluent.version>
         <confluent.kafka-avro-serializer.version>6.2.1</confluent.kafka-avro-serializer.version>
