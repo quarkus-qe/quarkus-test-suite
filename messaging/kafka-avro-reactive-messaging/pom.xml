@@ -9,6 +9,9 @@
     </parent>
     <artifactId>kafka-avro-reactive-messaging</artifactId>
     <name>Quarkus QE TS: Messaging: Reactive Kafka with Avro</name>
+    <properties>
+        <quarkus.native.native-image-xmx>6g</quarkus.native.native-image-xmx>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>io.quarkus</groupId>
