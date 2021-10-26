@@ -375,6 +375,7 @@
                 <module>http/rest-client</module>
                 <module>http/servlet-undertow</module>
                 <module>http/vertx-web-client</module>
+                <module>http/hibernate-validator</module>
             </modules>
         </profile>
         <profile>

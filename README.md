@@ -162,7 +162,11 @@ Additional coverage:
 Verifies Rest Client configuration using `quarkus-rest-client-jaxb` (XML support) and `quarkus-rest-client-jsonb` (JSON support).
 This module will setup a very minimal configuration (only `quarkus-resteasy`) and have four endpoints:
 - Two endpoints to get a book in JSON and XML formats.
-- Two endpoints to get the value of the previous endpoints using the rest client interface. 
+- Two endpoints to get the value of the previous endpoints using the rest client interface.
+
+### `http/hibernate-validator`
+Verifies HTTP endpoints validation using `quarkus-hibernate-validator` works correctly in Resteasy Classic and Resteasy Reactive.
+This module will setup a simple endpoint and will validate the right message format is set when there are validation errors.
 
 #### Additions
 * *@Deprecated* annotation has been added for test regression purposes to ensure `java.lang` annotations are allowed for resources
