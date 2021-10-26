@@ -29,7 +29,7 @@
         <xml-format-maven-plugin.version>3.2.0</xml-format-maven-plugin.version>
         <checkstyle.version>9.0.1</checkstyle.version>
         <jjwt.version>0.11.2</jjwt.version>
-        <camel-quarkus-bom.version>2.3.0</camel-quarkus-bom.version>
+        <camel-quarkus-bom.version>2.4.0</camel-quarkus-bom.version>
         <profile.id>jvm</profile.id>
         <!-- S2i configuration -->
         <ts.global.s2i.quarkus.jvm.builder.image>registry.access.redhat.com/ubi8/openjdk-11:latest</ts.global.s2i.quarkus.jvm.builder.image>
