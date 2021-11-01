@@ -7,6 +7,7 @@ import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
+// action test
 @OpenShiftScenario
 public class OpenShiftMultiplePersistenceIT extends AbstractMultiplePersistenceIT {
 
