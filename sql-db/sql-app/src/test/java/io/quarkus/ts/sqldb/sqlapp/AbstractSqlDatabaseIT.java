@@ -44,6 +44,17 @@ public abstract class AbstractSqlDatabaseIT {
 
     @Test
     @Order(3)
+    public void getWithUnknownId() {
+        given()
+                .get("/book/" + INVALID_ID)
+                .then()
+                .statusCode(HttpStatus.SC_NOT_FOUND)
+                .body("code", equalTo(HttpStatus.SC_NOT_FOUND))
+                .body("error", equalTo(String.format("book '%d' not found", INVALID_ID)));
+    }
+
+    @Test
+    @Order(4)
     public void create() {
         Book book = new Book();
         book.title = "Neuromancer";
@@ -56,19 +67,19 @@ public abstract class AbstractSqlDatabaseIT {
                 .then()
                 .statusCode(HttpStatus.SC_CREATED)
                 .body("id", equalTo(VALID_ID))
-                .body("title", equalTo("Neuromancer"))
-                .body("author", equalTo("William Gibson"));
+                .body("title", equalTo(book.title))
+                .body("author", equalTo(book.author));
 
         given()
-                .get("/book/8")
+                .get("/book/" + VALID_ID)
                 .then()
                 .statusCode(HttpStatus.SC_OK)
-                .body("title", equalTo("Neuromancer"))
-                .body("author", equalTo("William Gibson"));
+                .body("title", equalTo(book.title))
+                .body("author", equalTo(book.author));
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     public void createInvalidPayload() {
         given()
                 .contentType(ContentType.TEXT)
@@ -80,7 +91,7 @@ public abstract class AbstractSqlDatabaseIT {
     }
 
     @Test
-    @Order(5)
+    @Order(6)
     public void createBadPayload() {
         Book book = new Book();
         book.id = Long.valueOf(INVALID_ID);
@@ -98,7 +109,7 @@ public abstract class AbstractSqlDatabaseIT {
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     public void update() {
         Book book = new Book();
         book.id = Long.valueOf(VALID_ID);
@@ -108,37 +119,19 @@ public abstract class AbstractSqlDatabaseIT {
         given()
                 .contentType(ContentType.JSON)
                 .body(book)
-                .put("/book/8")
+                .put("/book/" + VALID_ID)
                 .then()
                 .statusCode(HttpStatus.SC_OK)
                 .body("id", equalTo(VALID_ID))
-                .body("title", equalTo("Schismatrix"))
-                .body("author", equalTo("Bruce Sterling"));
+                .body("title", equalTo(book.title))
+                .body("author", equalTo(book.author));
 
         given()
                 .get("/book/" + VALID_ID)
                 .then()
                 .statusCode(HttpStatus.SC_OK)
-                .body("title", equalTo("Schismatrix"))
-                .body("author", equalTo("Bruce Sterling"));
-    }
-
-    @Test
-    @Order(7)
-    public void updateWithUnknownId() {
-        Book book = new Book();
-        book.id = Long.valueOf(INVALID_ID);
-        book.title = "foo";
-        book.author = "bar";
-
-        given()
-                .contentType(ContentType.JSON)
-                .body(book)
-                .put("/book/999")
-                .then()
-                .statusCode(HttpStatus.SC_NOT_FOUND)
-                .body("code", equalTo(HttpStatus.SC_NOT_FOUND))
-                .body("error", equalTo("book '999' not found"));
+                .body("title", equalTo(book.title))
+                .body("author", equalTo(book.author));
     }
 
     @Test
@@ -147,7 +140,7 @@ public abstract class AbstractSqlDatabaseIT {
         given()
                 .contentType(ContentType.TEXT)
                 .body("")
-                .put("/book/8")
+                .put("/book/" + VALID_ID)
                 .then()
                 .statusCode(HttpStatus.SC_UNSUPPORTED_MEDIA_TYPE)
                 .body("code", equalTo(HttpStatus.SC_UNSUPPORTED_MEDIA_TYPE));
@@ -161,7 +154,7 @@ public abstract class AbstractSqlDatabaseIT {
         given()
                 .contentType(ContentType.JSON)
                 .body(book)
-                .put("/book/8")
+                .put("/book/" + VALID_ID)
                 .then()
                 .statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
                 .body("code", equalTo(HttpStatus.SC_UNPROCESSABLE_ENTITY))
@@ -172,26 +165,15 @@ public abstract class AbstractSqlDatabaseIT {
     @Order(10)
     public void delete() {
         given()
-                .delete("/book/8")
+                .delete("/book/" + VALID_ID)
                 .then()
                 .statusCode(HttpStatus.SC_NO_CONTENT);
 
         given()
-                .get("/book/8")
+                .get("/book/" + VALID_ID)
                 .then()
                 .statusCode(HttpStatus.SC_NOT_FOUND)
                 .body("code", equalTo(HttpStatus.SC_NOT_FOUND))
-                .body("error", equalTo("book '8' not found"));
-    }
-
-    @Test
-    @Order(11)
-    public void deleteWithUnknownId() {
-        given()
-                .delete("/book/999")
-                .then()
-                .statusCode(HttpStatus.SC_NOT_FOUND)
-                .body("code", equalTo(HttpStatus.SC_NOT_FOUND))
-                .body("error", equalTo("book '999' not found"));
+                .body("error", equalTo(String.format("book '%d' not found", VALID_ID)));
     }
 }
