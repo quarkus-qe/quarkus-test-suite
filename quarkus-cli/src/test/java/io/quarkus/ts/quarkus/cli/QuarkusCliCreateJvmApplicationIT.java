@@ -5,15 +5,12 @@ import static io.quarkus.test.utils.AwaitilityUtils.untilAsserted;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.time.Duration;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
@@ -34,8 +31,6 @@ public class QuarkusCliCreateJvmApplicationIT {
     static final String SMALLRYE_HEALTH_EXTENSION = "quarkus-smallrye-health";
     static final String SPRING_WEB_EXTENSION = "quarkus-spring-web";
     static final String RESTEASY_JACKSON_EXTENSION = "quarkus-resteasy-jackson";
-    static final String SMALLRYE_OPENAPI = "quarkus-smallrye-openapi";
-    static final int CMD_DELAY_SEC = 3;
 
     @Inject
     static QuarkusCliClient cliClient;
@@ -91,7 +86,7 @@ public class QuarkusCliCreateJvmApplicationIT {
 
     @Tag("QUARKUS-1071")
     @Test
-    public void shouldAddAndRemoveExtensions() throws InterruptedException {
+    public void shouldAddAndRemoveExtensions() {
         // Create application
         QuarkusCliRestService app = cliClient.createApplication("app");
 
@@ -115,7 +110,7 @@ public class QuarkusCliCreateJvmApplicationIT {
         assertTrue(result.isSuccessful(), SMALLRYE_HEALTH_EXTENSION + " was not uninstalled. Output: " + result.getOutput());
 
         // The health endpoint should be now gone
-        startAfter(app, Duration.ofSeconds(CMD_DELAY_SEC));
+        app.start();
         untilAsserted(() -> app.given().get("/q/health").then().statusCode(HttpStatus.SC_NOT_FOUND));
     }
 
@@ -134,42 +129,10 @@ public class QuarkusCliCreateJvmApplicationIT {
                 "JaCoCo exec file doesn't exist");
     }
 
-    @Test
-    @Disabled
-    //TODO https://github.com/quarkusio/quarkus/issues/21070
-    public void shouldReStartAppAfterRemoveExtension() {
-        // Create application
-        QuarkusCliRestService app = cliClient.createApplication("app");
-
-        // By default, it installs only "quarkus-resteasy"
-        assertInstalledExtensions(app, RESTEASY_EXTENSION);
-
-        // Let's install Quarkus Smallrye OpenAPI
-        app.installExtension(SMALLRYE_OPENAPI);
-
-        // Verify both extensions now
-        assertInstalledExtensions(app, RESTEASY_EXTENSION, SMALLRYE_OPENAPI);
-
-        app.start();
-        untilAsserted(() -> app.given().get("/q/dev").then().statusCode(HttpStatus.SC_OK));
-        app.stop();
-
-        // Let's now remove the Smallrye OpenAPI extension
-        app.removeExtension(SMALLRYE_OPENAPI);
-
-        app.start();
-        untilAsserted(() -> app.given().get("/q/dev").then().statusCode(HttpStatus.SC_OK));
-    }
-
     private void assertInstalledExtensions(QuarkusCliRestService app, String... expectedExtensions) {
         List<String> extensions = app.getInstalledExtensions();
         Stream.of(expectedExtensions).forEach(expectedExtension -> assertTrue(extensions.contains(expectedExtension),
                 expectedExtension + " not found in " + extensions));
     }
 
-    // https://github.com/quarkusio/quarkus/issues/21070
-    private void startAfter(QuarkusCliRestService app, Duration duration) throws InterruptedException {
-        TimeUnit.SECONDS.sleep(duration.getSeconds());
-        app.start();
-    }
 }
