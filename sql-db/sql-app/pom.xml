@@ -10,6 +10,10 @@
     <artifactId>sqldb-sqlapp</artifactId>
     <packaging>jar</packaging>
     <name>Quarkus QE TS: SQL Database: Application</name>
+    <properties>
+        <!-- TODO: https://github.com/quarkus-qe/quarkus-test-suite/issues/372 -->
+        <quarkus.native.native-image-xmx>5g</quarkus.native.native-image-xmx>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>io.quarkus</groupId>
