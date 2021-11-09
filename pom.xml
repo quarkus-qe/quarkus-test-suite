@@ -449,6 +449,7 @@
             <modules>
                 <module>sql-db/hibernate</module>
                 <module>sql-db/sql-app</module>
+                <module>sql-db/sql-app-oracle</module>
                 <module>sql-db/multiple-pus</module>
                 <module>sql-db/panache-flyway</module>
                 <module>sql-db/vertx-sql</module>
