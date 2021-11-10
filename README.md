@@ -242,8 +242,9 @@ There are actually coverage scenarios `sql-app` directory:
 - `mysql`: same for MysQL
 - `mariadb`: same for MariaDB
 - `mssql`: same for MSSQL
+- `oracle`: The same case as the others, but for Oracle, only JVM mode is supported. Native mode is not covered due to a bug in Quarkus, which causes it to fail when used in combination with other JDBC drivers (see `OracleDatabaseIT`). OpenShift scenario is also not supported due to another bug (see `OpenShiftOracleDatabaseIT`). 
 
-All the tests deploy a SQL database directly into OpenShift, alongside the application.
+All the tests deploy an SQL database directly into OpenShift, alongside the application.
 This might not be recommended for production, but is good enough for test.
 Container images used in the tests are:
 
@@ -256,6 +257,12 @@ Container images used in the tests are:
 - MariaDB:
   - version 10.6: `quay.io/quarkusqeteam/mariadb:10.6.4`
 - MSSQL: `mcr.microsoft.com/mssql/rhel/server`
+- Oracle
+  - version 18c XE: `gvenzl/oracle-xe:18.4.0-slim`
+
+### `sql-db/sql-app-oracle`
+Functionally identical to `sql-db/sql-app`, but using only `quarkus-jdbc-oracle` driver. This is a workaround for the missing native Oracle coverage in `sql-db/sql-app`.
+
 
 ### `sql-db/vertx-sql`
 Quarkus / Vertx SQL exploratory testing. A flight search engine in order to test Quarkus Reactive SQL extensions. A detailed description can be found in sql-db/vertx-sql/README.md

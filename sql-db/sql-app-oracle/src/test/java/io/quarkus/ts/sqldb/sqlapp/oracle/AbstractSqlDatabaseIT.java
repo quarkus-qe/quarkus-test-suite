@@ -1,4 +1,4 @@
-package io.quarkus.ts.sqldb.sqlapp;
+package io.quarkus.ts.sqldb.sqlapp.oracle;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
