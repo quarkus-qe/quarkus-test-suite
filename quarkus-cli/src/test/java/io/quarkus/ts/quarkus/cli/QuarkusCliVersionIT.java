@@ -26,9 +26,9 @@ public class QuarkusCliVersionIT {
     @Test
     public void shouldVersionMatchQuarkusVersion() {
         // Using option
-        assertEquals("Client Version " + Version.getVersion(), cliClient.run("version").getOutput());
+        assertEquals(Version.getVersion(), cliClient.run("version").getOutput());
 
         // Using shortcut
-        assertEquals("Client Version " + Version.getVersion(), cliClient.run("-v").getOutput());
+        assertEquals(Version.getVersion(), cliClient.run("-v").getOutput());
     }
 }
