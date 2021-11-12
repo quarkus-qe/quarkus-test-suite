@@ -24,7 +24,7 @@ import io.quarkus.test.bootstrap.RestService;
 import io.restassured.http.ContentType;
 
 abstract class BaseKafkaAvroGroupIdIT {
-    private static final int TIMEOUT_SEC = 3;
+    private static final int TIMEOUT_SEC = 25;
     private static final int EVENTS_AMOUNT = 5;
 
     private String endpoint;
