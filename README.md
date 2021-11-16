@@ -163,6 +163,10 @@ This module will setup a very minimal configuration (only `quarkus-resteasy`) an
 - Two endpoints to get a book in JSON and XML formats.
 - Two endpoints to get the value of the previous endpoints using the rest client interface. 
 
+### `http/rest-client-reactive`
+Reactive equivalent of the http/rest-client module.  
+Exclusions: XML test. Reason: https://quarkus.io/blog/resteasy-reactive/#what-jax-rs-features-are-missing
+
 #### Additions
 * *@Deprecated* annotation has been added for test regression purposes to ensure `java.lang` annotations are allowed for resources
 * Resource with multipart body support, provided parts are text, image and binary data, charset checked with `us-ascii` and `utf-8`
