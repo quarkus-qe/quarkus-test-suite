@@ -1,0 +1,66 @@
+{
+  "realm": "test-realm",
+  "enabled": true,
+  "sslRequired": "none",
+  "roles": {
+    "realm": [
+      {
+        "name": "test-user-role"
+      }
+    ]
+  },
+  "users": [
+    {
+      "username": "test-normal-user",
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test-normal-user"
+        }
+      ],
+      "realmRoles": [
+        "test-user-role"
+      ]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "test-application-client",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "test-application-client-secret",
+      "authorizationSettings": {
+        "resources": [
+          {
+            "name": "test-user-resource",
+            "uris": [
+              "/api/*"
+            ]
+          }
+        ],
+        "policies": [
+          {
+            "name": "test-user-policy",
+            "type": "role",
+            "config": {
+              "roles": "[{\"id\":\"test-user-role\",\"required\":true}]"
+            }
+          },
+          {
+            "name": "test-user-permission",
+            "type": "resource",
+            "config": {
+              "resources": "[\"test-user-resource\"]",
+              "applyPolicies": "[\"test-user-policy\"]"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
