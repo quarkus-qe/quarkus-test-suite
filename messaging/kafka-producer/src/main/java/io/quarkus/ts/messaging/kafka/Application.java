@@ -39,7 +39,7 @@ public class Application {
     }
 
     void onStart(@Observes StartupEvent ev) {
-        LOG.info(String.format("Application %s starting...", serviceName));
+        LOG.debug(String.format("Application %s starting...", serviceName));
         addRoute(HttpMethod.POST, "/event/:topic", rc -> producer.pushEventToTopic(rc));
         addRoute(HttpMethod.POST, "/event", rc -> producer.pushEvent(rc));
     }
