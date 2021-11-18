@@ -366,6 +366,7 @@
             </activation>
             <modules>
                 <module>http/http-minimum</module>
+                <module>http/http-minimum-reactive</module>
                 <module>http/http-advanced</module>
                 <module>http/http-static</module>
                 <module>http/jaxrs</module>

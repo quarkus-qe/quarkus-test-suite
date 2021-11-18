@@ -136,6 +136,9 @@ It also verifies multiple deployment strategies like:
 - Using OpenShift quarkus extension
 - Using OpenShift quarkus extension and Docker Build strategy
 
+### `http/http-minimum-reactive`
+Reactive equivalent of the http/http-minimum module
+
 ### `http/http-advanced`
 Verifies Server/Client http_2/1.1, Grpc and http redirections.
 
@@ -161,7 +164,6 @@ Additional coverage:
 Verifies Rest Client configuration using `quarkus-rest-client-jaxb` (XML support) and `quarkus-rest-client-jsonb` (JSON support).
 This module will setup a very minimal configuration (only `quarkus-resteasy`) and have four endpoints:
 - Two endpoints to get a book in JSON and XML formats.
-- Two endpoints to get the value of the previous endpoints using the rest client interface. 
 
 #### Additions
 * *@Deprecated* annotation has been added for test regression purposes to ensure `java.lang` annotations are allowed for resources
