@@ -136,8 +136,14 @@ It also verifies multiple deployment strategies like:
 - Using OpenShift quarkus extension
 - Using OpenShift quarkus extension and Docker Build strategy
 
+### `http/http-minimum-reactive`
+Reactive equivalent of the http/http-minimum module
+
 ### `http/http-advanced`
 Verifies Server/Client http_2/1.1, Grpc and http redirections.
+
+### `http/http-advanced-reactive`
+Reactive equivalent of the http/http-advanced module
 
 ### `http/http-static`
 Verifies access to static pages and big static files over http.
@@ -163,6 +169,10 @@ Verifies Rest Client configuration using `quarkus-rest-client-jaxb` (XML support
 This module will setup a very minimal configuration (only `quarkus-resteasy`) and have four endpoints:
 - Two endpoints to get a book in JSON and XML formats.
 - Two endpoints to get the value of the previous endpoints using the rest client interface.
+
+### `http/rest-client-reactive`
+Reactive equivalent of the http/rest-client module.  
+Exclusions: XML test. Reason: https://quarkus.io/blog/resteasy-reactive/#what-jax-rs-features-are-missing
 
 ### `http/hibernate-validator`
 Verifies HTTP endpoints validation using `quarkus-hibernate-validator` works correctly in Resteasy Classic and Resteasy Reactive.
