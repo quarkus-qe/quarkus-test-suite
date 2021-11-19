@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.quarkus.example";
+option java_outer_classname = "HelloWorldProto";
+
+package helloworld;
+
+// The streaming service definition
+service Streaming {
+    rpc ServerStream (HelloRequest) returns (stream HelloReply) {}
+    rpc ClientStream (stream HelloRequest) returns (HelloReply) {}
+    rpc BidirectionalStream (stream HelloRequest) returns (stream HelloReply) {}
+}
+
+// The greeting service definition.
+service Greeter {
+    // Sends a greeting
+    rpc SayHello (HelloRequest) returns (HelloReply) {}
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+    string name = 1;
+}
+
+// The response message containing the greetings
+message HelloReply {
+    string message = 1;
+}
