@@ -44,7 +44,7 @@ public class KStockPriceProducer {
     private BiConsumer<Void, Throwable> handlerEmitterResponse(final String owner) {
         return (success, failure) -> {
             if (failure != null) {
-                LOG.info(String.format("D'oh! %s", failure.getMessage()));
+                LOG.error(String.format("D'oh! %s", failure.getMessage()));
             }
         };
     }
