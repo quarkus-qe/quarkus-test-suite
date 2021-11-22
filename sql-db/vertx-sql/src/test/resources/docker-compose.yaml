@@ -24,7 +24,7 @@ services:
       MYSQL_DATABASE: amadeus
 
   db2:
-    image: quay.io/pjgg/db2:11.5.5.0
+    image: quay.io/quarkusqeteam/db2:11.5.5.0
     hostname: db2
     container_name: db2
     privileged: true
