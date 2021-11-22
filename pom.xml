@@ -367,6 +367,7 @@
             </activation>
             <modules>
                 <module>http/http-minimum</module>
+                <module>http/http-minimum-reactive</module>
                 <module>http/http-advanced</module>
                 <module>http/http-advanced-reactive</module>
                 <module>http/http-static</module>
@@ -374,6 +375,7 @@
                 <module>http/jaxrs-reactive</module>
                 <module>http/reactive-routes</module>
                 <module>http/rest-client</module>
+                <module>http/rest-client-reactive</module>
                 <module>http/servlet-undertow</module>
                 <module>http/vertx-web-client</module>
                 <module>http/hibernate-validator</module>
