@@ -1,29 +1,197 @@
 # Quarkus Test Suite
 
+Test Suite for Quarkus integration scenarios. Among the standard Quarkus test features, scenarios hardly rely on [Quarkus-test-framework](https://github.com/quarkus-qe/quarkus-test-framework) features
+
 The test suite includes:
 - Bare metal scenario testing
 - OpenShift scenario testing
+- Native testing
+
+## How-to run Quarkus test suite
+
+Docker, JDK 11+, and Apache Maven 3.8 are the base requirements to run the test suite using the following command:
+
+`mvn clean verify`
+
+Refer to [prerequisites](#Prerequisites) section for more details about the tooling.
+
+Maven commands can be executed from the root directory or from the sub-modules. Additionally, if you want to run a single scenario you can use `-Dit.test=<TEST_CLASS_NAME>` flag.
+
+Let's say that we want to only test `HttpMinimumIT` located over `http/http-minimum` module
+
+```shell
+cd http/http-minimum
+mvn clean verify -Dit.test=HttpMinimumIT
+```
+
+In order to run a native test scenario you only need to include the native flag `-Pnative`
+
+```shell
+cd http/http-advanced
+mvn clean verify -Pnative -Dit.test=HttpAdvancedIT
+```
+
+The following subsections will introduce how to deploy and run the test suite in OpenShift, how to filter modules, overwrite global properties or customize your native compilation
+
+### Profiles overview
+
+If you have a look the main `pom.xml` you will notice that there are several profiles or in other words the test suite is a maven monorepo that you can compile and verify at once or by topics. Let's review the main profiles:
+
+* root-modules: talk about Quarkus "core stuff" as configuration or properties. Is a basic stuff that should work as a pre-requisite to other modules.
+* http-modules: talk about HTTP extensions and no-application endpoints like `/q/health`
+* security-modules: cover all security stuff like OAuth, JWT, OpenId, Keycloak etc
+* messaging-modules: is focus on brokers as Kafka or Artemis-AMQP
+* monitor-modules: talk about metrics and tracing
+* sql-db-modules: is focus on SQL world, Panache, Hibernate, raw SQL etc
+* nosql-db-modules: is focus on noSQL or schemaless DBs as MongoDB
+* spring-modules: is focus on Spring world
+* quarkus-cli-tests: enable Quarkus command client test
+
+By default, all your tests are running on bare metal (JVM / Dev mode), but you can add the following profiles to your maven command in order to activate other platforms
+
+* Native: turn you compilation into native compilation
+* OpenShift: turn your test into an openshift deployment/test
+* Redhat-registry: use Redhat docker registry with official supported images instead of community images
+* Serverless: enable Knative or serverless scenarios
+* Operator-scenarios: enable operator scenarios, where the ecosystem of your test is going to be deployed by k8s/OCP operators
+
+All of these profiles are not mutual exclusive, indeed we encourage you to combine these profiles in order to run complex scenarios.
+
+**Example:** 
+
+To run in OpenShift a native version of root, security and SQL modules and also run knative scenarios of those modules
+
+```shell
+mvn clean verify -Popenshift,serverless,native,root-modules,security-modules,sql-db-modules
+```
+The above statement could be also re-written to the following query:
+
+```shell
+mvn clean verify -Proot-modules,security-modules,sql-db-modules -Dopenshift -Dserverless -Dnative
+```
+Basically, at first you specify Where and How, at second What you want to run
+
+**NOTE:** Property `-Dall-modules` was introduced in order activate every `...-modules` profile by default. Maven activates either explicitly mentioned profiles or default profiles (explicit ones has higher priority). That is why in order to run all modules with OpenShift profile, we should also mention `-Dall-modules` or for specific set of modules appropriate `...-modules` profile.
+
+**Example:**
+
+```shell
+mvn clean verify -Popenshift -Dall-modules
+```
+
+### OpenShift
 
 For running the tests in OpenShift, it is expected that the user is logged into an OpenShift project:
 - with OpenShift 4, run `oc login https://api.<cluster name>.<domain>:6443`
 
 To verify that you're logged into correct project, you can run `oc whoami` and `oc project`.
 
-Running the tests amounts to standard `mvn clean verify`.
-This will use a specific Quarkus version, which can be modified by setting the `quarkus.platform.version` property.
-Alternatively, you can use `-Dquarkus-core-only` to run the test suite against Quarkus `999-SNAPSHOT`.
-In that case, make sure you have built Quarkus locally prior to running the tests.
-Moreover, all the modules are grouped by types: `http`, `security`, `messaging`... Hence we can run a concrete set of scenarios 
-just by selecting the right profile: `-P http-modules` or `-P security-modules`. Take into account that if you are selecting 
-another profile as OpenShift (`mvn clean verify -Dopenshift`), you need to explicitly to add `-Dall-modules` to include all 
-the modules in all the profiles.
+By default [Quarkus-test-framework](https://github.com/quarkus-qe/quarkus-test-framework) uses [ephemeral namespaces](https://github.com/quarkus-qe/quarkus-test-framework/wiki/6.-Openshift#disable-ephemeral-namespaces) in order to be deterministic and don't populate your OCP environment with random resources. After each scenario, all the instantiated resources will be removed.
+
+**Example:**
+
+User: `Run http-minimum module in OpenShift.` 
+
+```shell
+mvn clean verify -Dall-modules -Dopenshift -pl http/http-minimum 
+```
+
+**NOTE:** here we are combining two profiles, profile `openshift` in order to trigger OpenShift execution mode and property `all-modules` to enable `http-modules` profile, where `http/http-minimum` is located.
+
+### OpenShift & Native 
+
+Please read [OpenShift](#OpenShift) section first and login into OCP.
+
+When we are running a [native compilation](https://quarkus.io/guides/building-native-image) the flow is the same as the regular way, the only difference is that we need to compile our application first with GraalVM/Mandrel in order to generate the binary application. To do that we will add the flag `-Dnative` to our maven command.   
+You have a choice of using locally installed GraalVM or a Docker base image in order to generate native executable.
+
+#### OpenShift & Native via Docker
+
+**Example:**
+
+User: `Deploy in Openshift and run http-minimum module in native mode.`
+
+```shell
+mvn clean verify -Dall-modules -Dnative -Dopenshift -pl http/http-minimum 
+```
+
+Quarkus test framework will reuse the Native binary generated by Maven to run the test, except if the scenario provides a build property, then it will generate a new native executable.
+
+More info about how to generate native images could be found in Quarkus [building-native-image](https://quarkus.io/guides/building-native-image) website, and customize your native image generation by adding some [configuration flags](https://quarkus.io/guides/building-native-image#configuration-reference) to your maven command.
+
+**Example:**
+
+User: `Deploy in OpenShift the module http-minimum compiled with a custom GraalVM Docker image and 5GB of memory`
+
+```shell
+mvn clean verify -Dall-modules -Dnative -Dquarkus.native.builder-image=quay.io/quarkus/ubi-quarkus-native-image:21.3-java11 -Dquarkus.native.native-image-xmx=5g -Dopenshift -pl http/http-minimum 
+```
+
+#### OpenShift & Native via local GraalVM
+
+Is Sometimes better to use a local GraalVM in order to generate your application native executable.
+Be sure that GraalVM is installed by running the following command, otherwise you will need to install it.
+
+`gu --version`
+
+`gu install native-image`
+
+**Example:**
+
+User: `Deploy in OpenShift the module http-minimum compiled with my local GraalVM in order to build my application`
+
+```shell
+mvn clean verify -Popenshift -Dall-modules -Dquarkus.package.type=native -pl http/http-minimum 
+```
+
+### Bare metal
+
+Firstly be sure that docker is running
+
+```shell
+docker run hello-world
+```
+
+**Example:**
+
+User: `Run http-minimum module.`
+
+```shell
+mvn clean verify -Dall-modules -pl http/http-minimum 
+```
+
+#### Bare metal & Native
+
+Same as [OpenShift & Native](#OpenShift--Native) scenarios, Quarkus test framework will reuse the Native binary generated by Maven to run your tests.
+
+**Example:**
+
+User: `Run http-minimum module in native mode.`
+
+```shell
+mvn clean verify -Dall-modules -Dnative -pl http/http-minimum 
+```
+
+All the above example for OpenShift are also valid for Bare metal, just remove the flag `-Dopenshift` and play with [native image generation properties](https://quarkus.io/guides/building-native-image#configuration-reference)
+
+### Additional notes
+
+Have a look at the main `pom.xml` file and pay attention to some useful areas as how the scenarios are categorized by topics/profiles, or some global properties as `quarkus.platform.version` that could be overwritten by a flag. 
+
+**Example:**
+
+As a user I would like to run all core modules of Quarkus `2.2.3.Final`
+
+```shell
+mvn clean verify -Droot-modules -Dquarkus.platform.version=2.2.3.Final 
+```
 
 Since this is standard Quarkus configuration, it's possible to override using a system property.
 Therefore, if you want to run the tests with a different Java S2I image, run `mvn clean verify -Dquarkus.s2i.base-jvm-image=...`.
 
-### Other prerequisites
+### Prerequisites
 
-In addition to common prerequisites for Java projects (JDK, Maven) and OpenShift (`oc`), the following utilities must also be installed on the machine where the test suite is being executed:
+In addition to common prerequisites for Java projects (JDK, GraalVM, Maven) and OpenShift (`oc`), the following utilities must also be installed on the machine where the test suite is being executed:
 
 - an OpenShift instance where is enabled the monitoring for user-defined projects (see [documentation](https://docs.openshift.com/container-platform/4.6/monitoring/enabling-monitoring-for-user-defined-projects.html))
 - the OpenShift user must have permission to create ServiceMonitor CRDs and access to the `openshift-user-workload-monitoring` namespace:
