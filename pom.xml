@@ -214,7 +214,7 @@
                                 <consul.image>quay.io/bitnami/consul:1.9.3</consul.image>
                                 <infinispan.image>infinispan/server:12.1</infinispan.image>
                                 <infinispan.expected-log>Infinispan Server.*started in</infinispan.expected-log>
-                                <spring.cloud.server.image>hyness/spring-cloud-config-server</spring.cloud.server.image>
+                                <spring.cloud.server.image>quay.io/quarkusqeteam/spring-cloud-config-server:3.0</spring.cloud.server.image>
                             </systemPropertyVariables>
                         </configuration>
                     </execution>
