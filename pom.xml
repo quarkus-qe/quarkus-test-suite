@@ -199,7 +199,7 @@
                                 <ts.global.s2i.quarkus.jvm.builder.image>${ts.global.s2i.quarkus.jvm.builder.image}</ts.global.s2i.quarkus.jvm.builder.image>
                                 <ts.global.s2i.quarkus.native.builder.image>${ts.global.s2i.quarkus.native.builder.image}</ts.global.s2i.quarkus.native.builder.image>
                                 <!-- Services used in test suite -->
-                                <keycloak.image>quay.io/keycloak/keycloak:15.0.2</keycloak.image>
+                                <keycloak.image>quay.io/keycloak/keycloak:15.0.1</keycloak.image>
                                 <rhsso.73.image>registry.access.redhat.com/redhat-sso-7/sso73-openshift</rhsso.73.image>
                                 <postgresql.13.image>quay.io/bitnami/postgresql:13.4.0</postgresql.13.image>
                                 <mysql.57.image>quay.io/bitnami/mysql:5.7.32</mysql.57.image>
