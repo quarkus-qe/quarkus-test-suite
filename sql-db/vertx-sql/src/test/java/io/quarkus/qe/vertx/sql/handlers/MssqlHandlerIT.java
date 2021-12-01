@@ -3,12 +3,10 @@ package io.quarkus.qe.vertx.sql.handlers;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.bootstrap.SqlServerService;
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusSnapshot;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
-@DisabledOnQuarkusSnapshot(reason = "https://github.com/quarkusio/quarkus/issues/21826")
 public class MssqlHandlerIT extends CommonTestCases {
     private static final int MSSQL_PORT = 1433;
 
