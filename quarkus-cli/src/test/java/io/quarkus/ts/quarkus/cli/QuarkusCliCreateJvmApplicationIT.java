@@ -31,6 +31,7 @@ public class QuarkusCliCreateJvmApplicationIT {
     static final String RESTEASY_EXTENSION = "quarkus-resteasy";
     static final String SMALLRYE_HEALTH_EXTENSION = "quarkus-smallrye-health";
     static final String RESTEASY_SPRING_WEB_EXTENSION = "quarkus-spring-web";
+    static final String RESTEASY_JACKSON_EXTENSION = "quarkus-resteasy-jackson";
 
     @Inject
     static QuarkusCliClient cliClient;
@@ -97,15 +98,15 @@ public class QuarkusCliCreateJvmApplicationIT {
         // 2. Prettytime dependencies
         // It will result into several boms added: quarkus-bom and kogito-bom.
         // Also, it verifies that quarkiverse dependencies can be added too.
-        QuarkusCliRestService app = cliClient.createApplication("app",
-                defaults().withExtensions("kogito-quarkus-rules", "prettytime", "resteasy-jackson"));
+        final String kogitoExtension = "kogito-quarkus-rules";
+        final String prettytimeExtension = "quarkus-prettytime";
+        QuarkusCliRestService app = cliClient.createApplication("app", defaults().withExtensions(kogitoExtension,
+                prettytimeExtension, RESTEASY_EXTENSION, RESTEASY_JACKSON_EXTENSION));
 
         // Should build on Jvm
         QuarkusCliClient.Result result = app.buildOnJvm();
         assertTrue(result.isSuccessful(), "The application didn't build on JVM. Output: " + result.getOutput());
-        assertTrue(result.getOutput().contains("Installed features: "
-                + "[cdi, kogito-rules, pretty-time, resteasy, resteasy-jackson, servlet, smallrye-context-propagation, vertx]"),
-                "Unexpected installed features. Output: " + result.getOutput());
+        assertInstalledExtensions(app, kogitoExtension, prettytimeExtension, RESTEASY_EXTENSION, RESTEASY_JACKSON_EXTENSION);
     }
 
     @Tag("QUARKUS-1071")
