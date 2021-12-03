@@ -14,8 +14,9 @@ import io.quarkus.test.utils.SocketUtils;
 @QuarkusScenario
 public class DevModeOracleDevServiceUserExperienceIT {
 
-    private static final String ORACLE_VERSION = "18.4.0-slim";
-    private static final String ORACLE_NAME = "gvenzl/oracle-xe";
+    private static final String[] ORACLE_IMAGE = System.getProperty("oracle.image").split(":");
+    private static final String ORACLE_NAME = ORACLE_IMAGE[0];
+    private static final String ORACLE_VERSION = ORACLE_IMAGE[1];
 
     @DevModeQuarkusApplication
     static RestService app = new RestService()
