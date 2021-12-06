@@ -435,6 +435,7 @@
             <modules>
                 <module>monitoring/micrometer-prometheus</module>
                 <module>monitoring/micrometer-prometheus-kafka</module>
+                <module>monitoring/micrometer-prometheus-kafka-reactive</module>
                 <module>monitoring/micrometer-prometheus-oidc</module>
                 <module>monitoring/opentelemetry</module>
                 <module>monitoring/opentelemetry-reactive</module>
