@@ -60,13 +60,15 @@ public class QuarkusCliCreateJvmApplicationIT {
         // 2. Prettytime dependencies
         // It will result into several boms added: quarkus-bom and kogito-bom.
         // Also, it verifies that quarkiverse dependencies can be added too.
-        QuarkusCliRestService app = cliClient.createApplication("app",
-                defaults().withExtensions("kogito-quarkus-rules", "prettytime"));
+        final String kogitoExtension = "kogito-quarkus-rules";
+        final String prettytimeExtension = "quarkus-prettytime";
+        QuarkusCliRestService app = cliClient.createApplication("app", defaults().withExtensions(kogitoExtension,
+                prettytimeExtension, RESTEASY_EXTENSION, RESTEASY_JACKSON_EXTENSION));
 
         // Should build on Jvm
         QuarkusCliClient.Result result = app.buildOnJvm();
         assertTrue(result.isSuccessful(), "The application didn't build on JVM. Output: " + result.getOutput());
-        assertInstalledExtensions(app, "kogito-quarkus-rules", "quarkus-prettytime");
+        assertInstalledExtensions(app, kogitoExtension, prettytimeExtension, RESTEASY_EXTENSION, RESTEASY_JACKSON_EXTENSION);
     }
 
     @Tag("QUARKUS-1071")
