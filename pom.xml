@@ -29,6 +29,7 @@
         <xml-format-maven-plugin.version>3.2.0</xml-format-maven-plugin.version>
         <checkstyle.version>9.1</checkstyle.version>
         <jjwt.version>0.11.2</jjwt.version>
+        <quarkus-artemis-jms.version>1.0.1</quarkus-artemis-jms.version>
         <camel-quarkus-bom.version>2.5.0</camel-quarkus-bom.version>
         <profile.id>jvm</profile.id>
         <!-- S2i configuration -->
@@ -98,6 +99,15 @@
                 <groupId>io.jsonwebtoken</groupId>
                 <artifactId>jjwt-jackson</artifactId>
                 <version>${jjwt.version}</version>
+            </dependency>
+            <!--
+            TODO: Replace `quarkus-artemis-jms` with `quarkus-artemis-bom` once
+                https://github.com/quarkiverse/quarkus-artemis/pull/10 gets released.
+             -->
+            <dependency>
+                <groupId>io.quarkiverse.artemis</groupId>
+                <artifactId>quarkus-artemis-jms</artifactId>
+                <version>${quarkus-artemis-jms.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

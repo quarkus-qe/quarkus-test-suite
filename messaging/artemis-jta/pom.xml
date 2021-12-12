@@ -12,7 +12,7 @@
     <name>Quarkus QE TS: Messaging: Artemis + JTA</name>
     <dependencies>
         <dependency>
-            <groupId>io.quarkus</groupId>
+            <groupId>io.quarkiverse.artemis</groupId>
             <artifactId>quarkus-artemis-jms</artifactId>
         </dependency>
         <dependency>
