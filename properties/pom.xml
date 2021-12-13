@@ -32,8 +32,8 @@
             <artifactId>quarkus-config-yaml</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-consul-config</artifactId>
+            <groupId>io.quarkiverse.config</groupId>
+            <artifactId>quarkus-config-consul</artifactId>
         </dependency>
         <dependency>
             <groupId>io.quarkus.qe</groupId>

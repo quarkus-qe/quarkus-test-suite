@@ -30,6 +30,7 @@
         <checkstyle.version>9.1</checkstyle.version>
         <jjwt.version>0.11.2</jjwt.version>
         <quarkus-artemis-jms.version>1.0.1</quarkus-artemis-jms.version>
+        <quarkus-config-consul.version>1.0.0</quarkus-config-consul.version>
         <camel-quarkus-bom.version>2.5.0</camel-quarkus-bom.version>
         <profile.id>jvm</profile.id>
         <!-- S2i configuration -->
@@ -108,6 +109,11 @@
                 <groupId>io.quarkiverse.artemis</groupId>
                 <artifactId>quarkus-artemis-jms</artifactId>
                 <version>${quarkus-artemis-jms.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkiverse.config</groupId>
+                <artifactId>quarkus-config-consul</artifactId>
+                <version>${quarkus-config-consul.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
