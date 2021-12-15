@@ -448,6 +448,14 @@ Container images used in the tests are:
 Functionally identical to `sql-db/sql-app`, but using only `quarkus-jdbc-oracle` driver. This is a workaround for the missing native Oracle coverage in `sql-db/sql-app`.
 
 
+### `sql-db/hibernate-reactive`
+Verifies that the application can work with data persisted in SQL database in reactive manner. Basically, the same as `sql-app`, but reactive.
+Covered DBs:
+- Postgres
+- MySQL
+- DB2
+- MSSQL
+
 ### `sql-db/vertx-sql`
 Quarkus / Vertx SQL exploratory testing. A flight search engine in order to test Quarkus Reactive SQL extensions. A detailed description can be found in sql-db/vertx-sql/README.md
 
@@ -894,7 +902,6 @@ It covers different usages:
 3. from a REST controller endpoint (using `@RestController)
 
 More information about this extension in https://quarkus.io/guides/spring-cache.
-
 
 ### `test-tooling/pact`
 
