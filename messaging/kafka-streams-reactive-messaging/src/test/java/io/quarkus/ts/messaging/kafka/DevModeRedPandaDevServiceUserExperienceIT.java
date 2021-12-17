@@ -15,7 +15,7 @@ import io.quarkus.test.utils.DockerUtils;
 @QuarkusScenario
 public class DevModeRedPandaDevServiceUserExperienceIT {
 
-    private static final String RED_PANDA_VERSION = "latest";
+    private static final String RED_PANDA_VERSION = "v21.10.3";
     private static final String RED_PANDA_IMAGE = "vectorized/redpanda";
 
     @DevModeQuarkusApplication
