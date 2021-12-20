@@ -6,9 +6,11 @@ import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
+import java.util.stream.Stream;
+
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
 
@@ -23,12 +25,21 @@ public class ServiceWithCacheResourceIT {
     private static final String PREFIX_ONE = "prefix1";
     private static final String PREFIX_TWO = "prefix2";
 
+    private static Stream<String> paths() {
+        return Stream.of(
+                SERVICE_APPLICATION_SCOPE_PATH,
+                SERVICE_REQUEST_SCOPE_PATH,
+                RESOURCE_BLOCKING_API_PATH
+        // TODO: https://github.com/quarkusio/quarkus/issues/22251
+        //                RESOURCE_REACTIVE_API_PATH
+        );
+    }
+
     /**
      * Check whether the `@CacheResult` annotation works when used in a service.
      */
     @ParameterizedTest
-    @ValueSource(strings = { SERVICE_APPLICATION_SCOPE_PATH, SERVICE_REQUEST_SCOPE_PATH, RESOURCE_BLOCKING_API_PATH,
-            RESOURCE_REACTIVE_API_PATH })
+    @MethodSource("paths")
     public void shouldGetTheSameValueAlwaysWhenGettingValueFromPath(String path) {
         // We call the service endpoint
         String value = getFromPath(path);
@@ -41,8 +52,7 @@ public class ServiceWithCacheResourceIT {
      * Check whether the `@CacheInvalidate` annotation invalidates the cache when used in a service.
      */
     @ParameterizedTest
-    @ValueSource(strings = { SERVICE_APPLICATION_SCOPE_PATH, SERVICE_REQUEST_SCOPE_PATH, RESOURCE_BLOCKING_API_PATH,
-            RESOURCE_REACTIVE_API_PATH })
+    @MethodSource("paths")
     public void shouldGetDifferentValueWhenInvalidateCacheFromPath(String path) {
         // We call the service endpoint
         String value = getFromPath(path);
@@ -58,8 +68,7 @@ public class ServiceWithCacheResourceIT {
      * Check whether the `@CacheResult` annotation works when used in a service.
      */
     @ParameterizedTest
-    @ValueSource(strings = { SERVICE_APPLICATION_SCOPE_PATH, SERVICE_REQUEST_SCOPE_PATH, RESOURCE_BLOCKING_API_PATH,
-            RESOURCE_REACTIVE_API_PATH })
+    @MethodSource("paths")
     public void shouldGetTheSameValueForSamePrefixesWhenGettingValueFromPath(String path) {
         // We call the service endpoint
         String value = getValueFromPathUsingPrefix(path, PREFIX_ONE);
@@ -76,8 +85,7 @@ public class ServiceWithCacheResourceIT {
      * Check whether the `@CacheInvalidate` annotation does not invalidate all the caches
      */
     @ParameterizedTest
-    @ValueSource(strings = { SERVICE_APPLICATION_SCOPE_PATH, SERVICE_REQUEST_SCOPE_PATH, RESOURCE_BLOCKING_API_PATH,
-            RESOURCE_REACTIVE_API_PATH })
+    @MethodSource("paths")
     public void shouldGetTheSameValuesEvenAfterCallingToCacheInvalidateFromPath(String path) {
         // We call the service endpoints
         String valueOfPrefix1 = getValueFromPathUsingPrefix(path, PREFIX_ONE);
@@ -95,8 +103,7 @@ public class ServiceWithCacheResourceIT {
      * Check whether the `@CacheInvalidate` and `@CacheKey` annotations work as expected.
      */
     @ParameterizedTest
-    @ValueSource(strings = { SERVICE_APPLICATION_SCOPE_PATH, SERVICE_REQUEST_SCOPE_PATH, RESOURCE_BLOCKING_API_PATH,
-            RESOURCE_REACTIVE_API_PATH })
+    @MethodSource("paths")
     public void shouldGetDifferentValueWhenInvalidateCacheOnlyForOnePrefixFromPath(String path) {
         // We call the service endpoints
         String valueOfPrefix1 = getValueFromPathUsingPrefix(path, PREFIX_ONE);
@@ -115,8 +122,7 @@ public class ServiceWithCacheResourceIT {
      * Check whether the `@CacheInvalidateAll` annotation works as expected.
      */
     @ParameterizedTest
-    @ValueSource(strings = { SERVICE_APPLICATION_SCOPE_PATH, SERVICE_REQUEST_SCOPE_PATH, RESOURCE_BLOCKING_API_PATH,
-            RESOURCE_REACTIVE_API_PATH })
+    @MethodSource("paths")
     public void shouldGetDifferentValueWhenInvalidateAllTheCacheFromPath(String path) {
         // We call the service endpoints
         String value = getFromPath(path);
