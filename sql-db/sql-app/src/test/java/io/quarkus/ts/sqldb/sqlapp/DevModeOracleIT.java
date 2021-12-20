@@ -14,6 +14,6 @@ public class DevModeOracleIT extends AbstractSqlDatabaseIT {
 
     @Test
     public void postgresqlContainerShouldBeStarted() {
-        app.logs().assertContains("Creating container for image: gvenzl/oracle-xe");
+        app.logs().assertContains("Creating container for image: docker.io/gvenzl/oracle-xe");
     }
 }

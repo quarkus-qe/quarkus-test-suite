@@ -16,6 +16,6 @@ public class DevModeMysqlIT extends AbstractSqlDatabaseIT {
 
     @Test
     public void mysqlContainerShouldBeStarted() {
-        app.logs().assertContains("Creating container for image: mysql");
+        app.logs().assertContains("Creating container for image: docker.io/mysql");
     }
 }
