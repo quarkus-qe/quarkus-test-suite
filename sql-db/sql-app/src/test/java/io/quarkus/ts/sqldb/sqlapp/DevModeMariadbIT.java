@@ -16,6 +16,6 @@ public class DevModeMariadbIT extends AbstractSqlDatabaseIT {
 
     @Test
     public void mariadbContainerShouldBeStarted() {
-        app.logs().assertContains("Creating container for image: mariadb");
+        app.logs().assertContains("Creating container for image: docker.io/mariadb");
     }
 }
