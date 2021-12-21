@@ -84,7 +84,7 @@ jobs:
   linux-build-jvm-latest:
     name: PR - Linux - JVM build - Latest Version
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 240
     needs: detect-test-suite-modules
     env:
       MODULES_ARG: ${{ needs.detect-test-suite-modules.outputs.MODULES_ARG }}
