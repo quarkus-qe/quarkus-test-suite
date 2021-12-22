@@ -80,14 +80,14 @@ jobs:
           git clone https://github.com/quarkusio/quarkus.git
           cd quarkus
           git checkout 2.2
-          mvn versions:set -DnewVersion=2.2.3.Final -DgenerateBackupPoms=false -pl .,build-parent,devtools/cli
+          mvn versions:set -DnewVersion=2.2.4.Final -DgenerateBackupPoms=false -pl .,build-parent,devtools/cli
           cd devtools/cli
           mvn -B -s ../../../.github/mvn-settings.xml clean install -Dquickly
       - name: Install Quarkus CLI
         run: |
           cat <<EOF > ./quarkus-dev-cli
           #!/bin/bash
-          java -jar $PWD/quarkus/devtools/cli/target/quarkus-cli-2.2.3.Final-runner.jar "\$@"
+          java -jar $PWD/quarkus/devtools/cli/target/quarkus-cli-2.2.4.Final-runner.jar "\$@"
           EOF
           chmod +x ./quarkus-dev-cli
       - name: Build with Maven
@@ -139,14 +139,14 @@ jobs:
           git clone https://github.com/quarkusio/quarkus.git
           cd quarkus
           git checkout 2.2
-          mvn versions:set -DnewVersion=2.2.3.Final -DgenerateBackupPoms=false -pl .,build-parent,devtools/cli
+          mvn versions:set -DnewVersion=2.2.4.Final -DgenerateBackupPoms=false -pl .,build-parent,devtools/cli
           cd devtools/cli
           mvn -B -s ../../../.github/mvn-settings.xml clean install -Dquickly
       - name: Install Quarkus CLI
         run: |
           cat <<EOF > ./quarkus-dev-cli
           #!/bin/bash
-          java -jar $PWD/quarkus/devtools/cli/target/quarkus-cli-2.2.3.Final-runner.jar "\$@"
+          java -jar $PWD/quarkus/devtools/cli/target/quarkus-cli-2.2.4.Final-runner.jar "\$@"
           EOF
           chmod +x ./quarkus-dev-cli
       - name: Build with Maven
