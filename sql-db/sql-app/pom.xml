@@ -55,7 +55,7 @@
     </dependencies>
     <profiles>
         <!--
-        TODO: https://github.com/quarkusio/quarkus/issues/19055
+        TODO: https://github.com/quarkusio/quarkus/issues/22476
         io.quarkus:quarkus-jdbc-oracle dependency causes native build to fail when combined
         with io.quarkus:quarkus-jdbc-postgresql.
         Therefore it has been disabled for native profile. See profiles `default` and `native`

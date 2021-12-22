@@ -7,8 +7,8 @@ import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
-// TODO: https://github.com/quarkusio/quarkus/issues/19055, see related info in pom.xml (sqldb-sqlapp)
-@DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/19055")
+// TODO: https://github.com/quarkusio/quarkus/issues/22476, see related info in pom.xml (sqldb-sqlapp)
+@DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/22476")
 @QuarkusScenario
 public class OracleDatabaseIT extends AbstractSqlDatabaseIT {
 
