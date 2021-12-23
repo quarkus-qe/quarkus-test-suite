@@ -3,12 +3,9 @@ package io.quarkus.ts.sqldb.sqlapp;
 import io.quarkus.test.bootstrap.OracleService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
-// TODO: https://github.com/quarkusio/quarkus/issues/22476, see related info in pom.xml (sqldb-sqlapp)
-@DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/22476")
 @QuarkusScenario
 public class OracleDatabaseIT extends AbstractSqlDatabaseIT {
 
