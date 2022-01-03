@@ -211,6 +211,9 @@ Tests:
 Checks that the application can read configuration from a ConfigMap and a Secret.
 The ConfigMap/Secret is exposed by mounting it into the container file system or the Kubernetes API server.
 
+### `docker-build`
+Checks that an application can generate a Docker image based on some configuration parameters.
+
 ### `lifecycle-application`
 Verifies lifecycle application features like `@QuarkusMain` and `@CommandLineArguments`.
 Also ensures maven profile activation with properties and additional repository definition propagation into Quarkus maven plugin.
