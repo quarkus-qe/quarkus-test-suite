@@ -344,6 +344,7 @@
             <modules>
                 <module>config</module>
                 <module>properties</module>
+                <module>docker-build</module>
                 <module>javaee-like-getting-started</module>
                 <module>scaling</module>
                 <module>lifecycle-application</module>

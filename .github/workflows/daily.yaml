@@ -167,7 +167,7 @@ jobs:
       - name: Build in JVM mode
         shell: bash
         run: |
-          mvn -fae -s .github/mvn-settings.xml clean verify
+          mvn -fae -s .github/mvn-settings.xml clean verify -Dquarkus.container-image.build=false
       - name: Zip Artifacts
         shell: bash
         if: failure()
@@ -224,7 +224,7 @@ jobs:
         shell: bash
         run: |
           # Running only http/http-minimum as after some time, it gives disk full in Windows when running on Native.
-          mvn -fae -s .github/mvn-settings.xml clean verify -Dall-modules -Dnative -Dquarkus.native.container-build=false -pl http/http-minimum
+          mvn -fae -s .github/mvn-settings.xml clean verify -Dall-modules -Dnative -Dquarkus.container-image.build=false -Dquarkus.native.container-build=false -pl http/http-minimum
       - name: Zip Artifacts
         shell: bash
         if: failure()
