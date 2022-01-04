@@ -5,10 +5,8 @@ import java.util.Objects;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import io.quarkus.runtime.annotations.RegisterForReflection;
 import io.vertx.core.json.Json;
 
-@RegisterForReflection
 public class QueryFlightSearch {
     @Min(0)
     public int adult;

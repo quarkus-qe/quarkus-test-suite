@@ -1,8 +1,5 @@
 package io.quarkus.ts.messaging.kafka;
 
-import io.quarkus.runtime.annotations.RegisterForReflection;
-
-@RegisterForReflection
 public class StockPriceDto {
     private String id;
     private double value;

@@ -1,8 +1,5 @@
 package io.quarkus.ts.configmap.api.server;
 
-import io.quarkus.runtime.annotations.RegisterForReflection;
-
-@RegisterForReflection
 public class Hello {
     private final String content;
 

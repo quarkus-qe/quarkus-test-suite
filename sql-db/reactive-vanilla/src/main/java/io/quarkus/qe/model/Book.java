@@ -2,7 +2,6 @@ package io.quarkus.qe.model;
 
 import java.util.List;
 
-import io.quarkus.runtime.annotations.RegisterForReflection;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import io.vertx.mutiny.pgclient.PgPool;
@@ -10,7 +9,6 @@ import io.vertx.mutiny.sqlclient.Row;
 import io.vertx.mutiny.sqlclient.RowSet;
 import io.vertx.mutiny.sqlclient.Tuple;
 
-@RegisterForReflection
 public class Book extends Record {
 
     private static final String TITLE = "title";

@@ -9,12 +9,10 @@ import java.util.stream.Stream;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import io.quarkus.qe.vertx.sql.services.DbPoolService;
-import io.quarkus.runtime.annotations.RegisterForReflection;
 import io.smallrye.mutiny.Uni;
 import io.vertx.mutiny.sqlclient.SqlClientHelper;
 
 @Schema(name = "Passenger", description = "Passenger entity")
-@RegisterForReflection
 public class Passenger extends Record {
     private String nif;
     private String name;
