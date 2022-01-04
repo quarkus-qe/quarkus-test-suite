@@ -498,6 +498,11 @@ Verifies the simplest way of doing authn/authz.
 Authentication is HTTP `Basic`, with users/passwords/roles defined in `application.properties`.
 Authorization is based on roles, restrictions are defined using common annotations (`@RolesAllowed` etc.).
 
+### `security/form-authn`
+
+Verifies form-based authentication.
+Verifies that Basic Authentication is not used as a fallback option when it is explicitly disabled.
+
 ### `security/jwt`
 
 Verifies token-based authn and role-based authz.
