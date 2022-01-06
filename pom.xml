@@ -33,7 +33,7 @@
         <profile.id>jvm</profile.id>
         <!-- S2i configuration -->
         <ts.global.s2i.quarkus.jvm.builder.image>registry.access.redhat.com/ubi8/openjdk-11:latest</ts.global.s2i.quarkus.jvm.builder.image>
-        <ts.global.s2i.quarkus.native.builder.image>quay.io/quarkus/ubi-quarkus-native-s2i:21.2-java11</ts.global.s2i.quarkus.native.builder.image>
+        <ts.global.s2i.quarkus.native.builder.image>quay.io/quarkus/ubi-quarkus-native-s2i:21.3-java11</ts.global.s2i.quarkus.native.builder.image>
         <!-- Default values for format -->
         <src.format.goal>format</src.format.goal>
         <src.sort.goal>sort</src.sort.goal>
@@ -548,7 +548,7 @@
                 <quarkus.package.type>native</quarkus.package.type>
                 <quarkus.native.container-build>true</quarkus.native.container-build>
                 <quarkus.native.native-image-xmx>4g</quarkus.native.native-image-xmx>
-                <quarkus.native.builder-image>quay.io/quarkus/ubi-quarkus-mandrel:21.2-java11</quarkus.native.builder-image>
+                <quarkus.native.builder-image>quay.io/quarkus/ubi-quarkus-mandrel:21.3-java11</quarkus.native.builder-image>
                 <exclude.quarkus.devmode.tests>**/*DevMode*IT.java</exclude.quarkus.devmode.tests>
             </properties>
         </profile>
