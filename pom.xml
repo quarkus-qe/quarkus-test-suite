@@ -379,6 +379,7 @@
                 <module>http/servlet-undertow</module>
                 <module>http/vertx-web-client</module>
                 <module>http/hibernate-validator</module>
+                <module>http/graphql</module>
             </modules>
         </profile>
         <profile>
