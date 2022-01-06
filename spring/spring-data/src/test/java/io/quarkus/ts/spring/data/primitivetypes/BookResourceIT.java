@@ -11,6 +11,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -76,6 +78,20 @@ public class BookResourceIT extends AbstractDbIT {
         book = updateBook(book);
         assertThat(book.getComments().size(), equalTo(1));
         assertThat(book.getComments(), equalTo(commentUpdated));
+    }
+
+    @Test
+    @Tag("QUARKUS-1521")
+    void paged() {
+        Response response = app.given()
+                .accept("application/json")
+                .queryParam("size", "2")
+                .queryParam("page", "1")
+                .when().get("/book/paged");
+        Assertions.assertEquals(200, response.statusCode());
+        String pageable = response.body().jsonPath().get("pageable");
+        Assertions.assertNotNull(pageable,
+                "Field 'pageable' of org.springframework.data.domain.PageImpl was not serialized");
     }
 
     private Book updateBook(Book book) {
