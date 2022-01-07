@@ -8,6 +8,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import io.quarkus.ts.spring.data.primitivetypes.model.Book;
 
@@ -15,9 +19,11 @@ import io.quarkus.ts.spring.data.primitivetypes.model.Book;
 public class BookResource {
 
     private final BookRepository bookRepository;
+    private final BookStore bookStore;
 
-    public BookResource(BookRepository bookRepository) {
+    public BookResource(BookRepository bookRepository, BookStore bookStore) {
         this.bookRepository = bookRepository;
+        this.bookStore = bookStore;
     }
 
     @PUT
@@ -34,6 +40,12 @@ public class BookResource {
     @Produces("text/plain")
     public Integer customFindPublicationYearPrimitive(@PathParam("bid") Integer bid) {
         return bookRepository.customFindPublicationYearPrimitive(bid);
+    }
+
+    @GET
+    @Path("/paged")
+    public Page<Book> getPaged(@QueryParam("size") int size, @QueryParam("page") int page) {
+        return bookStore.findPaged(PageRequest.of(page, size));
     }
 
     @GET
