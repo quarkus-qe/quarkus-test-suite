@@ -1,8 +1,5 @@
 package io.quarkus.ts.http.advanced.reactive;
 
-import io.quarkus.runtime.annotations.RegisterForReflection;
-
-@RegisterForReflection
 public class Hello {
     private final String content;
 

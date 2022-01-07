@@ -2,7 +2,6 @@ package io.quarkus.qe.model;
 
 import java.util.List;
 
-import io.quarkus.runtime.annotations.RegisterForReflection;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import io.vertx.mutiny.mysqlclient.MySQLPool;
@@ -10,7 +9,6 @@ import io.vertx.mutiny.sqlclient.Row;
 import io.vertx.mutiny.sqlclient.RowSet;
 import io.vertx.sqlclient.PropertyKind;
 
-@RegisterForReflection
 public class NoteBook extends Record {
     private final static PropertyKind<Long> LAST_INSERTED_ID = PropertyKind.create("last-inserted-id", Long.class);
 

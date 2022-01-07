@@ -3,10 +3,7 @@ package io.quarkus.qe.vertx.webclient.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import io.quarkus.runtime.annotations.RegisterForReflection;
-
 @JsonIgnoreProperties(ignoreUnknown = true)
-@RegisterForReflection
 public class Joke {
 
     @JsonProperty("id")

@@ -7,14 +7,12 @@ import java.util.Objects;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import io.quarkus.qe.vertx.sql.services.DbPoolService;
-import io.quarkus.runtime.annotations.RegisterForReflection;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import io.vertx.mutiny.sqlclient.Row;
 import io.vertx.mutiny.sqlclient.RowSet;
 
 @Schema(name = "Flight", description = "Flight entity")
-@RegisterForReflection
 public class Flight extends Record {
 
     private static final String QUALIFIED_ORIGIN_NAME = "origin";

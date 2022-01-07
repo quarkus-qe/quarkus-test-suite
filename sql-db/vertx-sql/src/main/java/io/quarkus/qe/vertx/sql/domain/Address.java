@@ -9,11 +9,9 @@ import java.util.stream.Stream;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import io.quarkus.qe.vertx.sql.services.DbPoolService;
-import io.quarkus.runtime.annotations.RegisterForReflection;
 import io.smallrye.mutiny.Uni;
 
 @Schema(name = "Address", description = "Address entity")
-@RegisterForReflection
 public class Address extends Record {
     private String street;
     private String blockNumber;

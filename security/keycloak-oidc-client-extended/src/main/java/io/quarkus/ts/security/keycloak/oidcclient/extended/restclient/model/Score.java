@@ -1,8 +1,5 @@
 package io.quarkus.ts.security.keycloak.oidcclient.extended.restclient.model;
 
-import io.quarkus.runtime.annotations.RegisterForReflection;
-
-@RegisterForReflection
 public class Score {
     private int teamA;
     private int teamB;

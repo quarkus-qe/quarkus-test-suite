@@ -4,10 +4,8 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import io.quarkus.runtime.annotations.RegisterForReflection;
 import io.vertx.core.json.Json;
 
-@RegisterForReflection
 public class Record {
 
     protected static final String QUALIFIED_ID = "id";

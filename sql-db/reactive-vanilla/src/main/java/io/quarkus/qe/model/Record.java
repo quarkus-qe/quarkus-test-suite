@@ -3,12 +3,10 @@ package io.quarkus.qe.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.quarkus.runtime.annotations.RegisterForReflection;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import io.vertx.core.json.Json;
 
-@RegisterForReflection
 public class Record {
 
     protected static final String QUALIFIED_ID = "id";

@@ -8,14 +8,12 @@ import java.util.function.Predicate;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import io.quarkus.qe.vertx.sql.services.DbPoolService;
-import io.quarkus.runtime.annotations.RegisterForReflection;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import io.vertx.mutiny.sqlclient.Row;
 import io.vertx.mutiny.sqlclient.RowSet;
 
 @Schema(name = "PricingRules", description = "PricingRules entity")
-@RegisterForReflection
 public class PricingRules extends Record {
     private static final String QUALIFIED_FROM_NAME = "days_to_departure";
     @Schema(description = "days_to_departure")
