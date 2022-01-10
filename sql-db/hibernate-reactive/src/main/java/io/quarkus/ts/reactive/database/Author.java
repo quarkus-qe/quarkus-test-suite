@@ -37,6 +37,13 @@ public class Author {
     @OneToMany(mappedBy = "author", cascade = PERSIST, fetch = FetchType.EAGER)
     private List<Book> books = new ArrayList<>();
 
+    public Author(String name) {
+        this.name = name;
+    }
+
+    public Author() {
+    }
+
     public String getName() {
         return name;
     }

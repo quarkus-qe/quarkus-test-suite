@@ -1,13 +1,16 @@
 package io.quarkus.ts.reactive.http;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.hibernate.reactive.mutiny.Mutiny;
 
 import io.quarkus.arc.Arc;
@@ -22,8 +25,13 @@ public class GroundedEndpoint {
 
     Mutiny.SessionFactory factory;
 
+    @Inject
+    @RestClient
+    SomeApi someApi;
+
     public GroundedEndpoint() {
-        factory = Arc.container().instance(Mutiny.SessionFactory.class).get(); //TODO for some reason, @Inject fails. Need to investigate
+        // We are not injecting a sessionFactory because we have more than one un-named datasources
+        factory = Arc.container().instance(Mutiny.SessionFactory.class).get();
     }
 
     // TODO session.flatMap not supported on 2.2.4.Final
@@ -93,6 +101,26 @@ public class GroundedEndpoint {
                 .map(nothing -> Response.status(Response.Status.CREATED))
                 .onFailure().recoverWithItem(error -> Response.status(Response.Status.BAD_REQUEST).entity(error.getMessage()))
                 .map(Response.ResponseBuilder::build);
+    }
+
+    // https://github.com/quarkusio/quarkus/issues/18977
+    @GET
+    @Path("bookThroughSession/{authorName}/{name}")
+    public Uni<Author> createBookThroughSession(String authorName, String name) {
+        Author author = new Author();
+        author.setName(authorName);
+        return factory.withTransaction(
+                (session1, transaction) -> factory.withSession(session2 -> session1.persist(author).chain(session1::flush))
+                        .onItem().call(() -> someApi.doSomething())
+                        .onItem().transformToUni((ignore -> factory.withSession(session3 -> {
+                            Book book = new Book();
+                            book.setAuthor(author.getId());
+                            book.setTitle(name);
+                            return session3.persist(book);
+                        }))).onItem()
+                        .transformToUni(ignore -> factory.withSession(session3 -> session3.find(Author.class, author.getId())))
+                        .onFailure()
+                        .transform(error -> new WebApplicationException(error.getMessage(), Response.Status.BAD_REQUEST)));
     }
 
     @GET
