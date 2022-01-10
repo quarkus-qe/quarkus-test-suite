@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
@@ -250,6 +251,15 @@ public abstract class AbstractReactiveDatabaseIT {
                 .contentType(ContentType.JSON)
                 .post("hibernate/books/Subrahmanyakavi/Atmabodhamu");
         assertEquals(HttpStatus.SC_BAD_REQUEST, creation.statusCode());
+    }
+
+    @Tag("QUARKUS-1586")
+    @Test
+    public void createBookThroughSession() {
+        getApp().given()
+                .contentType(ContentType.JSON)
+                .post("hibernate/books/pablo/suntzu")
+                .then().statusCode(HttpStatus.SC_CREATED);
     }
 
     protected abstract RestService getApp();
