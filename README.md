@@ -165,6 +165,10 @@ Verifies Rest Client configuration using `quarkus-rest-client-jaxb` (XML support
 This module will setup a very minimal configuration (only `quarkus-resteasy`) and have four endpoints:
 - Two endpoints to get a book in JSON and XML formats.
 
+### `http/rest-client-reactive`
+Reactive equivalent of the http/rest-client module.  
+Exclusions: XML test. Reason: https://quarkus.io/blog/resteasy-reactive/#what-jax-rs-features-are-missing
+
 #### Additions
 * *@Deprecated* annotation has been added for test regression purposes to ensure `java.lang` annotations are allowed for resources
 * Resource with multipart body support, provided parts are text, image and binary data, charset checked with `us-ascii` and `utf-8`
