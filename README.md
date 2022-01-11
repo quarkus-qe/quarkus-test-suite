@@ -838,6 +838,9 @@ in order to instantiate these templates by your self (as an example).
 * `KameletRoutes` contains templates that could be invoked (tested) directly by code. So is not 
 need it to be deployed into ocp or some other platform.
 
+### `Qute`
+Coverage for Qute template engine
+
 ### `spring/spring-data`
 - Spring Data JPA: CRUD repository operation (default and custom), mapped superclass, query over embedded camelCase field, HTTP response filter.
 - Spring DI: presence of Spring-defined beans in CDI context, injected transitive dependencies, multiple ways of retrieving the beans.
