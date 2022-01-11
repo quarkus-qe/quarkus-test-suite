@@ -60,13 +60,13 @@ public class QuarkusCliCreateJvmApplicationIT {
         // It will result into several boms added: quarkus-bom and kogito-bom.
         // Also, it verifies that quarkiverse dependencies can be added too.
         QuarkusCliRestService app = cliClient.createApplication("app",
-                defaults().withExtensions("kogito-quarkus-rules", "prettytime"));
+                defaults().withExtensions("kogito-quarkus-rules", "prettytime", "resteasy-jackson"));
 
         // Should build on Jvm
         QuarkusCliClient.Result result = app.buildOnJvm();
         assertTrue(result.isSuccessful(), "The application didn't build on JVM. Output: " + result.getOutput());
         assertTrue(result.getOutput().contains("Installed features: "
-                + "[cdi, kogito-rules, pretty-time, resteasy, resteasy-jackson, servlet, smallrye-context-propagation]"),
+                + "[cdi, kogito-rules, pretty-time, resteasy, resteasy-jackson, servlet, smallrye-context-propagation, vertx]"),
                 "Unexpected installed features. Output: " + result.getOutput());
     }
 
@@ -122,7 +122,8 @@ public class QuarkusCliCreateJvmApplicationIT {
 
         QuarkusCliClient.Result result = app.buildOnJvm();
         assertTrue(result.isSuccessful(), "The application didn't build on JVM. Output: " + result.getOutput());
-        assertTrue(result.getOutput().contains("Installed features: [cdi, jacoco, resteasy, smallrye-context-propagation]"),
+        assertTrue(
+                result.getOutput().contains("Installed features: [cdi, jacoco, resteasy, smallrye-context-propagation, vertx]"),
                 "Unexpected installed features. Output: " + result.getOutput());
 
         assertTrue(app.getServiceFolder().resolve("target/jacoco-report/index.html").toFile().exists(),

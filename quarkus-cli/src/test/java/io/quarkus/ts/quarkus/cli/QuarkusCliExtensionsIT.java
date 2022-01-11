@@ -87,6 +87,7 @@ public class QuarkusCliExtensionsIT {
     }
 
     @DisabledOnQuarkusSnapshot(reason = "999-SNAPSHOT is not pushed into the platform site")
+    @DisabledOnQuarkusVersion(version = "2.2.5.Final", reason = "is not pushed into the platform site")
     @Test
     public void shouldListExtensionsUsingStream() {
         String streamVersion = getCurrentStreamVersion();
