@@ -14,7 +14,7 @@ import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.utils.DockerUtils;
 
 @QuarkusScenario
-@DisabledOnNative(reason = "Due to reduce native execution time")
+@DisabledOnNative(reason = "To reduce execution time")
 public class DockerBuildIT {
 
     private static final String DOCKER_IMG_NAME = "hello-world-app";
