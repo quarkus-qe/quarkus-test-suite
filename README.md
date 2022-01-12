@@ -563,7 +563,7 @@ The test will confirm that no messages are lost when the `grateful-shutdown` is 
 All current tests are running under a secured Kafka by SSL. 
 Kafka streams pipeline is configured by `quarkus.kafka-streams.ssl` prefix property, but reactive Kafka producer/consumer is configured by `kafka` prefix as you can see on `SslStrimziKafkaTestResource` 
 
-### `messaging/kafka-avro-reactive-messaging`
+### `messaging/kafka-confluent-avro-reactive-messaging`
 
 - Verifies that `Quarkus Kafka` + `Apicurio Kakfa Registry`(AVRO) and `Quarkus SmallRye Reactive Messaging` extensions work as expected. 
 
@@ -571,7 +571,16 @@ There is an EventsProducer that generate stock prices events every 1s. The event
 A Kafka consumer will read these events serialized by AVRO and change an `status` property to `COMPLETED`. 
 The streams of completed events will be exposed through an SSE endpoint. 
 
-- Verify random kafka group id 
+### `messaging/kafka-strimzi-avro-reactive-messaging`
+
+- Verifies that `Quarkus Kafka` + `Apicurio Kakfa Registry`(AVRO) and `Quarkus SmallRye Reactive Messaging` extensions work as expected.
+
+There is an EventsProducer that generate stock prices events every 1s. The events are typed by an AVRO schema.  
+A Kafka consumer will read these events serialized by AVRO and change an `status` property to `COMPLETED`.
+The streams of completed events will be exposed through an SSE endpoint.
+
+- Verify random kafka group id
+- RedPanda/Apicurio devServices (Kafka + AVRO)
 
 ### `messaging/kafka-producer`
 
