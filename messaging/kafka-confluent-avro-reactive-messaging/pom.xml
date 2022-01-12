@@ -7,8 +7,8 @@
         <version>1.0.0-SNAPSHOT</version>
         <relativePath>../..</relativePath>
     </parent>
-    <artifactId>kafka-avro-reactive-messaging</artifactId>
-    <name>Quarkus QE TS: Messaging: Reactive Kafka with Avro</name>
+    <artifactId>kafka-confluent-avro-reactive-messaging</artifactId>
+    <name>Quarkus QE TS: Messaging: Reactive Confluent Kafka with Avro</name>
     <dependencies>
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -17,10 +17,6 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-resteasy-jsonb</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-apicurio-registry-avro</artifactId>
         </dependency>
         <!-- Quarkus extension for generating Java code from Avro schemas -->
         <!-- with this, you don't have to use avro-maven-plugin -->
