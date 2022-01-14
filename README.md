@@ -867,6 +867,16 @@ Covers two areas related to Spring Web:
   - Custom error handlers.
   - Cooperation with Qute templating engine.
   
+  ### `spring/spring-web-reactive`
+  Covers two areas related to Spring Web Reactive:
+  - Proper behavior of SmallRye OpenAPI with Mutiny method signatures - correct content types in OpenAPI endpoint output (`/q/openapi`).
+  - Spring Boot Bootstrap application which uses Spring Web Reactive features.
+    - CRUD endpoints.
+    - Custom error handlers.
+    - Cooperation with Qute templating engine.
+    - Verify functionality of methods with transactional annotation @ReactiveTransactional
+    - Verify functionality of methods with transactional method (.withTransactional)
+  
 ### `spring/spring-cloud-config`
 
 Verifies that we can use an external Spring Cloud Server to inject configuration in our Quarkus applications.
