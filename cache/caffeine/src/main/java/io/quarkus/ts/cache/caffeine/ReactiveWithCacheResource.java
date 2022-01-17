@@ -29,8 +29,8 @@ public class ReactiveWithCacheResource {
     @POST
     @Path("/invalidate-cache")
     @CacheInvalidate(cacheName = CACHE_NAME)
-    public void invalidate() {
-        // do nothing
+    public Uni<Void> invalidate() {
+        return Uni.createFrom().nullItem();
     }
 
     @GET
@@ -43,14 +43,14 @@ public class ReactiveWithCacheResource {
     @POST
     @Path("/using-prefix/{prefix}/invalidate-cache")
     @CacheInvalidate(cacheName = CACHE_NAME)
-    public void invalidateWithPrefix(@PathParam("prefix") @CacheKey String prefix) {
-        // do nothing
+    public Uni<Void> invalidateWithPrefix(@PathParam("prefix") @CacheKey String prefix) {
+        return Uni.createFrom().nullItem();
     }
 
     @POST
     @Path("/invalidate-cache-all")
     @CacheInvalidateAll(cacheName = CACHE_NAME)
-    public void invalidateAll() {
-        // do nothing
+    public Uni<Void> invalidateAll() {
+        return Uni.createFrom().nullItem();
     }
 }
