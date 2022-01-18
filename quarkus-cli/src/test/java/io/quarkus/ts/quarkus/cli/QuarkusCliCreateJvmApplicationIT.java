@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 import javax.inject.Inject;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
@@ -49,6 +50,42 @@ public class QuarkusCliCreateJvmApplicationIT {
         // Start using DEV mode
         app.start();
         app.given().get().then().statusCode(HttpStatus.SC_OK);
+    }
+
+    @Tag("QUARKUS-1071")
+    @Test
+    public void shouldCreateApplicationWithGradleOnJvm() {
+
+        // Create application
+        QuarkusCliRestService app = cliClient.createApplication("app", defaults().withExtraArgs("--gradle"));
+
+        // Should build on Jvm
+        QuarkusCliClient.Result result = app.buildOnJvm();
+        assertTrue(result.isSuccessful(), "The application didn't build on JVM. Output: " + result.getOutput());
+
+        // Start using DEV mode
+        app.start();
+        app.given().get().then().statusCode(HttpStatus.SC_OK);
+    }
+
+    @Tag("QUARKUS-1071")
+    // TODO https://github.com/quarkusio/quarkus/issues/22964
+    @Disabled("There is an issue related to Jbang and maven local repository on github actions")
+    @Test
+    public void shouldCreateApplicationWithJbangOnJvm() {
+
+        // Create application
+        QuarkusCliRestService app = cliClient.createApplication("app", defaults().withExtraArgs("--jbang"));
+
+        // Should build on Jvm
+        QuarkusCliClient.Result result = app.buildOnJvm("--verbose");
+        assertTrue(result.isSuccessful(), "The application didn't build on JVM. Output: " + result.getOutput());
+
+        // Start using DEV mode
+        // https://github.com/quarkusio/quarkus/issues/18157
+        // TODO Jbang doesn't support DevMode yet
+        //app.start();
+        //app.given().get().then().statusCode(HttpStatus.SC_OK);
     }
 
     @Tag("QUARKUS-1073")
@@ -112,7 +149,7 @@ public class QuarkusCliCreateJvmApplicationIT {
         assertTrue(result.isSuccessful(), SMALLRYE_HEALTH_EXTENSION + " was not uninstalled. Output: " + result.getOutput());
 
         // The health endpoint should be now gone
-        app.start();
+        app.restart();
         untilAsserted(() -> app.given().get("/q/health").then().statusCode(HttpStatus.SC_NOT_FOUND));
     }
 
