@@ -96,7 +96,7 @@ public abstract class BaseOidcJwtSecurityIT {
     }
 
     private void thenPageReturns(String expectedMessage) {
-        assertTrue(page.asText().startsWith(expectedMessage), "Page content should match with expected content");
+        assertTrue(page.asNormalizedText().startsWith(expectedMessage), "Page content should match with expected content");
     }
 
     private void thenReturnsForbiddenWhenLoginAs(String user) {
