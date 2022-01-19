@@ -1,4 +1,4 @@
-package io.quarkus.ts.security.keycloak.multitenant;
+package io.quarkus.ts.security.keycloak.oidcclient.basic;
 
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
@@ -10,11 +10,11 @@ import io.quarkus.test.services.QuarkusApplication;
 
 @OpenShiftScenario
 @EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
-public class OpenShiftRhSso74MultiTenantSecurityIT extends BaseMultiTenantSecurityIT {
+public class OpenShiftRhSso75OidcClientSecurityIT extends BaseOidcClientSecurityIT {
 
     static final int KEYCLOAK_PORT = 8080;
 
-    @Container(image = "${rhsso.74.image}", expectedLog = "Http management interface listening", port = KEYCLOAK_PORT)
+    @Container(image = "${rhsso.75.image}", expectedLog = "Http management interface listening", port = KEYCLOAK_PORT)
     static KeycloakService keycloak = new KeycloakService(REALM_DEFAULT)
             .withProperty("SSO_IMPORT_FILE", "resource::/keycloak-realm.json");
 
