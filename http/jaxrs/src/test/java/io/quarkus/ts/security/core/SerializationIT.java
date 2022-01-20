@@ -4,11 +4,13 @@ import static io.restassured.RestAssured.given;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.restassured.response.ResponseBodyExtractionOptions;
 
+@Tag("QUARKUS-1554")
 @QuarkusScenario
 public class SerializationIT {
 

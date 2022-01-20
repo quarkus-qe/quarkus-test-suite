@@ -16,7 +16,7 @@ public class HttpHostDisabledIT {
     static RestService app = new RestService().withProperty("quarkus.http.host-enabled", "false");
 
     @Test
-    public void applicationMustStart() {
+    public void ensureApplicationStartsWithHostDisable() {
         Assertions.assertTrue(app.isRunning(), "Application should start with quarkus.http.host-enabled=false");
         app.logs().assertDoesNotContain("Must configure at least one of http, https or unix domain socket");
     }
