@@ -27,7 +27,7 @@ public class HttpCustomHeadersIT {
 
     @Tag("QUARKUS-1557")
     @Test
-    public void correctContentType() {
+    public void ensureContentTypeIsCaseInsensitive() {
         getContentType("ApPlIcAtIoN/JsOn");
         getContentType("application/json");
         getContentType("APPLICATION/JSON");

@@ -255,7 +255,7 @@ public abstract class AbstractReactiveDatabaseIT {
 
     @Tag("QUARKUS-1586")
     @Test
-    public void createBookThroughSession() {
+    public void ensureSessionIsPropagatedOnReactiveTransactions() {
         getApp().given()
                 .contentType(ContentType.JSON)
                 .post("hibernate/books/pablo/suntzu")

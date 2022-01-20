@@ -22,7 +22,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
 @QuarkusScenario
-public class BookResourceIT extends AbstractDbIT {
+public class SpringDataBookResourceIT extends AbstractDbIT {
 
     @Test
     void testCustomFindPublicationYearPrimitiveInteger() {
@@ -82,7 +82,7 @@ public class BookResourceIT extends AbstractDbIT {
 
     @Test
     @Tag("QUARKUS-1521")
-    void paged() {
+    void ensureFieldPageableIsSerialized() {
         Response response = app.given()
                 .accept("application/json")
                 .queryParam("size", "2")
