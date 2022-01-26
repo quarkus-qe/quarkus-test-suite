@@ -18,6 +18,7 @@ import io.quarkus.test.bootstrap.QuarkusCliClient;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusSnapshot;
 import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
+import io.quarkus.test.services.quarkus.model.QuarkusProperties;
 
 /**
  * Note that the extensions list enhancements have been already reported as part
@@ -92,7 +93,11 @@ public class QuarkusCliExtensionsIT {
     public void shouldListExtensionsUsingStream() {
         String streamVersion = getCurrentStreamVersion();
         whenGetListExtensions("--stream", streamVersion);
-        assertTrue(result.getOutput().contains("io.quarkus.platform:quarkus-bom::pom:" + streamVersion));
+        if (QuarkusProperties.getVersion().contains("redhat")) {
+            assertTrue(result.getOutput().contains("com.redhat.quarkus.platform:quarkus-bom::pom:" + streamVersion));
+        } else {
+            assertTrue(result.getOutput().contains("io.quarkus.platform:quarkus-bom::pom:" + streamVersion));
+        }
     }
 
     @Test
