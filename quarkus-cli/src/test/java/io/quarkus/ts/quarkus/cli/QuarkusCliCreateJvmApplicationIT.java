@@ -54,6 +54,7 @@ public class QuarkusCliCreateJvmApplicationIT {
 
     @Tag("QUARKUS-1071")
     @Test
+    @DisabledOnQuarkusVersion(version = ".*redhat.*", reason = "Do not run on productized bits - https://issues.redhat.com/browse/QUARKUS-1740")
     public void shouldCreateApplicationWithGradleOnJvm() {
 
         // Create application
