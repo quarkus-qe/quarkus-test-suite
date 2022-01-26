@@ -827,7 +827,7 @@ We cover the following scenario from guide: https://quarkus.io/guides/spring-sch
 
 Verifies all the Quarkus CLI features: https://quarkus.io/version/main/guides/cli-tooling
 
-In order to enable this module, the test suite must be executed with `-DallModules -Dinclude.quarkus-cli-tests`. The Quarkus CLI is expected to be called `quarkus`. We can configure the test suite to use another Quarkus CLI binary name using `-Dts.quarkus.cli.cmd=/path/to/quarkus-dev-cli`.
+In order to enable this module, the test suite must be executed with `-Dall-modules -Dinclude.quarkus-cli-tests`. The Quarkus CLI is expected to be called `quarkus`. We can configure the test suite to use another Quarkus CLI binary name using `-Dts.quarkus.cli.cmd=/path/to/quarkus-dev-cli`.
 
 ### `Kamelet`
 
