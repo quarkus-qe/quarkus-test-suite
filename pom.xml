@@ -211,7 +211,7 @@
                                 <mongodb.image>quay.io/bitnami/mongodb:5.0</mongodb.image>
                                 <redis.image>quay.io/bitnami/redis:6.0</redis.image>
                                 <wiremock.image>quay.io/ocpmetal/wiremock</wiremock.image>
-                                <consul.image>quay.io/bitnami/consul:1.10</consul.image>
+                                <consul.image>quay.io/bitnami/consul:1.11.2</consul.image>
                                 <infinispan.image>quay.io/infinispan/server:12.1</infinispan.image>
                                 <infinispan.expected-log>Infinispan Server.*started in</infinispan.expected-log>
                                 <spring.cloud.server.image>quay.io/quarkusqeteam/spring-cloud-config-server:3.0</spring.cloud.server.image>

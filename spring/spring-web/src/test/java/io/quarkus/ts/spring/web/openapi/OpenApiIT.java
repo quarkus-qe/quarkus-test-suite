@@ -28,7 +28,7 @@ public class OpenApiIT extends AbstractDbIT {
 
     static final int MARIADB_PORT = 3306;
 
-    @Container(image = "${mariadb.10.image}", port = MARIADB_PORT, expectedLog = "MariaDB init process done. Ready for start up")
+    @Container(image = "${mariadb.10.image}", port = MARIADB_PORT, expectedLog = "ready for connections")
     static final MariaDbService database = new MariaDbService();
 
     @QuarkusApplication
