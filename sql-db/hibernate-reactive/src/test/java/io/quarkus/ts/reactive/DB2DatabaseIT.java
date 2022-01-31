@@ -1,11 +1,15 @@
 package io.quarkus.ts.reactive;
 
+import org.junit.jupiter.api.Tag;
+
 import io.quarkus.test.bootstrap.Db2Service;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
+// Reported in https://github.com/IBM/Db2/issues/43
+@Tag("fips-incompatible")
 @QuarkusScenario
 public class DB2DatabaseIT extends AbstractReactiveDatabaseIT {
 
