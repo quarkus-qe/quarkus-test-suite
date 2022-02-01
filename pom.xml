@@ -490,6 +490,7 @@
             <modules>
                 <module>spring/spring-data</module>
                 <module>spring/spring-web</module>
+                <module>spring/spring-web-reactive</module>
                 <module>spring/spring-properties</module>
                 <module>spring/spring-cloud-config</module>
                 <module>cache/spring</module>
