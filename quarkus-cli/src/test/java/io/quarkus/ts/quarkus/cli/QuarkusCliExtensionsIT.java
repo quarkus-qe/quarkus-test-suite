@@ -18,6 +18,7 @@ import io.quarkus.test.bootstrap.QuarkusCliClient;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusSnapshot;
 import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
+import io.quarkus.test.services.quarkus.model.QuarkusProperties;
 
 /**
  * Note that the extensions list enhancements have been already reported as part
@@ -32,6 +33,7 @@ public class QuarkusCliExtensionsIT {
 
     static final String AGROAL_EXTENSION_NAME = "Agroal - Database connection pool";
     static final String AGROAL_EXTENSION_ARTIFACT = "quarkus-agroal";
+    static final String QUARKUS_BOM = "quarkus-bom";
     static final String AGROAL_EXTENSION_GUIDE = "https://quarkus.io/guides/datasource";
     static final List<String> EXPECTED_PLATFORM_VERSIONS = Arrays.asList("2.0.0.Final", "2.1.0.Final");
 
@@ -42,10 +44,8 @@ public class QuarkusCliExtensionsIT {
 
     @Test
     public void shouldListExtensionsUsingDefaults() {
-        // Current default option behaves as `--origins` which seems wrong to me.
-        // Reported by https://github.com/quarkusio/quarkus/issues/18062.
         whenGetListExtensions();
-        assertListOriginsOptionOutput();
+        assertListDefaultOptionOutput();
     }
 
     @Test
@@ -83,7 +83,7 @@ public class QuarkusCliExtensionsIT {
     @Test
     public void shouldListExtensionsUsingPlatformBom() {
         whenGetListExtensions("--platform-bom", "io.quarkus:quarkus-bom:" + Version.getVersion());
-        assertListOriginsOptionOutput();
+        assertListDefaultOptionOutput();
     }
 
     @DisabledOnQuarkusSnapshot(reason = "999-SNAPSHOT is not pushed into the platform site")
@@ -91,13 +91,17 @@ public class QuarkusCliExtensionsIT {
     public void shouldListExtensionsUsingStream() {
         String streamVersion = getCurrentStreamVersion();
         whenGetListExtensions("--stream", streamVersion);
-        assertTrue(result.getOutput().contains("io.quarkus.platform:quarkus-bom::pom:" + streamVersion));
+        if (QuarkusProperties.getVersion().contains("redhat")) {
+            assertTrue(result.getOutput().contains("com.redhat.quarkus.platform:quarkus-bom::pom:" + streamVersion));
+        } else {
+            assertTrue(result.getOutput().contains("io.quarkus.platform:quarkus-bom::pom:" + streamVersion));
+        }
     }
 
     @Test
     public void shouldListExtensionsUsingInstallable() {
         whenGetListExtensions("--installable");
-        assertListOriginsOptionOutput();
+        assertListDefaultOptionOutput();
     }
 
     private void whenGetListExtensions(String... extraArgs) {
@@ -110,10 +114,17 @@ public class QuarkusCliExtensionsIT {
         assertResultIsSuccessful();
     }
 
-    private void assertListOriginsOptionOutput() {
-        // Origins only shows extension name ++ version. Reported by https://github.com/quarkusio/quarkus/issues/18062.
+    private void assertListDefaultOptionOutput() {
         assertTrue(result.getOutput().contains(AGROAL_EXTENSION_NAME)
-                && !result.getOutput().contains(AGROAL_EXTENSION_ARTIFACT)
+                && result.getOutput().contains(AGROAL_EXTENSION_ARTIFACT)
+                && !result.getOutput().contains(AGROAL_EXTENSION_GUIDE),
+                "Default output is unexpected. Output: " + result.getOutput());
+    }
+
+    private void assertListOriginsOptionOutput() {
+        assertTrue(result.getOutput().contains(QUARKUS_BOM)
+                && result.getOutput().contains(AGROAL_EXTENSION_NAME)
+                && result.getOutput().contains(AGROAL_EXTENSION_ARTIFACT)
                 && !result.getOutput().contains(AGROAL_EXTENSION_GUIDE),
                 "--origins option output is unexpected. Output: " + result.getOutput());
     }
@@ -121,7 +132,7 @@ public class QuarkusCliExtensionsIT {
     private void assertListNameOptionOutput() {
         // Concise shows only the artifact id
         assertTrue(result.getOutput().contains(AGROAL_EXTENSION_ARTIFACT)
-                && !result.getOutput().contains(AGROAL_EXTENSION_NAME),
+                && result.getOutput().contains(AGROAL_EXTENSION_NAME),
                 "--name option output is unexpected. Output: " + result.getOutput());
     }
 
