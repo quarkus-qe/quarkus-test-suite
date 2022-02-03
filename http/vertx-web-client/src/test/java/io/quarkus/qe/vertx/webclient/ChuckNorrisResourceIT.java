@@ -49,7 +49,7 @@ public class ChuckNorrisResourceIT {
 
     private Response resp;
 
-    @JaegerContainer(image = "jaegertracing/all-in-one:latest", tracePort = TRACE_PORT, restPort = REST_PORT, expectedLog = "\"Health Check state change\",\"status\":\"ready\"")
+    @JaegerContainer(tracePort = TRACE_PORT, restPort = REST_PORT, expectedLog = "\"Health Check state change\",\"status\":\"ready\"")
     static final JaegerService jaeger = new JaegerService();
 
     @Container(image = "${wiremock.image}", port = 8080, expectedLog = "verbose")
