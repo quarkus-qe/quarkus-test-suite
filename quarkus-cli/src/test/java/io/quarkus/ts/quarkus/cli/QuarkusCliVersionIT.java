@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
@@ -25,6 +26,7 @@ public class QuarkusCliVersionIT {
     static QuarkusCliClient cliClient;
 
     @Test
+    @Disabled("Latest CLI is supposed to be used, disabling for 2.2 branch")
     public void shouldVersionMatchQuarkusVersion() {
         // Using option
         assertEquals("Client Version " + Version.getVersion(), cliClient.run("version").getOutput());
