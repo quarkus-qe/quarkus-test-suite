@@ -422,9 +422,10 @@
                 <module>messaging/artemis-jta</module>
                 <module>messaging/amqp-reactive</module>
                 <module>messaging/qpid</module>
-                <module>messaging/kafka-streams-reactive-messaging</module>
+                <!-- https://github.com/quarkus-qe/quarkus-test-framework/issues/400 -->
+                <!-- <module>messaging/kafka-streams-reactive-messaging</module> -->
                 <module>messaging/kafka-confluent-avro-reactive-messaging</module>
-                <module>messaging/kafka-strimzi-avro-reactive-messaging</module>
+                <!-- <module>messaging/kafka-strimzi-avro-reactive-messaging</module> -->
                 <module>messaging/kafka-producer</module>
                 <module>messaging/infinispan-grpc-kafka</module>
             </modules>
