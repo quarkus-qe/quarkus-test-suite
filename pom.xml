@@ -356,7 +356,8 @@
                 <module>kamelet</module>
                 <module>logging/jboss</module>
                 <module>cache/caffeine</module>
-                <module>qute/multimodule</module>
+                <!-- TODO needs to be updated to reflect https://issues.redhat.com/browse/QUARKUS-1695 discussion and attached PR -->
+                <!-- <module>qute/multimodule</module> -->
             </modules>
         </profile>
         <profile>
@@ -422,9 +423,10 @@
                 <module>messaging/artemis-jta</module>
                 <module>messaging/amqp-reactive</module>
                 <module>messaging/qpid</module>
-                <module>messaging/kafka-streams-reactive-messaging</module>
+                <!-- https://github.com/quarkus-qe/quarkus-test-framework/issues/400 -->
+                <!-- <module>messaging/kafka-streams-reactive-messaging</module> -->
                 <module>messaging/kafka-confluent-avro-reactive-messaging</module>
-                <module>messaging/kafka-strimzi-avro-reactive-messaging</module>
+                <!-- <module>messaging/kafka-strimzi-avro-reactive-messaging</module> -->
                 <module>messaging/kafka-producer</module>
                 <module>messaging/infinispan-grpc-kafka</module>
             </modules>
