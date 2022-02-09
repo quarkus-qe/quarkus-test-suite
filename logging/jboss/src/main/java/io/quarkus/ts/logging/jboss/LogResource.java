@@ -1,6 +1,7 @@
 package io.quarkus.ts.logging.jboss;
 
 import javax.inject.Inject;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -40,6 +41,16 @@ public class LogResource {
     public void addLogMessageInFieldWithCustomCategoryLogger(@PathParam("level") String level,
             @QueryParam("message") String message) {
         addLogMessage(customCategoryLog, level, message);
+    }
+
+    @GET
+    public void logExample() {
+        LOG.fatal("Fatal log example");
+        LOG.error("Error log example");
+        LOG.warn("Warn log example");
+        LOG.info("Info log example");
+        LOG.debug("Debug log example");
+        LOG.trace("Trace log example");
     }
 
     private void addLogMessage(Logger logger, String level, String message) {
