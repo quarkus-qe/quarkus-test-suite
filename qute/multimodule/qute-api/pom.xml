@@ -9,4 +9,5 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>qute-api</artifactId>
     <packaging>jar</packaging>
+    <name>Quarkus QE TS: Qute-api</name>
 </project>
