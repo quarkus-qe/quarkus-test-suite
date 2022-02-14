@@ -21,7 +21,7 @@
         <plugins>
             <!-- Skip Quarkus Maven plugin build on JVM and Native since we're going to deploy external apps -->
             <plugin>
-                <groupId>io.quarkus</groupId>
+                <groupId>${quarkus.platform.group-id}</groupId>
                 <artifactId>quarkus-maven-plugin</artifactId>
                 <executions>
                     <execution>
