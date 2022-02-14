@@ -1,5 +1,6 @@
 package io.quarkus.qe.vertx.sql.dbpool;
 
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,7 +14,6 @@ import javax.inject.Inject;
 
 import org.apache.http.HttpStatus;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -23,13 +23,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 import io.smallrye.mutiny.Uni;
-import io.vertx.core.json.JsonArray;
-import io.vertx.ext.web.client.WebClientOptions;
-import io.vertx.mutiny.core.Vertx;
-import io.vertx.mutiny.core.buffer.Buffer;
-import io.vertx.mutiny.ext.web.client.HttpResponse;
-import io.vertx.mutiny.ext.web.client.WebClient;
-import io.vertx.mutiny.ext.web.client.predicate.ResponsePredicate;
 import io.vertx.mutiny.pgclient.PgPool;
 import io.vertx.mutiny.sqlclient.RowSet;
 
@@ -44,21 +37,11 @@ public class PostgresPoolTest {
     @Inject
     PgPool postgresql;
 
-    @ConfigProperty(name = "quarkus.http.test.port")
-    int port;
-
     @ConfigProperty(name = "quarkus.datasource.reactive.max-size")
     int datasourceMaxSize;
 
     @ConfigProperty(name = "quarkus.datasource.reactive.idle-timeout")
     int idle;
-
-    WebClient httpClient;
-
-    @BeforeEach
-    public void setup() {
-        httpClient = WebClient.create(Vertx.vertx(), new WebClientOptions());
-    }
 
     @Test
     @DisplayName("DB connections are re-used")
@@ -67,11 +50,11 @@ public class PostgresPoolTest {
         CountDownLatch done = new CountDownLatch(EVENTS);
 
         for (int i = 0; i < EVENTS; i++) {
-            Uni<Boolean> connectionsReUsed = makeHttpReqAsJson(httpClient, "airlines/", HttpStatus.SC_OK)
-                    .flatMap(body -> activeConnections()
-                            .onItem().ifNull()
-                            .failWith(() -> new RuntimeException("Oh No! no postgres active connections found!"))
-                            .onItem().ifNotNull().transform(this::checkDbActiveConnections));
+            makeHttpReqAsJson("airlines/", HttpStatus.SC_OK);
+            Uni<Boolean> connectionsReUsed = activeConnections()
+                    .onItem().ifNull()
+                    .failWith(() -> new RuntimeException("Oh No! no postgres active connections found!"))
+                    .onItem().ifNotNull().transform(this::checkDbActiveConnections);
 
             connectionsReUsed.subscribe().with(reUsed -> {
                 assertTrue(reUsed, "More postgres SQL connections than pool max-size property");
@@ -91,11 +74,11 @@ public class PostgresPoolTest {
         CountDownLatch done = new CountDownLatch(EVENTS);
 
         for (int i = 0; i < EVENTS; i++) {
-            Uni<Long> activeConnectionsAmount = makeHttpReqAsJson(httpClient, "airlines/", HttpStatus.SC_OK)
-                    .flatMap(body -> activeConnections()
-                            .onItem().ifNull()
-                            .failWith(() -> new RuntimeException("Oh No! no postgres active connections found!"))
-                            .onItem().ifNotNull().transformToUni(resp -> activeConnections()));
+            makeHttpReqAsJson("airlines/", HttpStatus.SC_OK);
+            Uni<Long> activeConnectionsAmount = activeConnections()
+                    .onItem().ifNull()
+                    .failWith(() -> new RuntimeException("Oh No! no postgres active connections found!"))
+                    .onItem().ifNotNull().transformToUni(resp -> activeConnections());
 
             activeConnectionsAmount.subscribe().with(amount -> {
                 // be sure that you have more than 1 connections
@@ -133,18 +116,11 @@ public class PostgresPoolTest {
                 .transform(iterator -> iterator.hasNext() ? iterator.next().getLong("active_con") : null);
     }
 
-    private Uni<JsonArray> makeHttpReqAsJson(WebClient httpClient, String path, int expectedStatus) {
-        return makeHttpReq(httpClient, path, expectedStatus).map(HttpResponse::bodyAsJsonArray);
-    }
-
-    private Uni<HttpResponse<Buffer>> makeHttpReq(WebClient httpClient, String path, int expectedStatus) {
-        return httpClient.getAbs(getAppEndpoint() + path)
-                .expect(ResponsePredicate.status(expectedStatus))
-                .send();
-    }
-
-    private String getAppEndpoint() {
-        return String.format("http://localhost:%d/", port);
+    private void makeHttpReqAsJson(String path, int expectedStatus) {
+        given()
+                .when().get(path)
+                .then()
+                .statusCode(expectedStatus);
     }
 
     private boolean checkDbActiveConnections(long active) {
