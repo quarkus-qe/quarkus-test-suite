@@ -356,8 +356,7 @@
                 <module>kamelet</module>
                 <module>logging/jboss</module>
                 <module>cache/caffeine</module>
-                <!-- TODO needs to be updated to reflect https://issues.redhat.com/browse/QUARKUS-1695 discussion and attached PR -->
-                <!-- <module>qute/multimodule</module> -->
+                <module>qute/multimodule</module>
             </modules>
         </profile>
         <profile>
