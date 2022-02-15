@@ -25,11 +25,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        profiles: [ "root-modules,monitoring-modules,spring-modules,test-tooling-modules",
+        profiles: [ "root-modules-no-qute,monitoring-modules,spring-modules,test-tooling-modules",
                     "http-modules",
                     "security-modules",
                     "sql-db-modules",
-                    "messaging-modules,websockets-modules"]
+                    "messaging-modules-no-kafka,websockets-modules"]
 
     steps:
       - name: Install yq
