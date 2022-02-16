@@ -18,7 +18,7 @@
         <failsafe-plugin.version>2.22.2</failsafe-plugin.version>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-        <quarkus.platform.version>999-SNAPSHOT</quarkus.platform.version>
+        <quarkus.platform.version>2.7.1.Final</quarkus.platform.version>
         <quarkus.qe.framework.version>1.1.0.Beta.1</quarkus.qe.framework.version>
         <quarkus-qpid-jms.version>0.32.0</quarkus-qpid-jms.version>
         <quarkus-ide-config.version>2.6.1.Final</quarkus-ide-config.version>
@@ -356,8 +356,26 @@
                 <module>kamelet</module>
                 <module>logging/jboss</module>
                 <module>cache/caffeine</module>
-                <!-- TODO needs to be updated to reflect https://issues.redhat.com/browse/QUARKUS-1695 discussion and attached PR -->
-                <!-- <module>qute/multimodule</module> -->
+                <module>qute/multimodule</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>root-modules-no-qute</id>
+            <modules>
+                <module>config</module>
+                <module>properties</module>
+                <module>docker-build</module>
+                <module>javaee-like-getting-started</module>
+                <module>scaling</module>
+                <module>lifecycle-application</module>
+                <module>external-applications</module>
+                <module>scheduling/quartz</module>
+                <module>infinispan-client</module>
+                <module>super-size/many-extensions</module>
+                <module>quarkus-cli</module>
+                <module>kamelet</module>
+                <module>logging/jboss</module>
+                <module>cache/caffeine</module>
             </modules>
         </profile>
         <profile>
@@ -423,12 +441,20 @@
                 <module>messaging/artemis-jta</module>
                 <module>messaging/amqp-reactive</module>
                 <module>messaging/qpid</module>
-                <!-- https://github.com/quarkus-qe/quarkus-test-framework/issues/400 -->
-                <!-- <module>messaging/kafka-streams-reactive-messaging</module> -->
+                <module>messaging/kafka-streams-reactive-messaging</module>
                 <module>messaging/kafka-confluent-avro-reactive-messaging</module>
-                <!-- <module>messaging/kafka-strimzi-avro-reactive-messaging</module> -->
+                <module>messaging/kafka-strimzi-avro-reactive-messaging</module>
                 <module>messaging/kafka-producer</module>
                 <module>messaging/infinispan-grpc-kafka</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>messaging-modules-no-kafka</id>
+            <modules>
+                <module>messaging/artemis</module>
+                <module>messaging/artemis-jta</module>
+                <module>messaging/amqp-reactive</module>
+                <module>messaging/qpid</module>
             </modules>
         </profile>
         <profile>
