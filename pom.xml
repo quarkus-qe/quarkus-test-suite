@@ -355,7 +355,6 @@
                 <module>kamelet</module>
                 <module>logging/jboss</module>
                 <module>cache/caffeine</module>
-                <module>qute/multimodule</module>
             </modules>
         </profile>
         <profile>
