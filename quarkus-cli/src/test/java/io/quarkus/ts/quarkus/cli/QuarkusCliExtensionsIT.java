@@ -91,11 +91,11 @@ public class QuarkusCliExtensionsIT {
     @Test
     public void shouldListExtensionsUsingStream() {
         String streamVersion = getCurrentStreamVersion();
-        whenGetListExtensions("--stream", streamVersion);
+        whenGetListExtensions("--stream", streamVersion, "--origins");
         if (QuarkusProperties.getVersion().contains("redhat")) {
-            assertTrue(result.getOutput().contains("com.redhat.quarkus.platform:quarkus-bom::pom:" + streamVersion));
+            assertTrue(result.getOutput().contains("com.redhat.quarkus.platform:quarkus-bom:" + streamVersion));
         } else {
-            assertTrue(result.getOutput().contains("io.quarkus.platform:quarkus-bom::pom:" + streamVersion));
+            assertTrue(result.getOutput().contains("io.quarkus.platform:quarkus-bom:" + streamVersion));
         }
     }
 
