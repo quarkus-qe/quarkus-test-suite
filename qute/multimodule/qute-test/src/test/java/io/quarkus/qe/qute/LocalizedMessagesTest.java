@@ -11,19 +11,18 @@ import org.junit.jupiter.params.provider.CsvSource;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
-class ExampleResourceTest {
+class LocalizedMessagesTest {
 
     @Tag("QUARKUS-1547")
     @ParameterizedTest
     @CsvSource({ "en, Hello. Hello Nikos", "el, Γειά. Γειά σου Nikos" })
     //TODO https://github.com/quarkusio/quarkus/issues/19617
     @Disabled("@MessageBundle is not packaged and throw an exception")
-    void testHelloEndpoint(String lang, String output) {
+    void useLocalizedMessageInstance(String lang, String output) {
         given()
                 .when().get("/hello/" + lang)
                 .then()
                 .statusCode(200)
                 .body(is(output));
     }
-
 }
