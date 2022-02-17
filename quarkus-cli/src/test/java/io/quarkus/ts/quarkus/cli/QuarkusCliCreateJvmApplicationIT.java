@@ -161,9 +161,7 @@ public class QuarkusCliCreateJvmApplicationIT {
 
         QuarkusCliClient.Result result = app.buildOnJvm();
         assertTrue(result.isSuccessful(), "The application didn't build on JVM. Output: " + result.getOutput());
-        assertTrue(
-                result.getOutput().contains("Installed features: [cdi, jacoco, resteasy, smallrye-context-propagation, vertx]"),
-                "Unexpected installed features. Output: " + result.getOutput());
+        assertInstalledExtensions(app, "quarkus-jacoco");
 
         assertTrue(app.getServiceFolder().resolve("target/jacoco-report/index.html").toFile().exists(),
                 "JaCoCo report directory doesn't exist");
