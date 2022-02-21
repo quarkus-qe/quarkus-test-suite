@@ -1,11 +1,14 @@
 package io.quarkus.ts.external.applications;
 
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.core.Is;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -43,7 +46,7 @@ public class OpenShiftWorkshopVillainsIT {
     @Container(image = "${postgresql.12.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
     static PostgresqlService database = new PostgresqlService();
 
-    @GitRepositoryQuarkusApplication(repo = "https://github.com/quarkusio/quarkus-workshops.git", branch = "911edebcd1aa2003670a138dabfe1aa5495ed805", contextDir = "quarkus-workshop-super-heroes/super-heroes/rest-villain", mavenArgs = "-Dquarkus.package.type=uber-jar -DskipTests")
+    @GitRepositoryQuarkusApplication(repo = "https://github.com/quarkusio/quarkus-workshops.git", branch = "db3802ecfdcd1f8d6a813ee53471463583c73e0e", contextDir = "quarkus-workshop-super-heroes/super-heroes/rest-villains-complete", mavenArgs = "-Dquarkus.package.type=uber-jar -DskipTests -Dquarkus.platform.group-id=com.redhat.quarkus.platform ")
     static final RestService app = new RestService()
             .withProperty("quarkus.http.port", "8080")
             .withProperty("quarkus.datasource.username", database.getUser())
@@ -56,7 +59,7 @@ public class OpenShiftWorkshopVillainsIT {
                 .get("/api/villains/hello")
                 .then()
                 .statusCode(HttpStatus.SC_OK)
-                .body(is("hello"));
+                .body(is("hello villain"));
     }
 
     @Test
@@ -68,6 +71,7 @@ public class OpenShiftWorkshopVillainsIT {
                 .statusCode(HttpStatus.SC_OK);
     }
 
+    @Disabled("Not supported on commit: db3802ecfdcd1f8d6a813ee53471463583c73e0e")
     @Test
     public void testLiveness() {
         app.given()
@@ -77,6 +81,7 @@ public class OpenShiftWorkshopVillainsIT {
                 .statusCode(HttpStatus.SC_OK);
     }
 
+    @Disabled("Not supported on commit: db3802ecfdcd1f8d6a813ee53471463583c73e0e")
     @Test
     public void testReadiness() {
         app.given()
@@ -86,6 +91,7 @@ public class OpenShiftWorkshopVillainsIT {
                 .statusCode(HttpStatus.SC_OK);
     }
 
+    @Disabled("Not supported on commit: db3802ecfdcd1f8d6a813ee53471463583c73e0e")
     @Test
     public void testMetrics() {
         app.given()
@@ -128,7 +134,7 @@ public class OpenShiftWorkshopVillainsIT {
                 .contentType(ContentType.JSON)
                 .body("name", is(DEFAULT_NAME))
                 .body("otherName", is(DEFAULT_OTHER_NAME))
-                .body("level", is(DEFAULT_LEVEL * 2))
+                .body("level", not(empty()))
                 .body("picture", is(DEFAULT_PICTURE))
                 .body("powers", is(DEFAULT_POWERS));
     }
@@ -155,7 +161,7 @@ public class OpenShiftWorkshopVillainsIT {
                 .contentType(ContentType.JSON)
                 .body("name", Is.is(UPDATED_NAME))
                 .body("otherName", Is.is(UPDATED_OTHER_NAME))
-                .body("level", Is.is(UPDATED_LEVEL))
+                .body("level", is(UPDATED_LEVEL))
                 .body("picture", Is.is(UPDATED_PICTURE))
                 .body("powers", Is.is(UPDATED_POWERS));
     }
@@ -170,6 +176,7 @@ public class OpenShiftWorkshopVillainsIT {
                 .statusCode(HttpStatus.SC_NO_CONTENT);
     }
 
+    @Disabled("Not supported on commit: db3802ecfdcd1f8d6a813ee53471463583c73e0e")
     @Test
     @Order(4)
     public void testCalledOperationMetrics() {
