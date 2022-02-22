@@ -14,12 +14,14 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import io.quarkus.test.bootstrap.PostgresqlService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusSnapshot;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.GitRepositoryQuarkusApplication;
 import io.restassured.http.ContentType;
 
 @DisabledOnQuarkusSnapshot(reason = "999-SNAPSHOT is not available in the Maven repositories in OpenShift")
+@DisabledOnNative(reason = "Native + s2i not supported")
 @OpenShiftScenario
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
