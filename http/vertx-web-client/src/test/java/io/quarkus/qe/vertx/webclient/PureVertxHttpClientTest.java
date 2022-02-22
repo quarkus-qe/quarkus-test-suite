@@ -2,6 +2,7 @@ package io.quarkus.qe.vertx.webclient;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.net.URL;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.vertx.ext.web.client.WebClientOptions;
 import io.vertx.mutiny.core.Vertx;
@@ -16,9 +18,12 @@ import io.vertx.mutiny.ext.web.client.WebClient;
 import io.vertx.mutiny.ext.web.client.predicate.ResponsePredicate;
 
 @QuarkusTest
-//TODO: https://github.com/quarkusio/quarkus/issues/23684
+//TODO: https://github.com/quarkusio/quarkus/issues/23865
 @Disabled
 public class PureVertxHttpClientTest {
+
+    @TestHTTPResource
+    URL url;
 
     WebClient httpClient;
     static final int EXPECTED_EVENTS = 25000;
@@ -34,7 +39,7 @@ public class PureVertxHttpClientTest {
         CountDownLatch done = new CountDownLatch(EXPECTED_EVENTS);
 
         for (int i = 0; i < EXPECTED_EVENTS; i++) {
-            httpClient.getAbs("http://localhost:8081" + "/chuck/pong")
+            httpClient.getAbs(url.toString() + "/chuck/pong")
                     .expect(ResponsePredicate.status(200))
                     .send().subscribe().with(resp -> done.countDown());
         }
