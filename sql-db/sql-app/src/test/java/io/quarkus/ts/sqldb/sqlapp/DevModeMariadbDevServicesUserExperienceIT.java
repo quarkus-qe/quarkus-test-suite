@@ -16,8 +16,8 @@ import io.quarkus.test.utils.SocketUtils;
 @QuarkusScenario
 public class DevModeMariadbDevServicesUserExperienceIT {
 
-    private static final String MARIA_DB_VERSION = "5.5.49";
-    private static final String MARIA_DB_NAME = "mariadb";
+    private static final String MARIA_DB_VERSION = "10.8";
+    private static final String MARIA_DB_NAME = "quay.io/quarkusqeteam/mariadb";
 
     @DevModeQuarkusApplication
     static RestService app = new RestService()
@@ -30,7 +30,7 @@ public class DevModeMariadbDevServicesUserExperienceIT {
 
     @Test
     public void verifyIfUserIsInformedAboutMariadbDevServicePulling() {
-        app.logs().assertContains("Pulling docker image: mariadb");
+        app.logs().assertContains("Pulling docker image: quay.io/quarkusqeteam/mariadb");
         app.logs().assertContains("Please be patient; this may take some time but only needs to be done once");
         app.logs().assertContains("Starting to pull image");
         app.logs().assertContains("Dev Services for MariaDB started");

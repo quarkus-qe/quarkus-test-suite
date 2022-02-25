@@ -206,7 +206,7 @@
                                 <mariadb.10.image>quay.io/bitnami/mariadb:10.6</mariadb.10.image>
                                 <mariadb.102.image>registry.access.redhat.com/rhscl/mariadb-102-rhel7</mariadb.102.image>
                                 <mssql.image>mcr.microsoft.com/mssql/rhel/server:2019-latest</mssql.image>
-                                <oracle.image>gvenzl/oracle-xe:21-slim</oracle.image>
+                                <oracle.image>quay.io/quarkusqeteam/oracle-xe:21-slim</oracle.image>
                                 <db2.image>quay.io/quarkusqeteam/db2:11.5.7.0</db2.image>
                                 <mongodb.image>quay.io/bitnami/mongodb:5.0</mongodb.image>
                                 <redis.image>quay.io/bitnami/redis:6.0</redis.image>
