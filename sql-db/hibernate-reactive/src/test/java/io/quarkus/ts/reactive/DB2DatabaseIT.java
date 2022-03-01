@@ -8,8 +8,6 @@ import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
-// Reported in https://github.com/IBM/Db2/issues/43
-@Tag("fips-incompatible")
 @QuarkusScenario
 @Tag("fips-incompatible") // Reported in https://github.com/IBM/Db2/issues/43
 public class DB2DatabaseIT extends AbstractReactiveDatabaseIT {

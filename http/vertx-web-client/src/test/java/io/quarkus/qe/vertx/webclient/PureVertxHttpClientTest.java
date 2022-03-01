@@ -7,7 +7,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.common.http.TestHTTPResource;
@@ -18,8 +18,7 @@ import io.vertx.mutiny.ext.web.client.WebClient;
 import io.vertx.mutiny.ext.web.client.predicate.ResponsePredicate;
 
 @QuarkusTest
-//TODO: https://github.com/quarkusio/quarkus/issues/23865
-@Disabled
+@Tag("fips-incompatible") // Reported in https://github.com/quarkusio/quarkus/issues/23865
 public class PureVertxHttpClientTest {
 
     @TestHTTPResource
