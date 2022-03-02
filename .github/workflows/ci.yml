@@ -2,6 +2,23 @@ name: "Pull Request CI"
 on:
   - pull_request
 jobs:
+  linux-validate-format-quick:
+    name: Linux - Validate format QUICK
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [ 11 ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install JDK {{ matrix.java }}
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java }}
+          check-latest: true
+      - name: Build with Maven
+        run: |
+          mvn -fae -V -B -s .github/mvn-settings.xml verify -Dall-modules -Dvalidate-format -DskipTests -DskipITs
   build-dependencies:
     name: Build Dependencies
     runs-on: ubuntu-latest
