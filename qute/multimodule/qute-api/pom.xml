@@ -10,4 +10,19 @@
     <artifactId>qute-api</artifactId>
     <packaging>jar</packaging>
     <name>Quarkus QE TS: Qute-api</name>
+    <profiles>
+        <profile>
+            <!-- Disable native build on this module -->
+            <id>native</id>
+            <activation>
+                <property>
+                    <name>native</name>
+                </property>
+            </activation>
+            <properties>
+                <!-- To not build the module on Native -->
+                <quarkus.package.type>fast-jar</quarkus.package.type>
+            </properties>
+        </profile>
+    </profiles>
 </project>
