@@ -9,10 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.scenarios.QuarkusScenario;
 
-@QuarkusTest
-class LocalizedMessagesTest {
+@QuarkusScenario
+class LocalizedMessagesIT {
 
     @Tag("QUARKUS-1547")
     @ParameterizedTest
