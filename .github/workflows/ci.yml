@@ -20,6 +20,7 @@ jobs:
           check-latest: true
       - name: Build Quarkus 2.7
         run: |
+          mvn -V -B -s .github/mvn-settings.xml verify -f qute/multimodule
           git clone https://github.com/quarkusio/quarkus.git && cd quarkus && git checkout 2.7 && ./mvnw -B -s .github/mvn-settings.xml clean install -Dquickly -Prelocations -pl devtools/cli -am
       - name: Tar Maven Repo
         shell: bash
