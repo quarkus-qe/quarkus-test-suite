@@ -6,9 +6,9 @@ import io.quarkus.qute.i18n.MessageBundle;
 @MessageBundle(value = "alert")
 public interface AlertMessages {
 
-    @Message("")
+    @Message("Hello")
     String withoutParams();
 
-    @Message("")
+    @Message("Hello {name}")
     String withParams(String name);
 }
