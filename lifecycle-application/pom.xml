@@ -39,7 +39,7 @@
                 </property>
             </activation>
             <properties>
-                <quarkus.platform.version>999-SNAPSHOT</quarkus.platform.version>
+                <quarkus.platform.version>2.7.3.Final</quarkus.platform.version>
             </properties>
             <repositories>
                 <repository>
