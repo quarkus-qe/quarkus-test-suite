@@ -201,6 +201,7 @@
                                 <keycloak.image>quay.io/keycloak/keycloak:15.0.1</keycloak.image>
                                 <rhsso.73.image>registry.access.redhat.com/redhat-sso-7/sso73-openshift</rhsso.73.image>
                                 <postgresql.13.image>quay.io/bitnami/postgresql:13.5.0</postgresql.13.image>
+                                <elastic.71.image>quay.io/bitnami/elasticsearch:7.10.2</elastic.71.image>
                                 <mysql.57.image>quay.io/bitnami/mysql:5.7.32</mysql.57.image>
                                 <mysql.80.image>registry.access.redhat.com/rhscl/mysql-80-rhel7</mysql.80.image>
                                 <mariadb.10.image>quay.io/bitnami/mariadb:10.6</mariadb.10.image>
@@ -493,6 +494,7 @@
                 <module>sql-db/vertx-sql</module>
                 <module>sql-db/hibernate-reactive</module>
                 <module>sql-db/reactive-vanilla</module>
+                <module>sql-db/hibernate-fulltext-search</module>
             </modules>
         </profile>
         <profile>
