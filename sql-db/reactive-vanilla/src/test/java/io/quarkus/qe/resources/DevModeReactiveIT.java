@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import io.quarkus.qe.model.Book;
 import io.quarkus.qe.model.NoteBook;
-import io.quarkus.qe.model.Record;
+import io.quarkus.qe.model.SoftCoverBook;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.DevModeQuarkusApplication;
@@ -45,14 +45,14 @@ public class DevModeReactiveIT {
 
     @Test
     public void verifyReactivePostgresqlCreateEntity() {
-        Book book = new Book("Sin noticias de Gurb", "Eduardo Mendoza");
-        createRecord("/book/postgresql", book);
+        SoftCoverBook softCoverBook = new SoftCoverBook("Sin noticias de Gurb", "Eduardo Mendoza");
+        createRecord("/book/postgresql", softCoverBook);
     }
 
     @Test
     public void verifyReactiveMysqlRetrieveEntities() {
         given()
-                .when().get("/notebook/mysql")
+                .when().get("/book/mysql")
                 .then()
                 .statusCode(HttpStatus.SC_OK)
                 .body("$.size()", greaterThan(2));
@@ -61,7 +61,7 @@ public class DevModeReactiveIT {
     @Test
     public void verifyReactiveMysqlRetrieveById() {
         given()
-                .when().get("/notebook/mysql/1")
+                .when().get("/book/mysql/1")
                 .then()
                 .statusCode(HttpStatus.SC_OK);
     }
@@ -69,12 +69,12 @@ public class DevModeReactiveIT {
     @Test
     public void verifyReactiveMysqlCreateEntity() {
         NoteBook noteBook = new NoteBook("Sin noticias de Gurb", "Eduardo Mendoza");
-        createRecord("/notebook/mysql", noteBook);
+        createRecord("/book/mysql", noteBook);
     }
 
-    private static void createRecord(String path, Record record) {
+    private static void createRecord(String path, Book book) {
         given()
-                .body(JsonObject.mapFrom(record).encode())
+                .body(JsonObject.mapFrom(book).encode())
                 .header("Content-Type", MediaType.APPLICATION_JSON)
                 .when()
                 .post(path)
