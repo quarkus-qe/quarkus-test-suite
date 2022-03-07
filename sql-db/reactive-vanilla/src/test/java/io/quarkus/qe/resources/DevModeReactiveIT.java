@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.qe.model.Book;
+import io.quarkus.qe.model.HardCoverBook;
 import io.quarkus.qe.model.NoteBook;
 import io.quarkus.qe.model.SoftCoverBook;
 import io.quarkus.test.bootstrap.RestService;
@@ -20,6 +21,7 @@ import io.quarkus.test.services.DevModeQuarkusApplication;
 import io.vertx.core.json.JsonObject;
 
 @Tag("QUARKUS-1080")
+@Tag("QUARKUS-1408")
 @QuarkusScenario
 public class DevModeReactiveIT {
 
@@ -70,6 +72,29 @@ public class DevModeReactiveIT {
     public void verifyReactiveMysqlCreateEntity() {
         NoteBook noteBook = new NoteBook("Sin noticias de Gurb", "Eduardo Mendoza");
         createRecord("/book/mysql", noteBook);
+    }
+
+    @Test
+    public void verifyReactiveMssqlRetrieveEntities() {
+        given()
+                .when().get("/book/mssql")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body("$.size()", greaterThan(2));
+    }
+
+    @Test
+    public void verifyReactiveMssqlRetrieveById() {
+        given()
+                .when().get("/book/mssql/1")
+                .then()
+                .statusCode(HttpStatus.SC_OK);
+    }
+
+    @Test
+    public void verifyReactiveMssqlCreateEntity() {
+        HardCoverBook hardCoverBook = new HardCoverBook("Sin noticias de Gurb", "Eduardo Mendoza");
+        createRecord("/book/mssql", hardCoverBook);
     }
 
     private static void createRecord(String path, Book book) {
