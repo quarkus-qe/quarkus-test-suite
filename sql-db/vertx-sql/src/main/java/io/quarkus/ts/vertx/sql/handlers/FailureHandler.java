@@ -6,6 +6,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.validation.ConstraintViolationException;
 
 import io.quarkus.vertx.web.Route;
+import io.vertx.core.VertxException;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
@@ -33,8 +34,16 @@ public class FailureHandler {
     }
 
     @Route(path = "*", type = Route.HandlerType.FAILURE, produces = "application/json")
-    void databaseDb2ConstraintFailure(MSSQLException e, HttpServerResponse response) {
+    void databaseMssqlConstraintFailure(MSSQLException e, HttpServerResponse response) {
         response.setStatusCode(400).end(Json.encode(new JsonObject().put("msg", e.getMessage())));
+    }
+
+    // TODO: https://github.com/quarkusio/quarkus/issues/24264 - No Oracle-specific exception available
+    @Route(path = "/*", type = Route.HandlerType.FAILURE, produces = "application/json")
+    void databaseOracleConstraintFailure(VertxException e, HttpServerResponse response) {
+        if (e.getMessage().contains("Error Msg = ORA")) {
+            response.setStatusCode(400).end(Json.encode(new JsonObject().put("msg", e.getMessage())));
+        }
     }
 
     @Route(path = "*", type = Route.HandlerType.FAILURE, produces = "application/json")

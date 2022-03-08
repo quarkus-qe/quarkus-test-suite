@@ -62,7 +62,7 @@ public class Passenger extends Record {
 
     public Uni<Long> save(DbPoolService sqlClient) {
         return SqlClientHelper.inTransactionUni(sqlClient, tx -> address.save(sqlClient).onItem().transformToUni(address_id -> {
-            List<String> fieldsNames = Arrays.asList("nif,name,last_name,contact_number,created_at, address_id".split(","));
+            List<String> fieldsNames = Arrays.asList("nif,name,last_name,contact_number,created_at,address_id".split(","));
             List<Object> fieldsValues = Stream
                     .of(getNif(), getName(), getLastName(), getContactNumber(), getCreatedAt(), address_id)
                     .collect(Collectors.toList());

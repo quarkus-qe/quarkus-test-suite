@@ -475,6 +475,7 @@ Covered DBs:
 - MySQL
 - DB2
 - MSSQL
+- Oracle
 
 ### `sql-db/vertx-sql`
 Quarkus / Vertx SQL exploratory testing. A flight search engine in order to test Quarkus Reactive SQL extensions. A detailed description can be found in sql-db/vertx-sql/README.md
