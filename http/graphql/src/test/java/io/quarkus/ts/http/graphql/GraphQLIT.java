@@ -1,5 +1,8 @@
 package io.quarkus.ts.http.graphql;
 
+import static io.quarkus.ts.http.graphql.Utils.createMutation;
+import static io.quarkus.ts.http.graphql.Utils.createQuery;
+import static io.quarkus.ts.http.graphql.Utils.sendQuery;
 import static io.restassured.RestAssured.given;
 
 import org.apache.http.HttpStatus;
@@ -25,6 +28,30 @@ public class GraphQLIT {
     }
 
     @Test
+    public void single() {
+        final String query = createQuery("friend(name:\"Aristotle\"){name}");
+        final Response response = sendQuery(query);
+        final JsonPath json = response.jsonPath();
+        Assertions.assertEquals("Plato", json.getString("data.friend.name"));
+    }
+
+    @Test
+    public void reactive() {
+        final String query = createQuery("friend_r(name:\"Aristotle\"){name}");
+        final Response response = sendQuery(query);
+        final JsonPath json = response.jsonPath();
+        Assertions.assertEquals("Plato", json.getString("data.friend_r.name"));
+    }
+
+    @Test
+    public void create() {
+        final String query = createMutation("create(name:\"Diogen\"){name}");
+        final Response response = sendQuery(query);
+        final JsonPath json = response.jsonPath();
+        Assertions.assertEquals("Diogen", json.getString("data.create.name"));
+    }
+
+    @Test
     public void emptyGet() {
         Response response = given().basePath("graphql")
                 .contentType("application/json")
@@ -43,28 +70,5 @@ public class GraphQLIT {
                 .post();
         Assertions.assertNotEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, response.statusCode());
         Assertions.assertEquals(HttpStatus.SC_BAD_REQUEST, response.statusCode());
-    }
-
-    public static Response sendQuery(String query) {
-        return given().basePath("graphql")
-                .contentType("application/json")
-                .body(query)
-                .post();
-    }
-
-    public static String createQuery(String query) {
-        return new StringBuilder()
-                .append('{')
-                .append('"')
-                .append("query")
-                .append('"')
-                .append(':')
-                .append('"')
-                .append('{')
-                .append(query)
-                .append("}")
-                .append('"')
-                .append("}")
-                .toString();
     }
 }
