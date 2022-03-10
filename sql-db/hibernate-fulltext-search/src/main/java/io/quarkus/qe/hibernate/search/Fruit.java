@@ -3,13 +3,12 @@ package io.quarkus.qe.hibernate.search;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.search.engine.backend.types.Sortable;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
@@ -24,8 +23,8 @@ import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordFie
 public class Fruit {
 
     @Id
-    @SequenceGenerator(name = "fruitsSequence", sequenceName = "known_fruits_id_seq", allocationSize = 1, initialValue = 10)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "fruitsSequence")
+    @GeneratedValue(generator = "fruitsSequence")
+    @GenericGenerator(name = "fruitsSequence", strategy = "io.quarkus.qe.hibernate.search.MyCustomIdGenerator")
     private Integer id;
 
     @FullTextField(analyzer = "name")
