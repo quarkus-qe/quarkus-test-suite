@@ -1,13 +1,9 @@
 package io.quarkus.ts.http.graphql;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.eclipse.microprofile.graphql.Description;
 import org.eclipse.microprofile.graphql.GraphQLApi;
-import org.eclipse.microprofile.graphql.Mutation;
 import org.eclipse.microprofile.graphql.Name;
 import org.eclipse.microprofile.graphql.Query;
 
@@ -16,19 +12,19 @@ import io.smallrye.mutiny.Uni;
 
 @GraphQLApi
 public class PersonsEndpoint {
-    private final List<Person> philosophers = new ArrayList<>();
+    private final Person[] philosophers;
 
     public PersonsEndpoint() {
         final Person plato = new Person("Plato");
         final Person aristotle = new Person("Aristotle");
         plato.setFriend(aristotle);
         aristotle.setFriend(plato);
-        philosophers.addAll(Arrays.asList(plato, aristotle));
+        philosophers = new Person[] { plato, aristotle };
     }
 
     @Query("philosophers")
     @Description("Get a couple of Greek philosophers")
-    public List<Person> getPhilosophers() {
+    public Person[] getPhilosophers() {
         return philosophers;
     }
 
@@ -44,16 +40,9 @@ public class PersonsEndpoint {
 
     @Query("friend_r")
     public Uni<Person> getPhilosopherReactively(@Name("name") String name) {
-        return Multi.createFrom().iterable(philosophers)
+        return Multi.createFrom().items(philosophers)
                 .filter(person -> person.getName().equals(name))
                 .map(Person::getFriend)
                 .toUni();
-    }
-
-    @Mutation("create")
-    public Person createPhilosopher(@Name("name") String name) {
-        Person philosopher = new Person(name);
-        philosophers.add(philosopher);
-        return philosopher;
     }
 }

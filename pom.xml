@@ -401,6 +401,7 @@
                 <module>http/vertx-web-client</module>
                 <module>http/hibernate-validator</module>
                 <module>http/graphql</module>
+                <module>http/graphql-telemetry</module>
             </modules>
         </profile>
         <profile>
