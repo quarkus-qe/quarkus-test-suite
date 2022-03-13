@@ -12,14 +12,16 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.qe.model.Book;
+import io.quarkus.qe.model.HardCoverBook;
 import io.quarkus.qe.model.NoteBook;
-import io.quarkus.qe.model.Record;
+import io.quarkus.qe.model.SoftCoverBook;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.DevModeQuarkusApplication;
 import io.vertx.core.json.JsonObject;
 
 @Tag("QUARKUS-1080")
+@Tag("QUARKUS-1408")
 @QuarkusScenario
 public class DevModeReactiveIT {
 
@@ -45,14 +47,14 @@ public class DevModeReactiveIT {
 
     @Test
     public void verifyReactivePostgresqlCreateEntity() {
-        Book book = new Book("Sin noticias de Gurb", "Eduardo Mendoza");
-        createRecord("/book/postgresql", book);
+        SoftCoverBook softCoverBook = new SoftCoverBook("Sin noticias de Gurb", "Eduardo Mendoza");
+        createRecord("/book/postgresql", softCoverBook);
     }
 
     @Test
     public void verifyReactiveMysqlRetrieveEntities() {
         given()
-                .when().get("/notebook/mysql")
+                .when().get("/book/mysql")
                 .then()
                 .statusCode(HttpStatus.SC_OK)
                 .body("$.size()", greaterThan(2));
@@ -61,7 +63,7 @@ public class DevModeReactiveIT {
     @Test
     public void verifyReactiveMysqlRetrieveById() {
         given()
-                .when().get("/notebook/mysql/1")
+                .when().get("/book/mysql/1")
                 .then()
                 .statusCode(HttpStatus.SC_OK);
     }
@@ -69,12 +71,35 @@ public class DevModeReactiveIT {
     @Test
     public void verifyReactiveMysqlCreateEntity() {
         NoteBook noteBook = new NoteBook("Sin noticias de Gurb", "Eduardo Mendoza");
-        createRecord("/notebook/mysql", noteBook);
+        createRecord("/book/mysql", noteBook);
     }
 
-    private static void createRecord(String path, Record record) {
+    @Test
+    public void verifyReactiveMssqlRetrieveEntities() {
         given()
-                .body(JsonObject.mapFrom(record).encode())
+                .when().get("/book/mssql")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body("$.size()", greaterThan(2));
+    }
+
+    @Test
+    public void verifyReactiveMssqlRetrieveById() {
+        given()
+                .when().get("/book/mssql/1")
+                .then()
+                .statusCode(HttpStatus.SC_OK);
+    }
+
+    @Test
+    public void verifyReactiveMssqlCreateEntity() {
+        HardCoverBook hardCoverBook = new HardCoverBook("Sin noticias de Gurb", "Eduardo Mendoza");
+        createRecord("/book/mssql", hardCoverBook);
+    }
+
+    private static void createRecord(String path, Book book) {
+        given()
+                .body(JsonObject.mapFrom(book).encode())
                 .header("Content-Type", MediaType.APPLICATION_JSON)
                 .when()
                 .post(path)

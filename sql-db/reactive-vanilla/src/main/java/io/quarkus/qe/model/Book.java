@@ -1,30 +1,32 @@
 package io.quarkus.qe.model;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
-import io.vertx.mutiny.pgclient.PgPool;
+import io.vertx.core.json.Json;
 import io.vertx.mutiny.sqlclient.Row;
 import io.vertx.mutiny.sqlclient.RowSet;
-import io.vertx.mutiny.sqlclient.Tuple;
 
-public class Book extends Record {
+public class Book {
 
-    private static final String TITLE = "title";
-    private String title;
-
-    private static final String AUTHOR = "author";
-    private String author;
+    protected static final String QUALIFIED_ID = "id";
+    protected static final String TITLE = "title";
+    protected static final String AUTHOR = "author";
+    protected String title;
+    protected String author;
+    private Long id;
 
     public Book() {
         // default constructor.
     }
 
-    public Book(Long id, String title, String author) {
-        super.setId(id);
-        this.title = title;
-        this.author = author;
+    public Book(Row row) {
+        this.id = row.getLong(QUALIFIED_ID);
+        this.title = row.getString(TITLE);
+        this.author = row.getString(AUTHOR);
     }
 
     public Book(String title, String author) {
@@ -32,29 +34,28 @@ public class Book extends Record {
         this.author = author;
     }
 
-    private static Book from(Row row) {
-        return new Book(row.getLong(QUALIFIED_ID), row.getString(TITLE), row.getString(AUTHOR));
+    protected static <T> Multi<T> fromSet(RowSet<Row> rows, Function<Row, T> rowToInstance) {
+        return Multi.createFrom().iterable(rows).onItem().transform(rowToInstance);
     }
 
-    protected static Multi<Book> fromSet(RowSet<Row> rows) {
-        return Multi.createFrom().iterable(rows).onItem().transform(Book::from);
+    public String toJsonStringify() {
+        return Json.encode(this);
     }
 
-    public static Uni<List<Book>> findAll(PgPool client) {
-        return toList(client.query("SELECT * FROM book").execute().onItem()
-                .transformToMulti(Book::fromSet));
+    public static String toJsonStringify(List<? extends Book> records) {
+        return Json.encode(records);
     }
 
-    public Uni<Long> save(PgPool client) {
-        return client.preparedQuery("INSERT INTO book (" + TITLE + ", " + AUTHOR + ") VALUES ($1, $2) RETURNING id")
-                .execute(Tuple.of(this.title, this.author))
-                .onItem().transform(pgRowSet -> pgRowSet.iterator().next().getLong("id"));
+    public static <T> Uni<List<T>> toList(Multi<T> records) {
+        return records.collect().in(ArrayList::new, List::add);
     }
 
-    public static Uni<Book> findById(PgPool client, Long id) {
-        return client.preparedQuery("SELECT id, title, author FROM book WHERE id = $1").execute(Tuple.of(id))
-                .onItem().transform(RowSet::iterator)
-                .onItem().transform(iterator -> iterator.hasNext() ? from(iterator.next()) : null);
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitle() {

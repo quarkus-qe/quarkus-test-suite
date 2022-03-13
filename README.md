@@ -471,6 +471,7 @@ Quarkus / Vertx SQL exploratory testing. A flight search engine in order to test
 ### `sql-db/reactive-vanilla`
 Verifies `quarkus-reactive-pg-client` extension and DevServices integration
 Verifies `quarkus-reactive-mysql-client` extension and DevServices integration
+Verifies `quarkus-reactive-mssql-client` extension and DevServices integration
 
 ### `sql-db/multiple-pus`
 

@@ -1,5 +1,9 @@
 package io.quarkus.qe.resources;
 
+import java.net.URI;
+
+import javax.ws.rs.core.UriInfo;
+
 import org.jboss.logging.Logger;
 
 import io.vertx.mutiny.sqlclient.Pool;
@@ -26,5 +30,9 @@ public class CommonResource {
                                 + " (title, author) VALUES ('Stranger in a Strange Land', 'Robert A. Heinlein')")
                         .execute())
                 .subscribe().with(item -> LOG.info(tableName + " table created"));
+    }
+
+    protected URI fromId(Long id, UriInfo uriInfo) {
+        return URI.create(uriInfo.getPath() + "/" + id);
     }
 }
