@@ -425,6 +425,17 @@ The features covered:
 - Reproducer for [QUARKUS-661](https://issues.redhat.com/browse/QUARKUS-661): `@TransactionScoped` Context does not call 
   `@Predestroy` on `TransactionScoped` beans. This is covered under the Java package `io.quarkus.qe.hibernate.transaction`.
 
+### `sql-db/hibernate-fulltext-search`
+
+This module covers `elasticSearch` fulltext look up, over a `Hibernate` multi-tenant scenario.
+Feature covered:
+* Hibernate (no panache) multitenant scenario
+* Elastic Fulltext Search verification
+  * Sorted result test
+  * case insensitive test
+* PostgresSQL + native + Openshift
+* Mysql + native + Openshift
+
 ### `sql-db/sql-app`
 
 Verifies that the application can connect to a SQL database and persist data using Hibernate ORM with Panache.
