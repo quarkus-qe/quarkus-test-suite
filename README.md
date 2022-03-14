@@ -651,6 +651,18 @@ this.router.get("/secured")
 * authZ::authorize: custom AuthZ(authorization) provider.
 * secure.helloWorld(rc): actual http endpoint (Rest layer).
 
+### Service-discovery/stork-consul
+
+Verifies Stork-consul integration in order to provide service discovering and round-robin load balancing between services
+
+`StorkServiceDiscoveryIT` scenario deploys four services:
+* Pung: is a simple endpoint that returns "pung" as a string
+* Pong: is a simple endpoint that returns "pong" as a string
+* PongReplica: is a "Pong service" replica, that is deployed in another physical service
+* Ping: is the main client microservice that will use `pung` and `pong` (Pong and PongReplica) services. The service 
+discovery will be done by Stork, and the request dispatching between "pong" services is going to be done by Stork load balancer. 
+
+
 
 ### `monitoring/microprofile`
 

@@ -349,6 +349,7 @@
                 <module>docker-build</module>
                 <module>javaee-like-getting-started</module>
                 <module>scaling</module>
+                <module>service-discovery/stork-consul</module>
                 <module>lifecycle-application</module>
                 <module>external-applications</module>
                 <module>scheduling/quartz</module>
