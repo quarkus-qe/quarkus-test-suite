@@ -446,6 +446,8 @@
                 <module>messaging/kafka-strimzi-avro-reactive-messaging</module>
                 <module>messaging/kafka-producer</module>
                 <module>messaging/infinispan-grpc-kafka</module>
+                <module>messaging/cloud-events/amqp-binary</module>
+                <module>messaging/cloud-events/amqp-json</module>
             </modules>
         </profile>
         <profile>
