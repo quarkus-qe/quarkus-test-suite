@@ -6,13 +6,13 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
-import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
@@ -20,7 +20,8 @@ import javax.ws.rs.core.Response;
 
 import org.hibernate.search.mapper.orm.session.SearchSession;
 import org.jboss.logging.Logger;
-import org.jboss.resteasy.annotations.jaxrs.PathParam;
+
+import io.smallrye.common.annotation.Blocking;
 
 @ApplicationScoped
 @Produces("application/json")
@@ -38,6 +39,7 @@ public class FruitResource {
     @GET
     @Path("/")
     @Transactional
+    @Blocking
     public Fruit[] getAll() {
         return entityManager.createNamedQuery("Fruits.findAll", Fruit.class)
                 .getResultList().toArray(new Fruit[0]);
@@ -46,6 +48,7 @@ public class FruitResource {
     @GET
     @Path("/{id}")
     @Transactional
+    @Blocking
     public Fruit findById(int id) {
         Fruit entity = entityManager.find(Fruit.class, id);
         if (entity == null) {
@@ -57,7 +60,8 @@ public class FruitResource {
     @POST
     @Path("/")
     @Transactional
-    public Response create(@NotNull Fruit fruit) {
+    @Blocking
+    public Response create(Fruit fruit) {
         if (fruit.getId() != null) {
             throw new WebApplicationException("Id was invalidly set on request.", 422);
         }
@@ -69,7 +73,8 @@ public class FruitResource {
     @PUT
     @Path("/{id}")
     @Transactional
-    public Fruit update(@NotNull @PathParam("id") int id, @NotNull Fruit fruit) {
+    @Blocking
+    public Fruit update(@PathParam("id") int id, Fruit fruit) {
         if (fruit.getName() == null) {
             throw new WebApplicationException("Fruit Name was not set on request.", 422);
         }
@@ -88,7 +93,8 @@ public class FruitResource {
     @DELETE
     @Path("/{id}")
     @Transactional
-    public Response delete(@NotNull @PathParam("id") int id) {
+    @Blocking
+    public Response delete(@PathParam("id") int id) {
         Fruit fruit = entityManager.getReference(Fruit.class, id);
         if (fruit == null) {
             throw new WebApplicationException("Fruit with id of " + id + " does not exist.", 404);
@@ -101,7 +107,8 @@ public class FruitResource {
     @GET
     @Path("/search")
     @Transactional
-    public Response search(@NotNull @QueryParam("terms") String terms) {
+    @Blocking
+    public Response search(@QueryParam("terms") String terms) {
         List<Fruit> list = searchSession.search(Fruit.class)
                 .where(f -> f.simpleQueryString().field("name").matching(terms))
                 .sort(f -> f.field("fruitName_sort"))
