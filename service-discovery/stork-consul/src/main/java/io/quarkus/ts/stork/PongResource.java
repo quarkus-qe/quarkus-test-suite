@@ -18,7 +18,7 @@ import io.vertx.mutiny.ext.consul.ConsulClient;
 public class PongResource {
 
     public static final String PONG_SERVICE_NAME = "pong";
-    public static final String DEFAULT_PONG_RESPONSE = "pong";
+    private static final String DEFAULT_PONG_RESPONSE = "pong";
 
     @ConfigProperty(name = "stork.pong.service-discovery.consul-host")
     String host;

@@ -1,7 +1,5 @@
 package io.quarkus.ts.stork;
 
-import static io.quarkus.ts.stork.PongReplicaResource.DEFAULT_PONG_REPLICA_RESPONSE;
-import static io.quarkus.ts.stork.PongResource.DEFAULT_PONG_RESPONSE;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
@@ -30,6 +28,8 @@ public class StorkServiceDiscoveryIT {
     static ConsulService consul = new ConsulService();
 
     private static final String PREFIX = "ping-";
+    private static final String DEFAULT_PONG_REPLICA_RESPONSE = "pongReplica";
+    private static final String DEFAULT_PONG_RESPONSE = "pong";
     private static final String PUNG_PORT = getAvailablePort();
     private static final String PONG_PORT = getAvailablePort();
     private static final String PONG_REPLICA_PORT = getAvailablePort();

@@ -17,21 +17,26 @@ import io.vertx.mutiny.ext.consul.ConsulClient;
 @RouteBase(path = "/pung", produces = MediaType.TEXT_PLAIN)
 public class PungResource {
 
-    @ConfigProperty(name = "stork.pung.service-discovery.consul-host")
+    @ConfigProperty(name = "stork.pung.service-discovery.consul-host", defaultValue = "localhost")
     String host;
-    @ConfigProperty(name = "stork.pung.service-discovery.consul-port")
+    @ConfigProperty(name = "stork.pung.service-discovery.consul-port", defaultValue = "8500")
     String port;
-    @ConfigProperty(name = "pung-service-port")
+    @ConfigProperty(name = "pung-service-port", defaultValue = "8080")
     String pungPort;
-    @ConfigProperty(name = "pung-service-host")
+    @ConfigProperty(name = "pung-service-host", defaultValue = "localhost")
     String pungHost;
+    @ConfigProperty(name = "stork.pung.service-discovery", defaultValue = "consul")
+    String serviceDiscoveryType;
 
     public void init(@Observes StartupEvent ev, Vertx vertx) {
-        ConsulClient client = ConsulClient.create(vertx,
-                new ConsulClientOptions().setHost(host).setPort(Integer.parseInt(port)));
+        if (serviceDiscoveryType.equalsIgnoreCase("consul")) {
+            ConsulClient client = ConsulClient.create(vertx,
+                    new ConsulClientOptions().setHost(host).setPort(Integer.parseInt(port)));
 
-        client.registerServiceAndAwait(
-                new ServiceOptions().setPort(Integer.parseInt(pungPort)).setAddress(pungHost).setName("pung").setId("pung"));
+            client.registerServiceAndAwait(
+                    new ServiceOptions().setPort(Integer.parseInt(pungPort)).setAddress(pungHost).setName("pung")
+                            .setId("pung"));
+        }
     }
 
     @Route(path = "/", methods = Route.HttpMethod.GET)

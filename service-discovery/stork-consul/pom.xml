@@ -9,7 +9,7 @@
     </parent>
     <artifactId>stork</artifactId>
     <packaging>jar</packaging>
-    <name>Quarkus QE TS: stork-consul</name>
+    <name>Quarkus QE TS: Service-discovery: Stork-consul</name>
     <dependencies>
         <dependency>
             <groupId>io.smallrye.stork</groupId>
@@ -18,6 +18,10 @@
         <dependency>
             <groupId>io.smallrye.reactive</groupId>
             <artifactId>smallrye-mutiny-vertx-consul-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.smallrye.stork</groupId>
+            <artifactId>stork-service-discovery-kubernetes</artifactId>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>

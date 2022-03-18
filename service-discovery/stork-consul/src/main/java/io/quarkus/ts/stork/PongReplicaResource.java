@@ -19,7 +19,7 @@ import io.vertx.mutiny.ext.consul.ConsulClient;
 @RouteBase(path = "/pong", produces = MediaType.TEXT_PLAIN)
 public class PongReplicaResource {
 
-    public static final String DEFAULT_PONG_REPLICA_RESPONSE = "pongReplica";
+    private static final String DEFAULT_PONG_REPLICA_RESPONSE = "pongReplica";
 
     @ConfigProperty(name = "stork.pong-replica.service-discovery.consul-host")
     String host;
