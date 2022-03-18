@@ -6,6 +6,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
+import org.jboss.resteasy.reactive.RestResponse;
 
 import io.smallrye.mutiny.Uni;
 
@@ -15,5 +16,5 @@ public interface MyBackendPongProxy {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/")
-    Uni<String> get();
+    Uni<RestResponse<String>> get();
 }

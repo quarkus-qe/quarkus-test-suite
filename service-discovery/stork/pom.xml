@@ -9,7 +9,7 @@
     </parent>
     <artifactId>stork</artifactId>
     <packaging>jar</packaging>
-    <name>Quarkus QE TS: Service-discovery: Stork-consul</name>
+    <name>Quarkus QE TS: Service-discovery: Stork</name>
     <dependencies>
         <dependency>
             <groupId>io.smallrye.stork</groupId>

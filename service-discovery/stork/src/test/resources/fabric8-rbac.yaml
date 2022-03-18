@@ -6,7 +6,6 @@ subjects:
   - kind: ServiceAccount
     # Reference to upper's `metadata.name`
     name: default
-    # Reference to upper's `metadata.namespace`
     namespace: "${NAMESPACE}"
 roleRef:
   kind: ClusterRole

@@ -21,22 +21,26 @@ public class PongReplicaResource {
 
     private static final String DEFAULT_PONG_REPLICA_RESPONSE = "pongReplica";
 
-    @ConfigProperty(name = "stork.pong-replica.service-discovery.consul-host")
+    @ConfigProperty(name = "stork.pong-replica.service-discovery.consul-host", defaultValue = "localhost")
     String host;
-    @ConfigProperty(name = "stork.pong-replica.service-discovery.consul-port")
+    @ConfigProperty(name = "stork.pong-replica.service-discovery.consul-port", defaultValue = "8500")
     String port;
-    @ConfigProperty(name = "pong-replica-service-port")
+    @ConfigProperty(name = "pong-replica-service-port", defaultValue = "8080")
     String pongPort;
-    @ConfigProperty(name = "pong-replica-service-host")
+    @ConfigProperty(name = "pong-replica-service-host", defaultValue = "localhost")
     String pongHost;
+    @ConfigProperty(name = "stork.pong-replica.service-discovery", defaultValue = "consul")
+    String serviceDiscoveryType;
 
     public void init(@Observes StartupEvent ev, Vertx vertx) {
-        ConsulClient client = ConsulClient.create(vertx,
-                new ConsulClientOptions().setHost(host).setPort(Integer.parseInt(port)));
+        if (serviceDiscoveryType.equalsIgnoreCase("consul")) {
+            ConsulClient client = ConsulClient.create(vertx,
+                    new ConsulClientOptions().setHost(host).setPort(Integer.parseInt(port)));
 
-        client.registerServiceAndAwait(
-                new ServiceOptions().setPort(Integer.parseInt(pongPort)).setAddress(pongHost).setName(PONG_SERVICE_NAME)
-                        .setId("pongReplica"));
+            client.registerServiceAndAwait(
+                    new ServiceOptions().setPort(Integer.parseInt(pongPort)).setAddress(pongHost).setName(PONG_SERVICE_NAME)
+                            .setId("pongReplica"));
+        }
     }
 
     @Route(path = "/", methods = Route.HttpMethod.GET)

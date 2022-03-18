@@ -4,7 +4,6 @@ import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -20,6 +19,8 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
+
+import junit.framework.AssertionFailedError;
 
 @QuarkusScenario
 public class StorkServiceDiscoveryIT {
@@ -122,14 +123,11 @@ public class StorkServiceDiscoveryIT {
         return endpoint.replaceFirst(":\\d+", "");
     }
 
-    private static String getAvailablePort() {
-        int port = 0;
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
-            port = serverSocket.getLocalPort();
+    public static String getAvailablePort() {
+        try (ServerSocket socket = new ServerSocket(0)) {
+            return String.valueOf(socket.getLocalPort());
         } catch (IOException e) {
-            fail("no free port available.");
+            throw new AssertionFailedError();
         }
-
-        return String.valueOf(port);
     }
 }
