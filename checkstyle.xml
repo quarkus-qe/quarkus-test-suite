@@ -7,5 +7,8 @@
         <!-- See https://checkstyle.org/config_imports.html -->
         <module name="AvoidStarImport"/>
         <module name="RedundantImport"/>
+        <module name="RequireThis">
+            <property name="validateOnlyOverlapping" value="true"/>
+        </module>
     </module>
 </module>
