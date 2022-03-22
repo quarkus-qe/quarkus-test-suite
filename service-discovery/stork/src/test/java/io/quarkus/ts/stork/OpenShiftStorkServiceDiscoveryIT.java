@@ -13,7 +13,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -21,12 +20,13 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.bootstrap.inject.OpenShiftClient;
 import io.quarkus.test.scenarios.OpenShiftScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.utils.FileUtils;
-import io.restassured.response.ValidatableResponse;
 
 @OpenShiftScenario
-public class OpenShiftStorkServiceDiscoveryIT {
+@DisabledOnQuarkusVersion(version = "2\\..*", reason = "QE OCP user need more privilege in order to be able to create thr required ClusterRole")
+public class OpenShiftStorkServiceDiscoveryIT extends AbstractCommonTestCases {
 
     private static final String CLUSTER_ROLE_FILE_NAME = "cluster-role.yaml";
     private static final String RBAC_FILE_NAME = "fabric8-rbac.yaml";
@@ -61,7 +61,7 @@ public class OpenShiftStorkServiceDiscoveryIT {
 
     @Test
     public void invokeServiceByName() {
-        String response = makePingCall("pung").extract().body().asString();
+        String response = makePingCall(ping, "pung").extract().body().asString();
         assertThat("Service discovery by name fail.", PING_PREFIX + "pung", is(response));
     }
 
@@ -71,7 +71,7 @@ public class OpenShiftStorkServiceDiscoveryIT {
         final int requestAmount = 10;
         final int roundRobinError = (requestAmount / PONG_INSTANCES_AMOUNT) - 1;
         for (int i = 0; i < requestAmount; i++) {
-            String pongInstanceId = makePingCall("pong").extract().header(HEADER_ID);
+            String pongInstanceId = makePingCall(ping, "pong").extract().header(HEADER_ID);
             if (uniqueResp.containsKey(pongInstanceId)) {
                 uniqueResp.put(pongInstanceId, uniqueResp.get(pongInstanceId) + 1);
             } else {
@@ -86,13 +86,6 @@ public class OpenShiftStorkServiceDiscoveryIT {
             Assertions.assertTrue(uniqueResp.get(pod.getKey()) >= roundRobinError,
                     "Request load is not distributed following a round-robin distribution");
         }
-    }
-
-    private ValidatableResponse makePingCall(String subPath) {
-        return ping
-                .given()
-                .get("/ping/" + subPath).then()
-                .statusCode(HttpStatus.SC_OK);
     }
 
     /**
