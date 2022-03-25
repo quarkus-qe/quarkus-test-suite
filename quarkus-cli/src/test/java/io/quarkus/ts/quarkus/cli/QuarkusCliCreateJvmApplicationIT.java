@@ -4,13 +4,24 @@ import static io.quarkus.test.bootstrap.QuarkusCliClient.CreateApplicationReques
 import static io.quarkus.test.utils.AwaitilityUtils.untilAsserted;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -38,6 +49,7 @@ public class QuarkusCliCreateJvmApplicationIT {
 
     @Tag("QUARKUS-1071")
     @Tag("QUARKUS-1072")
+    @Tag("QUARKUS-1472")
     @Test
     public void shouldCreateApplicationOnJvm() {
         // Create application
@@ -50,6 +62,7 @@ public class QuarkusCliCreateJvmApplicationIT {
         // Start using DEV mode
         app.start();
         app.given().get().then().statusCode(HttpStatus.SC_OK);
+        assertExpectedJavaVersion(getPomFileFromMavenApplication(app));
     }
 
     @Tag("QUARKUS-1071")
@@ -175,4 +188,26 @@ public class QuarkusCliCreateJvmApplicationIT {
                 expectedExtension + " not found in " + extensions));
     }
 
+    private void assertExpectedJavaVersion(File pomFile) {
+        MavenXpp3Reader reader = new MavenXpp3Reader();
+        String javaVersion = getSystemJavaVersion();
+        try {
+            Model model = reader.read(new FileReader(pomFile));
+            Assertions.assertEquals(model.getProperties().get("maven.compiler.release"), javaVersion,
+                    "Unexpected Java version. Java support tool should detect host Java version");
+        } catch (IOException | XmlPullParserException e) {
+            fail(e.getMessage());
+        }
+    }
+
+    private String getSystemJavaVersion() {
+        return StringUtils.substringBefore(System.getProperty("java.version"), ".");
+    }
+
+    private File getPomFileFromMavenApplication(QuarkusCliRestService app) {
+        return Arrays.stream(Objects.requireNonNull(app.getServiceFolder().toFile().listFiles()))
+                .filter(f -> f.getName().equalsIgnoreCase("pom.xml"))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Malformed Maven Quarkus application. Missing pom.xml"));
+    }
 }
