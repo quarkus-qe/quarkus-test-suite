@@ -10,8 +10,10 @@ import io.quarkus.test.services.QuarkusApplication;
 public class KeycloakOidcClientSecurityIT extends BaseOidcClientSecurityIT {
     static final int KEYCLOAK_PORT = 8080;
 
+    //TODO Remove workaround after Keycloak is fixed https://github.com/keycloak/keycloak/issues/9916
     @Container(image = "${keycloak.image}", expectedLog = "Http management interface listening", port = KEYCLOAK_PORT)
-    static KeycloakService keycloak = new KeycloakService("/keycloak-realm.json", REALM_DEFAULT);
+    static KeycloakService keycloak = new KeycloakService("/keycloak-realm.json", REALM_DEFAULT)
+            .withProperty("JAVA_OPTS", "-Dcom.redhat.fips=false");
 
     @QuarkusApplication
     static RestService app = new RestService()

@@ -55,8 +55,10 @@ public class HttpAdvancedReactiveIT {
     private static final int KEYCLOAK_PORT = 8080;
     private static final int ASSERT_TIMEOUT_SECONDS = 10;
 
+    //TODO Remove workaround after Keycloak is fixed https://github.com/keycloak/keycloak/issues/9916
     @Container(image = "${keycloak.image}", expectedLog = "Admin console listening", port = KEYCLOAK_PORT)
-    static KeycloakService keycloak = new KeycloakService("/keycloak-realm.json", REALM_DEFAULT);
+    static KeycloakService keycloak = new KeycloakService("/keycloak-realm.json", REALM_DEFAULT)
+            .withProperty("JAVA_OPTS", "-Dcom.redhat.fips=false");
 
     @QuarkusApplication(ssl = true)
     static RestService app = new RestService().withProperty("quarkus.oidc.auth-server-url",
