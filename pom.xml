@@ -441,8 +441,6 @@
                 </property>
             </activation>
             <modules>
-                <module>messaging/artemis</module>
-                <module>messaging/artemis-jta</module>
                 <module>messaging/amqp-reactive</module>
                 <module>messaging/qpid</module>
                 <module>messaging/kafka-streams-reactive-messaging</module>
@@ -457,8 +455,6 @@
         <profile>
             <id>messaging-modules-no-kafka</id>
             <modules>
-                <module>messaging/artemis</module>
-                <module>messaging/artemis-jta</module>
                 <module>messaging/amqp-reactive</module>
                 <module>messaging/qpid</module>
             </modules>
