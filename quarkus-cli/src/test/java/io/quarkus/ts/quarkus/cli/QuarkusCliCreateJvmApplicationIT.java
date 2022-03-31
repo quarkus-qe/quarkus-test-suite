@@ -7,11 +7,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Scanner;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
@@ -43,13 +46,17 @@ public class QuarkusCliCreateJvmApplicationIT {
     static final String SMALLRYE_HEALTH_EXTENSION = "quarkus-smallrye-health";
     static final String SPRING_WEB_EXTENSION = "quarkus-spring-web";
     static final String RESTEASY_JACKSON_EXTENSION = "quarkus-resteasy-jackson";
+    static final String ROOT_FOLDER = "";
+    static final String DOCKER_FOLDER = "/src/main/docker";
+    static final String JDK_11 = "11";
+    static final String JDK_17 = "17";
+    static final String DOCKERFILE_JVM = "Dockerfile.jvm";
 
     @Inject
     static QuarkusCliClient cliClient;
 
     @Tag("QUARKUS-1071")
     @Tag("QUARKUS-1072")
-    @Tag("QUARKUS-1472")
     @Test
     public void shouldCreateApplicationOnJvm() {
         // Create application
@@ -62,7 +69,33 @@ public class QuarkusCliCreateJvmApplicationIT {
         // Start using DEV mode
         app.start();
         app.given().get().then().statusCode(HttpStatus.SC_OK);
-        assertExpectedJavaVersion(getPomFileFromMavenApplication(app));
+    }
+
+    @Tag("QUARKUS-1472")
+    @Test
+    @Disabled("https://github.com/quarkusio/quarkus/issues/24613")
+    public void createAppShouldAutoDetectJavaVersion() {
+        QuarkusCliRestService app = cliClient.createApplication("app");
+        assertExpectedJavaVersion(getFileFromApplication(app, ROOT_FOLDER, "pom.xml"), getSystemJavaVersion());
+        assertDockerJavaVersion(getFileFromApplication(app, DOCKER_FOLDER, DOCKERFILE_JVM), getSystemJavaVersion());
+    }
+
+    @Tag("QUARKUS-1472")
+    @Test
+    public void shouldCreateAnApplicationForcingJavaVersion11() {
+        QuarkusCliClient.CreateApplicationRequest args = defaults().withExtraArgs("--java=" + JDK_11);
+        QuarkusCliRestService app = cliClient.createApplication("app", args);
+        assertExpectedJavaVersion(getFileFromApplication(app, ROOT_FOLDER, "pom.xml"), JDK_11);
+        assertDockerJavaVersion(getFileFromApplication(app, DOCKER_FOLDER, DOCKERFILE_JVM), JDK_11);
+    }
+
+    @Tag("QUARKUS-1472")
+    @Test
+    public void shouldCreateAnApplicationForcingJavaVersion17() {
+        QuarkusCliClient.CreateApplicationRequest args = defaults().withExtraArgs("--java=" + JDK_17);
+        QuarkusCliRestService app = cliClient.createApplication("app", args);
+        assertExpectedJavaVersion(getFileFromApplication(app, ROOT_FOLDER, "pom.xml"), JDK_17);
+        assertDockerJavaVersion(getFileFromApplication(app, DOCKER_FOLDER, DOCKERFILE_JVM), JDK_17);
     }
 
     @Tag("QUARKUS-1071")
@@ -188,14 +221,34 @@ public class QuarkusCliCreateJvmApplicationIT {
                 expectedExtension + " not found in " + extensions));
     }
 
-    private void assertExpectedJavaVersion(File pomFile) {
+    private void assertExpectedJavaVersion(File pomFile, String expectedJavaVersion) {
         MavenXpp3Reader reader = new MavenXpp3Reader();
-        String javaVersion = getSystemJavaVersion();
         try {
             Model model = reader.read(new FileReader(pomFile));
-            Assertions.assertEquals(model.getProperties().get("maven.compiler.release"), javaVersion,
-                    "Unexpected Java version. Java support tool should detect host Java version");
+            Assertions.assertEquals(model.getProperties().get("maven.compiler.release"), expectedJavaVersion,
+                    "Unexpected Java version defined in maven.compiler.release property of pom.xml. " +
+                            "Java support tool should detect host Java version or use " +
+                            "the provided one by --java argument");
         } catch (IOException | XmlPullParserException e) {
+            fail(e.getMessage());
+        }
+    }
+
+    private void assertDockerJavaVersion(File dockerFile, String expectedVersion) {
+        try {
+            Scanner sc = new Scanner(dockerFile);
+            String line = "";
+            while (sc.hasNextLine()) {
+                line = sc.nextLine();
+                if (line.contains("openjdk-" + expectedVersion)) {
+                    break;
+                }
+            }
+
+            Assertions.assertTrue(line.contains("openjdk-" + expectedVersion),
+                    DOCKERFILE_JVM + " doesn't contains expected version " + expectedVersion);
+
+        } catch (FileNotFoundException e) {
             fail(e.getMessage());
         }
     }
@@ -204,10 +257,15 @@ public class QuarkusCliCreateJvmApplicationIT {
         return StringUtils.substringBefore(System.getProperty("java.version"), ".");
     }
 
-    private File getPomFileFromMavenApplication(QuarkusCliRestService app) {
-        return Arrays.stream(Objects.requireNonNull(app.getServiceFolder().toFile().listFiles()))
-                .filter(f -> f.getName().equalsIgnoreCase("pom.xml"))
+    private File getFileFromApplication(QuarkusCliRestService app, String subFolder, String fileName) {
+        Path fileFolderPath = app.getServiceFolder();
+        if (!StringUtils.isEmpty(subFolder)) {
+            fileFolderPath = Path.of(fileFolderPath.toString(), subFolder);
+        }
+
+        return Arrays.stream(Objects.requireNonNull(fileFolderPath.toFile().listFiles()))
+                .filter(f -> f.getName().equalsIgnoreCase(fileName))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Malformed Maven Quarkus application. Missing pom.xml"));
+                .orElseThrow(() -> new RuntimeException(fileName + " not found."));
     }
 }
