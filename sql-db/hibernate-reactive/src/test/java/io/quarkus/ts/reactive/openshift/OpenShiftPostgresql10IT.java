@@ -1,6 +1,5 @@
 package io.quarkus.ts.reactive.openshift;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import io.quarkus.test.bootstrap.PostgresqlService;
@@ -12,7 +11,6 @@ import io.quarkus.ts.reactive.AbstractReactiveDatabaseIT;
 
 @OpenShiftScenario
 @EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
-//TODO: enable disabled methods then the issue will be fixed
 public class OpenShiftPostgresql10IT extends AbstractReactiveDatabaseIT {
 
     private static final String POSTGRES_USER = "quarkus_test";
@@ -35,15 +33,5 @@ public class OpenShiftPostgresql10IT extends AbstractReactiveDatabaseIT {
     @Override
     protected RestService getApp() {
         return app;
-    }
-
-    @Override
-    @Disabled("https://github.com/quarkusio/quarkus/issues/21700")
-    public void connectToUniEndpoint() {
-    }
-
-    @Override
-    @Disabled("https://github.com/quarkusio/quarkus/issues/21700")
-    public void connectToMultiEndpoint() {
     }
 }
