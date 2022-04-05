@@ -29,7 +29,7 @@
         <xml-format-maven-plugin.version>3.2.0</xml-format-maven-plugin.version>
         <checkstyle.version>10.1</checkstyle.version>
         <jjwt.version>0.11.2</jjwt.version>
-        <camel-quarkus-bom.version>2.7.0</camel-quarkus-bom.version>
+        <camel-quarkus-bom.version>2.7.1</camel-quarkus-bom.version>
         <quarkiverse.config.version>1.0.2</quarkiverse.config.version>
         <profile.id>jvm</profile.id>
         <!-- S2i configuration -->
