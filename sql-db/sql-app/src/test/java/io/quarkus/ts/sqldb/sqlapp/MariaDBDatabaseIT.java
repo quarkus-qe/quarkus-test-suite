@@ -7,7 +7,7 @@ import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
-public class MariaDB10DatabaseIT extends AbstractSqlDatabaseIT {
+public class MariaDBDatabaseIT extends AbstractSqlDatabaseIT {
 
     static final int MARIADB_PORT = 3306;
 
