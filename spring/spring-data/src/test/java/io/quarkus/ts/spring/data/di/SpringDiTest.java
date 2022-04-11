@@ -19,7 +19,7 @@ import io.quarkus.test.junit.QuarkusTest;
 // Not converted into @QuarkusScenario, because invoking javax.enterprise.inject.spi.CDI / io.quarkus.arc.Arc is not supported.
 // TODO: Workaround by implementing REST endpoints which expose all necessary information.
 @QuarkusTest
-public class SpringDiIT {
+public class SpringDiTest {
 
     private static Stream<Class<?>> beanClassProvider() {
         return Stream.of(
