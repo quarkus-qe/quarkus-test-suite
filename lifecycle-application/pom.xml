@@ -43,7 +43,7 @@
             </properties>
             <repositories>
                 <repository>
-                    <id>red-hat-enterprise-maven-repository</id>
+                    <id>red-hat-enterprise-repository</id>
                     <url>https://maven.repository.redhat.com/ga/</url>
                 </repository>
             </repositories>
