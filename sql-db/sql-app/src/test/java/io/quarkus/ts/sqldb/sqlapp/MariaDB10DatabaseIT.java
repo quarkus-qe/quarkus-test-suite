@@ -11,7 +11,8 @@ public class MariaDB10DatabaseIT extends AbstractSqlDatabaseIT {
 
     static final int MARIADB_PORT = 3306;
 
-    @Container(image = "${mariadb.10.image}", port = MARIADB_PORT, expectedLog = "/opt/bitnami/mariadb/sbin/mysqld: ready for connections.")
+    @Container(image = "${mariadb.10.image}", port = MARIADB_PORT, expectedLog = "socket: '/run/mysqld/mysqld.sock'  port: "
+            + MARIADB_PORT)
     static MariaDbService database = new MariaDbService();
 
     @QuarkusApplication
