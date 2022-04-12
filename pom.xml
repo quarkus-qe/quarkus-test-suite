@@ -206,7 +206,7 @@
                                 <mysql.57.image>quay.io/bitnami/mysql:5.7.32</mysql.57.image>
                                 <mysql.bitnami.80.image>quay.io/bitnami/mysql:8.0</mysql.bitnami.80.image>
                                 <mysql.80.image>registry.access.redhat.com/rhscl/mysql-80-rhel7</mysql.80.image>
-                                <mariadb.10.image>quay.io/bitnami/mariadb:10.6</mariadb.10.image>
+                                <mariadb.10.image>mariadb:10.6</mariadb.10.image>
                                 <mariadb.102.image>registry.access.redhat.com/rhscl/mariadb-102-rhel7</mariadb.102.image>
                                 <mssql.image>mcr.microsoft.com/mssql/rhel/server:2019-latest</mssql.image>
                                 <oracle.image>gvenzl/oracle-xe:21-slim</oracle.image>
