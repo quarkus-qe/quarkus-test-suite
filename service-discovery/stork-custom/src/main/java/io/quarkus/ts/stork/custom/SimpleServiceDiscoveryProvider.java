@@ -8,15 +8,14 @@ import io.smallrye.stork.spi.ServiceDiscoveryProvider;
 import io.smallrye.stork.spi.StorkInfrastructure;
 
 @ServiceDiscoveryType("simple")
-@ServiceDiscoveryAttribute(name = "host",
-        description = "Host name of the service discovery server.", required = true)
-@ServiceDiscoveryAttribute(name = "port",
-        description = "Hort of the service discovery server.", required = false)
-public class SimpleServiceDiscoveryProvider implements ServiceDiscoveryProvider<InMemoryConfiguration> {
-
+@ServiceDiscoveryAttribute(name = "pongServiceHost", description = "Host name of the pong service instance.", required = true)
+@ServiceDiscoveryAttribute(name = "pongServicePort", description = "Port of the pong service instance.", required = false)
+@ServiceDiscoveryAttribute(name = "pongReplicaServiceHost", description = "Host name of the pong service instance.", required = true)
+@ServiceDiscoveryAttribute(name = "pongReplicaServicePort", description = "Port of the pong service instance.", required = false)
+public class SimpleServiceDiscoveryProvider implements ServiceDiscoveryProvider<SimpleServiceDiscoveryProviderConfiguration> {
     @Override
     public ServiceDiscovery createServiceDiscovery(
-            InMemoryConfiguration config,
+            SimpleServiceDiscoveryProviderConfiguration config,
             String serviceName,
             ServiceConfig serviceConfig,
             StorkInfrastructure storkInfrastructure) {

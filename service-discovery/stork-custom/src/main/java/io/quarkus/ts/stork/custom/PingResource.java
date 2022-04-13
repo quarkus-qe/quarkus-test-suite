@@ -7,13 +7,12 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import io.quarkus.vertx.web.Route;
 import io.quarkus.vertx.web.RouteBase;
-import io.smallrye.mutiny.Uni;
 import io.vertx.ext.web.RoutingContext;
 
 @RouteBase(path = "/ping", produces = MediaType.TEXT_PLAIN)
 public class PingResource {
 
-    public static final String PING_PREFIX = "ping-";
+    private static final String PING_PREFIX = "ping-";
 
     @RestClient
     MyBackendPongProxy pongService;

@@ -11,13 +11,14 @@
     <packaging>jar</packaging>
     <name>Quarkus QE TS: Service-discovery: Stork-custom</name>
     <dependencies>
-<!--        <dependency>-->
-<!--            <groupId>io.smallrye.stork</groupId>-->
-<!--            <artifactId>stork-service-discovery-consul</artifactId>-->
-<!--        </dependency>-->
         <dependency>
-            <groupId>io.smallrye.reactive</groupId>
-            <artifactId>smallrye-mutiny-vertx-consul-client</artifactId>
+            <groupId>io.smallrye.stork</groupId>
+            <artifactId>stork-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.smallrye.stork</groupId>
+            <artifactId>stork-configuration-generator</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -26,11 +27,6 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-rest-client-reactive</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkus.qe</groupId>
-            <artifactId>quarkus-test-service-consul</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
     <profiles>
