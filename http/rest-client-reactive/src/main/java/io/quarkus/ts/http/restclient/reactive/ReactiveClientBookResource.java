@@ -10,24 +10,26 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import io.quarkus.ts.http.restclient.reactive.json.Book;
+import io.quarkus.ts.http.restclient.reactive.json.IdBeanParam;
+import io.quarkus.ts.http.restclient.reactive.json.JsonRestInterface;
 import io.smallrye.mutiny.Uni;
 
-@Path("/client/{id}/book")
+@Path("/client/book")
 public class ReactiveClientBookResource {
 
     @Inject
     @RestClient
-    ReactiveRestInterface restInterface;
+    JsonRestInterface restInterface;
 
     @GET
-    @Path("/json")
+    @Path("/{id}/json")
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Book> getAsJson(@PathParam("id") String id) {
         return restInterface.getAsJson(id);
     }
 
     @GET
-    @Path("/jsonByBeanParam")
+    @Path("/{id}/jsonByBeanParam")
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Book> getAsJsonByBeanParam(@PathParam("id") String id) {
         return restInterface.getWithBeanParam(new IdBeanParam(id));

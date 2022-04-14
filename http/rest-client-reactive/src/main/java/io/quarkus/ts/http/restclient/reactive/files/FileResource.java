@@ -15,7 +15,6 @@ import javax.ws.rs.core.Response;
 import org.jboss.resteasy.reactive.MultipartForm;
 
 import io.quarkus.logging.Log;
-import io.quarkus.ts.http.restclient.reactive.OsUtils;
 import io.smallrye.mutiny.Uni;
 
 @Path("/file")

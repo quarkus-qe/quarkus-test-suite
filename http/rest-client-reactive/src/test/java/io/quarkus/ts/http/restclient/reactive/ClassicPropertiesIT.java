@@ -19,7 +19,7 @@ public class ClassicPropertiesIT {
     @Test
     public void shouldGetBookFromRestClientJson() {
         Response response = app.given().with().pathParam("id", "123")
-                .get("/client/{id}/book/json");
+                .get("/client/book/{id}/json");
         assertEquals(HttpStatus.SC_OK, response.statusCode());
         assertEquals("Title in Json: 123", response.jsonPath().getString("title"));
     }

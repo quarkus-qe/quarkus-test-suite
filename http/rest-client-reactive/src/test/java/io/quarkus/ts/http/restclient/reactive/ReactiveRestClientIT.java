@@ -23,7 +23,7 @@ public class ReactiveRestClientIT {
     @DisabledOnOs(value = OS.WINDOWS, disabledReason = "https://github.com/quarkusio/quarkus/issues/24763")
     public void shouldGetBookFromRestClientJson() {
         Response response = app.given().with().pathParam("id", "123")
-                .get("/client/{id}/book/json");
+                .get("/client/book/{id}/json");
         assertEquals(HttpStatus.SC_OK, response.statusCode());
         assertEquals("Title in Json: 123", response.jsonPath().getString("title"));
     }
@@ -33,7 +33,7 @@ public class ReactiveRestClientIT {
     @DisabledOnOs(value = OS.WINDOWS, disabledReason = "https://github.com/quarkusio/quarkus/issues/24763")
     public void supportPathParamFromBeanParam() {
         Response response = app.given().with().pathParam("id", "123")
-                .get("/client/{id}/book/jsonByBeanParam");
+                .get("/client/book/{id}/jsonByBeanParam");
         assertEquals(HttpStatus.SC_OK, response.statusCode());
         assertEquals("Title in Json: 123", response.jsonPath().getString("title"));
     }
