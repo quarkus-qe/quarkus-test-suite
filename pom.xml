@@ -218,6 +218,7 @@
                                 <infinispan.image>quay.io/infinispan/server:12.1</infinispan.image>
                                 <infinispan.expected-log>Infinispan Server.*started in</infinispan.expected-log>
                                 <spring.cloud.server.image>quay.io/quarkusqeteam/spring-cloud-config-server:3.0</spring.cloud.server.image>
+                                <bouncycastle.bctls-fips.version>1.0.12.2</bouncycastle.bctls-fips.version>
                             </systemPropertyVariables>
                         </configuration>
                     </execution>
@@ -418,6 +419,7 @@
             </activation>
             <modules>
                 <module>security/basic</module>
+                <module>security/bouncycastle-fips</module>
                 <module>security/form-authn</module>
                 <module>security/https</module>
                 <module>security/jwt</module>
