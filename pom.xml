@@ -431,6 +431,7 @@
                 <module>security/keycloak-oidc-client-basic</module>
                 <module>security/keycloak-oidc-client-extended</module>
                 <module>security/vertx-jwt</module>
+                <module>security/oidc-client-mutual-tls</module>
             </modules>
         </profile>
         <profile>
