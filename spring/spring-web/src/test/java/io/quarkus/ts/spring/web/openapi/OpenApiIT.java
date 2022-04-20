@@ -19,6 +19,7 @@ import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.spring.web.AbstractDbIT;
+import io.quarkus.ts.spring.web.MariaDBUtils;
 import io.restassured.response.Response;
 
 @QuarkusScenario
@@ -26,9 +27,7 @@ import io.restassured.response.Response;
 public class OpenApiIT extends AbstractDbIT {
     private static Response response;
 
-    static final int MARIADB_PORT = 3306;
-
-    @Container(image = "${mariadb.10.image}", port = MARIADB_PORT, expectedLog = "ready for connections")
+    @Container(image = "${mariadb.10.image}", port = MariaDBUtils.PORT, expectedLog = MariaDBUtils.START_LOG)
     static final MariaDbService database = new MariaDbService();
 
     @QuarkusApplication
