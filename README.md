@@ -618,6 +618,25 @@ Variants:
 - Using `OIDC Client Filter` extension to automatically acquire the access token from Keycloak when calling to the RestClient.
 - Using `OIDC Token Propagation` extension to propagate the tokens from the source REST call to the target RestClient. 
 
+### `securty/oidc-client-mutual-tls`
+
+Verifies OIDC client can be authenticated as part of the `Mutual TLS` (`mTLS`) authentication process 
+when OpenID Connect Providers requires so. Keycloak is used as a primary OIDC server and Red Hat SSO 
+is used for OpenShift scenarios.
+
+Test cases:
+- Authentication works when user has correct certificates
+- Authentication does not work when user doesn't use any certificate
+- Application endpoint require authentication (fail test)
+
+Variants:
+- Using JKS Keystore type (autodetected based on a keystore file extension)
+- Using PKCS #12 Keystore type (autodetected based on a keystore file extension)
+- Using PKCS #12 Keystore type with unknown file extension (Keystore type declared via configuration properties)
+- Actual Keystore type and declared keystore type mismatch leads to an authentication failure
+- Running on OpenShift with a stable Red Hat SSO
+- Running on OpenShift with the latest Red Hat SSO
+
 ### `security/https`
 
 Verifies that accessing an HTTPS endpoint is posible.
