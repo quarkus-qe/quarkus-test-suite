@@ -17,6 +17,7 @@ import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.spring.web.AbstractDbIT;
+import io.quarkus.ts.spring.web.MariaDBUtils;
 import io.quarkus.ts.spring.web.boostrap.persistence.model.Book;
 import io.restassured.response.Response;
 
@@ -25,9 +26,7 @@ public class BookResourceIT extends AbstractDbIT {
 
     private static final String API_ROOT = "/api/books";
 
-    static final int MARIADB_PORT = 3306;
-
-    @Container(image = "${mariadb.10.image}", port = MARIADB_PORT, expectedLog = "ready for connections")
+    @Container(image = "${mariadb.10.image}", port = MariaDBUtils.PORT, expectedLog = MariaDBUtils.START_LOG)
     static final MariaDbService database = new MariaDbService();
 
     @QuarkusApplication
@@ -111,7 +110,6 @@ public class BookResourceIT extends AbstractDbIT {
         assertEquals(HttpStatus.OK.value(), response.getStatusCode());
         assertEquals("newAuthor", response.jsonPath()
                 .get("author"));
-
     }
 
     @Test

@@ -12,13 +12,13 @@ public class MysqlMultitenantHibernateIT extends AbstractMultitenantIT {
     static final int ELASTIC_PORT = 9200;
     static final int MYSQL_PORT = 3306;
 
-    @Container(image = "${mysql.bitnami.80.image}", port = MYSQL_PORT, expectedLog = "ready for connections")
+    @Container(image = "${mysql.upstream.80.image}", port = MYSQL_PORT, expectedLog = "ready for connections")
     static MySqlService base = new MySqlService().withDatabase("base");
 
-    @Container(image = "${mysql.bitnami.80.image}", port = MYSQL_PORT, expectedLog = "ready for connections")
+    @Container(image = "${mysql.upstream.80.image}", port = MYSQL_PORT, expectedLog = "ready for connections")
     static MySqlService company1 = new MySqlService().withDatabase("company1");
 
-    @Container(image = "${mysql.bitnami.80.image}", port = MYSQL_PORT, expectedLog = "ready for connections")
+    @Container(image = "${mysql.upstream.80.image}", port = MYSQL_PORT, expectedLog = "ready for connections")
     static MySqlService company2 = new MySqlService().withDatabase("company2");;
 
     @Container(image = "${elastic.71.image}", port = ELASTIC_PORT, expectedLog = "started")
