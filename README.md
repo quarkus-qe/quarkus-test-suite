@@ -681,6 +681,14 @@ Verifies Stork integration in order to provide service discovering and round-rob
 * Ping: is the main client microservice that will use `pung` and `pong` (Pong and PongReplica) services. The service 
 discovery will be done by Stork, and the request dispatching between "pong" services is going to be done by Stork load balancer. 
 
+### Service-discovery/stork-custom
+
+Verify Stork custom service discovery and load balancer implementation.
+`StorkCustomLoadBalancerIT` scenario deploys three services:
+* Pong: is a simple endpoint that returns "pong" as a string
+* PongReplica: is a "Pong service" replica, that is deployed in another physical service
+* Ping: is the main client microservice that will use `pong` and `pong-replica` services.
+
 ### `monitoring/microprofile`
 
 Verifies combined usage of MicroProfile RestClient, Fault Tolerance and OpenTracing.
