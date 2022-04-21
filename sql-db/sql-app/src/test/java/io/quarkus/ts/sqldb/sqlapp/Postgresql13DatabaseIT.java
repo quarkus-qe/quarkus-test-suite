@@ -12,7 +12,11 @@ public class Postgresql13DatabaseIT extends AbstractSqlDatabaseIT {
     static final int POSTGRESQL_PORT = 5432;
 
     @Container(image = "${postgresql.13.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
-    static PostgresqlService database = new PostgresqlService();
+    static PostgresqlService database = new PostgresqlService()
+            //fixme https://github.com/quarkus-qe/quarkus-test-framework/issues/455
+            .withProperty("POSTGRES_USER", "user")
+            .withProperty("POSTGRES_PASSWORD", "user")
+            .withProperty("POSTGRES_DB", "mydb");
 
     @QuarkusApplication
     static RestService app = new RestService().withProperties("postgresql.properties")

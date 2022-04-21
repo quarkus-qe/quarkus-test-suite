@@ -453,16 +453,16 @@ This might not be recommended for production, but is good enough for test.
 Container images used in the tests are:
 
 - PostgreSQL:
-  - version 13: `quay.io/bitnami/postgresql:13.4.0`
-  - version 12: `registry.redhat.io/rhscl/postgresql-12-rhel7` (only if `ts.redhat.registry.enabled` is set)
+  - version 13: `postgres:13.6`
+  - version 10: `registry.redhat.io/rhscl/postgresql-10-rhel7` (only if `ts.redhat.registry.enabled` is set)
 - MySQL:
-  - version 5.7: `quay.io/bitnami/mysql:5.7.32`
+  - version 5.7: `mysql:5.7`
   - version 8.0: `registry.access.redhat.com/rhscl/mysql-80-rhel7`
 - MariaDB:
-  - version 10.6: `quay.io/quarkusqeteam/mariadb:10.6.4`
+  - version 10.6: `mariadb:10.6`
 - MSSQL: `mcr.microsoft.com/mssql/rhel/server`
 - Oracle
-  - version 18c XE: `gvenzl/oracle-xe:18.4.0-slim`
+  - version 21 XE: `gvenzl/oracle-xe:21-slim`
 
 ### `sql-db/sql-app-oracle`
 Functionally identical to `sql-db/sql-app`, but using only `quarkus-jdbc-oracle` driver. This is a workaround for the missing native Oracle coverage in `sql-db/sql-app`.

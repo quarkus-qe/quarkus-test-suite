@@ -45,7 +45,11 @@ public class OpenShiftWorkshopHeroesIT {
     private static final int POSTGRESQL_PORT = 5432;
 
     @Container(image = "${postgresql.13.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
-    static PostgresqlService database = new PostgresqlService();
+    static PostgresqlService database = new PostgresqlService()
+            //fixme https://github.com/quarkus-qe/quarkus-test-framework/issues/455
+            .withProperty("POSTGRES_USER", "user")
+            .withProperty("POSTGRES_PASSWORD", "user")
+            .withProperty("POSTGRES_DB", "mydb");
 
     @GitRepositoryQuarkusApplication(repo = "https://github.com/quarkusio/quarkus-workshops.git", branch = "5bb433fb7a2c8d80dda88dac9dcabc50f7494dc3", contextDir = "quarkus-workshop-super-heroes/super-heroes/rest-heroes", mavenArgs = "-Dquarkus.package.type=uber-jar -DskipTests -Dquarkus.platform.group-id=${QUARKUS_PLATFORM_GROUP-ID} -Dquarkus.platform.version=${QUARKUS_VERSION}")
     static final RestService app = new RestService()
