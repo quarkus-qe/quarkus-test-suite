@@ -1,11 +1,10 @@
 package io.quarkus.qe.messaging.infinispan;
 
 import static io.restassured.RestAssured.get;
+import static io.restassured.RestAssured.given;
+import static org.awaitility.Awaitility.await;
 
-import java.time.Duration;
-
-import org.apache.http.HttpStatus;
-import org.awaitility.Awaitility;
+import org.hamcrest.core.StringContains;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.InfinispanService;
@@ -15,18 +14,23 @@ import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.KafkaContainer;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.test.services.containers.model.KafkaProtocol;
 import io.quarkus.test.services.containers.model.KafkaVendor;
 
 @QuarkusScenario
-public class PriceServiceIT {
+public class InfinispanKafkaSaslIT {
+    /**
+     * We can't rename this file to use the default SSL settings part of KafkaService.
+     */
+    private static final String BOOK_TITLE = "testBook";
 
     @Container(image = "${infinispan.image}", expectedLog = "${infinispan.expected-log}", port = 11222)
     static final InfinispanService infinispan = new InfinispanService()
             .withConfigFile("infinispan-config.yaml")
             .withSecretFiles("server.jks");
 
-    @KafkaContainer(vendor = KafkaVendor.CONFLUENT)
-    static final KafkaService kafka = new KafkaService();
+    @KafkaContainer(vendor = KafkaVendor.STRIMZI, protocol = KafkaProtocol.SASL)
+    static final KafkaService kafkasasl = new KafkaService();
 
     @QuarkusApplication
     static final RestService app = new RestService()
@@ -36,14 +40,29 @@ public class PriceServiceIT {
             .withProperty("quarkus.infinispan-client.trust-store", "secret::/server.jks")
             .withProperty("quarkus.infinispan-client.trust-store-password", "changeit")
             .withProperty("quarkus.infinispan-client.trust-store-type", "jks")
-            .withProperty("kafka.bootstrap.servers", kafka::getBootstrapUrl);
+            .withProperty("kafka-streams.state.dir", "target")
+            .withProperty("kafka-client-sasl.bootstrap.servers", kafkasasl::getBootstrapUrl);
 
     @Test
-    public void testPricesResource() {
-        Awaitility.await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> {
-            get("/prices/poll")
+    void testKafkaClientSASL() {
+        await().untilAsserted(() -> {
+            given()
+                    .queryParam("key", "my-key")
+                    .queryParam("value", "my-value")
+                    .when()
+                    .post("/kafka/sasl")
                     .then()
-                    .statusCode(HttpStatus.SC_OK);
+                    .statusCode(200);
+
+            get("/kafka/sasl")
+                    .then()
+                    .statusCode(200)
+                    .body(StringContains.containsString("my-key-my-value"));
         });
+
+        get("/kafka/sasl/topics")
+                .then()
+                .statusCode(200)
+                .body(StringContains.containsString("hello"));
     }
 }
