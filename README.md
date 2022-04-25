@@ -519,6 +519,13 @@ Verifies the simplest way of doing authn/authz.
 Authentication is HTTP `Basic`, with users/passwords/roles defined in `application.properties`.
 Authorization is based on roles, restrictions are defined using common annotations (`@RolesAllowed` etc.).
 
+### `security/bouncycastle-fips`
+
+Verify `bouncy castle FIPS` integration with Quarkus-security. 
+Bouncy castle providers:
+- BCFIPS 
+- BCFIPSJSSE
+
 ### `security/form-authn`
 
 Verifies form-based authentication.
