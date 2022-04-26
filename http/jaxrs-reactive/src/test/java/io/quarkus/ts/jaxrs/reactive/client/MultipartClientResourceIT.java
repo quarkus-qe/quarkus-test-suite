@@ -1,7 +1,7 @@
 package io.quarkus.ts.jaxrs.reactive.client;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.Matchers.containsStringIgnoringCase;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -18,8 +18,8 @@ public class MultipartClientResourceIT {
                 .when().post("/client/multipart")
                 .then()
                 .statusCode(200)
-                .body(containsString("Content-Disposition: form-data; name=\"data\""),
-                        containsString("Content-Type: application/json"),
-                        containsString("{\"foo\":\"test1\",\"bar\":1}"));
+                .body(containsStringIgnoringCase("Content-Disposition: form-data; name=\"pojoData\""),
+                        containsStringIgnoringCase("Content-Type: application/json"),
+                        containsStringIgnoringCase("{\"foo\":\"test1\",\"bar\":1}"));
     }
 }
