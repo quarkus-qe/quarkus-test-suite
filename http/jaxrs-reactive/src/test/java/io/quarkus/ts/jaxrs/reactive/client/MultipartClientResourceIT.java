@@ -1,17 +1,14 @@
 package io.quarkus.ts.jaxrs.reactive.client;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.Matchers.containsStringIgnoringCase;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
 
-// TODO: Failing because of https://github.com/quarkusio/quarkus/issues/19892, enable after the issue is resolved
 @Tag("QUARKUS-1225")
-@Disabled
 @QuarkusScenario
 public class MultipartClientResourceIT {
 
@@ -21,8 +18,8 @@ public class MultipartClientResourceIT {
                 .when().post("/client/multipart")
                 .then()
                 .statusCode(200)
-                .body(containsString("Content-Disposition: form-data; name=\"data\""),
-                        containsString("Content-Type: application/json"),
-                        containsString("{\"foo\":\"test1\",\"bar\":1}"));
+                .body(containsStringIgnoringCase("Content-Disposition: form-data; name=\"pojoData\""),
+                        containsStringIgnoringCase("Content-Type: application/json"),
+                        containsStringIgnoringCase("{\"foo\":\"test1\",\"bar\":1}"));
     }
 }
