@@ -16,7 +16,6 @@ import org.jboss.resteasy.reactive.MultipartForm;
 
 import io.quarkus.logging.Log;
 import io.quarkus.ts.http.restclient.reactive.OsUtils;
-import io.smallrye.common.annotation.Blocking;
 import io.smallrye.mutiny.Uni;
 
 @Path("/file")
@@ -32,23 +31,22 @@ public class FileResource {
 
     @GET
     @Path("/download")
-    public Uni<Response> download() {
-        return Uni.createFrom().item(Response.ok(FILE).build());
+    public Uni<File> download() {
+        return Uni.createFrom().item(FILE);
     }
 
     @POST
     @Path("/upload")
-    public Uni<Response> upload(File body) {
-        return Uni.createFrom().item(Response.ok(utils.getSum(body.getAbsolutePath())).build());
+    public Uni<String> upload(File body) {
+        return utils.getSum(body.getAbsolutePath());
     }
 
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/upload-multipart")
-    @Blocking
     public Uni<String> uploadMultipart(@MultipartForm FileWrapper body) {
-        return Uni.createFrom().item(() -> utils.getSum(body.file.getAbsolutePath()));
+        return utils.getSum(body.file.getAbsolutePath());
     }
 
     @GET
@@ -63,8 +61,8 @@ public class FileResource {
     @GET
     @Path("/hash")
     @Produces(MediaType.TEXT_PLAIN)
-    public Uni<Response> hash() {
+    public Uni<String> hash() {
         Log.info("Hashing path " + FILE.getAbsolutePath());
-        return Uni.createFrom().item(Response.ok(utils.getSum(FILE.getAbsolutePath())).build());
+        return utils.getSum(FILE.getAbsolutePath());
     }
 }

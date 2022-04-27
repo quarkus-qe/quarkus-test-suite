@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Disabled;
@@ -49,7 +50,7 @@ public class LargeFileHandlingIT {
     }
 
     @Test
-    public void downloadDirectly() throws IOException {
+    public void downloadDirectly() throws IOException, ExecutionException, InterruptedException {
         Response hashSum = app.given().get("/file/hash");
         assertEquals(HttpStatus.SC_OK, hashSum.statusCode());
         String serverSum = hashSum.body().asString();
@@ -58,7 +59,7 @@ public class LargeFileHandlingIT {
         assertEquals(HttpStatus.SC_OK, download.statusCode());
         InputStream stream = download.body().asInputStream();
         Files.copy(stream, downloaded);
-        String clientSum = utils.getSum(downloaded.toString());
+        String clientSum = utils.getSum(downloaded.toString()).subscribeAsCompletionStage().get();
         assertEquals(serverSum, clientSum);
     }
 
@@ -94,9 +95,10 @@ public class LargeFileHandlingIT {
 
     @Test
     @Disabled("https://github.com/rest-assured/rest-assured/issues/1480")
-    public void uploadInputStream() throws IOException {
+    public void uploadInputStream() throws IOException, ExecutionException, InterruptedException {
         utils.createFile(uploaded.toString(), BIGGER_THAN_TWO_GIGABYTES);
-        String hashsum = utils.getSum(uploaded.toString());
+        String hashsum = utils.getSum(uploaded.toString()).subscribeAsCompletionStage().get();
+
         try (InputStream stream = new FileInputStream(uploaded.toFile())) {
             Response response = app.given()
                     .body(stream)
@@ -108,9 +110,10 @@ public class LargeFileHandlingIT {
 
     @Test
     @Disabled("https://github.com/rest-assured/rest-assured/issues/1566")
-    public void uploadFile() {
+    public void uploadFile() throws ExecutionException, InterruptedException {
         utils.createFile(uploaded.toString(), BIGGER_THAN_TWO_GIGABYTES);
-        String hashsum = utils.getSum(uploaded.toString());
+        String hashsum = utils.getSum(uploaded.toString()).subscribeAsCompletionStage().get();
+
         Response response = app.given()
                 .body(uploaded.toFile())
                 .post("/file/upload/");

@@ -7,7 +7,6 @@ import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
 
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
@@ -32,28 +31,25 @@ public class FileClientResource {
     @GET
     @Path("/client-hash")
     @Blocking
-    public Uni<Response> calculateHash() {
-        return Uni.createFrom().item(Response.ok(utils.getSum(FILE.toString())).build());
+    public Uni<String> calculateHash() {
+        return utils.getSum(FILE.toString());
     }
 
     @GET
     @Path("/hash")
-    public Uni<Response> hash() {
-        return client.hash().map(hash -> Response.ok(hash).build());
+    public Uni<String> hash() {
+        return client.hash();
     }
 
     @GET
     @Path("/download")
     public Uni<String> download() {
-        return client.download().map(file -> {
-            String path = file.getAbsolutePath();
-            return utils.getSum(path);
-        });
+        return client.download().onItem().transformToUni(file -> utils.getSum(file.getAbsolutePath()));
     }
 
     @GET
     @Path("/download-multipart")
-    public String downloadMultipart() {
+    public Uni<String> downloadMultipart() {
         FileWrapper wrapper = client.downloadMultipart();
         String path = wrapper.file.getAbsolutePath();
         return utils.getSum(path);
