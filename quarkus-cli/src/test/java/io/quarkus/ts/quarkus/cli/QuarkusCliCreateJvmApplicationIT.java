@@ -34,6 +34,7 @@ import io.quarkus.test.bootstrap.QuarkusCliClient;
 import io.quarkus.test.bootstrap.QuarkusCliRestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
+import io.quarkus.test.services.quarkus.model.QuarkusProperties;
 
 @Tag("QUARKUS-960")
 @Tag("quarkus-cli")
@@ -174,12 +175,13 @@ public class QuarkusCliCreateJvmApplicationIT {
     @Test
     public void shouldAddAndRemoveExtensions() {
         // Create application
-        QuarkusCliRestService app = cliClient.createApplication("app");
+        String gav = QuarkusProperties.PLATFORM_GROUP_ID.get() + ":quarkus-bom:" + QuarkusProperties.getVersion();
+        QuarkusCliRestService app = cliClient.createApplication("app", defaults().withPlatformBom(gav));
 
         // By default, it installs only "quarkus-resteasy"
         assertInstalledExtensions(app, RESTEASY_EXTENSION);
 
-        // Let's install Quarkus Smallrye Health
+        // Let's install Quarkus SmallRye Health
         QuarkusCliClient.Result result = app.installExtension(SMALLRYE_HEALTH_EXTENSION);
         assertTrue(result.isSuccessful(), SMALLRYE_HEALTH_EXTENSION + " was not installed. Output: " + result.getOutput());
 
@@ -191,7 +193,7 @@ public class QuarkusCliCreateJvmApplicationIT {
         untilAsserted(() -> app.given().get("/q/health").then().statusCode(HttpStatus.SC_OK));
         app.stop();
 
-        // Let's now remove the Smallrye Health extension
+        // Let's now remove the SmallRye Health extension
         result = app.removeExtension(SMALLRYE_HEALTH_EXTENSION);
         assertTrue(result.isSuccessful(), SMALLRYE_HEALTH_EXTENSION + " was not uninstalled. Output: " + result.getOutput());
 
