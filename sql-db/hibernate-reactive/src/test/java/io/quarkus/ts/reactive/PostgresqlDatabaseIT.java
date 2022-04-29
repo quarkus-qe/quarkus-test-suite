@@ -22,7 +22,8 @@ public class PostgresqlDatabaseIT extends AbstractReactiveDatabaseIT {
             .withProperty("POSTGRES_DB", POSTGRES_DATABASE)
             .withUser(POSTGRES_USER)
             .withPassword(POSTGRES_PASSWORD)
-            .withDatabase(POSTGRES_DATABASE);
+            .withDatabase(POSTGRES_DATABASE)
+            .withProperty("PGDATA", "/tmp/psql");
 
     @QuarkusApplication
     static RestService app = new RestService().withProperties("postgresql.properties")
