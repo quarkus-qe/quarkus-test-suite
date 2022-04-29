@@ -22,7 +22,8 @@ public class OpenShiftMultiplePersistenceIT extends AbstractMultiplePersistenceI
             //fixme https://github.com/quarkus-qe/quarkus-test-framework/issues/455
             .withProperty("POSTGRES_USER", "user")
             .withProperty("POSTGRES_PASSWORD", "user")
-            .withProperty("POSTGRES_DB", "mydb");
+            .withProperty("POSTGRES_DB", "mydb")
+            .withProperty("PGDATA", "/tmp/psql");
 
     @QuarkusApplication
     static RestService app = new RestService()
