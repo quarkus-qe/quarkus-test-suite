@@ -1,11 +1,11 @@
 package io.quarkus.ts.quarkus.cli;
 
+import static io.quarkus.ts.quarkus.cli.QuarkusCliUtils.getCurrentStreamVersion;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -44,31 +44,31 @@ public class QuarkusCliExtensionsIT {
 
     @Test
     public void shouldListExtensionsUsingDefaults() {
-        whenGetListExtensions();
+        whenGetListExtensions("--stream", getCurrentStreamVersion());
         assertListDefaultOptionOutput();
     }
 
     @Test
     public void shouldListExtensionsUsingName() {
-        whenGetListExtensions("--name");
+        whenGetListExtensions("--stream", getCurrentStreamVersion(), "--name");
         assertListNameOptionOutput();
     }
 
     @Test
     public void shouldListExtensionsUsingOrigins() {
-        whenGetListExtensions("--origins");
+        whenGetListExtensions("--stream", getCurrentStreamVersion(), "--origins");
         assertListOriginsOptionOutput();
     }
 
     @Test
     public void shouldListExtensionsUsingConcise() {
-        whenGetListExtensions("--concise");
+        whenGetListExtensions("--stream", getCurrentStreamVersion(), "--concise");
         assertListConciseOptionOutput();
     }
 
     @Test
     public void shouldListExtensionsUsingFull() {
-        whenGetListExtensions("--full");
+        whenGetListExtensions("--stream", getCurrentStreamVersion(), "--full");
         assertListFullOptionOutput();
     }
 
@@ -103,7 +103,7 @@ public class QuarkusCliExtensionsIT {
 
     @Test
     public void shouldListExtensionsUsingInstallable() {
-        whenGetListExtensions("--installable");
+        whenGetListExtensions("--stream", getCurrentStreamVersion(), "--installable");
         assertListDefaultOptionOutput();
     }
 
@@ -157,10 +157,5 @@ public class QuarkusCliExtensionsIT {
 
     private void assertResultIsSuccessful() {
         assertTrue(result.isSuccessful(), "Extensions list command didn't work. Output: " + result.getOutput());
-    }
-
-    private String getCurrentStreamVersion() {
-        String[] version = Version.getVersion().split(Pattern.quote("."));
-        return String.format("%s.%s", version[0], version[1]);
     }
 }

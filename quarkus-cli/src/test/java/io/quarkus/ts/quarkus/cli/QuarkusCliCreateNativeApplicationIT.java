@@ -1,5 +1,6 @@
 package io.quarkus.ts.quarkus.cli;
 
+import static io.quarkus.ts.quarkus.cli.QuarkusCliUtils.defaultWithFixedStream;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javax.inject.Inject;
@@ -28,7 +29,7 @@ public class QuarkusCliCreateNativeApplicationIT {
     @Test
     public void shouldBuildApplicationOnNative() {
         // Create application
-        QuarkusCliRestService app = cliClient.createApplication("app");
+        QuarkusCliRestService app = cliClient.createApplication("app", defaultWithFixedStream());
 
         // Should build on Native
         QuarkusCliClient.Result result = app.buildOnNative();

@@ -1,5 +1,6 @@
 package io.quarkus.ts.quarkus.cli;
 
+import static io.quarkus.ts.quarkus.cli.QuarkusCliUtils.getCurrentStreamVersion;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
@@ -130,7 +131,8 @@ public class QuarkusCliSpecialCharsIT {
     }
 
     private void whenCreateAppAt(String folder) {
-        result = cliClient.run("create", "app", "--output-directory=" + folder, ARTIFACT_ID);
+        result = cliClient.run("create", "app", "--stream", getCurrentStreamVersion(), "--output-directory=" + folder,
+                ARTIFACT_ID);
     }
 
     private void thenResultIsSuccessful() {
