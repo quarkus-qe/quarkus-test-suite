@@ -160,12 +160,10 @@ public class QuarkusCliCreateJvmApplicationIT {
     @Tag("QUARKUS-1071")
     @Test
     public void shouldCreateApplicationWithCodeStarter() {
-        // Create application with Resteasy Jackson + Spring Web (we need both for the app to run)
         QuarkusCliRestService app = cliClient.createApplication("app",
-                defaultWithFixedStream().withExtensions(RESTEASY_JACKSON_EXTENSION, SPRING_WEB_EXTENSION));
+                defaultWithFixedStream().withExtensions(SPRING_WEB_EXTENSION));
 
-        // Verify By default, it installs only "quarkus-resteasy-jackson" and "quarkus-spring-web"
-        assertInstalledExtensions(app, RESTEASY_JACKSON_EXTENSION, SPRING_WEB_EXTENSION);
+        assertInstalledExtensions(app, SPRING_WEB_EXTENSION);
 
         // Start using DEV mode
         app.start();
