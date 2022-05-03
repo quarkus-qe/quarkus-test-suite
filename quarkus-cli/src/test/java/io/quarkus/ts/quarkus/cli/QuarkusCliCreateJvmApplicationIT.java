@@ -2,6 +2,7 @@ package io.quarkus.ts.quarkus.cli;
 
 import static io.quarkus.test.bootstrap.QuarkusCliClient.CreateApplicationRequest.defaults;
 import static io.quarkus.test.utils.AwaitilityUtils.untilAsserted;
+import static io.quarkus.ts.quarkus.cli.QuarkusCliUtils.defaultWithFixedStream;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -61,7 +62,7 @@ public class QuarkusCliCreateJvmApplicationIT {
     @Test
     public void shouldCreateApplicationOnJvm() {
         // Create application
-        QuarkusCliRestService app = cliClient.createApplication("app");
+        QuarkusCliRestService app = cliClient.createApplication("app", defaultWithFixedStream());
 
         // Should build on Jvm
         QuarkusCliClient.Result result = app.buildOnJvm();
@@ -76,7 +77,7 @@ public class QuarkusCliCreateJvmApplicationIT {
     @Test
     @Disabled("https://github.com/quarkusio/quarkus/issues/24613")
     public void createAppShouldAutoDetectJavaVersion() {
-        QuarkusCliRestService app = cliClient.createApplication("app");
+        QuarkusCliRestService app = cliClient.createApplication("app", defaultWithFixedStream());
         assertExpectedJavaVersion(getFileFromApplication(app, ROOT_FOLDER, "pom.xml"), getSystemJavaVersion());
         assertDockerJavaVersion(getFileFromApplication(app, DOCKER_FOLDER, DOCKERFILE_JVM), getSystemJavaVersion());
     }
@@ -84,7 +85,7 @@ public class QuarkusCliCreateJvmApplicationIT {
     @Tag("QUARKUS-1472")
     @Test
     public void shouldCreateAnApplicationForcingJavaVersion11() {
-        QuarkusCliClient.CreateApplicationRequest args = defaults().withExtraArgs("--java=" + JDK_11);
+        QuarkusCliClient.CreateApplicationRequest args = defaultWithFixedStream().withExtraArgs("--java=" + JDK_11);
         QuarkusCliRestService app = cliClient.createApplication("app", args);
         assertExpectedJavaVersion(getFileFromApplication(app, ROOT_FOLDER, "pom.xml"), JDK_11);
         assertDockerJavaVersion(getFileFromApplication(app, DOCKER_FOLDER, DOCKERFILE_JVM), JDK_11);
@@ -93,7 +94,7 @@ public class QuarkusCliCreateJvmApplicationIT {
     @Tag("QUARKUS-1472")
     @Test
     public void shouldCreateAnApplicationForcingJavaVersion17() {
-        QuarkusCliClient.CreateApplicationRequest args = defaults().withExtraArgs("--java=" + JDK_17);
+        QuarkusCliClient.CreateApplicationRequest args = defaultWithFixedStream().withExtraArgs("--java=" + JDK_17);
         QuarkusCliRestService app = cliClient.createApplication("app", args);
         assertExpectedJavaVersion(getFileFromApplication(app, ROOT_FOLDER, "pom.xml"), JDK_17);
         assertDockerJavaVersion(getFileFromApplication(app, DOCKER_FOLDER, DOCKERFILE_JVM), JDK_17);
@@ -105,7 +106,7 @@ public class QuarkusCliCreateJvmApplicationIT {
     public void shouldCreateApplicationWithGradleOnJvm() {
 
         // Create application
-        QuarkusCliRestService app = cliClient.createApplication("app", defaults().withExtraArgs("--gradle"));
+        QuarkusCliRestService app = cliClient.createApplication("app", defaultWithFixedStream().withExtraArgs("--gradle"));
 
         // Should build on Jvm
         QuarkusCliClient.Result result = app.buildOnJvm();
@@ -123,7 +124,7 @@ public class QuarkusCliCreateJvmApplicationIT {
     public void shouldCreateApplicationWithJbangOnJvm() {
 
         // Create application
-        QuarkusCliRestService app = cliClient.createApplication("app", defaults().withExtraArgs("--jbang"));
+        QuarkusCliRestService app = cliClient.createApplication("app", defaultWithFixedStream().withExtraArgs("--jbang"));
 
         // Should build on Jvm
         QuarkusCliClient.Result result = app.buildOnJvm("--verbose");
@@ -147,7 +148,7 @@ public class QuarkusCliCreateJvmApplicationIT {
         // Also, it verifies that quarkiverse dependencies can be added too.
         final String kogitoExtension = "kogito-quarkus-rules";
         final String prettytimeExtension = "quarkus-prettytime";
-        QuarkusCliRestService app = cliClient.createApplication("app", defaults().withExtensions(kogitoExtension,
+        QuarkusCliRestService app = cliClient.createApplication("app", defaultWithFixedStream().withExtensions(kogitoExtension,
                 prettytimeExtension, RESTEASY_EXTENSION, RESTEASY_JACKSON_EXTENSION));
 
         // Should build on Jvm
@@ -161,7 +162,7 @@ public class QuarkusCliCreateJvmApplicationIT {
     public void shouldCreateApplicationWithCodeStarter() {
         // Create application with Resteasy Jackson + Spring Web (we need both for the app to run)
         QuarkusCliRestService app = cliClient.createApplication("app",
-                defaults().withExtensions(RESTEASY_JACKSON_EXTENSION, SPRING_WEB_EXTENSION));
+                defaultWithFixedStream().withExtensions(RESTEASY_JACKSON_EXTENSION, SPRING_WEB_EXTENSION));
 
         // Verify By default, it installs only "quarkus-resteasy-jackson" and "quarkus-spring-web"
         assertInstalledExtensions(app, RESTEASY_JACKSON_EXTENSION, SPRING_WEB_EXTENSION);
@@ -205,7 +206,8 @@ public class QuarkusCliCreateJvmApplicationIT {
     @Tag("QUARKUS-1255")
     @Test
     public void shouldCreateJacocoReportsFromApplicationOnJvm() {
-        QuarkusCliRestService app = cliClient.createApplication("app-with-jacoco", defaults().withExtensions("jacoco"));
+        QuarkusCliRestService app = cliClient.createApplication("app-with-jacoco",
+                defaultWithFixedStream().withExtensions("jacoco"));
 
         QuarkusCliClient.Result result = app.buildOnJvm();
         assertTrue(result.isSuccessful(), "The application didn't build on JVM. Output: " + result.getOutput());
