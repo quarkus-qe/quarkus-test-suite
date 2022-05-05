@@ -2,6 +2,8 @@ package io.quarkus.ts.security.oidcclient.mtls;
 
 import static io.quarkus.ts.security.oidcclient.mtls.MutualTlsKeycloakService.newKeycloakInstance;
 
+import org.junit.jupiter.api.Tag;
+
 import io.quarkus.test.bootstrap.KeycloakService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -12,6 +14,7 @@ import io.quarkus.test.services.QuarkusApplication;
  * Keystore file type is automatically detected in following tests by its extension in quarkus-oidc.
  * Extension declared here is used by tests only.
  */
+@Tag("fips-incompatible")
 @QuarkusScenario
 public class Pkcs12OidcMtlsIT extends KeycloakMtlsAuthN {
 

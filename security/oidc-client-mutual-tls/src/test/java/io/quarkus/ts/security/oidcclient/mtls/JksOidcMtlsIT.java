@@ -2,12 +2,15 @@ package io.quarkus.ts.security.oidcclient.mtls;
 
 import static io.quarkus.ts.security.oidcclient.mtls.MutualTlsKeycloakService.newKeycloakInstance;
 
+import org.junit.jupiter.api.Tag;
+
 import io.quarkus.test.bootstrap.KeycloakService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
+@Tag("fips-incompatible")
 @QuarkusScenario
 public class JksOidcMtlsIT extends KeycloakMtlsAuthN {
 
