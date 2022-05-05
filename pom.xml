@@ -226,7 +226,6 @@
                                 <wiremock.image>quay.io/ocpmetal/wiremock</wiremock.image>
                                 <!-- TODO use official image when/if this fixed https://github.com/hashicorp/docker-consul/issues/184 -->
                                 <consul.image>docker.io/bitnami/consul:1.12.0</consul.image>
-                                <consul.image>docker.io/library/consul:1.11</consul.image>
                                 <infinispan.image>quay.io/infinispan/server:12.1</infinispan.image>
                                 <infinispan.expected-log>Infinispan Server.*started in</infinispan.expected-log>
                                 <spring.cloud.server.image>quay.io/quarkusqeteam/spring-cloud-config-server:3.0</spring.cloud.server.image>

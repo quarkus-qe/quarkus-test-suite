@@ -49,7 +49,8 @@ public class OpenShiftWorkshopHeroesIT {
             //fixme https://github.com/quarkus-qe/quarkus-test-framework/issues/455
             .withProperty("POSTGRES_USER", "user")
             .withProperty("POSTGRES_PASSWORD", "user")
-            .withProperty("POSTGRES_DB", "mydb");
+            .withProperty("POSTGRES_DB", "mydb")
+            .withProperty("PGDATA", "/tmp/psql");
 
     @GitRepositoryQuarkusApplication(repo = "https://github.com/quarkusio/quarkus-workshops.git", branch = "5bb433fb7a2c8d80dda88dac9dcabc50f7494dc3", contextDir = "quarkus-workshop-super-heroes/super-heroes/rest-heroes", mavenArgs = "-Dquarkus.package.type=uber-jar -DskipTests -Dquarkus.platform.group-id=${QUARKUS_PLATFORM_GROUP-ID} -Dquarkus.platform.version=${QUARKUS_VERSION}")
     static final RestService app = new RestService()
