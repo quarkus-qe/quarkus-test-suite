@@ -1,38 +1,42 @@
 package io.quarkus.ts.security.jwt;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-import java.security.PrivateKey;
+import java.security.NoSuchAlgorithmException;
+import java.security.interfaces.RSAPrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.UUID;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import org.apache.http.HttpStatus;
+import org.jboss.logging.Logger;
+import org.jose4j.base64url.internal.apache.commons.codec.binary.Base64;
 import org.junit.jupiter.api.Test;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
+import io.smallrye.jwt.algorithm.SignatureAlgorithm;
+import io.smallrye.jwt.build.Jwt;
 
 public abstract class BaseJwtSecurityIT {
+
+    private static final Logger LOG = Logger.getLogger(BaseJwtSecurityIT.class);
 
     private static final int TEN = 10;
     private static final int NINETY = 90;
 
     @Test
-    public void securedEveryoneNoGroup() throws IOException, GeneralSecurityException {
+    public void securedEveryoneNoGroup() throws Exception {
         givenWithToken(createToken())
                 .get("/secured/everyone")
                 .then()
@@ -43,7 +47,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void securedEveryoneViewGroup() throws IOException, GeneralSecurityException {
+    public void securedEveryoneViewGroup() throws Exception {
         givenWithToken(createToken("view"))
                 .get("/secured/everyone")
                 .then()
@@ -54,7 +58,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void securedEveryoneAdminGroup() throws IOException, GeneralSecurityException {
+    public void securedEveryoneAdminGroup() throws Exception {
         givenWithToken(createToken("admin"))
                 .get("/secured/everyone")
                 .then()
@@ -65,7 +69,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void securedEveryoneWrongIssuer() throws IOException, GeneralSecurityException {
+    public void securedEveryoneWrongIssuer() throws Exception {
         givenWithToken(createToken(Invalidity.WRONG_ISSUER))
                 .get("/secured/everyone")
                 .then()
@@ -73,7 +77,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void securedEveryoneWrongDate() throws IOException, GeneralSecurityException {
+    public void securedEveryoneWrongDate() throws Exception {
         givenWithToken(createToken(Invalidity.WRONG_DATE))
                 .get("/secured/everyone")
                 .then()
@@ -81,7 +85,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void securedEveryoneWrongKey() throws IOException, GeneralSecurityException {
+    public void securedEveryoneWrongKey() throws Exception {
         givenWithToken(createToken(Invalidity.WRONG_KEY))
                 .get("/secured/everyone")
                 .then()
@@ -89,7 +93,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void securedAdminNoGroup() throws IOException, GeneralSecurityException {
+    public void securedAdminNoGroup() throws Exception {
         givenWithToken(createToken())
                 .get("/secured/admin")
                 .then()
@@ -97,7 +101,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void securedAdminViewGroup() throws IOException, GeneralSecurityException {
+    public void securedAdminViewGroup() throws Exception {
         givenWithToken(createToken("view"))
                 .get("/secured/admin")
                 .then()
@@ -105,7 +109,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void securedAdminAdminGroup() throws IOException, GeneralSecurityException {
+    public void securedAdminAdminGroup() throws Exception {
         givenWithToken(createToken("admin"))
                 .get("/secured/admin")
                 .then()
@@ -114,7 +118,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void securedNoOneNoGroup() throws IOException, GeneralSecurityException {
+    public void securedNoOneNoGroup() throws Exception {
         givenWithToken(createToken())
                 .get("/secured/noone")
                 .then()
@@ -122,7 +126,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void securedNoOneViewGroup() throws IOException, GeneralSecurityException {
+    public void securedNoOneViewGroup() throws Exception {
         givenWithToken(createToken("view"))
                 .get("/secured/noone")
                 .then()
@@ -130,7 +134,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void securedNoOneAdminGroup() throws IOException, GeneralSecurityException {
+    public void securedNoOneAdminGroup() throws Exception {
         givenWithToken(createToken("admin"))
                 .get("/secured/noone")
                 .then()
@@ -138,7 +142,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void permittedCorrectToken() throws IOException, GeneralSecurityException {
+    public void permittedCorrectToken() throws Exception {
         givenWithToken(createToken())
                 .get("/permitted")
                 .then()
@@ -147,7 +151,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void permittedWrongIssuer() throws IOException, GeneralSecurityException {
+    public void permittedWrongIssuer() throws Exception {
         givenWithToken(createToken(Invalidity.WRONG_ISSUER))
                 .get("/permitted")
                 .then()
@@ -155,7 +159,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void permittedWrongDate() throws IOException, GeneralSecurityException {
+    public void permittedWrongDate() throws Exception {
         givenWithToken(createToken(Invalidity.WRONG_DATE))
                 .get("/permitted")
                 .then()
@@ -163,7 +167,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void permittedWrongKey() throws IOException, GeneralSecurityException {
+    public void permittedWrongKey() throws Exception {
         givenWithToken(createToken(Invalidity.WRONG_KEY))
                 .get("/permitted")
                 .then()
@@ -171,7 +175,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void deniedCorrectToken() throws IOException, GeneralSecurityException {
+    public void deniedCorrectToken() throws Exception {
         givenWithToken(createToken())
                 .get("/denied")
                 .then()
@@ -179,7 +183,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void mixedConstrained() throws IOException, GeneralSecurityException {
+    public void mixedConstrained() throws Exception {
         givenWithToken(createToken())
                 .get("/mixed/constrained")
                 .then()
@@ -188,7 +192,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void mixedUnconstrained() throws IOException, GeneralSecurityException {
+    public void mixedUnconstrained() throws Exception {
         givenWithToken(createToken())
                 .get("/mixed/unconstrained")
                 .then()
@@ -196,7 +200,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void contentTypesPlainPlainGroup() throws IOException, GeneralSecurityException {
+    public void contentTypesPlainPlainGroup() throws Exception {
         givenWithToken(createToken("plain"))
                 .accept(ContentType.TEXT)
                 .get("/content-types")
@@ -206,7 +210,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void contentTypesPlainWebGroup() throws IOException, GeneralSecurityException {
+    public void contentTypesPlainWebGroup() throws Exception {
         givenWithToken(createToken("web"))
                 .accept(ContentType.TEXT)
                 .get("/content-types")
@@ -215,7 +219,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void contentTypesWebWebGroup() throws IOException, GeneralSecurityException {
+    public void contentTypesWebWebGroup() throws Exception {
         givenWithToken(createToken("web"))
                 .accept(ContentType.HTML)
                 .get("/content-types")
@@ -225,7 +229,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void contentTypesWebPlainGroup() throws IOException, GeneralSecurityException {
+    public void contentTypesWebPlainGroup() throws Exception {
         givenWithToken(createToken("plain"))
                 .accept(ContentType.HTML)
                 .get("/content-types")
@@ -234,7 +238,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void parameterizedPathsAdminAdminGroup() throws IOException, GeneralSecurityException {
+    public void parameterizedPathsAdminAdminGroup() throws Exception {
         givenWithToken(createToken("admin"))
                 .get("/parameterized-paths/my/foo/admin")
                 .then()
@@ -243,7 +247,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void parameterizedPathsAdminViewGroup() throws IOException, GeneralSecurityException {
+    public void parameterizedPathsAdminViewGroup() throws Exception {
         givenWithToken(createToken("view"))
                 .get("/parameterized-paths/my/foo/admin")
                 .then()
@@ -251,7 +255,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void parameterizedPathsViewViewGroup() throws IOException, GeneralSecurityException {
+    public void parameterizedPathsViewViewGroup() throws Exception {
         givenWithToken(createToken("view"))
                 .get("/parameterized-paths/my/foo/view")
                 .then()
@@ -260,7 +264,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void parameterizedPathsViewAdminGroup() throws IOException, GeneralSecurityException {
+    public void parameterizedPathsViewAdminGroup() throws Exception {
         givenWithToken(createToken("admin"))
                 .get("/parameterized-paths/my/foo/view")
                 .then()
@@ -268,7 +272,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void tokenExpirationGracePeriod() throws IOException, GeneralSecurityException {
+    public void tokenExpirationGracePeriod() throws Exception {
         Supplier<Date> clock = () -> {
             Date now = new Date();
             now = new Date(now.getTime() - TimeUnit.SECONDS.toMillis(NINETY));
@@ -284,9 +288,19 @@ public abstract class BaseJwtSecurityIT {
 
     protected abstract RequestSpecification givenWithToken(String token);
 
-    private static PrivateKey loadPrivateKey() throws IOException, GeneralSecurityException {
-        byte[] bytes = Files.readAllBytes(Paths.get("target/test-classes/private-key.der"));
-        return KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(bytes));
+    private static RSAPrivateKey loadPrivateKey() throws Exception {
+        String key = new String(Files.readAllBytes(Paths.get("target/test-classes/private-key.pem")), Charset.defaultCharset());
+
+        String privateKeyPEM = key
+                .replace("-----BEGIN PRIVATE KEY-----", "")
+                .replaceAll(System.lineSeparator(), "")
+                .replace("-----END PRIVATE KEY-----", "");
+
+        byte[] encoded = Base64.decodeBase64(privateKeyPEM);
+
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encoded);
+        return (RSAPrivateKey) keyFactory.generatePrivate(keySpec);
     }
 
     private enum Invalidity {
@@ -295,16 +309,16 @@ public abstract class BaseJwtSecurityIT {
         WRONG_KEY
     }
 
-    private static String createToken(String... groups) throws IOException, GeneralSecurityException {
+    private static String createToken(String... groups) throws Exception {
         return createToken(Date::new, null, groups);
     }
 
-    private static String createToken(Invalidity invalidity, String... groups) throws IOException, GeneralSecurityException {
+    private static String createToken(Invalidity invalidity, String... groups) throws Exception {
         return createToken(Date::new, invalidity, groups);
     }
 
     private static String createToken(Supplier<Date> clock, Invalidity invalidity, String... groups)
-            throws IOException, GeneralSecurityException {
+            throws Exception {
         String issuer = "https://my.auth.server/";
         if (invalidity == Invalidity.WRONG_ISSUER) {
             issuer = "https://wrong/";
@@ -317,23 +331,27 @@ public abstract class BaseJwtSecurityIT {
             expiration = new Date(now.getTime() - TimeUnit.DAYS.toMillis(TEN));
         }
 
-        PrivateKey privateKey = loadPrivateKey();
+        RSAPrivateKey privateKey = loadPrivateKey();
         if (invalidity == Invalidity.WRONG_KEY) {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
             KeyPair keyPair = keyPairGenerator.generateKeyPair();
-            privateKey = keyPair.getPrivate();
+            privateKey = (RSAPrivateKey) keyPair.getPrivate();
         }
 
-        return Jwts.builder()
-                .setIssuer(issuer) // iss
-                .setId(UUID.randomUUID().toString()) // jti
-                .setExpiration(expiration) // exp
-                .setIssuedAt(now) // iat
-                .setSubject("test_subject_at_example_com") // sub
+        return Jwt.issuer(issuer)
+                .expiresAt(expiration.getTime())
+                .issuedAt(now.getTime())
+                .subject("test_subject_at_example_com")
+                .groups(Set.of(groups))
                 .claim("upn", "test-subject@example.com")
-                .claim("groups", Arrays.asList(groups))
                 .claim("roleMappings", Collections.singletonMap("admin", "superuser"))
-                .signWith(privateKey, SignatureAlgorithm.RS256)
-                .compact();
+                .jws().algorithm(SignatureAlgorithm.RS256).sign(privateKey);
+    }
+
+    @Test
+    public void verifyRSAKeypairsGenerationOnFIPS() throws NoSuchAlgorithmException {
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+        keyPairGenerator.initialize(2048);
+        assertNotNull(keyPairGenerator.genKeyPair());
     }
 }
