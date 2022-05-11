@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.test.services.quarkus.model.QuarkusProperties;
 
 @QuarkusScenario
 public class LifecycleApplicationIT {
@@ -18,7 +19,8 @@ public class LifecycleApplicationIT {
     static final String LOGGING_PROPERTY = "-Djava.util.logging.manager=org.jboss.logmanager.LogManager";
 
     @QuarkusApplication
-    static RestService app = new RestService();
+    static RestService app = new RestService()
+            .withProperties(getAdditionalProperties());
 
     @Test
     public void shouldArgumentsNotContainLoggingProperty() {
@@ -34,5 +36,13 @@ public class LifecycleApplicationIT {
         String argumentsLine = app.getLogs().stream().collect(Collectors.joining());
         assertFalse(argumentsLine.contains(LOGGING_PROPERTY),
                 "Pod log contain unexpected properties. Actual content: " + argumentsLine);
+    }
+
+    /**
+     * Conditionally apply OpenShift properties if in Native mode.
+     * FIXME remove once https://github.com/quarkusio/quarkus/issues/24885 is resolved
+     */
+    private static String getAdditionalProperties() {
+        return QuarkusProperties.isNativePackageType() ? "native.properties" : "empty.properties";
     }
 }
