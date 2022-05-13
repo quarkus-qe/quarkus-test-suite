@@ -1,4 +1,4 @@
-package io.quarkus.qe.messaging.infinispan.quickstart;
+package io.quarkus.qe.messaging.ssl.quickstart;
 
 import java.util.Set;
 import java.util.concurrent.ExecutionException;

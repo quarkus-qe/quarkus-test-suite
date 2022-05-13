@@ -7,6 +7,7 @@ import java.time.Duration;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
+import javax.inject.Singleton;
 
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -37,6 +38,7 @@ public class WindowedLoginDeniedStream {
     int windowsLoginSec;
 
     @Produces
+    @Singleton
     public Topology buildTopology() {
         StreamsBuilder builder = new StreamsBuilder();
 

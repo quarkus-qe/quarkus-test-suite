@@ -463,6 +463,7 @@
                 <module>messaging/kafka-confluent-avro-reactive-messaging</module>
                 <module>messaging/kafka-strimzi-avro-reactive-messaging</module>
                 <module>messaging/kafka-producer</module>
+                <module>messaging/kafkaSSL</module>
                 <module>messaging/infinispan-grpc-kafka</module>
                 <module>messaging/cloud-events/amqp-binary</module>
                 <module>messaging/cloud-events/amqp-json</module>

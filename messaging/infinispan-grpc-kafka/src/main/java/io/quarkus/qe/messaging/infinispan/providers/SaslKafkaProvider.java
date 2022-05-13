@@ -5,6 +5,7 @@ import java.util.Properties;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.AdminClient;
@@ -22,6 +23,7 @@ public class SaslKafkaProvider extends KafkaProviders {
     @ConfigProperty(name = "kafka-client-sasl.bootstrap.servers", defaultValue = "localhost:9092")
     String saslKafkaBootStrap;
 
+    @Singleton
     @Produces
     @Named("kafka-consumer-sasl")
     KafkaConsumer<String, String> getSaslConsumer() {
@@ -32,6 +34,7 @@ public class SaslKafkaProvider extends KafkaProviders {
         return consumer;
     }
 
+    @Singleton
     @Produces
     @Named("kafka-producer-sasl")
     KafkaProducer<String, String> getSaslProducer() {
@@ -40,6 +43,7 @@ public class SaslKafkaProvider extends KafkaProviders {
         return new KafkaProducer<>(props);
     }
 
+    @Singleton
     @Produces
     @Named("kafka-admin-sasl")
     AdminClient getSaslAdmin() {

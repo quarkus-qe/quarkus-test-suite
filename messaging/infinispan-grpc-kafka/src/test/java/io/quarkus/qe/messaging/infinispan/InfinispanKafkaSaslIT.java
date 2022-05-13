@@ -47,25 +47,34 @@ public class InfinispanKafkaSaslIT {
             .withProperty("kafka-client-sasl.bootstrap.servers", kafkasasl::getBootstrapUrl);
 
     @Test
-    void testKafkaClientSASL() {
+    void testKafkaClientSSL() {
         await().untilAsserted(() -> {
-            given()
-                    .queryParam("key", "my-key")
-                    .queryParam("value", "my-value")
-                    .when()
-                    .post("/kafka/sasl")
-                    .then()
-                    .statusCode(200);
-
-            get("/kafka/sasl")
-                    .then()
-                    .statusCode(200)
-                    .body(StringContains.containsString("my-key-my-value"));
+            pushEvent("my-key", "my-value");
+            verifyEventWasProcessed("my-key-my-value");
+            pushEvent("my-key", "my-value-two");
+            verifyEventWasProcessed("my-key-my-value-two");
         });
 
         get("/kafka/sasl/topics")
                 .then()
                 .statusCode(200)
                 .body(StringContains.containsString("hello"));
+    }
+
+    private void pushEvent(String key, String value) {
+        given()
+                .queryParam("key", key)
+                .queryParam("value", value)
+                .when()
+                .post("/kafka/sasl")
+                .then()
+                .statusCode(200);
+    }
+
+    private void verifyEventWasProcessed(String expectedEvent) {
+        get("/kafka/sasl")
+                .then()
+                .statusCode(200)
+                .body(StringContains.containsString(expectedEvent));
     }
 }

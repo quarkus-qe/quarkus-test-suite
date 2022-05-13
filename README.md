@@ -779,7 +779,10 @@ State of this queue is exposed using PriceResource which is called from the test
 
 ### `messaging/infinispan-grpc-kafka`
 
-Module verifies that gRPC, Infinispan and Kafka extensions work together with SSL and SASL authentication.
+Verifies that gRPC, Infinispan and Kafka extensions work together with SASL authentication.
+
+### `messaging/kafkaSSL`
+Verifies KafkaSSL integration. This module cover a simple Kafka producer/consumer through SSL
 
 ### `messaging/kafka-streams-reactive-messaging`
 

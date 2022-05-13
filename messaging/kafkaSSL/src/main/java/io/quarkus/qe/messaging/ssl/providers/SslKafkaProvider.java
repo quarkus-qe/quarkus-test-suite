@@ -1,4 +1,4 @@
-package io.quarkus.qe.messaging.infinispan.providers;
+package io.quarkus.qe.messaging.ssl.providers;
 
 import java.io.File;
 import java.util.Collections;
@@ -6,6 +6,7 @@ import java.util.Properties;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.AdminClient;
@@ -29,16 +30,18 @@ public class SslKafkaProvider extends KafkaProviders {
     @ConfigProperty(name = "kafka.ssl.truststore.type", defaultValue = "PKCS12")
     String trustStoreType;
 
+    @Singleton
     @Produces
     @Named("kafka-consumer-ssl")
     KafkaConsumer<String, String> getSslConsumer() {
-        Properties props = setupConsumerProperties(sslKafkaBootStrap, "test-consumer");
+        Properties props = setupConsumerProperties(sslKafkaBootStrap);
         sslSetup(props);
         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
         consumer.subscribe(Collections.singletonList("test-ssl-consumer"));
         return consumer;
     }
 
+    @Singleton
     @Produces
     @Named("kafka-producer-ssl")
     KafkaProducer<String, String> getSslProducer() {
@@ -47,10 +50,11 @@ public class SslKafkaProvider extends KafkaProviders {
         return new KafkaProducer<>(props);
     }
 
+    @Singleton
     @Produces
     @Named("kafka-admin-ssl")
     AdminClient getSslAdmin() {
-        Properties props = setupConsumerProperties(sslKafkaBootStrap, "test-consumer-admin");
+        Properties props = setupConsumerProperties(sslKafkaBootStrap);
         sslSetup(props);
         return KafkaAdminClient.create(props);
     }
