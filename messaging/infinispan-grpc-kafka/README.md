@@ -3,18 +3,18 @@
 2. [Quarkus SSL/TLS Infinispan scenario ](#Quarkus-SSL/TLS-Infinispan-scenario )
 3. [Quarkus Grateful Shutdown for Kafka connectors](#Quarkus-Grateful-Shutdown-for-Kafka-connectors)
 
-## Quarkus SSL/TLS infinispan grpc kafka
+## Quarkus infinispan grpc kafka
 Module that test whether gRPC, Infinispan and Kafka extensions work together:
 - for gRPC: there is a simple greetings endpoint. This example will use a `helloworld.proto` file to generate the required sources. 
 - for Infinispan: to check whether the cache persistence is working fine
 - for Kafka: to verify the messages are working in a chain workflow.
 
-## Kafka-client SSL / SASL
-Test SSL and SASL authentication through Quarkus Kafka client extension. 
-We have two endpoints `SaslKafkaEndpoint` and `SslKafkaEndpoint` that are able to produce events into kafka
+## Kafka-client SASL
+Verifies SASL authentication through Quarkus Kafka client extension. 
+Endpoint `SaslKafkaEndpoint` is able to produce events
 and consume events and check topics through `AdminClient` and `KafkaConsumer`.
 
-## Quarkus SSL/TLS Infinispan scenario 
+## Quarkus Infinispan scenario 
 
 ##hotrod-client.properties
 Test that hotrod-client.properties file is picked up at the build time (should be placed under src/main/resources/META-INF).    
