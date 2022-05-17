@@ -1,9 +1,12 @@
 package io.quarkus.ts.quarkus.cli;
 
+import static io.quarkus.test.bootstrap.QuarkusCliClient.CreateApplicationRequest;
+import static io.quarkus.test.bootstrap.QuarkusCliClient.Result;
 import static io.quarkus.test.bootstrap.QuarkusCliClient.CreateApplicationRequest.defaults;
 import static io.quarkus.test.utils.AwaitilityUtils.untilAsserted;
 import static io.quarkus.ts.quarkus.cli.QuarkusCliUtils.defaultWithFixedStream;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -65,7 +68,7 @@ public class QuarkusCliCreateJvmApplicationIT {
         QuarkusCliRestService app = cliClient.createApplication("app", defaultWithFixedStream());
 
         // Should build on Jvm
-        QuarkusCliClient.Result result = app.buildOnJvm();
+        Result result = app.buildOnJvm();
         assertTrue(result.isSuccessful(), "The application didn't build on JVM. Output: " + result.getOutput());
 
         // Start using DEV mode
@@ -85,7 +88,7 @@ public class QuarkusCliCreateJvmApplicationIT {
     @Tag("QUARKUS-1472")
     @Test
     public void shouldCreateAnApplicationForcingJavaVersion11() {
-        QuarkusCliClient.CreateApplicationRequest args = defaultWithFixedStream().withExtraArgs("--java=" + JDK_11);
+        CreateApplicationRequest args = defaultWithFixedStream().withExtraArgs("--java=" + JDK_11);
         QuarkusCliRestService app = cliClient.createApplication("app", args);
         assertExpectedJavaVersion(getFileFromApplication(app, ROOT_FOLDER, "pom.xml"), JDK_11);
         assertDockerJavaVersion(getFileFromApplication(app, DOCKER_FOLDER, DOCKERFILE_JVM), JDK_11);
@@ -94,7 +97,7 @@ public class QuarkusCliCreateJvmApplicationIT {
     @Tag("QUARKUS-1472")
     @Test
     public void shouldCreateAnApplicationForcingJavaVersion17() {
-        QuarkusCliClient.CreateApplicationRequest args = defaultWithFixedStream().withExtraArgs("--java=" + JDK_17);
+        CreateApplicationRequest args = defaultWithFixedStream().withExtraArgs("--java=" + JDK_17);
         QuarkusCliRestService app = cliClient.createApplication("app", args);
         assertExpectedJavaVersion(getFileFromApplication(app, ROOT_FOLDER, "pom.xml"), JDK_17);
         assertDockerJavaVersion(getFileFromApplication(app, DOCKER_FOLDER, DOCKERFILE_JVM), JDK_17);
@@ -109,7 +112,7 @@ public class QuarkusCliCreateJvmApplicationIT {
         QuarkusCliRestService app = cliClient.createApplication("app", defaultWithFixedStream().withExtraArgs("--gradle"));
 
         // Should build on Jvm
-        QuarkusCliClient.Result result = app.buildOnJvm();
+        Result result = app.buildOnJvm();
         assertTrue(result.isSuccessful(), "The application didn't build on JVM. Output: " + result.getOutput());
 
         // Start using DEV mode
@@ -127,7 +130,7 @@ public class QuarkusCliCreateJvmApplicationIT {
         QuarkusCliRestService app = cliClient.createApplication("app", defaultWithFixedStream().withExtraArgs("--jbang"));
 
         // Should build on Jvm
-        QuarkusCliClient.Result result = app.buildOnJvm("--verbose");
+        Result result = app.buildOnJvm("--verbose");
         assertTrue(result.isSuccessful(), "The application didn't build on JVM. Output: " + result.getOutput());
 
         // Start using DEV mode
@@ -152,7 +155,7 @@ public class QuarkusCliCreateJvmApplicationIT {
                 prettytimeExtension, RESTEASY_EXTENSION, RESTEASY_JACKSON_EXTENSION));
 
         // Should build on Jvm
-        QuarkusCliClient.Result result = app.buildOnJvm();
+        Result result = app.buildOnJvm();
         assertTrue(result.isSuccessful(), "The application didn't build on JVM. Output: " + result.getOutput());
         assertInstalledExtensions(app, kogitoExtension, prettytimeExtension, RESTEASY_EXTENSION, RESTEASY_JACKSON_EXTENSION);
     }
@@ -183,7 +186,7 @@ public class QuarkusCliCreateJvmApplicationIT {
         assertInstalledExtensions(app, RESTEASY_EXTENSION);
 
         // Let's install Quarkus SmallRye Health
-        QuarkusCliClient.Result result = app.installExtension(SMALLRYE_HEALTH_EXTENSION);
+        Result result = app.installExtension(SMALLRYE_HEALTH_EXTENSION);
         assertTrue(result.isSuccessful(), SMALLRYE_HEALTH_EXTENSION + " was not installed. Output: " + result.getOutput());
 
         // Verify both extensions now
@@ -209,7 +212,7 @@ public class QuarkusCliCreateJvmApplicationIT {
         QuarkusCliRestService app = cliClient.createApplication("app-with-jacoco",
                 defaultWithFixedStream().withExtensions("jacoco"));
 
-        QuarkusCliClient.Result result = app.buildOnJvm();
+        Result result = app.buildOnJvm();
         assertTrue(result.isSuccessful(), "The application didn't build on JVM. Output: " + result.getOutput());
         assertInstalledExtensions(app, "quarkus-jacoco");
 
@@ -217,6 +220,26 @@ public class QuarkusCliCreateJvmApplicationIT {
                 "JaCoCo report directory doesn't exist");
         assertTrue(app.getServiceFolder().resolve("target/jacoco-quarkus.exec").toFile().exists(),
                 "JaCoCo exec file doesn't exist");
+    }
+
+    @Tag("QUARKUS-1296")
+    @Test
+    public void verifyRestEasyReactiveAndClassicResteasyCollisionUserMsg() {
+        QuarkusCliRestService app = cliClient.createApplication("dependencyCollision",
+                defaults().withExtensions("resteasy", "resteasy-reactive"));
+
+        Result buildResult = app.buildOnJvm();
+
+        assertFalse(buildResult.isSuccessful(),
+                "Should fail because 'resteasy' and 'resteasy-reactive' extensions are not compatible");
+
+        assertBuildError(buildResult, "Please make sure there is only one provider of the following capabilities");
+        assertBuildError(buildResult, "io.quarkus:quarkus-resteasy-reactive");
+        assertBuildError(buildResult, "io.quarkus:quarkus-resteasy");
+    }
+
+    private void assertBuildError(Result result, String expectedError) {
+        assertTrue(result.getOutput().contains(expectedError), "Unexpected build error message");
     }
 
     private void assertInstalledExtensions(QuarkusCliRestService app, String... expectedExtensions) {
