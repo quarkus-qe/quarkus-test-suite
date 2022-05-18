@@ -19,6 +19,7 @@ import org.junit.jupiter.api.condition.OS;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.ts.http.restclient.reactive.files.OsUtils;
 import io.restassured.response.Response;
 
 @QuarkusScenario

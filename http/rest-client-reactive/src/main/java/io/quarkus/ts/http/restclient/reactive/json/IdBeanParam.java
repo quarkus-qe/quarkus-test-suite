@@ -1,4 +1,4 @@
-package io.quarkus.ts.http.restclient.reactive;
+package io.quarkus.ts.http.restclient.reactive.json;
 
 import javax.ws.rs.PathParam;
 

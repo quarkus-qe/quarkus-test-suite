@@ -1,4 +1,4 @@
-package io.quarkus.ts.http.restclient.reactive;
+package io.quarkus.ts.http.restclient.reactive.json;
 
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.GET;
@@ -10,13 +10,12 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-import io.quarkus.ts.http.restclient.reactive.json.Book;
 import io.smallrye.mutiny.Uni;
 
 @RegisterRestClient
 @Path("/book/{id}")
 @RegisterClientHeaders
-public interface ReactiveRestInterface {
+public interface JsonRestInterface {
 
     @GET
     @Path("/json")

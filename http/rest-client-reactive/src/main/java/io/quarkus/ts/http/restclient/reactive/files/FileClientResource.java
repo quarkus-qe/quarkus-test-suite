@@ -10,14 +10,13 @@ import javax.ws.rs.Path;
 
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
-import io.quarkus.ts.http.restclient.reactive.OsUtils;
 import io.smallrye.common.annotation.Blocking;
 import io.smallrye.mutiny.Uni;
 
 @Path("/file-client")
 public class FileClientResource {
     private static final String BIGGER_THAN_TWO_GIGABYTES = OsUtils.SIZE_2049MiB;
-    private final java.nio.file.Path FILE = Files.createTempFile("upload", "txt").toAbsolutePath();
+    private final java.nio.file.Path FILE = Files.createTempFile("upload", ".txt").toAbsolutePath();
     private final FileClient client;
     private final OsUtils utils;
 

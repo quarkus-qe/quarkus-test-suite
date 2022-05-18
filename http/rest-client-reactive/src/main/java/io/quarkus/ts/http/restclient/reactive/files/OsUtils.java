@@ -1,4 +1,4 @@
-package io.quarkus.ts.http.restclient.reactive;
+package io.quarkus.ts.http.restclient.reactive.files;
 
 import java.io.IOException;
 import java.io.InputStream;
