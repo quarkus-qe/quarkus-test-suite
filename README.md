@@ -308,7 +308,7 @@ It also verifies multiple deployment strategies like:
 Reactive equivalent of the http/http-minimum module
 
 ### `http/http-advanced`
-Verifies Server/Client http_2/1.1, Grpc and http redirections.
+Verifies Server/Client http_2/1.1, Grpc and http redirections and JAX-RS provider field injection.
 
 ### `http/http-advanced-reactive`
 Reactive equivalent of the http/http-advanced module
