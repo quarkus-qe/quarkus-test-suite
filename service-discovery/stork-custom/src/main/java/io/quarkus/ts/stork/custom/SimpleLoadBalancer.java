@@ -12,7 +12,7 @@ public class SimpleLoadBalancer implements LoadBalancer {
 
     private final Random random;
 
-    public SimpleLoadBalancer(SimpleLoadBalancerProviderConfiguration config) {
+    public SimpleLoadBalancer(SimplelbConfiguration config) {
         random = new Random();
     }
 

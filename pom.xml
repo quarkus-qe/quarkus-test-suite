@@ -31,6 +31,7 @@
         <jjwt.version>0.11.5</jjwt.version>
         <camel-quarkus-bom.version>2.7.1</camel-quarkus-bom.version>
         <quarkiverse.config.version>1.0.2</quarkiverse.config.version>
+        <smallrye-stork.version>1.1.2</smallrye-stork.version>
         <profile.id>jvm</profile.id>
         <!-- S2i configuration -->
         <ts.global.s2i.quarkus.jvm.builder.image>registry.access.redhat.com/ubi8/openjdk-11:latest</ts.global.s2i.quarkus.jvm.builder.image>

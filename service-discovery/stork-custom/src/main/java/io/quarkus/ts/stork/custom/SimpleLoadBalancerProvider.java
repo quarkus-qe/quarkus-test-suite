@@ -5,10 +5,10 @@ import io.smallrye.stork.api.ServiceDiscovery;
 import io.smallrye.stork.api.config.LoadBalancerType;
 import io.smallrye.stork.spi.LoadBalancerProvider;
 
-@LoadBalancerType("simple")
-public class SimpleLoadBalancerProvider implements LoadBalancerProvider<SimpleLoadBalancerProviderConfiguration> {
+@LoadBalancerType("simplelb")
+public class SimpleLoadBalancerProvider implements LoadBalancerProvider<SimplelbConfiguration> {
     @Override
-    public LoadBalancer createLoadBalancer(SimpleLoadBalancerProviderConfiguration config,
+    public LoadBalancer createLoadBalancer(SimplelbConfiguration config,
             ServiceDiscovery serviceDiscovery) {
         return new SimpleLoadBalancer(config);
     }

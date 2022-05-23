@@ -29,6 +29,29 @@
             <artifactId>quarkus-rest-client-reactive</artifactId>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${compiler-plugin.version}</version>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>io.quarkus</groupId>
+                            <artifactId>quarkus-extension-processor</artifactId>
+                            <version>${quarkus.platform.version}</version>
+                        </path>
+                        <path>
+                            <groupId>io.smallrye.stork</groupId>
+                            <artifactId>stork-configuration-generator</artifactId>
+                            <version>${smallrye-stork.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
     <profiles>
         <!-- Skipped on Windows as does not support Linux Containers / Testcontainers -->
         <profile>

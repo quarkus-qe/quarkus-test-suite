@@ -14,7 +14,7 @@ import io.smallrye.stork.utils.ServiceInstanceIds;
 public class SimpleServiceDiscovery implements ServiceDiscovery {
     private static final Map<String, String> globalConfig = new HashMap<>();
 
-    public SimpleServiceDiscovery(SimpleServiceDiscoveryProviderConfiguration configuration) {
+    public SimpleServiceDiscovery(SimpleConfiguration configuration) {
         Optional
                 .ofNullable(configuration.getPongServiceHost())
                 .map(host -> globalConfig.put("pongHost", host));
