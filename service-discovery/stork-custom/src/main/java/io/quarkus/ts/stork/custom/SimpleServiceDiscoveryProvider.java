@@ -12,10 +12,10 @@ import io.smallrye.stork.spi.StorkInfrastructure;
 @ServiceDiscoveryAttribute(name = "pongServicePort", description = "Port of the pong service instance.", required = false)
 @ServiceDiscoveryAttribute(name = "pongReplicaServiceHost", description = "Host name of the pong service instance.", required = true)
 @ServiceDiscoveryAttribute(name = "pongReplicaServicePort", description = "Port of the pong service instance.", required = false)
-public class SimpleServiceDiscoveryProvider implements ServiceDiscoveryProvider<SimpleServiceDiscoveryProviderConfiguration> {
+public class SimpleServiceDiscoveryProvider implements ServiceDiscoveryProvider<SimpleConfiguration> {
     @Override
     public ServiceDiscovery createServiceDiscovery(
-            SimpleServiceDiscoveryProviderConfiguration config,
+            SimpleConfiguration config,
             String serviceName,
             ServiceConfig serviceConfig,
             StorkInfrastructure storkInfrastructure) {

@@ -1,9 +1,13 @@
 package io.quarkus.ts.quarkus.cli;
 
 import static io.quarkus.ts.quarkus.cli.QuarkusCliUtils.getCurrentStreamVersion;
+import static io.quarkus.ts.quarkus.cli.QuarkusCliUtils.isUpstream;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -131,8 +135,9 @@ public class QuarkusCliSpecialCharsIT {
     }
 
     private void whenCreateAppAt(String folder) {
-        result = cliClient.run("create", "app", "--stream", getCurrentStreamVersion(), "--output-directory=" + folder,
-                ARTIFACT_ID);
+        List<String> args = getDefaultAppArgs("create", "app");
+        args.addAll(List.of("--output-directory=" + folder, ARTIFACT_ID));
+        result = cliClient.run(args.toArray(new String[args.size()]));
     }
 
     private void thenResultIsSuccessful() {
@@ -146,6 +151,17 @@ public class QuarkusCliSpecialCharsIT {
 
     private void deleteFolder(String folder) {
         FileUtils.deletePath(TARGET.resolve(folder));
+    }
+
+    private List<String> getDefaultAppArgs(String... defaultArgs) {
+        String version = getCurrentStreamVersion();
+        List<String> args = new ArrayList<>();
+        args.addAll(List.of(defaultArgs));
+        if (!isUpstream(version)) {
+            args.addAll(Arrays.asList("--stream", version));
+        }
+
+        return args;
     }
 
 }

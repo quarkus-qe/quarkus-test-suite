@@ -1,6 +1,7 @@
 package io.quarkus.ts.quarkus.cli;
 
 import static io.quarkus.ts.quarkus.cli.QuarkusCliUtils.getCurrentStreamVersion;
+import static io.quarkus.ts.quarkus.cli.QuarkusCliUtils.isUpstream;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -44,31 +45,39 @@ public class QuarkusCliExtensionsIT {
 
     @Test
     public void shouldListExtensionsUsingDefaults() {
-        whenGetListExtensions("--stream", getCurrentStreamVersion());
+        whenGetListExtensions(getDefaultAppArgs().toArray(new String[0]));
         assertListDefaultOptionOutput();
     }
 
     @Test
     public void shouldListExtensionsUsingName() {
-        whenGetListExtensions("--stream", getCurrentStreamVersion(), "--name");
+        List<String> args = getDefaultAppArgs();
+        args.add("--name");
+        whenGetListExtensions(args.toArray(new String[0]));
         assertListNameOptionOutput();
     }
 
     @Test
     public void shouldListExtensionsUsingOrigins() {
-        whenGetListExtensions("--stream", getCurrentStreamVersion(), "--origins");
+        List<String> args = getDefaultAppArgs();
+        args.add("--origins");
+        whenGetListExtensions(args.toArray(new String[0]));
         assertListOriginsOptionOutput();
     }
 
     @Test
     public void shouldListExtensionsUsingConcise() {
-        whenGetListExtensions("--stream", getCurrentStreamVersion(), "--concise");
+        List<String> args = getDefaultAppArgs();
+        args.add("--concise");
+        whenGetListExtensions(args.toArray(new String[0]));
         assertListConciseOptionOutput();
     }
 
     @Test
     public void shouldListExtensionsUsingFull() {
-        whenGetListExtensions("--stream", getCurrentStreamVersion(), "--full");
+        List<String> args = getDefaultAppArgs();
+        args.add("--full");
+        whenGetListExtensions(args.toArray(new String[0]));
         assertListFullOptionOutput();
     }
 
@@ -103,7 +112,9 @@ public class QuarkusCliExtensionsIT {
 
     @Test
     public void shouldListExtensionsUsingInstallable() {
-        whenGetListExtensions("--stream", getCurrentStreamVersion(), "--installable");
+        List<String> args = getDefaultAppArgs();
+        args.add("--installable");
+        whenGetListExtensions(args.toArray(new String[0]));
         assertListDefaultOptionOutput();
     }
 
@@ -157,5 +168,15 @@ public class QuarkusCliExtensionsIT {
 
     private void assertResultIsSuccessful() {
         assertTrue(result.isSuccessful(), "Extensions list command didn't work. Output: " + result.getOutput());
+    }
+
+    private List<String> getDefaultAppArgs() {
+        String version = getCurrentStreamVersion();
+        List<String> args = new ArrayList<>();
+        if (!isUpstream(version)) {
+            args.addAll(Arrays.asList("--stream", version));
+        }
+
+        return args;
     }
 }

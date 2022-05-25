@@ -40,12 +40,12 @@ public class StorkCustomServiceDiscoveryAndLoadBalancerIT {
 
     @QuarkusApplication
     static RestService mainPingService = new RestService()
-            .withProperty("stork.pong.load-balancer", "simple")
-            .withProperty("stork.pong.service-discovery", "simple")
-            .withProperty("stork.pong-replica.load-balancer", "simple")
-            .withProperty("stork.pong-replica.service-discovery", "simple")
-            .withProperty("stork.pong.service-discovery.pongServicePort", () -> "" + pongService.getPort())
-            .withProperty("stork.pong-replica.service-discovery.pongReplicaServicePort",
+            .withProperty("quarkus.stork.pong.load-balancer.type", "simplelb")
+            .withProperty("quarkus.stork.pong.service-discovery.type", "simple")
+            .withProperty("quarkus.stork.pong-replica.load-balancer.type", "simplelb")
+            .withProperty("quarkus.stork.pong-replica.service-discovery.type", "simple")
+            .withProperty("quarkus.stork.pong.service-discovery.pongServicePort", () -> "" + pongService.getPort())
+            .withProperty("quarkus.stork.pong-replica.service-discovery.pongReplicaServicePort",
                     () -> "" + pongReplicaService.getPort());
 
     @Test
