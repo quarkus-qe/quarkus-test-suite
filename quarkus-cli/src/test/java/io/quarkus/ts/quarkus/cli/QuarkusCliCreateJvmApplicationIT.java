@@ -226,7 +226,7 @@ public class QuarkusCliCreateJvmApplicationIT {
     @Test
     public void verifyRestEasyReactiveAndClassicResteasyCollisionUserMsg() {
         QuarkusCliRestService app = cliClient.createApplication("dependencyCollision",
-                defaults().withExtensions("resteasy", "resteasy-reactive"));
+                defaultWithFixedStream().withExtensions("resteasy", "resteasy-reactive"));
 
         Result buildResult = app.buildOnJvm();
 
