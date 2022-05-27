@@ -39,7 +39,7 @@ public class TelemetryIT {
         Assertions.assertEquals("Plato", reactive.jsonPath().getString("data.friend_r.name"));
 
         await().atMost(1, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(10)).untilAsserted(() -> {
-            String operation = "graphql";
+            String operation = "/graphql";
             Response traces = given().when()
                     .queryParam("operation", operation)
                     .queryParam("lookback", "1h")
