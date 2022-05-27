@@ -51,7 +51,7 @@ public class FileResource {
     @GET
     @Produces(MediaType.MULTIPART_FORM_DATA)
     @Path("/download-multipart")
-    public RestResponse downloadMultipart() {
+    public RestResponse<FileWrapper> downloadMultipart() {
         FileWrapper wrapper = new FileWrapper();
         wrapper.file = FILE;
         return RestResponse.ok(wrapper);

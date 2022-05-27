@@ -13,6 +13,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import io.quarkus.ts.http.restclient.reactive.json.Book;
 import io.quarkus.ts.http.restclient.reactive.json.IdBeanParam;
 import io.quarkus.ts.http.restclient.reactive.json.JsonRestInterface;
+import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 
 @Path("/client/book")
@@ -63,5 +64,17 @@ public class ReactiveClientBookResource {
     @Path("/currency")
     public String getLastResource() {
         return bookInterface.getAuthor().getProfession().getWage().getCurrency().getName();
+    }
+
+    @GET
+    @Path("/quick-search/decoded")
+    public Multi<String> getDecodedPath(@QueryParam("searchTerm") String searchTerm) {
+        return bookInterface.getByDecodedSearchTerm(searchTerm);
+    }
+
+    @GET
+    @Path("/quick-search/encoded")
+    public Multi<String> getEncodedPath(@QueryParam("searchTerm") String searchTerm) {
+        return bookInterface.getByEncodedSearchTerm(searchTerm);
     }
 }
