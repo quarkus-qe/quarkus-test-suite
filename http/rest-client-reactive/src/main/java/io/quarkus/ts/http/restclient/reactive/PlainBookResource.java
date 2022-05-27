@@ -10,10 +10,13 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import io.quarkus.ts.http.restclient.reactive.json.Book;
+import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 
 @Path("/books")
 public class PlainBookResource {
+
+    public static final String SEARCH_TERM_VAL = "Ernest Hemingway";
 
     @GET
     @Path("/map")
@@ -49,5 +52,24 @@ public class PlainBookResource {
     @Path("/author/profession/wage/currency/name")
     public Uni<String> getCurrency() {
         return Uni.createFrom().item("USD");
+    }
+
+    /**
+     * Characters in foreign language: '%E3%82%AF%E3%82%A4%E3%83%83%E3%82%AF%E6%A4%9C%E7%B4%A2' -> 'クイック検索' -> 'quick-search'
+     * Reserved characters: '%25%20%23%20%5B%20%5D%20+%20=%20&%20@%20:%20!%20*%20(%20)%20'%20$%20,%20%3F' -> "% # [ ] + = & @ :
+     * ! * ( ) ' $ , ?",
+     * characters '=', '+', '@', ':', '!', '*', '(', ')', '\'', ',' are not encoded as it's not necessary.
+     * Unreserved characters: - _ . ~
+     */
+    @GET
+    @Path("/%E3%82%AF%E3%82%A4%E3%83%83%E3%82%AF%E6%A4%9C%E7%B4%A2/%25%20%23%20%5B%20%5D%20+%20=%20&%20@%20:%20!%20*%20(%20)%20'%20$%20,%20%3F/-%20_%20.%20~")
+    public Multi<String> getBySearchTerm(@QueryParam("searchTerm") String searchTerm) {
+        if (SEARCH_TERM_VAL.equals(searchTerm)) {
+            return Multi.createFrom().items("In Ou"
+                    + "r Time", ", ", "The Sun Also Rises", ", ", "A Farewell to Arms", ", ",
+                    "The Old Man and the Sea");
+        } else {
+            return Multi.createFrom().empty();
+        }
     }
 }
