@@ -10,4 +10,5 @@ public class Hello {
     public String getContent() {
         return content;
     }
+
 }

@@ -1,10 +1,36 @@
 package io.quarkus.ts.http.advanced.reactive;
 
+import static com.gargoylesoftware.htmlunit.util.MimeType.IMAGE_JPEG;
+import static com.gargoylesoftware.htmlunit.util.MimeType.IMAGE_PNG;
+import static com.gargoylesoftware.htmlunit.util.MimeType.TEXT_CSS;
+import static io.quarkus.ts.http.advanced.reactive.MediaTypeResource.ANY_ENCODING;
+import static io.quarkus.ts.http.advanced.reactive.MediaTypeResource.APPLICATION_YAML;
+import static io.quarkus.ts.http.advanced.reactive.MediaTypeResource.ENGLISH;
+import static io.quarkus.ts.http.advanced.reactive.MediaTypeResource.JAPANESE;
+import static io.quarkus.ts.http.advanced.reactive.MediaTypeResource.MEDIA_TYPE_PATH;
+import static io.quarkus.ts.http.advanced.reactive.MultipartResource.FILE;
+import static io.quarkus.ts.http.advanced.reactive.MultipartResource.MULTIPART_FORM_PATH;
+import static io.quarkus.ts.http.advanced.reactive.MultipartResource.TEXT;
+import static io.quarkus.ts.http.advanced.reactive.NinetyNineBottlesOfBeerResource.ENABLED_ON_QUARKUS_2_8_3_OR_HIGHER_NAME;
+import static io.quarkus.ts.http.advanced.reactive.NinetyNineBottlesOfBeerResource.ENABLED_ON_QUARKUS_2_8_3_OR_HIGHER_VAL;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static javax.ws.rs.core.MediaType.APPLICATION_OCTET_STREAM;
+import static javax.ws.rs.core.MediaType.APPLICATION_XML;
+import static javax.ws.rs.core.MediaType.MULTIPART_FORM_DATA;
+import static javax.ws.rs.core.MediaType.TEXT_HTML;
+import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
+import static javax.ws.rs.core.MediaType.TEXT_XML;
+import static org.apache.http.HttpHeaders.ACCEPT_ENCODING;
+import static org.apache.http.HttpHeaders.ACCEPT_LANGUAGE;
+import static org.apache.http.HttpHeaders.CONTENT_TYPE;
+import static org.apache.http.HttpStatus.SC_NOT_FOUND;
+import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.in;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.net.URISyntaxException;
@@ -16,17 +42,21 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import io.quarkus.test.bootstrap.KeycloakService;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 import io.quarkus.test.scenarios.annotations.EnabledOnQuarkusVersion;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
@@ -34,6 +64,8 @@ import io.quarkus.ts.http.advanced.reactive.clients.HealthClientService;
 import io.quarkus.ts.http.advanced.reactive.clients.HttpVersionClientService;
 import io.quarkus.ts.http.advanced.reactive.clients.HttpVersionClientServiceAsync;
 import io.quarkus.ts.http.advanced.reactive.clients.RestClientServiceBuilder;
+import io.restassured.http.Header;
+import io.restassured.response.ValidatableResponse;
 import io.smallrye.mutiny.Uni;
 import io.vertx.core.http.HttpVersion;
 import io.vertx.core.json.JsonObject;
@@ -46,14 +78,19 @@ import io.vertx.mutiny.ext.web.client.predicate.ResponsePredicateResult;
 @QuarkusScenario
 public class HttpAdvancedReactiveIT {
 
+    private static final String DISABLE_IF_NOT_QUARKUS_2_8_3_OR_HIGHER = "(2\\.[0-7]\\..*)|(2\\.8\\.[0-2]\\..*)";
+    private static final String TEST_REQUIRES_AT_LEAST_2_8_3 = "Fixed in Quarkus 2.8.3.Final";
     private static final String REALM_DEFAULT = "test-realm";
     private static final String ROOT_PATH = "/api";
+    private static final String HELLO_ENDPOINT = ROOT_PATH + "/hello";
     private static final int TIMEOUT_SEC = 3;
     private static final int RETRY = 3;
     private static final String PASSWORD = "password";
     private static final String KEY_STORE_PATH = "META-INF/resources/server.keystore";
     private static final int KEYCLOAK_PORT = 8080;
     private static final int ASSERT_TIMEOUT_SECONDS = 10;
+    private static final String UTF_8_CHARSET = ";charset=UTF-8";
+    private static final String CONTENT = "content";
 
     //TODO Remove workaround after Keycloak is fixed https://github.com/keycloak/keycloak/issues/9916
     @Container(image = "${keycloak.image}", expectedLog = "Admin console listening", port = KEYCLOAK_PORT)
@@ -67,15 +104,15 @@ public class HttpAdvancedReactiveIT {
     @Test
     @DisplayName("Http/1.1 Server test")
     public void httpServer() {
-        app.given().get("/api/hello")
-                .then().statusLine("HTTP/1.1 200 OK").statusCode(HttpStatus.SC_OK)
+        app.given().get(HELLO_ENDPOINT)
+                .then().statusLine("HTTP/1.1 200 OK").statusCode(SC_OK)
                 .body("content", is("Hello, World!"));
     }
 
     @Test
     @DisplayName("GRPC Server test")
     public void testGrpc() {
-        app.given().when().get("/api/grpc/trinity").then().statusCode(HttpStatus.SC_OK).body(is("Hello trinity"));
+        app.given().when().get("/api/grpc/trinity").then().statusCode(SC_OK).body(is("Hello trinity"));
     }
 
     @Test
@@ -107,7 +144,7 @@ public class HttpAdvancedReactiveIT {
                         .build(HttpVersionClientService.class);
 
         Response resp = versionHttpClient.getClientHttpVersion();
-        assertEquals(HttpStatus.SC_OK, resp.getStatus());
+        assertEquals(SC_OK, resp.getStatus());
         assertEquals(HttpVersion.HTTP_2.name(), resp.getHeaderString(HttpClientVersionResource.HTTP_VERSION));
     }
 
@@ -121,7 +158,7 @@ public class HttpAdvancedReactiveIT {
 
         Response resp = clientServiceAsync.getClientHttpVersion().await().atMost(Duration.ofSeconds(ASSERT_TIMEOUT_SECONDS));
 
-        assertEquals(HttpStatus.SC_OK, resp.getStatus());
+        assertEquals(SC_OK, resp.getStatus());
         assertEquals(HttpVersion.HTTP_2.name(), resp.getHeaderString(HttpClientVersionResource.HTTP_VERSION));
     }
 
@@ -139,7 +176,7 @@ public class HttpAdvancedReactiveIT {
                     .and().header("Location", containsString("/q" + endpoint));
 
             app.given().get(ROOT_PATH + endpoint)
-                    .then().statusCode(in(Arrays.asList(HttpStatus.SC_OK, HttpStatus.SC_NO_CONTENT)));
+                    .then().statusCode(in(Arrays.asList(SC_OK, HttpStatus.SC_NO_CONTENT)));
         }
     }
 
@@ -150,7 +187,7 @@ public class HttpAdvancedReactiveIT {
                 .withHostVerified(true).withPassword(PASSWORD).withKeyStorePath(KEY_STORE_PATH)
                 .build(HealthClientService.class);
 
-        assertThat(HttpStatus.SC_OK, equalTo(healthHttpClient.health().getStatus()));
+        assertThat(SC_OK, equalTo(healthHttpClient.health().getStatus()));
     }
 
     @Test
@@ -163,12 +200,126 @@ public class HttpAdvancedReactiveIT {
                 .after(Duration.ofSeconds(TIMEOUT_SEC)).fail().onFailure().retry().atMost(RETRY);
 
         statusCode.subscribe().with(httpStatusCode -> {
-            assertEquals(HttpStatus.SC_OK, httpStatusCode);
+            assertEquals(SC_OK, httpStatusCode);
             done.countDown();
         });
 
         done.await(TIMEOUT_SEC, TimeUnit.SECONDS);
         assertThat(done.getCount(), equalTo(0L));
+    }
+
+    /**
+     * Test must be enabled with property {@link NinetyNineBottlesOfBeerResource#ENABLED_ON_QUARKUS_2_8_3_OR_HIGHER_NAME}
+     * set to {@link NinetyNineBottlesOfBeerResource#ENABLED_ON_QUARKUS_2_8_3_OR_HIGHER_VAL}.
+     *
+     * @see NinetyNineBottlesOfBeerResource for more information
+     */
+    @EnabledIfSystemProperty(matches = ENABLED_ON_QUARKUS_2_8_3_OR_HIGHER_VAL, named = ENABLED_ON_QUARKUS_2_8_3_OR_HIGHER_NAME, disabledReason = TEST_REQUIRES_AT_LEAST_2_8_3)
+    @DisabledOnQuarkusVersion(version = DISABLE_IF_NOT_QUARKUS_2_8_3_OR_HIGHER, reason = TEST_REQUIRES_AT_LEAST_2_8_3)
+    @DisplayName("JAX-RS URI path template test")
+    @Test
+    public void uriPathTemplate() {
+        // test parameter name starting with an alphabetic character, containing dash and with literal value
+        req99BottlesOfBeer(1, SC_OK).body(is(NinetyNineBottlesOfBeerResource.FIRST_BOTTLE_RESPONSE));
+        // test parameter name starting with a number and a regex range value
+        req99BottlesOfBeer(2, SC_OK).body(is(NinetyNineBottlesOfBeerResource.SECOND_BOTTLE_RESPONSE));
+        // test parameter name starting with an underscore, containing a dot and regex ranges disjunction
+        req99BottlesOfBeer(3, SC_OK).body(is(String.format(NinetyNineBottlesOfBeerResource.OTHER_BOTTLES_RESPONSE, 3, 3, 2)));
+        // test regex works correctly (matched value between 3 and 99 [inclusive])
+        req99BottlesOfBeer(99, SC_OK)
+                .body(is(String.format(NinetyNineBottlesOfBeerResource.OTHER_BOTTLES_RESPONSE, 99, 99, 98)));
+        // test regex works correctly (no path should be matched)
+        req99BottlesOfBeer(-100, SC_NOT_FOUND);
+    }
+
+    @DisplayName("RESTEasy Reactive Multipart Provider test")
+    @Test
+    public void multipartFormDataReader() {
+        app.given()
+                .multiPart(FILE, Paths.get("src", "test", "resources", "file.txt").toFile())
+                .formParam(TEXT, TEXT)
+                .post(ROOT_PATH + MULTIPART_FORM_PATH)
+                .then().statusCode(SC_OK)
+                .body(FILE, is("File content"))
+                .body(TEXT, is(TEXT));
+    }
+
+    @DisabledOnQuarkusVersion(version = "(2\\.[0-8]\\..*)|(2\\.9\\.[0-1]\\..*)", reason = "Fixed in Quarkus 2.9.2.Final")
+    @DisplayName("JAX-RS RouterFilter and Vert.x Web Routes integration")
+    @Test
+    public void multipleResponseFilter() {
+        // test headers from both filters are present, that is useful content negotiation
+        // scenario -> server side should be able to set multiple VARY response headers
+        // so browser can identify when to serve cached response and when to send request to a server side
+        var headers = app.given().get(ROOT_PATH + MEDIA_TYPE_PATH).headers().asList();
+        assertHasHeaderWithValue(HttpHeaders.ACCEPT_LANGUAGE, ENGLISH, headers);
+        assertHasHeaderWithValue(HttpHeaders.ACCEPT_LANGUAGE, JAPANESE, headers);
+        assertHasHeaderWithValue(HttpHeaders.ACCEPT_ENCODING, ANY_ENCODING, headers);
+        assertHasHeaderWithValue(HttpHeaders.VARY, ACCEPT_ENCODING, headers);
+        assertHasHeaderWithValue(HttpHeaders.VARY, ACCEPT_LANGUAGE, headers);
+    }
+
+    @DisplayName("Several Resources share same base path test")
+    @Test
+    public void severalResourcesSameBasePath() {
+        // following endpoints are placed in 2 different Resources with the same base path
+        app.given().get(HELLO_ENDPOINT).then().body(CONTENT, is("Hello, World!"));
+        app.given().get(HELLO_ENDPOINT + HelloAllResource.ALL_ENDPOINT_PATH).then().body(CONTENT, is("Hello all, World!"));
+    }
+
+    private void assertHasHeaderWithValue(String headerName, String headerValue, List<Header> headers) {
+        Assertions.assertTrue(
+                headers
+                        .stream()
+                        .filter(h -> h.getName().equals(headerName))
+                        .map(Header::getValue)
+                        .anyMatch(headerValue::equals));
+    }
+
+    @DisabledOnQuarkusVersion(version = "(2\\.[0-6]\\..*)|(2\\.7\\.[0-5]\\..*)|(2\\.8\\.[0-2]\\..*)", reason = "Fixed in Quarkus 2.8.3.Final. and backported to 2.7.6.Final")
+    @DisplayName("JAX-RS MessageBodyWriter test")
+    @Test
+    public void messageBodyWriter() {
+        // test MediaType is passed to MessageBodyWriter correctly
+        String mediaTypeProperty = "mediaType";
+        app
+                .given()
+                .get(ROOT_PATH + MEDIA_TYPE_PATH)
+                .then()
+                .statusCode(SC_OK)
+                .body(mediaTypeProperty, notNullValue())
+                .body(mediaTypeProperty + ".type", is("application"))
+                .body(mediaTypeProperty + ".subtype", is("json"));
+    }
+
+    @DisabledOnQuarkusVersion(version = "(2\\.[0-8]\\..*)|(2\\.9\\.0\\..*)", reason = "Fixed in Quarkus 2.9.1.Final")
+    @DisplayName("JAX-RS Response Content type test")
+    @Test
+    public void responseContentType() {
+        testResponseContentType(APPLICATION_JSON, APPLICATION_JSON + UTF_8_CHARSET);
+        testResponseContentType(APPLICATION_XML, APPLICATION_XML + UTF_8_CHARSET);
+        testResponseContentType(APPLICATION_YAML, APPLICATION_YAML + UTF_8_CHARSET);
+        testResponseContentType(TEXT_HTML, TEXT_HTML + UTF_8_CHARSET);
+        testResponseContentType(TEXT_PLAIN, TEXT_PLAIN + UTF_8_CHARSET);
+        testResponseContentType(TEXT_CSS, TEXT_CSS + UTF_8_CHARSET);
+        testResponseContentType(TEXT_XML, TEXT_XML + UTF_8_CHARSET);
+        testResponseContentType(APPLICATION_OCTET_STREAM, APPLICATION_OCTET_STREAM);
+        testResponseContentType(MULTIPART_FORM_DATA, MULTIPART_FORM_DATA);
+        testResponseContentType(IMAGE_PNG, IMAGE_PNG);
+        testResponseContentType(IMAGE_JPEG, IMAGE_JPEG);
+    }
+
+    private void testResponseContentType(String acceptedContentType, String expectedContentType) {
+        app.given()
+                .accept(acceptedContentType)
+                .get(ROOT_PATH + MEDIA_TYPE_PATH)
+                .then().header(CONTENT_TYPE, expectedContentType);
+    }
+
+    private ValidatableResponse req99BottlesOfBeer(int bottleNumber, int httpStatusCode) {
+        return app.given()
+                .get(ROOT_PATH + NinetyNineBottlesOfBeerResource.PATH + "/" + bottleNumber)
+                .then().statusCode(httpStatusCode);
     }
 
     protected Protocol getProtocol() {

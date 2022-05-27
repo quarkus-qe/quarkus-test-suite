@@ -11,6 +11,7 @@ import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import io.quarkus.ts.http.restclient.reactive.json.Book;
+import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 
 @RegisterRestClient
@@ -64,5 +65,13 @@ public interface BookClient {
         @Path("/name")
         String getName();
     }
+
+    @GET
+    @Path("/クイック検索/% # [ ] + = & @ : ! * ( ) ' $ , ?/- _ . ~")
+    Multi<String> getByDecodedSearchTerm(@QueryParam("searchTerm") String searchTerm);
+
+    @GET
+    @Path("/%E3%82%AF%E3%82%A4%E3%83%83%E3%82%AF%E6%A4%9C%E7%B4%A2/%25%20%23%20%5B%20%5D%20+%20=%20&%20@%20:%20!%20*%20(%20)%20'%20$%20,%20%3F/-%20_%20.%20~")
+    Multi<String> getByEncodedSearchTerm(@QueryParam("searchTerm") String searchTerm);
 
 }
