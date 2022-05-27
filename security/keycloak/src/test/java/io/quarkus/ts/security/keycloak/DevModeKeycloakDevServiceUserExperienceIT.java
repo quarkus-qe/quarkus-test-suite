@@ -15,7 +15,7 @@ import io.quarkus.test.utils.DockerUtils;
 @QuarkusScenario
 public class DevModeKeycloakDevServiceUserExperienceIT {
 
-    private static final String KEYCLOAK_VERSION = "13.0.1";
+    private static final String KEYCLOAK_VERSION = "18.0";
     private static final String KEYCLOAK_IMAGE = "quay.io/keycloak/keycloak";
 
     /**
