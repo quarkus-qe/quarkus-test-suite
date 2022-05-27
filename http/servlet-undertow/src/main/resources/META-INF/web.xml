@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app>
     <listener>
-        <listener-class>io.quarkus.ts.listener.SessionListener</listener-class>
+        <listener-class>io.quarkus.ts.http.undertow.listener.SessionListener</listener-class>
     </listener>
     <filter>
         <filter-name>CustomRequestFilter</filter-name>
-        <filter-class>io.quarkus.ts.filters.CustomRequestFilter</filter-class>
+        <filter-class>io.quarkus.ts.http.undertow.filters.CustomRequestFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>CustomRequestFilter</filter-name>
@@ -13,7 +13,7 @@
     </filter-mapping>
     <servlet>
         <servlet-name>HelloWorld</servlet-name>
-        <servlet-class>io.quarkus.ts.servlets.HelloWorld</servlet-class>
+        <servlet-class>io.quarkus.ts.http.undertow.servlets.HelloWorld</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>HelloWorld</servlet-name>
