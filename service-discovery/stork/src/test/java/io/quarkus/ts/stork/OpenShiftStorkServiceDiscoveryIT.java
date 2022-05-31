@@ -37,21 +37,21 @@ public class OpenShiftStorkServiceDiscoveryIT extends AbstractCommonTestCases {
 
     @QuarkusApplication(classes = PungResource.class)
     static RestService pung = new RestService()
-            .withProperty("stork.pung.service-discovery", "kubernetes")
-            .withProperty("stork.pung.service-discovery.k8s-namespace", "all");
+            .withProperty("quarkus.stork.pung.service-discovery.type", "kubernetes")
+            .withProperty("quarkus.stork.pung.service-discovery.k8s-namespace", "all");
 
     @QuarkusApplication(classes = PongResource.class)
     static RestService pong = new RestService()
             .onPostStart(app -> openshift.scaleTo(app, PONG_INSTANCES_AMOUNT))
-            .withProperty("stork.pong.service-discovery", "kubernetes")
-            .withProperty("stork.pong.service-discovery.k8s-namespace", "all");
+            .withProperty("quarkus.stork.pong.service-discovery.type", "kubernetes")
+            .withProperty("quarkus.stork.pong.service-discovery.k8s-namespace", "all");
 
     @QuarkusApplication(classes = { PingResource.class, MyBackendPungProxy.class, MyBackendPongProxy.class })
     static RestService ping = new RestService().onPreStart(app -> setupClusterRoles())
-            .withProperty("stork.pong.service-discovery", "kubernetes")
-            .withProperty("stork.pong.service-discovery.k8s-namespace", "all")
-            .withProperty("stork.pung.service-discovery", "kubernetes")
-            .withProperty("stork.pung.service-discovery.k8s-namespace", "all");
+            .withProperty("quarkus.stork.pong.service-discovery.type", "kubernetes")
+            .withProperty("quarkus.stork.pong.service-discovery.k8s-namespace", "all")
+            .withProperty("quarkus.stork.pung.service-discovery.type", "kubernetes")
+            .withProperty("quarkus.stork.pung.service-discovery.k8s-namespace", "all");
 
     @AfterAll
     public static void tearDown() {
