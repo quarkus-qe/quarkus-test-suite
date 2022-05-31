@@ -21,15 +21,15 @@ public class PongReplicaResource {
 
     private static final String DEFAULT_PONG_REPLICA_RESPONSE = "pongReplica";
 
-    @ConfigProperty(name = "stork.pong-replica.service-discovery.consul-host", defaultValue = "localhost")
+    @ConfigProperty(name = "quarkus.stork.pong-replica.service-discovery.consul-host", defaultValue = "localhost")
     String host;
-    @ConfigProperty(name = "stork.pong-replica.service-discovery.consul-port", defaultValue = "8500")
+    @ConfigProperty(name = "quarkus.stork.pong-replica.service-discovery.consul-port", defaultValue = "8500")
     String port;
     @ConfigProperty(name = "pong-replica-service-port", defaultValue = "8080")
     String pongPort;
     @ConfigProperty(name = "pong-replica-service-host", defaultValue = "localhost")
     String pongHost;
-    @ConfigProperty(name = "stork.pong-replica.service-discovery", defaultValue = "consul")
+    @ConfigProperty(name = "quarkus.stork.pong-replica.service-discovery.type", defaultValue = "consul")
     String serviceDiscoveryType;
 
     public void init(@Observes StartupEvent ev, Vertx vertx) {

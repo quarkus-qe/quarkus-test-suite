@@ -24,15 +24,15 @@ public class PongResource {
     private static final String HEADER_ID = "x-id";
     private String instanceUniqueId;
 
-    @ConfigProperty(name = "stork.pong.service-discovery.consul-host", defaultValue = "localhost")
+    @ConfigProperty(name = "quarkus.stork.pong.service-discovery.consul-host", defaultValue = "localhost")
     String host;
-    @ConfigProperty(name = "stork.pong.service-discovery.consul-port", defaultValue = "8500")
+    @ConfigProperty(name = "quarkus.stork.pong.service-discovery.consul-port", defaultValue = "8500")
     String port;
     @ConfigProperty(name = "pong-service-port", defaultValue = "8080")
     String pongPort;
     @ConfigProperty(name = "pong-service-host", defaultValue = "localhost")
     String pongHost;
-    @ConfigProperty(name = "stork.pong.service-discovery", defaultValue = "consul")
+    @ConfigProperty(name = "quarkus.stork.pong.service-discovery.type", defaultValue = "consul")
     String serviceDiscoveryType;
 
     public void init(@Observes StartupEvent ev, Vertx vertx) {
