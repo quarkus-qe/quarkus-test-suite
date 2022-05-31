@@ -26,10 +26,10 @@ public abstract class BaseOidcMtlsIT {
     protected static final String PKCS12_KEY_STORE_FILE_EXTENSION = "p12";
     protected static final String EXPECTED_LOG = "Http management interface listening";
     protected static final int KEYCLOAK_PORT = 8443;
+    protected static final String CLIENT_ID_DEFAULT = "test-mutual-tls";
+    protected static final String CLIENT_SECRET_DEFAULT = "test-mutual-tls-secret";
     private static final String CLIENT_KEYSTORE_PATH = "client-keystore.";
     private static final String CLIENT_TRUSTSTORE_PATH = "client-truststore.";
-    private static final String CLIENT_ID_DEFAULT = "test-mutual-tls";
-    private static final String CLIENT_SECRET_DEFAULT = "test-mutual-tls-secret";
 
     protected static RestService createRestService(String keystoreFileExtension, String fileType,
             Supplier<String> realmUrl) {
@@ -54,11 +54,11 @@ public abstract class BaseOidcMtlsIT {
                 .execAndReturnAccessToken();
     }
 
-    private String getTrustStorePath() {
+    protected String getTrustStorePath() {
         return CLIENT_TRUSTSTORE_PATH + getKeyStoreFileExtension();
     }
 
-    private String getKeyStorePath() {
+    protected String getKeyStorePath() {
         return CLIENT_KEYSTORE_PATH + getKeyStoreFileExtension();
     }
 

@@ -20,6 +20,14 @@
             <artifactId>quarkus-oidc</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bc-fips</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bctls-fips</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.quarkus.qe</groupId>
             <artifactId>quarkus-test-service-keycloak</artifactId>
             <scope>test</scope>
