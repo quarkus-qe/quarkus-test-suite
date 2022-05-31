@@ -17,15 +17,15 @@ import io.vertx.mutiny.ext.consul.ConsulClient;
 @RouteBase(path = "/pung", produces = MediaType.TEXT_PLAIN)
 public class PungResource {
 
-    @ConfigProperty(name = "stork.pung.service-discovery.consul-host", defaultValue = "localhost")
+    @ConfigProperty(name = "quarkus.stork.pung.service-discovery.consul-host", defaultValue = "localhost")
     String host;
-    @ConfigProperty(name = "stork.pung.service-discovery.consul-port", defaultValue = "8500")
+    @ConfigProperty(name = "quarkus.stork.pung.service-discovery.consul-port", defaultValue = "8500")
     String port;
     @ConfigProperty(name = "pung-service-port", defaultValue = "8080")
     String pungPort;
     @ConfigProperty(name = "pung-service-host", defaultValue = "localhost")
     String pungHost;
-    @ConfigProperty(name = "stork.pung.service-discovery", defaultValue = "consul")
+    @ConfigProperty(name = "quarkus.stork.pung.service-discovery.type", defaultValue = "consul")
     String serviceDiscoveryType;
 
     public void init(@Observes StartupEvent ev, Vertx vertx) {

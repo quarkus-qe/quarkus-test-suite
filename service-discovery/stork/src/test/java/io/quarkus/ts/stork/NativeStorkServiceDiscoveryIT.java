@@ -1,6 +1,7 @@
 package io.quarkus.ts.stork;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.hamcrest.Matchers.is;
 
 import org.junit.jupiter.api.Test;
@@ -23,19 +24,21 @@ public class NativeStorkServiceDiscoveryIT extends AbstractCommonTestCases {
             .withProperty("quarkus.http.port", PUNG_PORT)
             .withProperty("pung-service-port", PUNG_PORT)
             .withProperty("pung-service-host", "localhost")
-            .withProperty("stork.pung.service-discovery", "consul")
-            .withProperty("stork.pung.service-discovery.consul-port", () -> String.valueOf(consul.getPort()))
-            .withProperty("stork.pung.service-discovery.consul-host", () -> getConsultEndpoint(consul.getConsulEndpoint()));
+            .withProperty("quarkus.stork.pung.service-discovery.type", "consul")
+            .withProperty("quarkus.stork.pung.service-discovery.consul-port", () -> String.valueOf(consul.getPort()))
+            .withProperty("quarkus.stork.pung.service-discovery.consul-host",
+                    () -> getConsultEndpoint(consul.getConsulEndpoint()));
 
     @QuarkusApplication(classes = { PingResource.class, MyBackendPungProxy.class, MyBackendPongProxy.class })
     static RestService pingService = new RestService()
-            .withProperty("stork.pung.service-discovery", "consul")
-            .withProperty("stork.pung.service-discovery.consul-port", () -> String.valueOf(consul.getPort()))
-            .withProperty("stork.pung.service-discovery.consul-host", () -> getConsultEndpoint(consul.getConsulEndpoint()));
+            .withProperty("quarkus.stork.pung.service-discovery.type", "consul")
+            .withProperty("quarkus.stork.pung.service-discovery.consul-port", () -> String.valueOf(consul.getPort()))
+            .withProperty("quarkus.stork.pung.service-discovery.consul-host",
+                    () -> getConsultEndpoint(consul.getConsulEndpoint()));
 
     @Test
     public void invokeServiceByName() {
         String response = makePingCall(pingService, "pung").extract().body().asString();
-        assertThat("Service discovery by name fail.", PREFIX + "pung", is(response));
+        assertThat("Service discovery by name fail.", PREFIX + "pung", is(equalToIgnoringCase(response)));
     }
 }
