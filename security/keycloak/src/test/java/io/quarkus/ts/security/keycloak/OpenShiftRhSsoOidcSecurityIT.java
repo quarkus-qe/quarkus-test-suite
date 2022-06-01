@@ -1,5 +1,7 @@
 package io.quarkus.ts.security.keycloak;
 
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+
 import io.quarkus.test.bootstrap.KeycloakService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
@@ -7,11 +9,12 @@ import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
 @OpenShiftScenario
-public class OpenShiftRhSso73OidcSecurityIT extends BaseOidcSecurityIT {
+@EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
+public class OpenShiftRhSsoOidcSecurityIT extends BaseOidcSecurityIT {
 
     static final int KEYCLOAK_PORT = 8080;
 
-    @Container(image = "${rhsso.73.image}", expectedLog = "Http management interface listening", port = KEYCLOAK_PORT)
+    @Container(image = "${rhsso.image}", expectedLog = "Http management interface listening", port = KEYCLOAK_PORT)
     static KeycloakService keycloak = new KeycloakService(REALM_DEFAULT)
             .withProperty("SSO_IMPORT_FILE", "resource::/keycloak-realm.json");
 
