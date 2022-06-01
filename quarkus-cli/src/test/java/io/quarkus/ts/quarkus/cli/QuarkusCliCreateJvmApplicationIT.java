@@ -206,6 +206,29 @@ public class QuarkusCliCreateJvmApplicationIT {
         untilAsserted(() -> app.given().get("/q/health").then().statusCode(HttpStatus.SC_NOT_FOUND));
     }
 
+    @Tag("https://github.com/quarkusio/quarkus/issues/25184")
+    @Test
+    public void shouldKeepUsingTheSameQuarkusVersionAfterReload() {
+        // Generate application using old community version
+        QuarkusCliRestService app = cliClient.createApplication("app", defaults()
+                .withPlatformBom("io.quarkus:quarkus-bom:2.7.0.Final")
+                .withExtensions(SMALLRYE_HEALTH_EXTENSION, RESTEASY_REACTIVE_EXTENSION));
+
+        // Make sure version and groupId from the TS run is used
+        app.withProperty(QuarkusProperties.PLATFORM_GROUP_ID.getPropertyKey(), QuarkusProperties.PLATFORM_GROUP_ID.get());
+        app.withProperty(QuarkusProperties.PLATFORM_VERSION.getPropertyKey(), QuarkusProperties.getVersion());
+
+        app.start();
+        untilAsserted(() -> app.given().get("/q/health").then().statusCode(HttpStatus.SC_OK));
+
+        Result result = app.removeExtension(SMALLRYE_HEALTH_EXTENSION);
+        assertTrue(result.isSuccessful(), SMALLRYE_HEALTH_EXTENSION + " was not uninstalled. Output: " + result.getOutput());
+
+        // Make sure application reloads properly without BUILD FAILURE of maven execution
+        // and no "Hot deployment of the application is not supported when updating the Quarkus version" message in logs
+        untilAsserted(() -> app.given().get("/q/health").then().statusCode(HttpStatus.SC_NOT_FOUND));
+    }
+
     @Tag("QUARKUS-1255")
     @Test
     public void shouldCreateJacocoReportsFromApplicationOnJvm() {
