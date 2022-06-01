@@ -1,5 +1,7 @@
 package io.quarkus.ts.sqldb.multiplepus;
 
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+
 import io.quarkus.test.bootstrap.MariaDbService;
 import io.quarkus.test.bootstrap.PostgresqlService;
 import io.quarkus.test.bootstrap.RestService;
@@ -8,6 +10,7 @@ import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
 @OpenShiftScenario
+@EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
 public class OpenShiftMultiplePersistenceIT extends AbstractMultiplePersistenceIT {
 
     static final int MYSQL_PORT = 3306;

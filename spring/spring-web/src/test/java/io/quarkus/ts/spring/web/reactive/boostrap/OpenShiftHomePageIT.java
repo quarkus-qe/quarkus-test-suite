@@ -12,7 +12,7 @@ public class OpenShiftHomePageIT extends AbstractDbIT {
 
     static final int MARIADB_PORT = 3306;
 
-    @Container(image = "${mariadb.102.image}", port = MARIADB_PORT, expectedLog = "Only MySQL server logs after this point")
+    @Container(image = "${mariadb.105.image}", port = MARIADB_PORT, expectedLog = "Only MySQL server logs after this point")
     static final MariaDbService database = new MariaDbService();
 
     @QuarkusApplication
