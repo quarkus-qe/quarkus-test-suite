@@ -385,6 +385,37 @@
             </modules>
         </profile>
         <profile>
+            <id>root-modules-plus</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>all-modules</name>
+                </property>
+            </activation>
+            <modules>
+                <module>config</module>
+                <module>properties</module>
+                <module>docker-build</module>
+                <module>javaee-like-getting-started</module>
+                <module>scaling</module>
+                <module>service-discovery/stork</module>
+                <module>service-discovery/stork-custom</module>
+                <module>lifecycle-application</module>
+                <module>external-applications</module>
+                <module>scheduling/quartz</module>
+                <module>infinispan-client</module>
+                <module>super-size/many-extensions</module>
+                <module>quarkus-cli</module>
+                <module>kamelet</module>
+                <module>logging/jboss</module>
+                <module>cache/caffeine</module>
+                <module>qute/multimodule</module>
+                <module>spring</module>
+                <module>websockets</module>
+                <module>test-tooling</module>
+            </modules>
+        </profile>
+        <profile>
             <id>root-modules-no-qute</id>
             <modules>
                 <module>config</module>
