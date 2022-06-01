@@ -1,5 +1,7 @@
 package io.quarkus.ts.spring.web.reactive.reactive.boostrap;
 
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+
 import io.quarkus.test.bootstrap.MariaDbService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
@@ -7,6 +9,7 @@ import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
 @OpenShiftScenario
+@EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
 public class OpenShiftBookResourceSpringWebReactiveIT extends BookResourceSpringWebReactiveIT {
 
     private static final String API_ROOT = "/api/books";
