@@ -1,43 +1,27 @@
 package io.quarkus.ts.security.jwt;
 
+import static io.quarkus.ts.security.jwt.GenerateJwtResource.Invalidity;
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.security.KeyFactory;
-import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
+import java.util.Objects;
 
 import org.apache.http.HttpStatus;
-import org.jboss.logging.Logger;
-import org.jose4j.base64url.internal.apache.commons.codec.binary.Base64;
 import org.junit.jupiter.api.Test;
 
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
-import io.smallrye.jwt.algorithm.SignatureAlgorithm;
-import io.smallrye.jwt.build.Jwt;
 
 public abstract class BaseJwtSecurityIT {
 
-    private static final Logger LOG = Logger.getLogger(BaseJwtSecurityIT.class);
-
-    private static final int TEN = 10;
-    private static final int NINETY = 90;
+    private static final String EMPTY_GROUP = "";
 
     @Test
-    public void securedEveryoneNoGroup() throws Exception {
-        givenWithToken(createToken())
+    public void securedEveryoneNoGroup() {
+        givenWithToken(createToken(EMPTY_GROUP))
                 .get("/secured/everyone")
                 .then()
                 .statusCode(HttpStatus.SC_OK)
@@ -47,7 +31,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void securedEveryoneViewGroup() throws Exception {
+    public void securedEveryoneViewGroup() {
         givenWithToken(createToken("view"))
                 .get("/secured/everyone")
                 .then()
@@ -58,7 +42,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void securedEveryoneAdminGroup() throws Exception {
+    public void securedEveryoneAdminGroup() {
         givenWithToken(createToken("admin"))
                 .get("/secured/everyone")
                 .then()
@@ -69,39 +53,39 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void securedEveryoneWrongIssuer() throws Exception {
-        givenWithToken(createToken(Invalidity.WRONG_ISSUER))
+    public void securedEveryoneWrongIssuer() {
+        givenWithToken(createToken(Invalidity.WRONG_ISSUER, EMPTY_GROUP))
                 .get("/secured/everyone")
                 .then()
                 .statusCode(HttpStatus.SC_UNAUTHORIZED);
     }
 
     @Test
-    public void securedEveryoneWrongDate() throws Exception {
-        givenWithToken(createToken(Invalidity.WRONG_DATE))
+    public void securedEveryoneWrongDate() {
+        givenWithToken(createToken(Invalidity.WRONG_DATE, EMPTY_GROUP))
                 .get("/secured/everyone")
                 .then()
                 .statusCode(HttpStatus.SC_UNAUTHORIZED);
     }
 
     @Test
-    public void securedEveryoneWrongKey() throws Exception {
-        givenWithToken(createToken(Invalidity.WRONG_KEY))
+    public void securedEveryoneWrongKey() {
+        givenWithToken(createToken(Invalidity.WRONG_KEY, EMPTY_GROUP))
                 .get("/secured/everyone")
                 .then()
                 .statusCode(HttpStatus.SC_UNAUTHORIZED);
     }
 
     @Test
-    public void securedAdminNoGroup() throws Exception {
-        givenWithToken(createToken())
+    public void securedAdminNoGroup() {
+        givenWithToken(createToken(EMPTY_GROUP))
                 .get("/secured/admin")
                 .then()
                 .statusCode(HttpStatus.SC_FORBIDDEN);
     }
 
     @Test
-    public void securedAdminViewGroup() throws Exception {
+    public void securedAdminViewGroup() {
         givenWithToken(createToken("view"))
                 .get("/secured/admin")
                 .then()
@@ -109,7 +93,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void securedAdminAdminGroup() throws Exception {
+    public void securedAdminAdminGroup() {
         givenWithToken(createToken("admin"))
                 .get("/secured/admin")
                 .then()
@@ -118,15 +102,15 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void securedNoOneNoGroup() throws Exception {
-        givenWithToken(createToken())
+    public void securedNoOneNoGroup() {
+        givenWithToken(createToken(EMPTY_GROUP))
                 .get("/secured/noone")
                 .then()
                 .statusCode(HttpStatus.SC_FORBIDDEN);
     }
 
     @Test
-    public void securedNoOneViewGroup() throws Exception {
+    public void securedNoOneViewGroup() {
         givenWithToken(createToken("view"))
                 .get("/secured/noone")
                 .then()
@@ -134,7 +118,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void securedNoOneAdminGroup() throws Exception {
+    public void securedNoOneAdminGroup() {
         givenWithToken(createToken("admin"))
                 .get("/secured/noone")
                 .then()
@@ -142,8 +126,8 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void permittedCorrectToken() throws Exception {
-        givenWithToken(createToken())
+    public void permittedCorrectToken() {
+        givenWithToken(createToken(EMPTY_GROUP))
                 .get("/permitted")
                 .then()
                 .statusCode(HttpStatus.SC_OK)
@@ -151,32 +135,32 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void permittedWrongIssuer() throws Exception {
-        givenWithToken(createToken(Invalidity.WRONG_ISSUER))
+    public void permittedWrongIssuer() {
+        givenWithToken(createToken(Invalidity.WRONG_ISSUER, EMPTY_GROUP))
                 .get("/permitted")
                 .then()
                 .statusCode(HttpStatus.SC_UNAUTHORIZED); // in Thorntail, this is 200, but both approaches are likely valid
     }
 
     @Test
-    public void permittedWrongDate() throws Exception {
-        givenWithToken(createToken(Invalidity.WRONG_DATE))
+    public void permittedWrongDate() {
+        givenWithToken(createToken(Invalidity.WRONG_DATE, EMPTY_GROUP))
                 .get("/permitted")
                 .then()
                 .statusCode(HttpStatus.SC_UNAUTHORIZED); // in Thorntail, this is 200, but both approaches are likely valid
     }
 
     @Test
-    public void permittedWrongKey() throws Exception {
-        givenWithToken(createToken(Invalidity.WRONG_KEY))
+    public void permittedWrongKey() {
+        givenWithToken(createToken(Invalidity.WRONG_KEY, EMPTY_GROUP))
                 .get("/permitted")
                 .then()
                 .statusCode(HttpStatus.SC_UNAUTHORIZED); // in Thorntail, this is 200, but both approaches are likely valid
     }
 
     @Test
-    public void deniedCorrectToken() throws Exception {
-        givenWithToken(createToken())
+    public void deniedCorrectToken() {
+        givenWithToken(createToken(EMPTY_GROUP))
                 .get("/denied")
                 .then()
                 .statusCode(HttpStatus.SC_FORBIDDEN);
@@ -184,7 +168,7 @@ public abstract class BaseJwtSecurityIT {
 
     @Test
     public void mixedConstrained() throws Exception {
-        givenWithToken(createToken())
+        givenWithToken(createToken(EMPTY_GROUP))
                 .get("/mixed/constrained")
                 .then()
                 .statusCode(HttpStatus.SC_OK)
@@ -193,7 +177,7 @@ public abstract class BaseJwtSecurityIT {
 
     @Test
     public void mixedUnconstrained() throws Exception {
-        givenWithToken(createToken())
+        givenWithToken(createToken(EMPTY_GROUP))
                 .get("/mixed/unconstrained")
                 .then()
                 .statusCode(HttpStatus.SC_FORBIDDEN); // quarkus.security.deny-unannotated-members=true
@@ -273,13 +257,7 @@ public abstract class BaseJwtSecurityIT {
 
     @Test
     public void tokenExpirationGracePeriod() throws Exception {
-        Supplier<Date> clock = () -> {
-            Date now = new Date();
-            now = new Date(now.getTime() - TimeUnit.SECONDS.toMillis(NINETY));
-            return now;
-        };
-
-        givenWithToken(createToken(clock, null, "admin"))
+        givenWithToken(createToken("admin"))
                 .get("/secured/admin")
                 .then()
                 .statusCode(HttpStatus.SC_OK)
@@ -288,64 +266,17 @@ public abstract class BaseJwtSecurityIT {
 
     protected abstract RequestSpecification givenWithToken(String token);
 
-    private static RSAPrivateKey loadPrivateKey() throws Exception {
-        String key = new String(Files.readAllBytes(Paths.get("target/test-classes/private-key.pem")), Charset.defaultCharset());
-
-        String privateKeyPEM = key
-                .replace("-----BEGIN PRIVATE KEY-----", "")
-                .replaceAll(System.lineSeparator(), "")
-                .replace("-----END PRIVATE KEY-----", "");
-
-        byte[] encoded = Base64.decodeBase64(privateKeyPEM);
-
-        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encoded);
-        return (RSAPrivateKey) keyFactory.generatePrivate(keySpec);
+    private static String createToken(String group) {
+        return createToken(null, group);
     }
 
-    private enum Invalidity {
-        WRONG_ISSUER,
-        WRONG_DATE,
-        WRONG_KEY
-    }
-
-    private static String createToken(String... groups) throws Exception {
-        return createToken(Date::new, null, groups);
-    }
-
-    private static String createToken(Invalidity invalidity, String... groups) throws Exception {
-        return createToken(Date::new, invalidity, groups);
-    }
-
-    private static String createToken(Supplier<Date> clock, Invalidity invalidity, String... groups)
-            throws Exception {
-        String issuer = "https://my.auth.server/";
-        if (invalidity == Invalidity.WRONG_ISSUER) {
-            issuer = "https://wrong/";
-        }
-
-        Date now = clock.get();
-        Date expiration = new Date(TimeUnit.SECONDS.toMillis(TEN) + now.getTime());
-        if (invalidity == Invalidity.WRONG_DATE) {
-            now = new Date(now.getTime() - TimeUnit.DAYS.toMillis(TEN));
-            expiration = new Date(now.getTime() - TimeUnit.DAYS.toMillis(TEN));
-        }
-
-        RSAPrivateKey privateKey = loadPrivateKey();
-        if (invalidity == Invalidity.WRONG_KEY) {
-            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-            KeyPair keyPair = keyPairGenerator.generateKeyPair();
-            privateKey = (RSAPrivateKey) keyPair.getPrivate();
-        }
-
-        return Jwt.issuer(issuer)
-                .expiresAt(expiration.getTime())
-                .issuedAt(now.getTime())
-                .subject("test_subject_at_example_com")
-                .groups(Set.of(groups))
-                .claim("upn", "test-subject@example.com")
-                .claim("roleMappings", Collections.singletonMap("admin", "superuser"))
-                .jws().algorithm(SignatureAlgorithm.RS256).sign(privateKey);
+    private static String createToken(Invalidity invalidity, String group) {
+        return given()
+                .body(group)
+                .when()
+                .post("/login/jwt?invalidity=" + (Objects.isNull(invalidity) ? "" : invalidity.name())).then()
+                .statusCode(200)
+                .extract().body().asString();
     }
 
     @Test
