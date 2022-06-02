@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import io.quarkus.ts.spring.data.primitivetypes.model.Book;
+import io.quarkus.ts.spring.data.primitivetypes.model.BookProjection;
 
 @RepositoryRestResource(exported = false)
 public interface BookRepository extends CrudRepository<Book, Integer> {
@@ -30,4 +31,7 @@ public interface BookRepository extends CrudRepository<Book, Integer> {
 
     //This is for regression test for https://github.com/quarkusio/quarkus/pull/13015
     List<Book> findByPublisherAddressZipCode(@Param("zipCode") String zipCode);
+
+    @Query("SELECT bid, publicationYear, isbn, name, publisherAddress FROM Book WHERE bid = :bid")
+    BookProjection getByBid(Integer bid);
 }
