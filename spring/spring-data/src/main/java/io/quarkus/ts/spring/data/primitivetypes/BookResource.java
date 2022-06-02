@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import io.quarkus.ts.spring.data.primitivetypes.model.Book;
+import io.quarkus.ts.spring.data.primitivetypes.model.BookProjection;
 
 @Path("/book")
 public class BookResource {
@@ -33,6 +34,13 @@ public class BookResource {
         verifyBookExists(id);
         book.setBid(id);
         return bookRepository.save(book);
+    }
+
+    @GET
+    @Produces("application/json")
+    @Path("/projection/{bid}")
+    public BookProjection getBookProjection(@PathParam("bid") Integer bid) {
+        return bookRepository.getByBid(bid);
     }
 
     @GET
