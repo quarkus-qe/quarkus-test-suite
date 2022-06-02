@@ -6,6 +6,7 @@ Please select the relevant options.
 
 - [ ] Bug fix (non-breaking change which fixes an issue)
 - [ ] Dependency update
+- [ ] Refactoring
 - [ ] New scenario (non-breaking change which adds functionality)
 - [ ] This change requires a documentation update
 
