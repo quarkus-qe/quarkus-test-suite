@@ -34,7 +34,7 @@ public class GreetingResource {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/serialize-string")
-    public String serstring() throws IOException, ClassNotFoundException {
+    public String getSerializedString() throws IOException, ClassNotFoundException {
 
         byte[] bytes;
 
@@ -56,7 +56,7 @@ public class GreetingResource {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/serialize-list")
-    public String serlist() throws IOException, ClassNotFoundException {
+    public String getSerializedList() throws IOException, ClassNotFoundException {
 
         byte[] bytes;
 
@@ -82,7 +82,8 @@ public class GreetingResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/big-serialize-list")
-    public Map<String, Integer> bigSerlist(@QueryParam("expSize") int expSize) throws IOException, ClassNotFoundException {
+    public Map<String, Integer> getBigSerializedList(@QueryParam("expSize") int expSize)
+            throws IOException, ClassNotFoundException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         int ix = 0;
         try (JsonGenerator g = MAPPER.createGenerator(out)) {

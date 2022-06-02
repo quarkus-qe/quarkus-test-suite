@@ -9,7 +9,7 @@
     </parent>
     <artifactId>jaxrs</artifactId>
     <packaging>jar</packaging>
-    <name>Quarkus QE TS: HTTP: jaxrs</name>
+    <name>Quarkus QE TS: HTTP: JAX-RS</name>
     <dependencies>
         <dependency>
             <groupId>io.quarkus</groupId>
