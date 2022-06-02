@@ -1,6 +1,7 @@
 package io.quarkus.ts.http.restclient.reactive;
 
 import static io.quarkus.ts.http.restclient.reactive.PlainBookResource.SEARCH_TERM_VAL;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.http.HttpStatus;
@@ -130,5 +131,16 @@ public class ReactiveRestClientIT {
                 .get("/client/book/quick-search/encoded");
         assertEquals(HttpStatus.SC_OK, response.statusCode());
         assertEquals(HEMINGWAY_BOOKS, response.getBody().asString());
+    }
+
+    /**
+     * Test class annotated with {@link javax.ws.rs.Path} and registered as client via
+     * {@link org.eclipse.microprofile.rest.client.inject.RegisterRestClient} must not be included in OpenAPI Document.
+     */
+    @DisabledOnQuarkusVersion(version = "(2\\.[0-6]\\..*)|(2\\.7\\.[0-5]\\..*)", reason = "Fixed in Quarkus 2.7.6.")
+    @Test
+    public void restClientIsNotIncludedInOpenApiDocument() {
+        // Path '/books/author/profession/name' is unique to AuthorClient#getProfession() and should not be part of OpenAPI document
+        app.given().get("/q/openapi?format=json").then().body("paths.\"/books/author/profession/name\"", nullValue());
     }
 }
