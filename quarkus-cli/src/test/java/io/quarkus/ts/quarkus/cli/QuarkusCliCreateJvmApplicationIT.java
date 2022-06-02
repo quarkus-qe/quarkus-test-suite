@@ -55,6 +55,7 @@ public class QuarkusCliCreateJvmApplicationIT {
     static final String DOCKER_FOLDER = "/src/main/docker";
     static final String JDK_11 = "11";
     static final String JDK_17 = "17";
+    static final String JDK_18 = "18";
     static final String DOCKERFILE_JVM = "Dockerfile.jvm";
 
     @Inject
@@ -98,6 +99,14 @@ public class QuarkusCliCreateJvmApplicationIT {
     @Test
     public void shouldCreateAnApplicationForcingJavaVersion17() {
         CreateApplicationRequest args = defaultWithFixedStream().withExtraArgs("--java=" + JDK_17);
+        QuarkusCliRestService app = cliClient.createApplication("app", args);
+        assertExpectedJavaVersion(getFileFromApplication(app, ROOT_FOLDER, "pom.xml"), JDK_17);
+        assertDockerJavaVersion(getFileFromApplication(app, DOCKER_FOLDER, DOCKERFILE_JVM), JDK_17);
+    }
+
+    @Test
+    public void quarkusCreatedWithJava18ShouldUseJava17() {
+        CreateApplicationRequest args = defaultWithFixedStream().withExtraArgs("--java=" + JDK_18);
         QuarkusCliRestService app = cliClient.createApplication("app", args);
         assertExpectedJavaVersion(getFileFromApplication(app, ROOT_FOLDER, "pom.xml"), JDK_17);
         assertDockerJavaVersion(getFileFromApplication(app, DOCKER_FOLDER, DOCKERFILE_JVM), JDK_17);
