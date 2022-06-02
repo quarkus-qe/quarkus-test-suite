@@ -224,7 +224,6 @@
                                 <mysql.upstream.80.image>docker.io/library/mysql:8.0</mysql.upstream.80.image>
                                 <mysql.80.image>registry.access.redhat.com/rhscl/mysql-80-rhel7</mysql.80.image>
                                 <mariadb.10.image>docker.io/library/mariadb:10.6</mariadb.10.image>
-                                <mariadb.102.image>registry.access.redhat.com/rhscl/mariadb-102-rhel7</mariadb.102.image>
                                 <mssql.image>mcr.microsoft.com/mssql/rhel/server:2019-latest</mssql.image>
                                 <oracle.image>docker.io/gvenzl/oracle-xe:21-slim</oracle.image>
                                 <db2.image>quay.io/quarkusqeteam/db2:11.5.7.0</db2.image>
@@ -648,6 +647,7 @@
                                 <postgresql.10.image>registry.redhat.io/rhscl/postgresql-10-rhel7</postgresql.10.image>
                                 <postgresql.13.image>registry.redhat.io/rhscl/postgresql-13-rhel7</postgresql.13.image>
                                 <mariadb.103.image>registry.redhat.io/rhscl/mariadb-103-rhel7</mariadb.103.image>
+                                <mariadb.105.image>registry.redhat.io/rhel8/mariadb-105</mariadb.105.image>
                                 <amq-streams.image>registry.redhat.io/amq7/amq-streams-kafka-27-rhel7</amq-streams.image>
                                 <amq-streams.version>1.7.0</amq-streams.version>
                             </systemPropertyVariables>

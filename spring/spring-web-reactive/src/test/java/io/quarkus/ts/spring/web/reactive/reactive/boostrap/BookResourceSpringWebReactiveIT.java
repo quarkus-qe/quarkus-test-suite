@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -21,13 +22,14 @@ import io.quarkus.ts.spring.web.reactive.reactive.AbstractDbReactiveIT;
 import io.restassured.response.Response;
 
 @QuarkusScenario
+@EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
 public class BookResourceSpringWebReactiveIT extends AbstractDbReactiveIT {
 
     private static final String API_ROOT = "/api/books";
 
     static final int MARIADB_PORT = 3306;
 
-    @Container(image = "${mariadb.102.image}", port = MARIADB_PORT, expectedLog = "Only MySQL server logs after this point")
+    @Container(image = "${mariadb.105.image}", port = MARIADB_PORT, expectedLog = "Only MySQL server logs after this point")
     static final MariaDbService database = new MariaDbService();
 
     @QuarkusApplication

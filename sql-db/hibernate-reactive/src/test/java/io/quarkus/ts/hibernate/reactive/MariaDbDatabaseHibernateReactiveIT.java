@@ -1,6 +1,7 @@
 package io.quarkus.ts.hibernate.reactive;
 
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import io.quarkus.test.bootstrap.DefaultService;
 import io.quarkus.test.bootstrap.RestService;
@@ -9,6 +10,7 @@ import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
+@EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
 public class MariaDbDatabaseHibernateReactiveIT extends AbstractDatabaseHibernateReactiveIT {
 
     private static final String MYSQL_USER = "quarkus_test";
@@ -18,7 +20,7 @@ public class MariaDbDatabaseHibernateReactiveIT extends AbstractDatabaseHibernat
 
     // TODO At the time of writing, there is no specific connector for mariadb, so we are using MY SQL driver and service.
     // we need to change this, if this connector will be ever provided Additionally, we need to add an OpenShift test
-    @Container(image = "${mariadb.102.image}", port = MYSQL_PORT, expectedLog = "Only MySQL server logs after this point")
+    @Container(image = "${mariadb.105.image}", port = MYSQL_PORT, expectedLog = "Only MySQL server logs after this point")
     static DefaultService database = new DefaultService()
             .withProperty("MYSQL_USER", MYSQL_USER)
             .withProperty("MYSQL_PASSWORD", MYSQL_PASSWORD)

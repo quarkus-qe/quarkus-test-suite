@@ -10,6 +10,7 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 
@@ -23,6 +24,7 @@ import io.restassured.response.Response;
 
 @QuarkusScenario
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
 public class OpenApiReactiveIT extends AbstractDbReactiveIT {
     private static Response response;
 
@@ -30,7 +32,7 @@ public class OpenApiReactiveIT extends AbstractDbReactiveIT {
 
     static final int MARIADB_PORT = 3306;
 
-    @Container(image = "${mariadb.102.image}", port = MARIADB_PORT, expectedLog = "Only MySQL server logs after this point")
+    @Container(image = "${mariadb.105.image}", port = MARIADB_PORT, expectedLog = "Only MySQL server logs after this point")
     static final MariaDbService database = new MariaDbService();
 
     @QuarkusApplication
