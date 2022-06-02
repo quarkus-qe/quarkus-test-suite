@@ -1,7 +1,7 @@
 package io.quarkus.ts.http.advanced.reactive;
 
-import static io.quarkus.ts.http.advanced.reactive.NinetyNineBottlesOfBeerResource.ENABLED_ON_QUARKUS_2_8_3_OR_HIGHER_NAME;
-import static io.quarkus.ts.http.advanced.reactive.NinetyNineBottlesOfBeerResource.ENABLED_ON_QUARKUS_2_8_3_OR_HIGHER_VAL;
+import static io.quarkus.ts.http.advanced.reactive.NinetyNineBottlesOfBeerResource.QUARKUS_PLATFORM_VERSION_LESS_THAN_2_8_3;
+import static io.quarkus.ts.http.advanced.reactive.NinetyNineBottlesOfBeerResource.QUARKUS_PLATFORM_VERSION_LESS_THAN_2_8_3_VAL;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import javax.ws.rs.GET;
@@ -9,21 +9,21 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import io.quarkus.arc.properties.IfBuildProperty;
+import io.quarkus.arc.properties.UnlessBuildProperty;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import io.smallrye.mutiny.Uni;
 
 /**
  * {@link Path#value()} set in this resource contains characters that were causing the build time
- * validation failure. The issue was resolved in 2.8.3. with https://github.com/quarkusio/quarkus/issues/25258.
+ * validation failure. The issue was resolved in 2.8.3 with https://github.com/quarkusio/quarkus/issues/25258.
  */
 @RegisterForReflection
-@IfBuildProperty(name = ENABLED_ON_QUARKUS_2_8_3_OR_HIGHER_NAME, stringValue = ENABLED_ON_QUARKUS_2_8_3_OR_HIGHER_VAL)
+@UnlessBuildProperty(name = QUARKUS_PLATFORM_VERSION_LESS_THAN_2_8_3, stringValue = QUARKUS_PLATFORM_VERSION_LESS_THAN_2_8_3_VAL, enableIfMissing = true)
 @Path(NinetyNineBottlesOfBeerResource.PATH)
 public class NinetyNineBottlesOfBeerResource {
 
-    public static final String ENABLED_ON_QUARKUS_2_8_3_OR_HIGHER_NAME = "quarkus-platform-version-2.8.3-or-higher";
-    public static final String ENABLED_ON_QUARKUS_2_8_3_OR_HIGHER_VAL = "true";
+    public static final String QUARKUS_PLATFORM_VERSION_LESS_THAN_2_8_3 = "quarkus-platform-version-less-than-2.8.3";
+    public static final String QUARKUS_PLATFORM_VERSION_LESS_THAN_2_8_3_VAL = "true";
     public static final String FIRST_BOTTLE_RESPONSE = "1 bottle of beer on the wall, 1 bottle of beer. Take one down, pass it around, no more beer on the wall!";
     public static final String SECOND_BOTTLE_RESPONSE = "2 bottles of beer on the wall, 2 bottles of beer. Take one down, pass it around, 1 bottle of beer on the wall.";
     public static final String OTHER_BOTTLES_RESPONSE = "%d bottles of beer on the wall, %d bottles of beer. Take one down, pass it around, %d bottles of beer on the wall.";

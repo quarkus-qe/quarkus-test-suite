@@ -11,8 +11,8 @@ import static io.quarkus.ts.http.advanced.reactive.MediaTypeResource.MEDIA_TYPE_
 import static io.quarkus.ts.http.advanced.reactive.MultipartResource.FILE;
 import static io.quarkus.ts.http.advanced.reactive.MultipartResource.MULTIPART_FORM_PATH;
 import static io.quarkus.ts.http.advanced.reactive.MultipartResource.TEXT;
-import static io.quarkus.ts.http.advanced.reactive.NinetyNineBottlesOfBeerResource.ENABLED_ON_QUARKUS_2_8_3_OR_HIGHER_NAME;
-import static io.quarkus.ts.http.advanced.reactive.NinetyNineBottlesOfBeerResource.ENABLED_ON_QUARKUS_2_8_3_OR_HIGHER_VAL;
+import static io.quarkus.ts.http.advanced.reactive.NinetyNineBottlesOfBeerResource.QUARKUS_PLATFORM_VERSION_LESS_THAN_2_8_3;
+import static io.quarkus.ts.http.advanced.reactive.NinetyNineBottlesOfBeerResource.QUARKUS_PLATFORM_VERSION_LESS_THAN_2_8_3_VAL;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_OCTET_STREAM;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import javax.ws.rs.Path;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
@@ -50,7 +51,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 
 import io.quarkus.test.bootstrap.KeycloakService;
 import io.quarkus.test.bootstrap.Protocol;
@@ -78,8 +79,6 @@ import io.vertx.mutiny.ext.web.client.predicate.ResponsePredicateResult;
 @QuarkusScenario
 public class HttpAdvancedReactiveIT {
 
-    private static final String DISABLE_IF_NOT_QUARKUS_2_8_3_OR_HIGHER = "(2\\.[0-7]\\..*)|(2\\.8\\.[0-2]\\..*)";
-    private static final String TEST_REQUIRES_AT_LEAST_2_8_3 = "Fixed in Quarkus 2.8.3.Final";
     private static final String REALM_DEFAULT = "test-realm";
     private static final String ROOT_PATH = "/api";
     private static final String HELLO_ENDPOINT = ROOT_PATH + "/hello";
@@ -209,13 +208,14 @@ public class HttpAdvancedReactiveIT {
     }
 
     /**
-     * Test must be enabled with property {@link NinetyNineBottlesOfBeerResource#ENABLED_ON_QUARKUS_2_8_3_OR_HIGHER_NAME}
-     * set to {@link NinetyNineBottlesOfBeerResource#ENABLED_ON_QUARKUS_2_8_3_OR_HIGHER_VAL}.
+     * This test use special characters in {@link Path#value()}, that previously caused a validation error and build failure.
+     * The bug was fixed in 2.8.3. Disable test in previous Quarkus versions with property
+     * {@link NinetyNineBottlesOfBeerResource#QUARKUS_PLATFORM_VERSION_LESS_THAN_2_8_3} set to
+     * {@link NinetyNineBottlesOfBeerResource#QUARKUS_PLATFORM_VERSION_LESS_THAN_2_8_3_VAL}.
      *
      * @see NinetyNineBottlesOfBeerResource for more information
      */
-    @EnabledIfSystemProperty(matches = ENABLED_ON_QUARKUS_2_8_3_OR_HIGHER_VAL, named = ENABLED_ON_QUARKUS_2_8_3_OR_HIGHER_NAME, disabledReason = TEST_REQUIRES_AT_LEAST_2_8_3)
-    @DisabledOnQuarkusVersion(version = DISABLE_IF_NOT_QUARKUS_2_8_3_OR_HIGHER, reason = TEST_REQUIRES_AT_LEAST_2_8_3)
+    @DisabledIfSystemProperty(matches = QUARKUS_PLATFORM_VERSION_LESS_THAN_2_8_3_VAL, named = QUARKUS_PLATFORM_VERSION_LESS_THAN_2_8_3, disabledReason = "Fixed in Quarkus 2.8.3.Final")
     @DisplayName("JAX-RS URI path template test")
     @Test
     public void uriPathTemplate() {
