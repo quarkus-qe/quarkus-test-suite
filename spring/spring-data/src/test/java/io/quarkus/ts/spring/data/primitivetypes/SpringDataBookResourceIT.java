@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
+import static org.jboss.resteasy.spi.HttpResponseCodes.SC_OK;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 import io.quarkus.ts.spring.data.AbstractDbIT;
 import io.quarkus.ts.spring.data.primitivetypes.model.Book;
 import io.restassured.http.ContentType;
@@ -23,6 +25,22 @@ import io.restassured.response.Response;
 
 @QuarkusScenario
 public class SpringDataBookResourceIT extends AbstractDbIT {
+
+    @DisabledOnQuarkusVersion(version = "(2\\.[0-6]\\..*)|(2\\.7\\.[0-5]\\..*)|(2\\.8\\.0\\..*)", reason = "Fixed in Quarkus 2.8.1 and backported to 2.7.6.")
+    @Test
+    void testInterfaceBasedProjection() {
+        app
+                .given()
+                .get("/book/projection/6")
+                .then()
+                .statusCode(SC_OK)
+                .body("bid", is(6))
+                .body("publicationYear", is(2015))
+                .body("isbn", is(9789295055020L))
+                .body("name", is("The Silk Roads"))
+                .body("publisherAddress.id", is(1))
+                .body("publisherAddress.zipCode", is("28080"));
+    }
 
     @Test
     void testCustomFindPublicationYearPrimitiveInteger() {
