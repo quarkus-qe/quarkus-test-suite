@@ -625,6 +625,11 @@ Variants:
 - Using `OIDC Client Filter` extension to automatically acquire the access token from Keycloak when calling to the RestClient.
 - Using `OIDC Token Propagation` extension to propagate the tokens from the source REST call to the target RestClient. 
 
+### `security/keycloak-oidc-client-reactive`
+
+Verifies special cases of using reactive OIDC client:
+- Proper handling of `Authorization` request header by `OidcClientRequestReactiveFilter`: the filter should always add a single`Authorization` header, not duplicate it in multiple request attempts.
+
 ### `securty/oidc-client-mutual-tls`
 
 Verifies OIDC client can be authenticated as part of the `Mutual TLS` (`mTLS`) authentication process 

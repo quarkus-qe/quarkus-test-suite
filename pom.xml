@@ -442,6 +442,7 @@
                 <module>security/keycloak-multitenant</module>
                 <module>security/keycloak-oidc-client-basic</module>
                 <module>security/keycloak-oidc-client-extended</module>
+                <module>security/keycloak-oidc-client-reactive</module>
                 <module>security/vertx-jwt</module>
                 <module>security/oidc-client-mutual-tls</module>
             </modules>
