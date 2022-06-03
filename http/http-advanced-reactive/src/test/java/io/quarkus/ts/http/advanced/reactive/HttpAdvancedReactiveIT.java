@@ -11,6 +11,8 @@ import static io.quarkus.ts.http.advanced.reactive.MediaTypeResource.MEDIA_TYPE_
 import static io.quarkus.ts.http.advanced.reactive.MultipartResource.FILE;
 import static io.quarkus.ts.http.advanced.reactive.MultipartResource.MULTIPART_FORM_PATH;
 import static io.quarkus.ts.http.advanced.reactive.MultipartResource.TEXT;
+import static io.quarkus.ts.http.advanced.reactive.MultipleResponseSerializersResource.APPLY_RESPONSE_SERIALIZER_PARAM_FLAG;
+import static io.quarkus.ts.http.advanced.reactive.MultipleResponseSerializersResource.MULTIPLE_RESPONSE_SERIALIZERS_PATH;
 import static io.quarkus.ts.http.advanced.reactive.NinetyNineBottlesOfBeerResource.QUARKUS_PLATFORM_VERSION_LESS_THAN_2_8_3;
 import static io.quarkus.ts.http.advanced.reactive.NinetyNineBottlesOfBeerResource.QUARKUS_PLATFORM_VERSION_LESS_THAN_2_8_3_VAL;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -307,6 +309,27 @@ public class HttpAdvancedReactiveIT {
         testResponseContentType(MULTIPART_FORM_DATA, MULTIPART_FORM_DATA);
         testResponseContentType(IMAGE_PNG, IMAGE_PNG);
         testResponseContentType(IMAGE_JPEG, IMAGE_JPEG);
+    }
+
+    @DisabledOnQuarkusVersion(version = "(2\\.[0-6]\\..*)|(2\\.7\\.[0-5]\\..*)|(2\\.8\\.0\\..*)", reason = "Fixed in Quarkus 2.8.1 and backported to 2.7.6.")
+    @Test
+    public void testMediaTypePassedToMessageBodyWriter() {
+        // Accepted Media Type must be passed to 'MessageBodyWriter'
+        // 'MessageBodyWriter' then returns passed Media Type for a verification
+        assertAcceptedMediaTypeEqualsResponseBody(APPLICATION_JSON);
+        assertAcceptedMediaTypeEqualsResponseBody(TEXT_HTML);
+        assertAcceptedMediaTypeEqualsResponseBody(TEXT_PLAIN);
+        assertAcceptedMediaTypeEqualsResponseBody(APPLICATION_OCTET_STREAM);
+    }
+
+    private void assertAcceptedMediaTypeEqualsResponseBody(String acceptedMediaType) {
+        app
+                .given()
+                .accept(acceptedMediaType)
+                .queryParam(APPLY_RESPONSE_SERIALIZER_PARAM_FLAG, Boolean.TRUE)
+                .get(ROOT_PATH + MULTIPLE_RESPONSE_SERIALIZERS_PATH)
+                .then()
+                .body(is(acceptedMediaType));
     }
 
     private void testResponseContentType(String acceptedContentType, String expectedContentType) {
