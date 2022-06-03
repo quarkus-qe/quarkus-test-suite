@@ -23,7 +23,7 @@ public interface FileClient {
     @GET
     @Path("/hash")
     @Produces(MediaType.TEXT_PLAIN)
-    Uni<String> hash();
+    String hash();
 
     @GET
     @Path("/download")
@@ -33,7 +33,12 @@ public interface FileClient {
     @GET
     @Produces(MediaType.MULTIPART_FORM_DATA)
     @Path("/download-multipart")
-    FileWrapper downloadMultipart();
+    Uni<FileWrapper> downloadMultipart();
+
+    @GET
+    @Produces(MediaType.MULTIPART_FORM_DATA)
+    @Path("/download-broken-multipart")
+    Uni<FileWrapper> brokenMultipart();
 
     @POST
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
