@@ -5,7 +5,6 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
@@ -96,7 +95,6 @@ public class ReactiveRestClientIT {
     }
 
     @Test
-    @Disabled("https://github.com/quarkusio/quarkus/issues/25028")
     public void subResource() {
         Response response = app.given().get("/client/book/author/?author=Heller");
         assertEquals(HttpStatus.SC_OK, response.statusCode());
@@ -108,11 +106,10 @@ public class ReactiveRestClientIT {
     }
 
     @Test
-    @Disabled("https://github.com/quarkusio/quarkus/issues/25028")
     public void deepLevel() {
         Response response = app.given().get("/client/book/currency");
         assertEquals(HttpStatus.SC_OK, response.statusCode());
-        assertEquals("Heller", response.getBody().asString());
+        assertEquals("USD", response.getBody().asString());
     }
 
     @DisabledOnQuarkusVersion(version = DISABLE_IF_NOT_QUARKUS_2_7_6_OR_2_8_3_OR_HIGHER, reason = FIXED_IN_2_7_6_AND_2_8_3)

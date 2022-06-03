@@ -57,7 +57,7 @@ public class ReactiveClientBookResource {
     @GET
     @Path("/profession")
     public Uni<String> getSubSubResource() {
-        return bookInterface.getAuthor().getProfession().getName();
+        return bookInterface.getAuthor().getProfession().getTitle();
     }
 
     @GET
