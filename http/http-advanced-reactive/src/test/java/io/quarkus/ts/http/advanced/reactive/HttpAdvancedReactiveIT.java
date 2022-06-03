@@ -140,7 +140,7 @@ public class HttpAdvancedReactiveIT {
     public void http2ClientSync() throws Exception {
         HttpVersionClientService versionHttpClient = new RestClientServiceBuilder<HttpVersionClientService>(
                 getAppEndpoint()).withHostVerified(true).withPassword(PASSWORD).withKeyStorePath(KEY_STORE_PATH)
-                        .build(HttpVersionClientService.class);
+                .build(HttpVersionClientService.class);
 
         Response resp = versionHttpClient.getClientHttpVersion();
         assertEquals(SC_OK, resp.getStatus());
@@ -153,7 +153,7 @@ public class HttpAdvancedReactiveIT {
     public void http2ClientAsync() throws Exception {
         HttpVersionClientServiceAsync clientServiceAsync = new RestClientServiceBuilder<HttpVersionClientServiceAsync>(
                 getAppEndpoint()).withHostVerified(true).withPassword(PASSWORD).withKeyStorePath(KEY_STORE_PATH)
-                        .build(HttpVersionClientServiceAsync.class);
+                .build(HttpVersionClientServiceAsync.class);
 
         Response resp = clientServiceAsync.getClientHttpVersion().await().atMost(Duration.ofSeconds(ASSERT_TIMEOUT_SECONDS));
 
