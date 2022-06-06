@@ -32,7 +32,7 @@
         <camel-quarkus-bom.version>2.9.0</camel-quarkus-bom.version>
         <quarkiverse.config.version>1.0.2</quarkiverse.config.version>
         <smallrye-stork.version>1.1.2</smallrye-stork.version>
-        <assertj.version>3.21.0</assertj.version>
+        <assertj.version>3.23.1</assertj.version>
         <profile.id>jvm</profile.id>
         <!-- S2i configuration -->
         <ts.global.s2i.quarkus.jvm.builder.image>registry.access.redhat.com/ubi8/openjdk-11:latest</ts.global.s2i.quarkus.jvm.builder.image>
