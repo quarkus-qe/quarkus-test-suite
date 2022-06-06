@@ -18,6 +18,7 @@ import io.quarkus.test.bootstrap.QuarkusCliClient;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusSnapshot;
 import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
+import io.quarkus.test.scenarios.annotations.EnabledOnQuarkusVersion;
 import io.quarkus.test.services.quarkus.model.QuarkusProperties;
 
 /**
@@ -29,6 +30,7 @@ import io.quarkus.test.services.quarkus.model.QuarkusProperties;
 @QuarkusScenario
 @DisabledOnQuarkusVersion(version = "1\\..*", reason = "Quarkus CLI has been reworked in 2.x")
 @DisabledIfSystemProperty(named = "profile.id", matches = "native", disabledReason = "Only for JVM verification")
+@EnabledOnQuarkusVersion(version = ".*redhat.*", reason = "There is no stream 2.7 in code.quarkus.io anymore")
 public class QuarkusCliExtensionsIT {
 
     static final String AGROAL_EXTENSION_NAME = "Agroal - Database connection pool";
@@ -87,9 +89,6 @@ public class QuarkusCliExtensionsIT {
     }
 
     @DisabledOnQuarkusSnapshot(reason = "999-SNAPSHOT is not pushed into the platform site")
-    @DisabledOnQuarkusVersion(version = "2.7.5.Final", reason = "Quarkus 2.7 stream was removed from code.quarkus.io")
-    //TODO Currently code.quarkus and quarkusCli are pointing to the same set of defined streams.
-    // ZULIP ref: https://quarkusio.zulipchat.com/#narrow/stream/191168-core-team/topic/streams.20on.20registry.20.2F.20code.2Equarkus/near/280456392
     @Test
     public void shouldListExtensionsUsingStream() {
         String streamVersion = getCurrentStreamVersion();

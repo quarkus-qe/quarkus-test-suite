@@ -10,9 +10,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.reactive.MultipartForm;
+import org.jboss.resteasy.reactive.RestResponse;
 
 import io.quarkus.logging.Log;
 import io.smallrye.mutiny.Uni;
@@ -51,10 +51,10 @@ public class FileResource {
     @GET
     @Produces(MediaType.MULTIPART_FORM_DATA)
     @Path("/download-multipart")
-    public Response downloadMultipart() {
+    public RestResponse<FileWrapper> downloadMultipart() {
         FileWrapper wrapper = new FileWrapper();
         wrapper.file = FILE;
-        return Response.ok(wrapper).build();
+        return RestResponse.ok(wrapper);
     }
 
     @GET

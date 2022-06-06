@@ -39,7 +39,7 @@ public class ProxyIT {
     @Test
     void banned() {
         Response banned = proxyApp.given().with().get("/proxied/banned");
-        Assertions.assertEquals(HttpStatus.SC_OK, banned.statusCode());
+        Assertions.assertEquals(HttpStatus.SC_FORBIDDEN, banned.statusCode());
         Assertions.assertEquals("Reading is prohibited by corporate policy!",
                 banned.body().asString());
     }
