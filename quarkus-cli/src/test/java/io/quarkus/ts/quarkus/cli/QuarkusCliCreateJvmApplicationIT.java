@@ -47,6 +47,7 @@ import io.quarkus.test.services.quarkus.model.QuarkusProperties;
 @DisabledIfSystemProperty(named = "profile.id", matches = "native", disabledReason = "Only for JVM verification")
 public class QuarkusCliCreateJvmApplicationIT {
 
+    static final String RESTEASY_REACTIVE_EXTENSION = "quarkus-resteasy-reactive";
     static final String RESTEASY_EXTENSION = "quarkus-resteasy";
     static final String SMALLRYE_HEALTH_EXTENSION = "quarkus-smallrye-health";
     static final String SPRING_WEB_EXTENSION = "quarkus-spring-web";
