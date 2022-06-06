@@ -13,8 +13,6 @@ import static io.quarkus.ts.http.advanced.reactive.MultipartResource.MULTIPART_F
 import static io.quarkus.ts.http.advanced.reactive.MultipartResource.TEXT;
 import static io.quarkus.ts.http.advanced.reactive.MultipleResponseSerializersResource.APPLY_RESPONSE_SERIALIZER_PARAM_FLAG;
 import static io.quarkus.ts.http.advanced.reactive.MultipleResponseSerializersResource.MULTIPLE_RESPONSE_SERIALIZERS_PATH;
-import static io.quarkus.ts.http.advanced.reactive.NinetyNineBottlesOfBeerResource.QUARKUS_PLATFORM_VERSION_LESS_THAN_2_8_3;
-import static io.quarkus.ts.http.advanced.reactive.NinetyNineBottlesOfBeerResource.QUARKUS_PLATFORM_VERSION_LESS_THAN_2_8_3_VAL;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_OCTET_STREAM;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
@@ -25,7 +23,6 @@ import static javax.ws.rs.core.MediaType.TEXT_XML;
 import static org.apache.http.HttpHeaders.ACCEPT_ENCODING;
 import static org.apache.http.HttpHeaders.ACCEPT_LANGUAGE;
 import static org.apache.http.HttpHeaders.CONTENT_TYPE;
-import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -44,7 +41,6 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import javax.ws.rs.Path;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
@@ -53,7 +49,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 
 import io.quarkus.test.bootstrap.KeycloakService;
 import io.quarkus.test.bootstrap.Protocol;
@@ -68,7 +63,6 @@ import io.quarkus.ts.http.advanced.reactive.clients.HttpVersionClientService;
 import io.quarkus.ts.http.advanced.reactive.clients.HttpVersionClientServiceAsync;
 import io.quarkus.ts.http.advanced.reactive.clients.RestClientServiceBuilder;
 import io.restassured.http.Header;
-import io.restassured.response.ValidatableResponse;
 import io.smallrye.mutiny.Uni;
 import io.vertx.core.http.HttpVersion;
 import io.vertx.core.json.JsonObject;
@@ -209,31 +203,6 @@ public class HttpAdvancedReactiveIT {
         assertThat(done.getCount(), equalTo(0L));
     }
 
-    /**
-     * This test use special characters in {@link Path#value()}, that previously caused a validation error and build failure.
-     * The bug was fixed in 2.8.3. Disable test in previous Quarkus versions with property
-     * {@link NinetyNineBottlesOfBeerResource#QUARKUS_PLATFORM_VERSION_LESS_THAN_2_8_3} set to
-     * {@link NinetyNineBottlesOfBeerResource#QUARKUS_PLATFORM_VERSION_LESS_THAN_2_8_3_VAL}.
-     *
-     * @see NinetyNineBottlesOfBeerResource for more information
-     */
-    @DisabledIfSystemProperty(matches = QUARKUS_PLATFORM_VERSION_LESS_THAN_2_8_3_VAL, named = QUARKUS_PLATFORM_VERSION_LESS_THAN_2_8_3, disabledReason = "Fixed in Quarkus 2.8.3.Final")
-    @DisplayName("JAX-RS URI path template test")
-    @Test
-    public void uriPathTemplate() {
-        // test parameter name starting with an alphabetic character, containing dash and with literal value
-        req99BottlesOfBeer(1, SC_OK).body(is(NinetyNineBottlesOfBeerResource.FIRST_BOTTLE_RESPONSE));
-        // test parameter name starting with a number and a regex range value
-        req99BottlesOfBeer(2, SC_OK).body(is(NinetyNineBottlesOfBeerResource.SECOND_BOTTLE_RESPONSE));
-        // test parameter name starting with an underscore, containing a dot and regex ranges disjunction
-        req99BottlesOfBeer(3, SC_OK).body(is(String.format(NinetyNineBottlesOfBeerResource.OTHER_BOTTLES_RESPONSE, 3, 3, 2)));
-        // test regex works correctly (matched value between 3 and 99 [inclusive])
-        req99BottlesOfBeer(99, SC_OK)
-                .body(is(String.format(NinetyNineBottlesOfBeerResource.OTHER_BOTTLES_RESPONSE, 99, 99, 98)));
-        // test regex works correctly (no path should be matched)
-        req99BottlesOfBeer(-100, SC_NOT_FOUND);
-    }
-
     @DisplayName("RESTEasy Reactive Multipart Provider test")
     @Test
     public void multipartFormDataReader() {
@@ -339,11 +308,11 @@ public class HttpAdvancedReactiveIT {
                 .then().header(CONTENT_TYPE, expectedContentType);
     }
 
-    private ValidatableResponse req99BottlesOfBeer(int bottleNumber, int httpStatusCode) {
-        return app.given()
-                .get(ROOT_PATH + NinetyNineBottlesOfBeerResource.PATH + "/" + bottleNumber)
-                .then().statusCode(httpStatusCode);
-    }
+    //    private ValidatableResponse req99BottlesOfBeer(int bottleNumber, int httpStatusCode) {
+    //        return app.given()
+    //                .get(ROOT_PATH + NinetyNineBottlesOfBeerResource.PATH + "/" + bottleNumber)
+    //                .then().statusCode(httpStatusCode);
+    //    }
 
     protected Protocol getProtocol() {
         return Protocol.HTTPS;
