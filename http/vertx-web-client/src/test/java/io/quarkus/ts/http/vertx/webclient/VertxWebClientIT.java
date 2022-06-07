@@ -101,8 +101,8 @@ public class VertxWebClientIT {
     @Test
     public void endpointShouldTrace() {
         final int pageLimit = 50;
-        final String expectedOperationName = "/trace/ping";
-        await().atMost(3, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(1)).untilAsserted(() -> {
+        final String expectedOperationName = "trace/ping";
+        await().atMost(1, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(1)).untilAsserted(() -> {
             whenIMakePingRequest();
             thenRetrieveTraces(pageLimit, "1h", getServiceName(), expectedOperationName);
             thenStatusCodeMustBe(HttpStatus.SC_OK);
@@ -117,8 +117,8 @@ public class VertxWebClientIT {
     @Test
     public void httpClientShouldHaveHisOwnSpan() {
         final int pageLimit = 50;
-        final String expectedOperationName = "/trace/ping";
-        await().atMost(3, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(1)).untilAsserted(() -> {
+        final String expectedOperationName = "trace/ping";
+        await().atMost(1, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(1)).untilAsserted(() -> {
             whenIMakePingRequest();
             thenRetrieveTraces(pageLimit, "1h", getServiceName(), expectedOperationName);
             thenStatusCodeMustBe(HttpStatus.SC_OK);
