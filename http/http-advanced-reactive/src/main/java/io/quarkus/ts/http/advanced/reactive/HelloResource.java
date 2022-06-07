@@ -11,11 +11,13 @@ import io.smallrye.mutiny.Uni;
 
 @Path("/hello")
 public class HelloResource {
+
     private static final String TEMPLATE = "Hello, %s!";
+    public static final String NAME = "name";
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Uni<Hello> get(@QueryParam("name") @DefaultValue("World") String name) {
+    public Uni<Hello> get(@QueryParam(NAME) @DefaultValue("World") String name) {
         return Uni.createFrom().item(new Hello(String.format(TEMPLATE, name)));
     }
 }

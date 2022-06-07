@@ -47,6 +47,7 @@ import io.quarkus.test.services.quarkus.model.QuarkusProperties;
 @DisabledIfSystemProperty(named = "profile.id", matches = "native", disabledReason = "Only for JVM verification")
 public class QuarkusCliCreateJvmApplicationIT {
 
+    static final String RESTEASY_REACTIVE_EXTENSION = "quarkus-resteasy-reactive";
     static final String RESTEASY_EXTENSION = "quarkus-resteasy";
     static final String SMALLRYE_HEALTH_EXTENSION = "quarkus-smallrye-health";
     static final String SPRING_WEB_EXTENSION = "quarkus-spring-web";
@@ -55,6 +56,7 @@ public class QuarkusCliCreateJvmApplicationIT {
     static final String DOCKER_FOLDER = "/src/main/docker";
     static final String JDK_11 = "11";
     static final String JDK_17 = "17";
+    static final String JDK_18 = "18";
     static final String DOCKERFILE_JVM = "Dockerfile.jvm";
 
     @Inject
@@ -98,6 +100,14 @@ public class QuarkusCliCreateJvmApplicationIT {
     @Test
     public void shouldCreateAnApplicationForcingJavaVersion17() {
         CreateApplicationRequest args = defaultWithFixedStream().withExtraArgs("--java=" + JDK_17);
+        QuarkusCliRestService app = cliClient.createApplication("app", args);
+        assertExpectedJavaVersion(getFileFromApplication(app, ROOT_FOLDER, "pom.xml"), JDK_17);
+        assertDockerJavaVersion(getFileFromApplication(app, DOCKER_FOLDER, DOCKERFILE_JVM), JDK_17);
+    }
+
+    @Test
+    public void quarkusCreatedWithJava18ShouldUseJava17() {
+        CreateApplicationRequest args = defaultWithFixedStream().withExtraArgs("--java=" + JDK_18);
         QuarkusCliRestService app = cliClient.createApplication("app", args);
         assertExpectedJavaVersion(getFileFromApplication(app, ROOT_FOLDER, "pom.xml"), JDK_17);
         assertDockerJavaVersion(getFileFromApplication(app, DOCKER_FOLDER, DOCKERFILE_JVM), JDK_17);
@@ -203,6 +213,29 @@ public class QuarkusCliCreateJvmApplicationIT {
 
         // The health endpoint should be now gone
         app.restart();
+        untilAsserted(() -> app.given().get("/q/health").then().statusCode(HttpStatus.SC_NOT_FOUND));
+    }
+
+    @Tag("https://github.com/quarkusio/quarkus/issues/25184")
+    @Test
+    public void shouldKeepUsingTheSameQuarkusVersionAfterReload() {
+        // Generate application using old community version
+        QuarkusCliRestService app = cliClient.createApplication("app", defaults()
+                .withPlatformBom("io.quarkus:quarkus-bom:2.7.0.Final")
+                .withExtensions(SMALLRYE_HEALTH_EXTENSION, RESTEASY_REACTIVE_EXTENSION));
+
+        // Make sure version and groupId from the TS run is used
+        app.withProperty(QuarkusProperties.PLATFORM_GROUP_ID.getPropertyKey(), QuarkusProperties.PLATFORM_GROUP_ID.get());
+        app.withProperty(QuarkusProperties.PLATFORM_VERSION.getPropertyKey(), QuarkusProperties.getVersion());
+
+        app.start();
+        untilAsserted(() -> app.given().get("/q/health").then().statusCode(HttpStatus.SC_OK));
+
+        Result result = app.removeExtension(SMALLRYE_HEALTH_EXTENSION);
+        assertTrue(result.isSuccessful(), SMALLRYE_HEALTH_EXTENSION + " was not uninstalled. Output: " + result.getOutput());
+
+        // Make sure application reloads properly without BUILD FAILURE of maven execution
+        // and no "Hot deployment of the application is not supported when updating the Quarkus version" message in logs
         untilAsserted(() -> app.given().get("/q/health").then().statusCode(HttpStatus.SC_NOT_FOUND));
     }
 

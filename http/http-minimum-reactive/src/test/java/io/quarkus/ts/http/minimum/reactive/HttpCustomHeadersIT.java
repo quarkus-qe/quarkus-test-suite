@@ -1,6 +1,7 @@
 package io.quarkus.ts.http.minimum.reactive;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 
 import javax.ws.rs.core.MediaType;
@@ -40,6 +41,6 @@ public class HttpCustomHeadersIT {
                 .then()
                 .statusCode(HttpStatus.SC_OK)
                 .body("content", is("hello"))
-                .contentType(is(MediaType.APPLICATION_JSON));
+                .contentType(containsString(MediaType.APPLICATION_JSON));
     }
 }
