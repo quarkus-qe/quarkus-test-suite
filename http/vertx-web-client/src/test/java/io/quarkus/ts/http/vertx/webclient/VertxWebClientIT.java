@@ -102,7 +102,7 @@ public class VertxWebClientIT {
     public void endpointShouldTrace() {
         final int pageLimit = 50;
         final String expectedOperationName = "/trace/ping";
-        await().atMost(1, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(1)).untilAsserted(() -> {
+        await().atMost(3, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(1)).untilAsserted(() -> {
             whenIMakePingRequest();
             thenRetrieveTraces(pageLimit, "1h", getServiceName(), expectedOperationName);
             thenStatusCodeMustBe(HttpStatus.SC_OK);
@@ -118,7 +118,7 @@ public class VertxWebClientIT {
     public void httpClientShouldHaveHisOwnSpan() {
         final int pageLimit = 50;
         final String expectedOperationName = "/trace/ping";
-        await().atMost(1, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(1)).untilAsserted(() -> {
+        await().atMost(3, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(1)).untilAsserted(() -> {
             whenIMakePingRequest();
             thenRetrieveTraces(pageLimit, "1h", getServiceName(), expectedOperationName);
             thenStatusCodeMustBe(HttpStatus.SC_OK);
@@ -142,7 +142,7 @@ public class VertxWebClientIT {
                 .queryParam("limit", pageLimit)
                 .queryParam("lookback", lookBack)
                 .queryParam("service", serviceName)
-                .queryParam("operation", operationName)
+                .queryParam("operationName", operationName)
                 .get(jaeger.getRestUrl());
     }
 
