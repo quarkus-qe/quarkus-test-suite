@@ -25,7 +25,7 @@ import io.smallrye.mutiny.Uni;
 
 @Path("/file")
 public class FileResource {
-    private static final String BIGGER_THAN_TWO_GIGABYTES = OsUtils.SIZE_2049MiB;
+    private static final long BIGGER_THAN_TWO_GIGABYTES = OsUtils.SIZE_2049MiB;
     private final File file;
     private final OsUtils utils;
     private final List<File> deathRow = new LinkedList<>();
@@ -35,9 +35,7 @@ public class FileResource {
         file = folder
                 .stream()
                 .map(existing -> java.nio.file.Path.of(existing).resolve("server.txt").toAbsolutePath())
-                .peek(path -> {
-                    utils.createFile(path.toString(), BIGGER_THAN_TWO_GIGABYTES);
-                })
+                .peek(path -> utils.createFile(path, BIGGER_THAN_TWO_GIGABYTES))
                 .map(java.nio.file.Path::toFile)
                 .findFirst().orElse(null);
     }
@@ -49,10 +47,12 @@ public class FileResource {
     }
 
     @POST
+    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+    @Produces(MediaType.TEXT_PLAIN)
     @Path("/upload")
     public Uni<String> upload(File body) {
         deathRow.add(body);
-        return utils.getSum(body.getAbsolutePath());
+        return Uni.createFrom().item(() -> utils.getSum(body.getAbsoluteFile().toPath()));
     }
 
     @POST
@@ -62,7 +62,7 @@ public class FileResource {
     @Blocking
     public Uni<String> uploadMultipart(@MultipartForm FileWrapper body) {
         deathRow.add(body.file);
-        return utils.getSum(body.file.getAbsolutePath());
+        return Uni.createFrom().item(() -> utils.getSum(body.file.getAbsoluteFile().toPath()));
     }
 
     @GET
@@ -87,9 +87,9 @@ public class FileResource {
     @GET
     @Path("/hash")
     @Produces(MediaType.TEXT_PLAIN)
-    public Uni<String> getHashSum() {
+    public String getHashSum() {
         Log.info("Hashing path " + file.getAbsolutePath());
-        return utils.getSum(file.getAbsolutePath());
+        return utils.getSum(file.getAbsoluteFile().toPath());
     }
 
     @DELETE

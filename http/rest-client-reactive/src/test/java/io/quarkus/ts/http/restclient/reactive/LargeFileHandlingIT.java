@@ -9,8 +9,9 @@ import java.io.InputStream;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.concurrent.ExecutionException;
 import java.util.function.Predicate;
+
+import javax.inject.Inject;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.AfterAll;
@@ -30,11 +31,11 @@ import io.restassured.response.Response;
 @QuarkusScenario
 public class LargeFileHandlingIT {
 
-    private static final String BIGGER_THAN_TWO_GIGABYTES = OsUtils.SIZE_2049MiB;
+    private static final long BIGGER_THAN_TWO_GIGABYTES = OsUtils.SIZE_2049MiB;
     private static final Path files = getTempDirectory();
     private final Path downloaded;
     private final Path uploaded;
-    private final OsUtils utils = OsUtils.get();
+    private final OsUtils utils;
 
     private static Path getTempDirectory() {
         try {
@@ -49,9 +50,11 @@ public class LargeFileHandlingIT {
             .withProperty("client.filepath", () -> files.toAbsolutePath().toString())
             .withProperties("modern.properties");
 
+    @Inject
     public LargeFileHandlingIT() {
         downloaded = files.resolve("downloaded.txt");
         uploaded = files.resolve("uploaded.txt");
+        utils = OsUtils.get();
     }
 
     @Test
@@ -66,7 +69,7 @@ public class LargeFileHandlingIT {
     }
 
     @Test
-    public void downloadDirectly() throws IOException, ExecutionException, InterruptedException {
+    public void downloadDirectly() throws IOException {
         Response hashSum = app.given().get("/file/hash");
         assertEquals(HttpStatus.SC_OK, hashSum.statusCode());
         String serverSum = hashSum.body().asString();
@@ -75,7 +78,7 @@ public class LargeFileHandlingIT {
         assertEquals(HttpStatus.SC_OK, download.statusCode());
         InputStream stream = download.body().asInputStream();
         Files.copy(stream, downloaded);
-        String clientSum = utils.getSum(downloaded.toString()).subscribeAsCompletionStage().get();
+        String clientSum = utils.getSum(downloaded);
         assertEquals(serverSum, clientSum);
     }
 
@@ -110,9 +113,9 @@ public class LargeFileHandlingIT {
 
     @Test
     @Disabled("https://github.com/rest-assured/rest-assured/issues/1480")
-    public void uploadInputStream() throws IOException, ExecutionException, InterruptedException {
-        utils.createFile(uploaded.toString(), BIGGER_THAN_TWO_GIGABYTES);
-        String hashsum = utils.getSum(uploaded.toString()).subscribeAsCompletionStage().get();
+    public void uploadInputStream() throws IOException {
+        utils.createFile(uploaded, BIGGER_THAN_TWO_GIGABYTES);
+        String hashsum = utils.getSum(uploaded);
 
         try (InputStream stream = new FileInputStream(uploaded.toFile())) {
             Response response = app.given()
@@ -125,9 +128,9 @@ public class LargeFileHandlingIT {
 
     @Test
     @Disabled("https://github.com/rest-assured/rest-assured/issues/1566")
-    public void uploadFile() throws ExecutionException, InterruptedException {
-        utils.createFile(uploaded.toString(), BIGGER_THAN_TWO_GIGABYTES);
-        String hashsum = utils.getSum(uploaded.toString()).subscribeAsCompletionStage().get();
+    public void uploadFile() {
+        utils.createFile(uploaded, BIGGER_THAN_TWO_GIGABYTES);
+        String hashsum = utils.getSum(uploaded);
 
         Response response = app.given()
                 .body(uploaded.toFile())

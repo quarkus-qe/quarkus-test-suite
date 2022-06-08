@@ -22,7 +22,7 @@ import io.smallrye.mutiny.Uni;
 
 @Path("/file-client")
 public class FileClientResource {
-    private static final String BIGGER_THAN_TWO_GIGABYTES = OsUtils.SIZE_2049MiB;
+    private static final long BIGGER_THAN_TWO_GIGABYTES = OsUtils.SIZE_2049MiB;
 
     private final java.nio.file.Path file;
     private final List<java.nio.file.Path> deathRow = new LinkedList<>();
@@ -36,9 +36,7 @@ public class FileClientResource {
         file = folder
                 .stream()
                 .map(existing -> java.nio.file.Path.of(existing).resolve("upload.txt").toAbsolutePath())
-                .peek(path -> {
-                    utils.createFile(path.toString(), BIGGER_THAN_TWO_GIGABYTES);
-                })
+                .peek(path -> utils.createFile(path, BIGGER_THAN_TWO_GIGABYTES))
                 .findFirst().orElse(null);
         this.client = client;
     }
@@ -47,7 +45,7 @@ public class FileClientResource {
     @Path("/client-hash")
     @Blocking
     public Uni<String> calculateHash() {
-        return utils.getSum(file.toString());
+        return Uni.createFrom().item(() -> utils.getSum(file));
     }
 
     @GET
@@ -63,10 +61,9 @@ public class FileClientResource {
                 .map(file -> {
                     java.nio.file.Path path = file.toPath().toAbsolutePath();
                     deathRow.add(path);
-                    return path.toString();
+                    return path;
                 })
-                .onItem()
-                .transformToUni(utils::getSum);
+                .map(utils::getSum);
     }
 
     @GET
@@ -76,16 +73,15 @@ public class FileClientResource {
                 .map(wrapper -> wrapper.file.toPath())
                 .map(java.nio.file.Path::toAbsolutePath)
                 .invoke(deathRow::add)
-                .map(java.nio.file.Path::toString)
-                .flatMap(utils::getSum);
+                .map(utils::getSum);
     }
 
     @GET
     @Path("/download-broken-multipart")
     public Uni<String> downloadMultipartResponse() {
         return client.brokenMultipart()
-                .map(wrapper -> wrapper.file.getAbsolutePath())
-                .flatMap(utils::getSum);
+                .map(wrapper -> wrapper.file.toPath().toAbsolutePath())
+                .map(utils::getSum);
     }
 
     @POST
