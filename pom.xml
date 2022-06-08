@@ -497,8 +497,7 @@
                 <module>monitoring/micrometer-prometheus-kafka-reactive</module>
                 <module>monitoring/micrometer-prometheus-oidc</module>
                 <module>monitoring/opentelemetry</module>
-                <!-- Disabled due to https://github.com/quarkusio/quarkus/issues/23940  -->
-                <!--                <module>monitoring/opentelemetry-reactive</module>-->
+                <module>monitoring/opentelemetry-reactive</module>
                 <module>monitoring/microprofile-opentracing</module>
                 <module>monitoring/opentracing-reactive-grpc</module>
             </modules>
