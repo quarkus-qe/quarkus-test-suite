@@ -1,109 +1,53 @@
 package io.quarkus.ts.http.restclient.reactive.files;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.time.Duration;
+import java.io.OutputStream;
+import java.io.RandomAccessFile;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.DigestOutputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
-import org.jboss.logging.Logger;
-
-import io.smallrye.mutiny.Uni;
+import javax.xml.bind.DatatypeConverter;
 
 public abstract class OsUtils {
-    public static final String SIZE_2049MiB = "2148532224";
-    private static final boolean hasBash = hasBash();
-    private static final int PROCESS_START_TIMEOUT = 3;
+    public static final long SIZE_2049MiB = 2148532224L;
 
-    protected static Uni<Process> run(String... params) throws IOException, InterruptedException {
-        ProcessBuilder bash = new ProcessBuilder(params);
-        Process process = bash.start();
+    public abstract String getSum(Path path);
 
-        return Uni.createFrom().item(process).onItem().delayIt().by(Duration.ofSeconds(PROCESS_START_TIMEOUT));
-    }
-
-    private static boolean hasBash() {
-        String os = System.getProperty("os.name").toLowerCase();
-        return !os.contains("windows");
-    }
-
-    public abstract Uni<String> getSum(String path);
-
-    public abstract void createFile(String path, String size);
+    public abstract void createFile(Path path, long size);
 
     public static OsUtils get() {
-        return hasBash
-                ? new BashUtils()
-                : new CmdUtils();
+        return new JavaUtils();
     }
 }
 
-class BashUtils extends OsUtils {
-    private static final Logger LOG = Logger.getLogger(OsUtils.class);
+class JavaUtils extends OsUtils {
 
     @Override
-    public Uni<String> getSum(String path) {
+    public String getSum(Path path) {
         try {
-            return OsUtils.run("md5sum", path).onItem()
-                    .transform(process -> readInputStream(process.getInputStream(), ""))
-                    .invoke(result -> LOG.info("Hash of " + path + " is " + result));
-        } catch (IOException | InterruptedException ex) {
-            throw new IllegalStateException(ex);
+            final MessageDigest digest = MessageDigest.getInstance("MD5");
+            try (BufferedInputStream stream = new BufferedInputStream(Files.newInputStream(path))) {
+                DigestOutputStream digestStream = new DigestOutputStream(OutputStream.nullOutputStream(), digest);
+                stream.transferTo(digestStream);
+                return DatatypeConverter.printHexBinary(digest.digest()).toLowerCase();
+            } catch (IOException e) {
+                throw new IllegalStateException(e);
+            }
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException(e);
         }
     }
 
     @Override
-    public void createFile(String path, String size) {
-        try {
-            OsUtils.run("truncate", "-s", size, path);
-        } catch (IOException | InterruptedException ex) {
-            throw new IllegalStateException(ex);
-        }
-    }
-
-    private String readInputStream(InputStream in, String defaultIfError) {
-        String result = "";
-        try {
-            result = new String(in.readAllBytes()).split(" ")[0];
+    public void createFile(Path path, long size) {
+        try (RandomAccessFile f = new RandomAccessFile(path.toAbsolutePath().toString(), "rw");) {
+            f.setLength(size);
         } catch (IOException e) {
-            LOG.error(e.getMessage());
-            result = defaultIfError;
+            throw new IllegalStateException(e);
         }
-
-        return result;
-    }
-}
-
-class CmdUtils extends OsUtils {
-    private static final Logger LOG = Logger.getLogger(OsUtils.class);
-
-    @Override
-    public Uni<String> getSum(String path) {
-        try {
-            return OsUtils.run("CertUtil", "-hashfile", path, "MD5").onItem()
-                    .transform(process -> readInputStream(process.getInputStream(), ""))
-                    .invoke(result -> LOG.info("Hash of " + path + " is " + result));
-        } catch (IOException | InterruptedException ex) {
-            throw new IllegalStateException(ex);
-        }
-    }
-
-    @Override
-    public void createFile(String path, String size) {
-        try {
-            OsUtils.run("fsutil", "file", "createnew", path, size);
-        } catch (IOException | InterruptedException ex) {
-            throw new IllegalStateException(ex);
-        }
-    }
-
-    private String readInputStream(InputStream in, String defaultIfError) {
-        String result = "";
-        try {
-            result = new String(in.readAllBytes()).split("\n")[1];
-        } catch (IOException e) {
-            LOG.error(e.getMessage());
-            result = defaultIfError;
-        }
-
-        return result;
     }
 }
