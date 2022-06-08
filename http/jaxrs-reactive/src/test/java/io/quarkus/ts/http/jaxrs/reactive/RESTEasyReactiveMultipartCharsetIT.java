@@ -17,7 +17,7 @@ import io.restassured.specification.MultiPartSpecification;
 
 @Tag("QUARKUS-1075")
 @QuarkusScenario
-public class AsciiMultipartResourceIT {
+public class RESTEasyReactiveMultipartCharsetIT {
 
     public static final String TEXT_WITH_DIACRITICS = "Přikrášlený žloťoučký kůň úpěl ďábelské ódy.";
     private static final String EXPECTED_ASCII_TEXT = new String(TEXT_WITH_DIACRITICS.getBytes(StandardCharsets.UTF_8),
@@ -27,7 +27,7 @@ public class AsciiMultipartResourceIT {
     static RestService app = new RestService().withProperties("us-asscii.properties");
 
     @Test
-    public void testMultipartText() {
+    public void textInMultipartRequestEncodedWithDefaultCharset() {
         MultiPartSpecification multiPartSpecification = new MultiPartSpecBuilder(TEXT_WITH_DIACRITICS)
                 .controlName("text")
                 .header("Content-Type", "text/plain")
