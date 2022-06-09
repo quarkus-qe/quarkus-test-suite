@@ -8,8 +8,8 @@ import static org.awaitility.Awaitility.await;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
-import static org.hamcrest.core.Every.everyItem;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
 
@@ -110,7 +110,7 @@ public class VertxWebClientIT {
             thenTraceSpanSizeMustBe(greaterThan(0));
             thenTraceSpanTagsSizeMustBe(greaterThan(0));
             thenTraceSpansOperationNameMustBe(not(empty()));
-            thenCheckThatAllOperationNamesAreEqualTo(expectedOperationName);
+            thenCheckOperationNamesIsEqualTo(expectedOperationName);
         });
     }
 
@@ -126,7 +126,7 @@ public class VertxWebClientIT {
             thenTraceSpanSizeMustBe(greaterThan(1));
             thenTraceSpanTagsSizeMustBe(greaterThan(0));
             thenTraceSpansOperationNameMustBe(not(empty()));
-            thenCheckThatAllOperationNamesAreEqualTo(expectedOperationName);
+            thenCheckOperationNamesIsEqualTo(expectedOperationName);
         });
     }
 
@@ -166,9 +166,9 @@ public class VertxWebClientIT {
         resp.then().body("data.spans.operationName", matcher);
     }
 
-    private void thenCheckThatAllOperationNamesAreEqualTo(String expectedOperationName) {
+    private void thenCheckOperationNamesIsEqualTo(String expectedOperationName) {
         List<String> operationNames = resp.then().extract().jsonPath().getList("data.spans.operationName", String.class);
-        assertThat(operationNames, everyItem(containsString(expectedOperationName)));
+        assertThat(operationNames, hasItem(containsString(expectedOperationName)));
     }
 
     @Test
