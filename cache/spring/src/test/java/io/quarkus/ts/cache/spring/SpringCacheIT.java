@@ -13,7 +13,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import io.quarkus.test.scenarios.QuarkusScenario;
 
 @QuarkusScenario
-public class ServiceWithCacheResourceIT {
+public class SpringCacheIT {
 
     private static final String SERVICE_APPLICATION_SCOPE_PATH = "/services/" + APPLICATION_SCOPE_SERVICE_PATH;
     private static final String SERVICE_REQUEST_SCOPE_PATH = "/services/" + REQUEST_SCOPE_SERVICE_PATH;
