@@ -87,7 +87,7 @@ public class FileClientResource {
     @POST
     @Path("/multipart")
     @Blocking
-    public Uni<String> uploadMultipart() {
+    public String uploadMultipart() {
         FileWrapper wrapper = new FileWrapper();
         wrapper.file = file.toFile();
         wrapper.name = file.toString();
