@@ -1,21 +1,19 @@
 package io.quarkus.ts.spring.web.reactive.boostrap;
 
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import static io.quarkus.ts.spring.web.reactive.MariaDBConstants.IMAGE_10;
+import static io.quarkus.ts.spring.web.reactive.MariaDBConstants.PORT;
+import static io.quarkus.ts.spring.web.reactive.MariaDBConstants.START_LOG_10;
 
 import io.quarkus.test.bootstrap.MariaDbService;
 import io.quarkus.test.bootstrap.RestService;
-import io.quarkus.test.scenarios.OpenShiftScenario;
+import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
-import io.quarkus.ts.spring.web.reactive.AbstractDbIT;
 
-@OpenShiftScenario
-@EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
-public class OpenShiftBookResourceIT extends AbstractDbIT {
+@QuarkusScenario
+public class SpringWebRestIT extends AbstractSpringWebRestIT {
 
-    static final int MARIADB_PORT = 3306;
-
-    @Container(image = "${mariadb.105.image}", port = MARIADB_PORT, expectedLog = "Only MySQL server logs after this point")
+    @Container(image = IMAGE_10, port = PORT, expectedLog = START_LOG_10)
     static final MariaDbService database = new MariaDbService();
 
     @QuarkusApplication
@@ -25,7 +23,7 @@ public class OpenShiftBookResourceIT extends AbstractDbIT {
             .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl);
 
     @Override
-    public RestService getApp() {
+    protected RestService getApp() {
         return app;
     }
 }
