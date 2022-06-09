@@ -1,4 +1,4 @@
-package io.quarkus.ts.spring.web.reactive;
+package io.quarkus.ts.spring.web.reactive.boostrap;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import io.quarkus.test.bootstrap.RestService;
 import io.restassured.http.ContentType;
 
-public abstract class AbstractDbIT {
+public abstract class AbstractSpringWebQuteIT {
 
     private static final String APP_NAME = "Bootstrap Spring Boot";
 

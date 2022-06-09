@@ -1,17 +1,25 @@
-package io.quarkus.ts.spring.web.reactive.boostrap;
+package io.quarkus.ts.spring.web.reactive.openapi;
+
+import static io.quarkus.ts.spring.web.reactive.MariaDBConstants.IMAGE_10;
+import static io.quarkus.ts.spring.web.reactive.MariaDBConstants.PORT;
+import static io.quarkus.ts.spring.web.reactive.MariaDBConstants.START_LOG_10;
+
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import io.quarkus.test.bootstrap.MariaDbService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
-import io.quarkus.ts.spring.web.reactive.AbstractDbIT;
-import io.quarkus.ts.spring.web.reactive.MariaDBUtils;
+import io.restassured.response.Response;
 
 @QuarkusScenario
-public class HomePageIT extends AbstractDbIT {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class SpringWebOpenApiIT extends AbstractSpringWebOpenApiIT {
+    private static Response response;
 
-    @Container(image = "${mariadb.10.image}", port = MariaDBUtils.PORT, expectedLog = MariaDBUtils.START_LOG)
+    @Container(image = IMAGE_10, port = PORT, expectedLog = START_LOG_10)
     static final MariaDbService database = new MariaDbService();
 
     @QuarkusApplication

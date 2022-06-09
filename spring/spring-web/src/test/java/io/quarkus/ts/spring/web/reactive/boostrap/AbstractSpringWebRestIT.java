@@ -11,29 +11,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import io.quarkus.test.bootstrap.MariaDbService;
 import io.quarkus.test.bootstrap.RestService;
-import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.services.Container;
-import io.quarkus.test.services.QuarkusApplication;
-import io.quarkus.ts.spring.web.reactive.AbstractDbIT;
-import io.quarkus.ts.spring.web.reactive.MariaDBUtils;
 import io.quarkus.ts.spring.web.reactive.boostrap.persistence.model.Book;
 import io.restassured.response.Response;
 
-@QuarkusScenario
-public class BookResourceIT extends AbstractDbIT {
-
+public abstract class AbstractSpringWebRestIT {
     private static final String API_ROOT = "/api/books";
 
-    @Container(image = "${mariadb.10.image}", port = MariaDBUtils.PORT, expectedLog = MariaDBUtils.START_LOG)
-    static final MariaDbService database = new MariaDbService();
-
-    @QuarkusApplication
-    private static final RestService app = new RestService()
-            .withProperty("quarkus.datasource.username", database.getUser())
-            .withProperty("quarkus.datasource.password", database.getPassword())
-            .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl);
+    protected abstract RestService getApp();
 
     @Test
     public void whenGetAllBooks_thenOK() {
@@ -140,10 +125,5 @@ public class BookResourceIT extends AbstractDbIT {
                 .post(API_ROOT);
         return API_ROOT + "/" + response.jsonPath()
                 .get("id");
-    }
-
-    @Override
-    public RestService getApp() {
-        return app;
     }
 }
