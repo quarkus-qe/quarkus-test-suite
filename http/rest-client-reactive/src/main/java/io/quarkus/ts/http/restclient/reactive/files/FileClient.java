@@ -50,6 +50,6 @@ public interface FileClient {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/upload-multipart")
-    Uni<String> sendMultipart(@MultipartForm FileWrapper data);
+    String sendMultipart(@MultipartForm FileWrapper data);
 
 }

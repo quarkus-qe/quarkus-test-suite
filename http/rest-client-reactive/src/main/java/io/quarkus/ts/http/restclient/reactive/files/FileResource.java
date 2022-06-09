@@ -60,9 +60,9 @@ public class FileResource {
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/upload-multipart")
     @Blocking
-    public Uni<String> uploadMultipart(@MultipartForm FileWrapper body) {
+    public String uploadMultipart(@MultipartForm FileWrapper body) {
         deathRow.add(body.file);
-        return Uni.createFrom().item(() -> utils.getSum(body.file.getAbsoluteFile().toPath()));
+        return utils.getSum(body.file.getAbsoluteFile().toPath());
     }
 
     @GET
