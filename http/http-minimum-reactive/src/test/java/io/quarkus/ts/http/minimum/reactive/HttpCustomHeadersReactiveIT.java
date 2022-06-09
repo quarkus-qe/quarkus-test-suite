@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.scenarios.QuarkusScenario;
 
 @QuarkusScenario
-public class HttpCustomHeadersIT {
+public class HttpCustomHeadersReactiveIT {
 
     @Tag("QUARKUS-1574")
     @Test
