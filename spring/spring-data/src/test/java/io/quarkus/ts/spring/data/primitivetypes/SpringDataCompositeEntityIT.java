@@ -24,7 +24,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
 @QuarkusScenario
-public class SpringDataBookResourceIT extends AbstractDbIT {
+public class SpringDataCompositeEntityIT extends AbstractDbIT {
 
     @DisabledOnQuarkusVersion(version = "(2\\.[0-6]\\..*)|(2\\.7\\.[0-5]\\..*)|(2\\.8\\.0\\..*)", reason = "Fixed in Quarkus 2.8.1 and backported to 2.7.6.")
     @Test

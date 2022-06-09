@@ -15,7 +15,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
 @QuarkusScenario
-public class SpringDataCatResourceIT extends AbstractDbIT {
+public class SpringDataSimpleEntityIT extends AbstractDbIT {
     @Test
     void testCustomFindPublicationYearObjectBoolean() {
         app.given().get("/cat/customFindDistinctiveObject/2").then()

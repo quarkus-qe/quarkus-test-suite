@@ -10,7 +10,7 @@ import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.ts.spring.data.AbstractDbIT;
 
 @QuarkusScenario
-public class LibraryRepositoryIT extends AbstractDbIT {
+public class CrudRepositoryRestResourceIT extends AbstractDbIT {
     @Test
     void testAllRepositoryMethods() throws InterruptedException {
 

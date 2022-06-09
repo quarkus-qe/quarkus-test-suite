@@ -17,7 +17,7 @@ import io.quarkus.ts.spring.data.AbstractDbIT;
 import io.restassured.response.Response;
 
 @QuarkusScenario
-class ArticleRepositoryIT extends AbstractDbIT {
+class PagingAndSortingRepositoryRestResourceIT extends AbstractDbIT {
 
     @Test
     void testAllRepositoryMethods() throws InterruptedException {
