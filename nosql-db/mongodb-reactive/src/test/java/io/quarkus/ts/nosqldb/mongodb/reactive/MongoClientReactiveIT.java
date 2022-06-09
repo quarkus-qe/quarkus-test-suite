@@ -2,12 +2,12 @@ package io.quarkus.ts.nosqldb.mongodb.reactive;
 
 import io.quarkus.test.bootstrap.MongoDbService;
 import io.quarkus.test.bootstrap.RestService;
-import io.quarkus.test.scenarios.OpenShiftScenario;
+import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
-@OpenShiftScenario
-public class OpenShiftMongoDbIT extends AbstractMongoDbIT {
+@QuarkusScenario
+public class MongoClientReactiveIT extends AbstractMongoClientReactiveIT {
 
     @Container(image = "${mongodb.image}", port = 27017, expectedLog = "Waiting for connections")
     static MongoDbService database = new MongoDbService();

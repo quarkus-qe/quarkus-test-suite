@@ -5,8 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.MongoDbService;
 import io.quarkus.test.bootstrap.RestService;
@@ -18,7 +17,7 @@ import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 
 @QuarkusScenario
-public class MongoDbIT {
+public class MongoClientIT {
 
     @Container(image = "${mongodb.image}", port = 27017, expectedLog = "Waiting for connections")
     static MongoDbService database = new MongoDbService();
@@ -27,9 +26,17 @@ public class MongoDbIT {
     static RestService app = new RestService()
             .withProperty("quarkus.mongodb.connection-string", database::getJdbcUrl);
 
-    @ParameterizedTest
-    @ValueSource(strings = { "/fruits", "/codec_fruits" })
-    public void fruitsEndpoints(String path) {
+    @Test
+    public void insertAndGetSimpleEntity() {
+        insertAndGetSimpleEntity("/fruits");
+    }
+
+    @Test
+    public void insertAndGetSimpleEntityWithBsonCodec() {
+        insertAndGetSimpleEntity("/codec_fruits");
+    }
+
+    public void insertAndGetSimpleEntity(String path) {
         final Fruit fruit1 = new Fruit("fruit1", "fruit description 1");
         final Fruit fruit2 = new Fruit("fruit2", "fruit description 2");
 
@@ -49,9 +56,17 @@ public class MongoDbIT {
         assertThat(fruits2).isEqualTo(fruits1);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = { "/fruit_baskets", "/codec_fruit_baskets" })
-    public void fruitBasketsEndpoints(String path) {
+    @Test
+    public void insertAndGetCompositeEntity() {
+        insertAndGetCompositeEntity("/fruit_baskets");
+    }
+
+    @Test
+    public void insertAndGetCompositeEntityWithBsonCodec() {
+        insertAndGetCompositeEntity("/codec_fruit_baskets");
+    }
+
+    public void insertAndGetCompositeEntity(String path) {
         final Fruit fruit1 = new Fruit("fruit1", "fruit description 1");
         final Fruit fruit2 = new Fruit("fruit2", "fruit description 2");
         final FruitBasket fruitBasket1 = new FruitBasket("null", null);

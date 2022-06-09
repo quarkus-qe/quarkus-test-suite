@@ -18,10 +18,10 @@ import io.vertx.mutiny.core.buffer.Buffer;
 import io.vertx.mutiny.ext.web.client.HttpRequest;
 import io.vertx.mutiny.ext.web.client.HttpResponse;
 
-public abstract class AbstractMongoDbIT {
+public abstract class AbstractMongoClientReactiveIT {
     @ParameterizedTest
     @ValueSource(strings = { "/reactive_fruits" })
-    public void fruitsEndpoints(String path) {
+    public void insertAndGetSimpleEntity(String path) {
         final Fruit fruit1 = new Fruit("fruit1", "fruit description 1");
         final Fruit fruit2 = new Fruit("fruit2", "fruit description 2");
 
@@ -40,7 +40,7 @@ public abstract class AbstractMongoDbIT {
 
     @ParameterizedTest
     @ValueSource(strings = { "/reactive_fruit_baskets" })
-    public void fruitBasketsEndpoints(String path) {
+    public void insertAndGetCompositeEntity(String path) {
         final Fruit fruit1 = new Fruit("fruit1", "fruit description 1");
         final Fruit fruit2 = new Fruit("fruit2", "fruit description 2");
         final FruitBasket fruitBasket1 = new FruitBasket("null", null);
