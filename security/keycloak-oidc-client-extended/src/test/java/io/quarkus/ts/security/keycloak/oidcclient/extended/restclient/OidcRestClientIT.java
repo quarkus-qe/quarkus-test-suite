@@ -15,7 +15,7 @@ import io.quarkus.ts.security.keycloak.oidcclient.extended.restclient.model.Scor
 import io.restassured.http.ContentType;
 
 @QuarkusScenario
-public class RestClientInPingPongResourcesIT extends BaseIT {
+public class OidcRestClientIT extends BaseOidcIT {
 
     static final String PING_ENDPOINT = "/%s-ping";
     static final String PONG_ENDPOINT = "/%s-pong";

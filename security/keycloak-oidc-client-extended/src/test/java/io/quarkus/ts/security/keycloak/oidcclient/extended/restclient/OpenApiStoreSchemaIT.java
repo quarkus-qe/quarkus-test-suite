@@ -22,7 +22,7 @@ import io.smallrye.openapi.runtime.io.Format;
 import io.vertx.core.json.JsonObject;
 
 @QuarkusScenario
-public class OpenApiIT extends BaseIT {
+public class OpenApiStoreSchemaIT extends BaseOidcIT {
 
     private static String directory = "target/generated/jax-rs/";
     private static final String OPEN_API_DOT = "openapi.";

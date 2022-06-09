@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.scenarios.QuarkusScenario;
 
 @QuarkusScenario
-public class SecuredResourceIT extends BaseIT {
+public class SecurityClaimsIT extends BaseOidcIT {
 
     private static final String SECURED_PATH = "/secured";
     private static final String CLAIMS_FROM_BEANS_PATH = "/getClaimsFromBeans";

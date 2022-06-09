@@ -8,7 +8,7 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
-public abstract class BaseIT {
+public abstract class BaseOidcIT {
     static final String USER = "test-user";
 
     static final int KEYCLOAK_PORT = 8080;
