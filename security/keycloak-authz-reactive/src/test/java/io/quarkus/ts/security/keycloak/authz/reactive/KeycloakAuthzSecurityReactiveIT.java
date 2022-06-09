@@ -1,22 +1,20 @@
 package io.quarkus.ts.security.keycloak.authz.reactive;
 
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
-
 import io.quarkus.test.bootstrap.KeycloakService;
 import io.quarkus.test.bootstrap.RestService;
-import io.quarkus.test.scenarios.OpenShiftScenario;
+import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
-@OpenShiftScenario
-@EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
-public class OpenShiftRhSsoAuthzSecurityIT extends BaseAuthzSecurityIT {
+@QuarkusScenario
+public class KeycloakAuthzSecurityReactiveIT extends BaseAuthzSecurityReactiveIT {
 
     static final int KEYCLOAK_PORT = 8080;
 
-    @Container(image = "${rhsso.image}", expectedLog = "Http management interface listening", port = KEYCLOAK_PORT)
-    static KeycloakService keycloak = new KeycloakService(REALM_DEFAULT)
-            .withProperty("SSO_IMPORT_FILE", "resource::/keycloak-realm.json");
+    //TODO Remove workaround after Keycloak is fixed https://github.com/keycloak/keycloak/issues/9916
+    @Container(image = "${keycloak.image}", expectedLog = "Http management interface listening", port = KEYCLOAK_PORT)
+    static KeycloakService keycloak = new KeycloakService("/keycloak-realm.json", REALM_DEFAULT)
+            .withProperty("JAVA_OPTS", "-Dcom.redhat.fips=false");
 
     @QuarkusApplication
     static RestService app = new RestService()
