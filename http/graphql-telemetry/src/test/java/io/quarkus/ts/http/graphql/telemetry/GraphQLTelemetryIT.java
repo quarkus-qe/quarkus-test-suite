@@ -41,7 +41,7 @@ public class GraphQLTelemetryIT {
         await().atMost(1, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(10)).untilAsserted(() -> {
             String operation = "/graphql";
             Response traces = given().when()
-                    .queryParam("operationName", operation)
+                    .queryParam("operation", operation)
                     .queryParam("lookback", "1h")
                     .queryParam("limit", 10)
                     .queryParam("service", "graphql-telemetry")
