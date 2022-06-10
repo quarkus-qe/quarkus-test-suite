@@ -8,11 +8,14 @@ import com.github.dockerjava.api.model.Image;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusSnapshot;
 import io.quarkus.test.services.DevModeQuarkusApplication;
 import io.quarkus.test.utils.DockerUtils;
 
 @Tag("QUARKUS-1080")
 @QuarkusScenario
+//TODO https://github.com/quarkusio/quarkus/issues/26042
+@DisabledOnQuarkusSnapshot(reason = "mssql devservices fail at build time due to a missing configuration")
 public class DevModeReactiveMysqlDevServiceUserExperienceIT {
     private static final String MYSQL_VERSION = "5.6.51";
     private static final String MYSQL_NAME = "mysql";
