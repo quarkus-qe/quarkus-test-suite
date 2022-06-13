@@ -50,7 +50,7 @@ public class OpentelemetryIT {
     @Test
     public void testContextPropagation() {
         int pageLimit = 10;
-        String operationName = "ping/pong";
+        String operationName = "/ping/pong";
         String[] operations = new String[] { "/ping/pong", "/hello", "/hello" };
 
         await().atMost(1, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(1)).untilAsserted(() -> {
@@ -70,7 +70,7 @@ public class OpentelemetryIT {
 
     private void thenRetrieveTraces(int pageLimit, String lookBack, String serviceName, String operationName) {
         resp = given().when()
-                .queryParam("operationName", operationName)
+                .queryParam("operation", operationName)
                 .queryParam("lookback", lookBack)
                 .queryParam("limit", pageLimit)
                 .queryParam("service", serviceName)
