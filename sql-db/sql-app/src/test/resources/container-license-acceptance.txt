@@ -1,3 +1,4 @@
 mcr.microsoft.com/mssql/server:2017-CU12
 mcr.microsoft.com/mssql/server:2019-CU10-ubuntu-20.04
 mcr.microsoft.com/mssql/server:2019-CU15-ubuntu-20.04
+mcr.microsoft.com/mssql/server:2019-latest

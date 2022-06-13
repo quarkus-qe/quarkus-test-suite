@@ -8,14 +8,11 @@ import com.github.dockerjava.api.model.Image;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusSnapshot;
 import io.quarkus.test.services.DevModeQuarkusApplication;
 import io.quarkus.test.utils.DockerUtils;
 
 @Tag("QUARKUS-1080")
 @QuarkusScenario
-//TODO https://github.com/quarkusio/quarkus/issues/26042
-@DisabledOnQuarkusSnapshot(reason = "mssql devservices fail at build time due to a missing configuration")
 public class DevModeReactivePostgresqlDevServiceUserExperienceIT {
     private static final String POSTGRESQL_VERSION = "9.6.23";
     private static final String POSTGRES_NAME = "postgres";
