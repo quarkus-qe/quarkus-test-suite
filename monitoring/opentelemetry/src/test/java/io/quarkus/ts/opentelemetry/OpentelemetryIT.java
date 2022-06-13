@@ -70,7 +70,7 @@ public class OpentelemetryIT {
 
     private void thenRetrieveTraces(int pageLimit, String lookBack, String serviceName, String operationName) {
         resp = given().when()
-                .queryParam("operationName", operationName)
+                .queryParam("operation", operationName)
                 .queryParam("lookback", lookBack)
                 .queryParam("limit", pageLimit)
                 .queryParam("service", serviceName)
