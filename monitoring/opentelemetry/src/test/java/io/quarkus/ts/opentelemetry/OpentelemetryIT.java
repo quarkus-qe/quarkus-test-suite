@@ -18,12 +18,15 @@ import org.junit.jupiter.api.condition.OS;
 import io.quarkus.test.bootstrap.JaegerService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.JaegerContainer;
 import io.quarkus.test.services.QuarkusApplication;
 import io.restassured.response.Response;
 
 @QuarkusScenario
 @DisabledOnOs(value = OS.WINDOWS, disabledReason = "Windows does not support Linux Containers / Testcontainers")
+// TODO https://github.com/quarkusio/quarkus/issues/26083
+@DisabledOnNative(reason = "Native opentelemtry reported issue: NoSuchMethodException: UdsNettyChannelProvider")
 public class OpentelemetryIT {
     private static final int GRPC_COLLECTOR_PORT = 14250;
 
