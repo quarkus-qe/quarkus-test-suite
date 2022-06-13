@@ -51,6 +51,7 @@ public class VertxWebClientIT {
 
     private static final int REST_PORT = 16686;
     private static final int TRACE_PORT = 14250;
+    private static final String TRACE_PING_PATH = "/trace/ping";
 
     private Response resp;
 
@@ -106,38 +107,36 @@ public class VertxWebClientIT {
     @Test
     public void endpointShouldTrace() {
         final int pageLimit = 50;
-        final String expectedOperationName = "trace/ping";
         await().atMost(1, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(1)).untilAsserted(() -> {
             whenIMakePingRequest();
-            thenRetrieveTraces(pageLimit, "1h", getServiceName(), expectedOperationName);
+            thenRetrieveTraces(pageLimit, "1h", getServiceName(), TRACE_PING_PATH);
             thenStatusCodeMustBe(HttpStatus.SC_OK);
             thenTraceDataSizeMustBe(greaterThan(0));
             thenTraceSpanSizeMustBe(greaterThan(0));
             thenTraceSpanTagsSizeMustBe(greaterThan(0));
             thenTraceSpansOperationNameMustBe(not(empty()));
-            thenCheckOperationNamesIsEqualTo(expectedOperationName);
+            thenCheckOperationNamesIsEqualTo(TRACE_PING_PATH);
         });
     }
 
     @Test
     public void httpClientShouldHaveHisOwnSpan() {
         final int pageLimit = 50;
-        final String expectedOperationName = "trace/ping";
         await().atMost(1, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(1)).untilAsserted(() -> {
             whenIMakePingRequest();
-            thenRetrieveTraces(pageLimit, "1h", getServiceName(), expectedOperationName);
+            thenRetrieveTraces(pageLimit, "1h", getServiceName(), TRACE_PING_PATH);
             thenStatusCodeMustBe(HttpStatus.SC_OK);
             thenTraceDataSizeMustBe(greaterThan(0));
             thenTraceSpanSizeMustBe(greaterThan(1));
             thenTraceSpanTagsSizeMustBe(greaterThan(0));
             thenTraceSpansOperationNameMustBe(not(empty()));
-            thenCheckOperationNamesIsEqualTo(expectedOperationName);
+            thenCheckOperationNamesIsEqualTo(TRACE_PING_PATH);
         });
     }
 
     private void whenIMakePingRequest() {
         given().when()
-                .get("/trace/ping")
+                .get(TRACE_PING_PATH)
                 .then()
                 .statusCode(HttpStatus.SC_OK).body(equalToIgnoringCase("ping-pong"));
     }

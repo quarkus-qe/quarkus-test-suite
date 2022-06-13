@@ -50,7 +50,7 @@ public class OpentelemetryReactiveIT {
     @Test
     public void testContextPropagation() {
         int pageLimit = 10;
-        String operationName = "ping/pong";
+        String operationName = "/ping/pong";
         String[] operations = new String[] { "/ping/pong", "/hello", "/hello" };
 
         await().atMost(1, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(1)).untilAsserted(() -> {
