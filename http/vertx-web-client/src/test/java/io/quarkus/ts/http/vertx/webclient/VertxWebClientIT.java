@@ -4,13 +4,13 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static io.restassured.RestAssured.given;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static java.util.Objects.requireNonNull;
 import static org.awaitility.Awaitility.await;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.not;
-import static org.hamcrest.core.Every.everyItem;
-import static org.hamcrest.core.StringContains.containsString;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
 
 import java.io.File;
@@ -18,7 +18,10 @@ import java.net.HttpURLConnection;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matcher;
@@ -26,6 +29,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.tomakehurst.wiremock.client.WireMock;
 
 import io.quarkus.test.bootstrap.DefaultService;
@@ -110,7 +115,7 @@ public class VertxWebClientIT {
             thenTraceSpanSizeMustBe(greaterThan(0));
             thenTraceSpanTagsSizeMustBe(greaterThan(0));
             thenTraceSpansOperationNameMustBe(not(empty()));
-            thenCheckThatAllOperationNamesAreEqualTo(expectedOperationName);
+            thenCheckOperationNamesIsEqualTo(expectedOperationName);
         });
     }
 
@@ -126,7 +131,7 @@ public class VertxWebClientIT {
             thenTraceSpanSizeMustBe(greaterThan(1));
             thenTraceSpanTagsSizeMustBe(greaterThan(0));
             thenTraceSpansOperationNameMustBe(not(empty()));
-            thenCheckThatAllOperationNamesAreEqualTo(expectedOperationName);
+            thenCheckOperationNamesIsEqualTo(expectedOperationName);
         });
     }
 
@@ -142,7 +147,7 @@ public class VertxWebClientIT {
                 .queryParam("limit", pageLimit)
                 .queryParam("lookback", lookBack)
                 .queryParam("service", serviceName)
-                .queryParam("operationName", operationName)
+                .queryParam("operation", operationName)
                 .get(jaeger.getRestUrl());
     }
 
@@ -166,9 +171,22 @@ public class VertxWebClientIT {
         resp.then().body("data.spans.operationName", matcher);
     }
 
-    private void thenCheckThatAllOperationNamesAreEqualTo(String expectedOperationName) {
-        List<String> operationNames = resp.then().extract().jsonPath().getList("data.spans.operationName", String.class);
-        assertThat(operationNames, everyItem(containsString(expectedOperationName)));
+    private void thenCheckOperationNamesIsEqualTo(String expectedOperationName) {
+        var body = resp.then().extract().jsonPath();
+        IntStream
+                .range(0, body.getList("data").size())
+                .mapToObj(i -> body.getList("data[" + i + "].spans", Span.class))
+                .map(TreeSet::new)
+                .forEach(spans -> {
+                    var prevSpan = requireNonNull(spans.pollFirst());
+                    // assert that operation of the root span element is the expected one
+                    Assertions.assertEquals(expectedOperationName, prevSpan.operationName);
+                    // assert all other span elements are children (pingRequest endpoint calls pong endpoint and returns result)
+                    for (Span span : spans) {
+                        Assertions.assertTrue(prevSpan.hasChild(span));
+                        prevSpan = span;
+                    }
+                });
     }
 
     @Test
@@ -198,5 +216,49 @@ public class VertxWebClientIT {
 
     private WireMock wireMockClient() {
         return new WireMock(wiremock.getHost().substring("http://".length()), wiremock.getPort());
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    private static final class Span implements Comparable<Span> {
+
+        private static final String SPAN_ID = "spanID";
+
+        @JsonProperty
+        String operationName;
+
+        @JsonProperty
+        String spanID;
+
+        private String parentSpanID;
+
+        @JsonProperty("references")
+        void setParentSpanID(List<Map<String, Object>> references) {
+            // has reference to a parent element -> is not root element
+            if (nonNull(references) && !references.isEmpty() && nonNull(references.get(0))) {
+                parentSpanID = (String) references.get(0).get(SPAN_ID);
+            }
+        }
+
+        @Override
+        public int compareTo(Span otherSpan) {
+            // leaf node > branch node > root
+            if (isRootElement()) {
+                return -1;
+            }
+            if (otherSpan.isRootElement()) {
+                return 1;
+            } else {
+                return hasChild(otherSpan) ? -1 : 1;
+            }
+        }
+
+        boolean hasChild(Span otherSpan) {
+            return spanID.equals(otherSpan.parentSpanID);
+        }
+
+        private boolean isRootElement() {
+            return isNull(parentSpanID);
+        }
+
     }
 }
