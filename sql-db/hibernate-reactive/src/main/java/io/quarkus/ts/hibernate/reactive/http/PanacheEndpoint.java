@@ -7,6 +7,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -57,6 +58,12 @@ public class PanacheEndpoint {
                         ? Response.status(Response.Status.NOT_FOUND)
                         : Response.ok(book.getISBN()))
                 .map(Response.ResponseBuilder::build);
+    }
+
+    @GET
+    @Path("books/count/{bookName}")
+    public Uni<Long> countBooksByName(@PathParam("bookName") BookCountWrapper bookCountWrapper) {
+        return bookCountWrapper.getNumOfBooks();
     }
 
     @PUT

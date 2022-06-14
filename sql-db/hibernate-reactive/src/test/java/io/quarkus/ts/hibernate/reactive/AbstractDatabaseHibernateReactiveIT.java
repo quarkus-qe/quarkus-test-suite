@@ -1,5 +1,6 @@
 package io.quarkus.ts.hibernate.reactive;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -112,6 +113,17 @@ public abstract class AbstractDatabaseHibernateReactiveIT {
                 .when().get("/library/authors")
                 .then()
                 .statusCode(HttpStatus.SC_OK);
+    }
+
+    @Tag("QUARKUS-2111")
+    @Test
+    public void paramConverterHasAccessToScopedBeans() {
+        // count books by name inside path parameter converter
+        getApp().given()
+                .when().get("/library/books/count/Slovník")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body(is("1"));
     }
 
     @Test
