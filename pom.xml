@@ -379,7 +379,6 @@
                 <module>kamelet</module>
                 <module>logging/jboss</module>
                 <module>cache/caffeine</module>
-                <module>qute/multimodule</module>
             </modules>
         </profile>
         <profile>
@@ -413,7 +412,6 @@
                 <module>http/http-minimum</module>
                 <module>http/http-minimum-reactive</module>
                 <module>http/http-advanced</module>
-                <module>http/http-advanced-reactive</module>
                 <module>http/http-static</module>
                 <module>http/jaxrs</module>
                 <module>http/jaxrs-reactive</module>
@@ -466,7 +464,6 @@
                 <module>messaging/amqp-reactive</module>
                 <module>messaging/qpid</module>
                 <module>messaging/kafka-streams-reactive-messaging</module>
-                <module>messaging/kafka-confluent-avro-reactive-messaging</module>
                 <module>messaging/kafka-strimzi-avro-reactive-messaging</module>
                 <module>messaging/kafka-producer</module>
                 <module>messaging/kafkaSSL</module>
