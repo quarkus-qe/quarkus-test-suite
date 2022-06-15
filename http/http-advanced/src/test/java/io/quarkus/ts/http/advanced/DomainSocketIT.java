@@ -1,10 +1,11 @@
 package io.quarkus.ts.http.advanced;
 
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,6 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.http.HttpMethod;
-import io.vertx.core.json.JsonObject;
 import io.vertx.core.net.SocketAddress;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
@@ -51,8 +51,7 @@ public class DomainSocketIT {
         WebClient client = WebClient.create(vertx, new WebClientOptions().setFollowRedirects(false));
         SocketAddress serverAddress = SocketAddress.domainSocketAddress("/tmp/io.quarkus.app.socket");
 
-        JsonObject result = new JsonObject();
-        CountDownLatch errors = new CountDownLatch(1);
+        AtomicReference<String> response = new AtomicReference<>();
         client
                 .request(
                         HttpMethod.GET,
@@ -63,15 +62,10 @@ public class DomainSocketIT {
                 .expect(ResponsePredicate.SC_OK)
                 .as(BodyCodec.jsonObject())
                 .send()
-                .onSuccess(res -> {
-                    result.put("body", res.body().toString());
-                    errors.countDown();
-                })
-                .onFailure(err -> result.put("fail", err.getMessage()));
+                .onSuccess(res -> response.set(res.body().toString()))
+                .onFailure(err -> response.set(err.getMessage()));
 
-        errors.await(3, TimeUnit.SECONDS);
-
-        assertEquals(0, errors.getCount(), "Something went wrong with the request: " + result.getString("fail"));
-        assertEquals("{\"content\":\"Hello, World!\"}", result.getString("body"), "Received body is different");
+        await().atMost(3, TimeUnit.SECONDS).until(() -> response.get() != null);
+        assertEquals("{\"content\":\"Hello, World!\"}", response.get(), "Received body is different: " + response.get());
     }
 }
