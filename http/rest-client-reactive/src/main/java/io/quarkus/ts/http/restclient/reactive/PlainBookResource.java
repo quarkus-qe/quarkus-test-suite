@@ -1,5 +1,7 @@
 package io.quarkus.ts.http.restclient.reactive;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.Consumes;
@@ -9,7 +11,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import org.jboss.resteasy.reactive.RestQuery;
+
 import io.quarkus.ts.http.restclient.reactive.json.Book;
+import io.quarkus.ts.http.restclient.reactive.json.BookIdWrapper;
+import io.quarkus.ts.http.restclient.reactive.json.BookRepository;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 
@@ -25,6 +31,21 @@ public class PlainBookResource {
         return Uni.createFrom()
                 .item(new Book(params.get("id"),
                         params.get("author")));
+    }
+
+    @GET
+    @Path("/rest-query")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Uni<List<Book>> getRestQuery(@RestQuery Integer firstPlainId, @RestQuery Integer secondPlainId,
+            @RestQuery BookIdWrapper firstObjectId, @RestQuery BookIdWrapper secondObjectId,
+            @RestQuery List<Integer> additionalIds) {
+        var books = new ArrayList<Book>();
+        books.add(BookRepository.getById(firstPlainId));
+        books.add(BookRepository.getById(secondPlainId));
+        books.add(BookRepository.getById(firstObjectId.getId()));
+        books.add(BookRepository.getById(secondObjectId.getId()));
+        additionalIds.stream().map(BookRepository::getById).forEach(books::add);
+        return Uni.createFrom().item(books);
     }
 
     @GET
