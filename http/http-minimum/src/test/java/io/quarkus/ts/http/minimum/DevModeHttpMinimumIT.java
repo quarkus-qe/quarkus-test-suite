@@ -12,6 +12,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 import io.quarkus.test.bootstrap.DevModeQuarkusService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusSnapshot;
 import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 import io.quarkus.test.services.DevModeQuarkusApplication;
 import io.quarkus.test.utils.AwaitilityUtils;
@@ -68,5 +69,24 @@ public class DevModeHttpMinimumIT {
         AwaitilityUtils.untilAsserted(
                 () -> app.given().get("/hello").then().statusCode(HttpStatus.SC_OK)
                         .body("content", is(String.format(HELLO_IN_SPANISH, WORLD))));
+    }
+
+    @Test
+    @Tag("QUARKUS-2112")
+    // TODO https://github.com/quarkusio/quarkus/issues/26156
+    @DisabledOnQuarkusSnapshot(reason = "Looks that warning message params are swapped by mistake")
+    public void verifyWarningLogWhenBuildPropertyIsUpdated() {
+        String appName = app.getProperty("quarkus.application.name", "test-http");
+        String newAppName = "new-test-app";
+        app.given()
+                .param("action", "updateProperty")
+                .param("name", "quarkus.application.name")
+                .param("value", newAppName)
+                .post("/q/dev/io.quarkus.quarkus-vertx-http/config")
+                .then().statusCode(200);
+
+        String expectedOutput = String.format("quarkus.application.name is set to '%s' but it is build time fixed to '%s'",
+                newAppName, appName);
+        app.logs().assertContains(expectedOutput);
     }
 }
