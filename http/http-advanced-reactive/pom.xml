@@ -48,6 +48,14 @@
             <artifactId>quarkus-keycloak-authorization</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-multipart-provider</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.quarkus.qe</groupId>
             <artifactId>quarkus-test-service-keycloak</artifactId>
             <scope>test</scope>
@@ -63,12 +71,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.squareup.okhttp3</groupId>
-            <artifactId>okhttp</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-multipart-provider</artifactId>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <profiles>
