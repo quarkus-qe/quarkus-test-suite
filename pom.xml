@@ -29,6 +29,7 @@
         <xml-format-maven-plugin.version>3.2.1</xml-format-maven-plugin.version>
         <checkstyle.version>10.3</checkstyle.version>
         <jjwt.version>0.11.5</jjwt.version>
+        <jsoup.version>1.15.1</jsoup.version>
         <camel-quarkus-bom.version>2.9.0</camel-quarkus-bom.version>
         <quarkiverse.config.version>1.0.2</quarkiverse.config.version>
         <smallrye-stork.version>1.1.2</smallrye-stork.version>
@@ -101,6 +102,11 @@
                 <groupId>io.jsonwebtoken</groupId>
                 <artifactId>jjwt-jackson</artifactId>
                 <version>${jjwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jsoup</groupId>
+                <artifactId>jsoup</artifactId>
+                <version>${jsoup.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.assertj</groupId>
