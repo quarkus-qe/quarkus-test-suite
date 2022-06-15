@@ -4,6 +4,7 @@ import java.util.Base64;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -13,6 +14,7 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.restassured.response.Response;
 
 @QuarkusScenario
+@Disabled
 public class ReactiveRestClientProxyIT {
     private static final String USER = "proxyuser";
     private static final String PASSWORD = "proxypassword";

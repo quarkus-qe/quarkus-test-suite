@@ -3,6 +3,7 @@ package io.quarkus.ts.http.restclient.reactive;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -11,6 +12,7 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.restassured.response.Response;
 
 @QuarkusScenario
+@Disabled
 public class StandardMicroProfilePropertiesNotationIT {
 
     @QuarkusApplication

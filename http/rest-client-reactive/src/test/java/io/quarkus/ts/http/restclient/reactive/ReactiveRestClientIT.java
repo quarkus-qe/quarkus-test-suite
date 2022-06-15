@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
@@ -17,6 +18,7 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.restassured.response.Response;
 
 @QuarkusScenario
+@Disabled
 public class ReactiveRestClientIT {
 
     private static final String HEMINGWAY_BOOKS = "In Our Time, The Sun Also Rises, A Farewell to Arms, The Old Man and the Sea";
