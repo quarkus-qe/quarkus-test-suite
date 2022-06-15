@@ -14,6 +14,8 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.ts.http.restclient.reactive.json.Book;
+import io.quarkus.ts.http.restclient.reactive.json.BookRepository;
 import io.restassured.response.Response;
 
 @QuarkusScenario
@@ -54,6 +56,21 @@ public class ReactiveRestClientIT {
         assertEquals(HttpStatus.SC_OK, response.statusCode());
         assertEquals("Hagakure", response.jsonPath().getString("title"));
         assertEquals("Tsuramoto", response.jsonPath().getString("author"));
+    }
+
+    @Tag("QUARKUS-2148")
+    @Test
+    public void restQueryParam() {
+        Response response = app.given().when().get("/client/book/rest-query");
+        assertEquals(HttpStatus.SC_OK, response.statusCode());
+        var books = response.jsonPath().getList(".", Book.class);
+        assertEquals(BookRepository.count(), books.size());
+        for (int i = 0; i < books.size(); i++) {
+            var expectedBook = BookRepository.getById(i + 1);
+            var actualBook = books.get(i);
+            assertEquals(expectedBook.getTitle(), actualBook.getTitle());
+            assertEquals(expectedBook.getAuthor(), actualBook.getAuthor());
+        }
     }
 
     @Test
