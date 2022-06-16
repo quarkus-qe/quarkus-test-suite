@@ -39,7 +39,7 @@ public class PungResource {
         }
     }
 
-    @Route(path = "/", methods = Route.HttpMethod.GET)
+    @Route(path = "*", methods = Route.HttpMethod.GET)
     public Uni<String> pung() {
         return Uni.createFrom().item("pung");
     }
