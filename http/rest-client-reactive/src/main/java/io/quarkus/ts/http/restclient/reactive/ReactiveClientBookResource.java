@@ -1,5 +1,8 @@
 package io.quarkus.ts.http.restclient.reactive;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -7,10 +10,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedHashMap;
 
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import io.quarkus.ts.http.restclient.reactive.json.Book;
+import io.quarkus.ts.http.restclient.reactive.json.BookIdWrapper;
 import io.quarkus.ts.http.restclient.reactive.json.IdBeanParam;
 import io.quarkus.ts.http.restclient.reactive.json.JsonRestInterface;
 import io.smallrye.mutiny.Multi;
@@ -76,5 +81,17 @@ public class ReactiveClientBookResource {
     @Path("/quick-search/encoded")
     public Multi<String> getEncodedPath(@QueryParam("searchTerm") String searchTerm) {
         return bookInterface.getByEncodedSearchTerm(searchTerm);
+    }
+
+    @GET
+    @Path("/rest-query")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Uni<List<Book>> getRestQuery() {
+        var primitiveParamsMap = Map.of("firstPlainId", 1, "secondPlainId", 2);
+        var classParamsMap = Map.of("firstObjectId", new BookIdWrapper(3),
+                "secondObjectId", new BookIdWrapper(4));
+        var multivaluedMap = new MultivaluedHashMap<String, Integer>();
+        multivaluedMap.put("additionalIds", List.of(5, 6));
+        return bookInterface.getByRestQueryMap(primitiveParamsMap, classParamsMap, multivaluedMap);
     }
 }
