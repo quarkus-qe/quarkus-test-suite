@@ -43,7 +43,7 @@ public class PongReplicaResource {
         }
     }
 
-    @Route(path = "/", methods = Route.HttpMethod.GET)
+    @Route(path = "*", methods = Route.HttpMethod.GET)
     public Uni<String> pong() {
         return Uni.createFrom().item(DEFAULT_PONG_REPLICA_RESPONSE);
     }

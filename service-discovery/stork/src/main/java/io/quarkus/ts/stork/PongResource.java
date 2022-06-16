@@ -47,7 +47,7 @@ public class PongResource {
         }
     }
 
-    @Route(path = "/", methods = Route.HttpMethod.GET)
+    @Route(path = "*", methods = Route.HttpMethod.GET)
     public void pong(final RoutingContext context) {
         context.response().putHeader(HEADER_ID, instanceUniqueId).end(DEFAULT_PONG_RESPONSE);
     }
