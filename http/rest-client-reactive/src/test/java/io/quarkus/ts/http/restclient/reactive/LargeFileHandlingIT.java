@@ -171,7 +171,6 @@ public class LargeFileHandlingIT {
 
     @Test
     @DisabledOnOs(value = OS.WINDOWS, disabledReason = "https://github.com/quarkusio/quarkus/issues/24763")
-    @Disabled("https://github.com/quarkus-qe/quarkus-test-suite/issues/707")
     public void uploadMultipart() {
         Response hashSum = app.given().get("/file-client/client-hash");
         assertEquals(HttpStatus.SC_OK, hashSum.statusCode());
