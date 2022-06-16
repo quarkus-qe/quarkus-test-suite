@@ -156,6 +156,22 @@ public class LargeFileHandlingIT {
 
     @Test
     @DisabledOnOs(value = OS.WINDOWS, disabledReason = "https://github.com/quarkusio/quarkus/issues/24763")
+    @DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/25973")
+    public void uploadBigFileThroughClient() {
+        Response hashSum = app.given().get("/file-client/client-hash-big");
+        assertEquals(HttpStatus.SC_OK, hashSum.statusCode());
+        String before = hashSum.body().asString();
+
+        Response upload = app.given().post("/file-client/upload-file-big");
+        assertEquals(HttpStatus.SC_OK, upload.statusCode());
+        String after = upload.body().asString();
+
+        assertEquals(before, after);
+    }
+
+    @Test
+    @DisabledOnOs(value = OS.WINDOWS, disabledReason = "https://github.com/quarkusio/quarkus/issues/24763")
+    @Disabled("https://github.com/quarkus-qe/quarkus-test-suite/issues/707")
     public void uploadMultipart() {
         Response hashSum = app.given().get("/file-client/client-hash");
         assertEquals(HttpStatus.SC_OK, hashSum.statusCode());

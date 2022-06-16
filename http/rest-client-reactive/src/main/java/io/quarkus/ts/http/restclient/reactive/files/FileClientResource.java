@@ -23,8 +23,10 @@ import io.smallrye.mutiny.Uni;
 @Path("/file-client")
 public class FileClientResource {
     private static final long BIGGER_THAN_TWO_GIGABYTES = OsUtils.SIZE_2049MiB;
+    private static final long THREE_GIGABYTES = 2178532224L;
 
     private final java.nio.file.Path file;
+    private final java.nio.file.Path largeFile;
     private final List<java.nio.file.Path> deathRow = new LinkedList<>();
     private final FileClient client;
     private final OsUtils utils;
@@ -38,6 +40,11 @@ public class FileClientResource {
                 .map(existing -> java.nio.file.Path.of(existing).resolve("upload.txt").toAbsolutePath())
                 .peek(path -> utils.createFile(path, BIGGER_THAN_TWO_GIGABYTES))
                 .findFirst().orElse(null);
+        largeFile = folder
+                .stream()
+                .map(existing -> java.nio.file.Path.of(existing).resolve("upload_big.txt").toAbsolutePath())
+                .peek(path -> utils.createFile(path, THREE_GIGABYTES))
+                .findFirst().orElse(null);
         this.client = client;
     }
 
@@ -46,6 +53,13 @@ public class FileClientResource {
     @Blocking
     public Uni<String> calculateHash() {
         return Uni.createFrom().item(() -> utils.getSum(file));
+    }
+
+    @GET
+    @Path("/client-hash-big")
+    @Blocking
+    public Uni<String> calculateLargeHash() {
+        return Uni.createFrom().item(() -> utils.getSum(largeFile));
     }
 
     @GET
@@ -98,6 +112,12 @@ public class FileClientResource {
     @Path("/upload-file")
     public Uni<String> upload() {
         return client.sendFile(file.toFile());
+    }
+
+    @POST
+    @Path("/upload-file-big")
+    public Uni<String> uploadLarge() {
+        return client.sendFile(largeFile.toFile());
     }
 
     @DELETE
