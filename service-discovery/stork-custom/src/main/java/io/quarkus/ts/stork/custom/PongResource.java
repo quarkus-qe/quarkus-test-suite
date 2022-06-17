@@ -11,7 +11,7 @@ public class PongResource {
 
     private static final String DEFAULT_PONG_RESPONSE = "pong";
 
-    @Route(path = "/", methods = Route.HttpMethod.GET)
+    @Route(path = "*", methods = Route.HttpMethod.GET)
     public void pong(final RoutingContext context) {
         context.response().end(DEFAULT_PONG_RESPONSE);
     }

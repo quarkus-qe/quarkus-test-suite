@@ -11,7 +11,7 @@ public class PongReplicaResource {
 
     private static final String DEFAULT_PONG_REPLICA_RESPONSE = "pongReplica";
 
-    @Route(path = "/", methods = Route.HttpMethod.GET)
+    @Route(path = "*", methods = Route.HttpMethod.GET)
     public Uni<String> pong() {
         return Uni.createFrom().item(DEFAULT_PONG_REPLICA_RESPONSE);
     }
