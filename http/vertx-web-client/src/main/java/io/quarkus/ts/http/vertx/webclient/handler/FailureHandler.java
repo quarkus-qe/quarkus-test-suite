@@ -12,7 +12,7 @@ import io.vertx.core.json.JsonObject;
 
 @ApplicationScoped
 public class FailureHandler {
-    @Route(path = "/*", type = Route.HandlerType.FAILURE, produces = "application/json")
+    @Route(path = "*", type = Route.HandlerType.FAILURE, produces = "application/json")
     void runtimeFailures(RuntimeException e, HttpServerResponse response) {
         if (e instanceof TimeoutException) {
             response.setStatusCode(HttpURLConnection.HTTP_CLIENT_TIMEOUT)

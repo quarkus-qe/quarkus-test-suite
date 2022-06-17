@@ -44,14 +44,14 @@ public class ChuckNorrisResource {
         this.client = WebClient.create(vertx);
     }
 
-    @Route(methods = HttpMethod.GET, path = "/")
+    @Route(methods = HttpMethod.GET, path = "*", order = 4)
     public Uni<Joke> getRandomJoke() {
         return getChuckQuoteAsJoke()
                 .ifNoItem().after(Duration.ofSeconds(httpClientConf.timeout())).fail()
                 .onFailure().retry().atMost(httpClientConf.retries());
     }
 
-    @Route(methods = HttpMethod.GET, path = "/bodyCodec", produces = "application/json")
+    @Route(methods = HttpMethod.GET, path = "/bodyCodec", produces = "application/json", order = 1)
     public Uni<Joke> getRandomJokeWithBodyCodec() {
         return client.getAbs(chuckNorrisQuote.getValue())
                 .as(BodyCodec.json(Joke.class))
@@ -63,7 +63,7 @@ public class ChuckNorrisResource {
                 .onFailure().retry().atMost(httpClientConf.retries());
     }
 
-    @Route(methods = HttpMethod.GET, path = "/combine", produces = "application/json")
+    @Route(methods = HttpMethod.GET, path = "/combine", produces = "application/json", order = 2)
     public Uni<List<Joke>> getTwoRandomJokes() {
         Uni<Joke> jokeOne = getChuckQuoteAsJoke();
         Uni<Joke> jokeTwo = getChuckQuoteAsJoke();
@@ -74,7 +74,7 @@ public class ChuckNorrisResource {
                 .combinedWith((BiFunction<Joke, Joke, List<Joke>>) Arrays::asList);
     }
 
-    @Route(methods = HttpMethod.GET, path = "/pong", produces = "application/json")
+    @Route(methods = HttpMethod.GET, path = "/pong", produces = "application/json", order = 3)
     public Uni<String> ping() {
         return Uni.createFrom().item("pong");
     }
