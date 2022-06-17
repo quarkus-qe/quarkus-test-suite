@@ -44,7 +44,7 @@ public class FlightsHandler {
 
     @Operation(summary = "Flight search")
     @APIResponse(responseCode = "200", description = "search flights prices", content = @Content(mediaType = "application/json", schema = @Schema(type = SchemaType.STRING)))
-    @Route(methods = HttpMethod.PUT, path = "/search")
+    @Route(methods = HttpMethod.PUT, path = "/search", order = 0)
     void search(@Body @Valid QueryFlightSearch query, RoutingContext context) {
         flightSearchService.search(query)
                 .onFailure().invoke(context::fail)
@@ -53,7 +53,7 @@ public class FlightsHandler {
 
     @Operation(summary = "Retrieve all flights")
     @APIResponse(responseCode = "200", content = @Content(mediaType = "application/json", schema = @Schema(type = SchemaType.ARRAY, implementation = Flight.class)))
-    @Route(methods = HttpMethod.GET, path = "/*")
+    @Route(methods = HttpMethod.GET, path = "*", order = 2)
     void allFlights(RoutingContext context) {
         Flight.findAllAsList(connection)
                 .onFailure().invoke(context::fail)
@@ -62,7 +62,7 @@ public class FlightsHandler {
 
     @Operation(summary = "Retrieve all flights by origin and destination")
     @APIResponse(responseCode = "200", content = @Content(mediaType = "application/json", schema = @Schema(type = SchemaType.ARRAY, implementation = Flight.class)))
-    @Route(methods = HttpMethod.GET, path = "/origin/:origin/destination/:destination")
+    @Route(methods = HttpMethod.GET, path = "/origin/:origin/destination/:destination", order = 1)
     void allFlightOriginDest(@Param("origin") String origin, @Param("destination") String destination, RoutingContext context) {
         Flight.findByOriginDestinationAsList(connection, origin, destination)
                 .onFailure().invoke(context::fail)

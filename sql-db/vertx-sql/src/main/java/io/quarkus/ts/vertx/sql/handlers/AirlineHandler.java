@@ -30,7 +30,7 @@ public class AirlineHandler {
 
     @Operation(summary = "Retrieve all Airlines")
     @APIResponse(responseCode = "200", content = @Content(mediaType = "application/json", schema = @Schema(type = SchemaType.ARRAY, implementation = Airline.class)))
-    @Route(methods = HttpMethod.GET, path = "/*")
+    @Route(methods = HttpMethod.GET, path = "*")
     void allAirline(RoutingContext context) {
         Airline.findAllAsList(connection)
                 .onFailure().invoke(context::fail)

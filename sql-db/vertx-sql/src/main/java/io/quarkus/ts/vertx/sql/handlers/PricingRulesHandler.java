@@ -30,7 +30,7 @@ public class PricingRulesHandler {
 
     @Operation(summary = "Retrieve all pricing rules")
     @APIResponse(responseCode = "200", content = @Content(mediaType = "application/json", schema = @Schema(type = SchemaType.ARRAY, implementation = PricingRules.class)))
-    @Route(methods = HttpMethod.GET, path = "/*")
+    @Route(methods = HttpMethod.GET, path = "*")
     void allPricingRules(RoutingContext context) {
         PricingRules.findAllAsList(connection)
                 .onFailure().invoke(context::fail)
