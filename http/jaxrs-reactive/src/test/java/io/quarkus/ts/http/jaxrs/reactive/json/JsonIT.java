@@ -15,7 +15,7 @@ import io.restassured.response.ValidatableResponse;
 
 @Tag("QUARKUS-1075")
 @QuarkusScenario
-public class JsonResourceIT {
+public class JsonIT {
     private static final String BASE_PATH = "/json";
     private static final String CUSTOM_JSON = String.format("{id:%d,name:\"%s\"}", JsonResource.USER_ID,
             JsonResource.USER_NAME);
