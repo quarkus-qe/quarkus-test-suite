@@ -26,7 +26,7 @@ import io.quarkus.test.services.QuarkusApplication;
  * - `prime_number_test_{uniqueId}`: with information about the calculation of the prime number.
  */
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
-public class OpenShiftPrimeNumberResourceIT {
+public class OpenShiftCustomMetricsIT {
 
     static final String PRIME_NUMBER_MAX = "prime_number_max_%s";
 
@@ -45,7 +45,7 @@ public class OpenShiftPrimeNumberResourceIT {
     static final Integer ANY_VALUE = null;
 
     @QuarkusApplication
-    static RestService app = new RestService().onPostStart(OpenShiftPrimeNumberResourceIT::loadServiceMonitor);
+    static RestService app = new RestService().onPostStart(OpenShiftCustomMetricsIT::loadServiceMonitor);
 
     @Inject
     static OpenShiftClient client;

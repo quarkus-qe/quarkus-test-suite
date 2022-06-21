@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.scenarios.QuarkusScenario;
 
 @QuarkusScenario
-public class UsingRegistryPingPongResourceIT {
+public class MeterRegistryIT {
 
     private static final String PING_PONG_ENDPOINT = "/using-registry-pingpong/";
     private static final String SIMPLE_SCENARIO = "simple_registry";
