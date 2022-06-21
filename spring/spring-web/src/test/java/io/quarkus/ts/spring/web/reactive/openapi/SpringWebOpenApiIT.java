@@ -12,12 +12,10 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
-import io.restassured.response.Response;
 
 @QuarkusScenario
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class SpringWebOpenApiIT extends AbstractSpringWebOpenApiIT {
-    private static Response response;
 
     @Container(image = IMAGE_10, port = PORT, expectedLog = START_LOG_10)
     static final MariaDbService database = new MariaDbService();
