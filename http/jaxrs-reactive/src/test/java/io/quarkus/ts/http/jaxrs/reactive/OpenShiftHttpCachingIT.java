@@ -7,5 +7,5 @@ import io.quarkus.test.scenarios.OpenShiftScenario;
 
 @Tag("use-quarkus-openshift-extension")
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
-public class OpenShiftHttpCachingResourceIT extends HttpCachingResourceIT {
+public class OpenShiftHttpCachingIT extends HttpCachingIT {
 }

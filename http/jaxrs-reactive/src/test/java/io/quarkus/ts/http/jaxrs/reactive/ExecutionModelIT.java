@@ -16,7 +16,7 @@ import io.quarkus.test.services.QuarkusApplication;
 
 @Tag("QUARKUS-1075")
 @QuarkusScenario
-public class ExecutionModelResourceIT {
+public class ExecutionModelIT {
     public static final String THREAD_BLOCKED = "io.vertx.core.VertxException: Thread blocked";
 
     @QuarkusApplication

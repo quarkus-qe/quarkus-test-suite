@@ -10,7 +10,7 @@ import io.quarkus.test.scenarios.QuarkusScenario;
 
 @Tag("QUARKUS-1225")
 @QuarkusScenario
-public class MultipartClientResourceIT {
+public class MultipartClientIT {
 
     @Test
     public void testMultipartDataIsSent() {
