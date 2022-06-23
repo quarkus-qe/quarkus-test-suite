@@ -119,6 +119,17 @@
     <dependencies>
         <dependency>
             <groupId>io.quarkus.qe</groupId>
+            <artifactId>quarkus-test-core</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.annotation</groupId>
+                    <artifactId>javax.annotation-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus.qe</groupId>
             <artifactId>quarkus-test-containers</artifactId>
             <version>${quarkus.qe.framework.version}</version>
             <scope>test</scope>
@@ -129,6 +140,10 @@
                     <artifactId>hamcrest-core</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
         </dependency>
         <dependency>
             <groupId>io.quarkus.qe</groupId>
