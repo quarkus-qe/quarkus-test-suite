@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.scenarios.QuarkusScenario;
 
 @QuarkusScenario
-public class InjectingScopedBeansResourceIT {
+public class InjectingScopedBeansIT {
     @Test
     public void shouldInjectScopedBeans() {
         given().when().get("/scopedbeans/sessionId")

@@ -8,37 +8,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import io.quarkus.test.bootstrap.MariaDbService;
 import io.quarkus.test.bootstrap.RestService;
-import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.services.Container;
-import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.spring.web.reactive.boostrap.persistence.model.Book;
-import io.quarkus.ts.spring.web.reactive.reactive.AbstractDbReactiveIT;
 import io.restassured.response.Response;
 
-@QuarkusScenario
-@EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
-public class BookResourceSpringWebReactiveIT extends AbstractDbReactiveIT {
+public abstract class AbstractSpringWebRestReactiveIT {
 
     private static final String API_ROOT = "/api/books";
 
-    static final int MARIADB_PORT = 3306;
-
-    @Container(image = "${mariadb.105.image}", port = MARIADB_PORT, expectedLog = "Only MySQL server logs after this point")
-    static final MariaDbService database = new MariaDbService();
-
-    @QuarkusApplication
-    private static final RestService app = new RestService()
-            .withProperty("quarkus.datasource.username", database.getUser())
-            .withProperty("quarkus.datasource.password", database.getPassword())
-            .withProperty("quarkus.datasource.reactive.url",
-                    () -> "vertx-reactive:" + database.getHost().replace("http", "mysql") + ":" + database.getPort() + "/"
-                            + database.getDatabase());
+    protected abstract RestService getApp();
 
     @Test
     public void whenGetNotExistBookById_thenNotFound() {
@@ -144,10 +125,5 @@ public class BookResourceSpringWebReactiveIT extends AbstractDbReactiveIT {
                 .post(API_ROOT);
         return API_ROOT + "/" + response.jsonPath()
                 .get("id");
-    }
-
-    @Override
-    public RestService getApp() {
-        return app;
     }
 }

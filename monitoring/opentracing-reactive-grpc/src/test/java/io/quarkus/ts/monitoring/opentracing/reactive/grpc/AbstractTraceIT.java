@@ -16,7 +16,7 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.services.JaegerContainer;
 import io.quarkus.test.services.QuarkusApplication;
 
-public abstract class AbstractPingPongResourceIT {
+public abstract class AbstractTraceIT {
 
     private static final String PING_ENDPOINT = "/%s-ping";
     private static final String PONG_ENDPOINT = "/%s-pong";
@@ -32,7 +32,7 @@ public abstract class AbstractPingPongResourceIT {
             .withProperty("quarkus.jaeger.endpoint", jaeger::getRestUrl);
 
     @Test
-    public void testPingPong() {
+    public void testServerClientTrace() {
         // When calling ping, the rest will invoke also the pong rest endpoint.
         given()
                 .when().get(pingEndpoint())

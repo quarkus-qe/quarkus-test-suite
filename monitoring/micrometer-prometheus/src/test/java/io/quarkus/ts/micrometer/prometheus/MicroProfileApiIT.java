@@ -14,7 +14,7 @@ import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 
 @QuarkusScenario
-public class UsingMicroProfilePingPongResourceIT {
+public class MicroProfileApiIT {
 
     private static final String PING_PONG = "ping pong";
     private static final String PING_PONG_ENDPOINT = "/using-microprofile-pingpong";

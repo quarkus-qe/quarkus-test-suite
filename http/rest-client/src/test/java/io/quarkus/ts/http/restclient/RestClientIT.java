@@ -13,7 +13,7 @@ import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
-public class ClientBookResourceIT {
+public class RestClientIT {
 
     @QuarkusApplication
     static RestService app = new RestService();

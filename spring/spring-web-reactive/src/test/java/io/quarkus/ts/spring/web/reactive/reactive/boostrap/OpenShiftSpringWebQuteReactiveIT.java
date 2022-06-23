@@ -1,5 +1,9 @@
 package io.quarkus.ts.spring.web.reactive.reactive.boostrap;
 
+import static io.quarkus.ts.spring.web.reactive.reactive.MariaDBConstants.IMAGE_103;
+import static io.quarkus.ts.spring.web.reactive.reactive.MariaDBConstants.PORT;
+import static io.quarkus.ts.spring.web.reactive.reactive.MariaDBConstants.START_LOG;
+
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import io.quarkus.test.bootstrap.MariaDbService;
@@ -10,13 +14,9 @@ import io.quarkus.test.services.QuarkusApplication;
 
 @OpenShiftScenario
 @EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
-public class OpenShiftBookResourceSpringWebReactiveIT extends BookResourceSpringWebReactiveIT {
+public class OpenShiftSpringWebQuteReactiveIT extends AbstractSpringWebQuteReactiveIT {
 
-    private static final String API_ROOT = "/api/books";
-
-    static final int MARIADB_PORT = 3306;
-
-    @Container(image = "${mariadb.103.image}", port = MARIADB_PORT, expectedLog = "Only MySQL server logs after this point")
+    @Container(image = IMAGE_103, port = PORT, expectedLog = START_LOG)
     static final MariaDbService database = new MariaDbService();
 
     @QuarkusApplication

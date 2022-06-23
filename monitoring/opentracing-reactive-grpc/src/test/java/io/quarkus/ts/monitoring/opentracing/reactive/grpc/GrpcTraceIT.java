@@ -8,7 +8,7 @@ import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 @Disabled("Caused by https://github.com/quarkusio/quarkus/issues/13224")
 @QuarkusScenario
 @DisabledOnNative
-public class GrpcPingPongResourceIT extends AbstractPingPongResourceIT {
+public class GrpcTraceIT extends AbstractTraceIT {
 
     @Override
     protected String endpointPrefix() {

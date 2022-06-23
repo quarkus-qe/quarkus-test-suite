@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.scenarios.QuarkusScenario;
 
 @QuarkusScenario
-public class ConfigMappingResourceIT {
+public class ConfigMappingIT {
 
     private static final String EXPECTED_PERSON_NAME = "Sheldon";
     private static final int EXPECTED_PERSON_AGE = 18;

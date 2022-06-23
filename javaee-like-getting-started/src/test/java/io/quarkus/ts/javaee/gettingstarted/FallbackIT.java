@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.scenarios.QuarkusScenario;
 
 @QuarkusScenario
-public class FallbackResourceIT {
+public class FallbackIT {
 
     private static final String WORK_METHOD = "work";
     private static final String FAIL_METHOD = "fail";

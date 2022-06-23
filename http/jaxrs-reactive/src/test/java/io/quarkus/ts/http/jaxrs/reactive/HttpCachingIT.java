@@ -18,7 +18,7 @@ import io.restassured.response.ValidatableResponse;
 
 @Tag("QUARKUS-1075")
 @QuarkusScenario
-public class HttpCachingResourceIT {
+public class HttpCachingIT {
     private static final String BASE_PATH = "/http-caching";
 
     @Test
