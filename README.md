@@ -682,6 +682,19 @@ this.router.get("/secured")
 * authZ::authorize: custom AuthZ(authorization) provider.
 * secure.helloWorld(rc): actual http endpoint (Rest layer).
 
+### service-binding/postgresql-crunchy
+
+A module verifying Quarkus `kubernetes-service-binding` extension is able to inject application projection service
+binding from a PostgreSQL cluster created by Crunchy Postgres operator.
+
+The module requires a cluster with Kubernetes API >=1.21 to work with Red Hat Service Binding Operator and Crunchy 
+Postgres v5 (this means OCP 4.7 and upwards.)
+
+This module requires an installed Crunchy Postgres Operator v5 and Red Hat Service Binding Operator.
+
+`OpenShiftPostgreSqlSbIT` creates a `PostgresCluster` and deploys a simple TODO application to verify that the service
+binding is injected by making a request at its declared endpoint.
+
 ### Service-discovery/stork
 
 Verifies Stork integration in order to provide service discovering and round-robin load balancing between services
