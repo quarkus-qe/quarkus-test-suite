@@ -224,7 +224,7 @@ jobs:
             MODULES_MAVEN_PARAM="-pl ${MODULES_ARG}"
           fi
 
-          mvn -fae -s .github/mvn-settings.xml clean verify -Dall-modules -Dquarkus.container-image.build=false $MODULES_MAVEN_PARAM -am
+          mvn -B -fae -s .github/mvn-settings.xml clean verify -Dall-modules -Dquarkus.container-image.build=false $MODULES_MAVEN_PARAM -am
       - name: Zip Artifacts
         shell: bash
         if: failure()
