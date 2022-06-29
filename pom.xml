@@ -122,13 +122,6 @@
             <artifactId>quarkus-test-containers</artifactId>
             <version>${quarkus.qe.framework.version}</version>
             <scope>test</scope>
-            <!-- TODO: https://github.com/quarkusio/quarkus/issues/25171 - exclude hamcrest-core until the issue is resolved -->
-            <exclusions>
-                <exclusion>
-                    <groupId>org.hamcrest</groupId>
-                    <artifactId>hamcrest-core</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.quarkus.qe</groupId>
