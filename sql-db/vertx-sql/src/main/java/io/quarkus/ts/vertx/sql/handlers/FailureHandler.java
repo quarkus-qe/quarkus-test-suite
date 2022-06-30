@@ -6,13 +6,13 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.validation.ConstraintViolationException;
 
 import io.quarkus.vertx.web.Route;
-import io.vertx.core.VertxException;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import io.vertx.db2client.DB2Exception;
 import io.vertx.mssqlclient.MSSQLException;
 import io.vertx.mysqlclient.MySQLException;
+import io.vertx.oracleclient.OracleException;
 import io.vertx.pgclient.PgException;
 
 @ApplicationScoped
@@ -38,12 +38,9 @@ public class FailureHandler {
         response.setStatusCode(400).end(Json.encode(new JsonObject().put("msg", e.getMessage())));
     }
 
-    // TODO: https://github.com/quarkusio/quarkus/issues/24264 - No Oracle-specific exception available
     @Route(path = "/*", type = Route.HandlerType.FAILURE, produces = "application/json")
-    void databaseOracleConstraintFailure(VertxException e, HttpServerResponse response) {
-        if (e.getMessage().contains("Error Msg = ORA")) {
-            response.setStatusCode(400).end(Json.encode(new JsonObject().put("msg", e.getMessage())));
-        }
+    void databaseOracleConstraintFailure(OracleException e, HttpServerResponse response) {
+        response.setStatusCode(400).end(Json.encode(new JsonObject().put("msg", e.getMessage())));
     }
 
     @Route(path = "*", type = Route.HandlerType.FAILURE, produces = "application/json")

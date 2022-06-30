@@ -1,8 +1,5 @@
 package io.quarkus.ts.hibernate.reactive;
 
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-
 import io.quarkus.test.bootstrap.OracleService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -30,24 +27,6 @@ public class OracleDatabaseIT extends AbstractDatabaseHibernateReactiveIT {
     @Override
     protected RestService getApp() {
         return app;
-    }
-
-    @Test
-    @Override
-    @Disabled("https://github.com/quarkusio/quarkus/issues/24501")
-    public void deleteAuthorById() {
-    }
-
-    @Test
-    @Override
-    @Disabled("https://github.com/quarkusio/quarkus/issues/24501")
-    public void setConvertedValue() {
-    }
-
-    @Test
-    @Override
-    @Disabled("https://github.com/quarkusio/quarkus/issues/24501")
-    public void ensureSessionIsPropagatedOnReactiveTransactions() {
     }
 
     // TODO: Remove after https://github.com/quarkus-qe/quarkus-test-framework/issues/503 is resolved
