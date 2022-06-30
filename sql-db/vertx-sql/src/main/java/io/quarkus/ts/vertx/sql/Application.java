@@ -23,6 +23,7 @@ import io.vertx.core.json.jackson.DatabindCodec;
 import io.vertx.mutiny.db2client.DB2Pool;
 import io.vertx.mutiny.mssqlclient.MSSQLPool;
 import io.vertx.mutiny.mysqlclient.MySQLPool;
+import io.vertx.mutiny.oracleclient.OraclePool;
 import io.vertx.mutiny.pgclient.PgPool;
 
 /**
@@ -63,6 +64,11 @@ public class Application {
     @IfBuildProfile("mssql")
     MSSQLPool mssql;
 
+    @Inject
+    @Named("oracle")
+    @IfBuildProfile("oracle")
+    OraclePool oracle;
+
     void onStart(@Observes StartupEvent ev) {
         LOGGER.info("The application is starting with profile " + ProfileManager.getActiveProfile());
 
@@ -81,6 +87,8 @@ public class Application {
                 return new DbPoolService(db2, "\"" + db2DbName + "\"", selectedDB);
             case "mssql":
                 return new DbPoolService(mssql, null, selectedDB);
+            case "oracle":
+                return new DbPoolService(oracle, null, selectedDB);
             default:
                 return new DbPoolService(postgresql, postgresqlDbName, selectedDB);
         }

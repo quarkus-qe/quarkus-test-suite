@@ -1,0 +1,61 @@
+package io.quarkus.ts.hibernate.reactive;
+
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
+import io.quarkus.test.bootstrap.OracleService;
+import io.quarkus.test.bootstrap.RestService;
+import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.services.Container;
+import io.quarkus.test.services.QuarkusApplication;
+
+@QuarkusScenario
+public class OracleDatabaseIT extends AbstractDatabaseHibernateReactiveIT {
+
+    private static final String ORACLE_USER = "quarkus_test";
+    private static final String ORACLE_PASSWORD = "quarkus_test";
+    private static final String ORACLE_DATABASE = "quarkus_test";
+    private static final int ORACLE_PORT = 1521;
+
+    @Container(image = "${oracle.image}", port = ORACLE_PORT, expectedLog = "DATABASE IS READY TO USE!")
+    static OracleService database = new ProvisionalOracleService()
+            .with(ORACLE_USER, ORACLE_PASSWORD, ORACLE_DATABASE);
+
+    @QuarkusApplication
+    static RestService app = new RestService().withProperties("oracle.properties")
+            .withProperty("quarkus.datasource.username", ORACLE_USER)
+            .withProperty("quarkus.datasource.password", ORACLE_PASSWORD)
+            .withProperty("quarkus.datasource.reactive.url", database::getReactiveUrl);
+
+    @Override
+    protected RestService getApp() {
+        return app;
+    }
+
+    @Test
+    @Override
+    @Disabled("https://github.com/quarkusio/quarkus/issues/24501")
+    public void deleteAuthorById() {
+    }
+
+    @Test
+    @Override
+    @Disabled("https://github.com/quarkusio/quarkus/issues/24501")
+    public void setConvertedValue() {
+    }
+
+    @Test
+    @Override
+    @Disabled("https://github.com/quarkusio/quarkus/issues/24501")
+    public void ensureSessionIsPropagatedOnReactiveTransactions() {
+    }
+
+    // TODO: Remove after https://github.com/quarkus-qe/quarkus-test-framework/issues/503 is resolved
+    private static class ProvisionalOracleService extends OracleService {
+        @Override
+        public String getReactiveUrl() {
+            return getHost().replace("http://", getJdbcName() + ":thin:@") + ":" + getPort() + "/"
+                    + getDatabase();
+        }
+    }
+}
