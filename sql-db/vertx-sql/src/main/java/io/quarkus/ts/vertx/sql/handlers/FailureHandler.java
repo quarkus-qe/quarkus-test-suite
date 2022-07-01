@@ -38,7 +38,7 @@ public class FailureHandler {
         response.setStatusCode(400).end(Json.encode(new JsonObject().put("msg", e.getMessage())));
     }
 
-    @Route(path = "/*", type = Route.HandlerType.FAILURE, produces = "application/json")
+    @Route(path = "*", type = Route.HandlerType.FAILURE, produces = "application/json")
     void databaseOracleConstraintFailure(OracleException e, HttpServerResponse response) {
         response.setStatusCode(400).end(Json.encode(new JsonObject().put("msg", e.getMessage())));
     }
