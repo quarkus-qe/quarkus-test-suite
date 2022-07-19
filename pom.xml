@@ -19,7 +19,7 @@
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
         <quarkus.platform.version>999-SNAPSHOT</quarkus.platform.version>
-        <quarkus.qe.framework.version>1.2.0.Beta1</quarkus.qe.framework.version>
+        <quarkus.qe.framework.version>1.2.0.Beta2</quarkus.qe.framework.version>
         <quarkus-qpid-jms.version>0.35.0</quarkus-qpid-jms.version>
         <quarkus-ide-config.version>2.6.1.Final</quarkus-ide-config.version>
         <apache-httpclient-fluent.version>4.5.13</apache-httpclient-fluent.version>
@@ -642,7 +642,7 @@
                             <systemPropertyVariables>
                                 <ts.redhat.registry.enabled>true</ts.redhat.registry.enabled>
                                 <!-- Product Services -->
-                                <rhsso.image>registry.redhat.io/rh-sso-7/sso75-openshift-rhel8</rhsso.image>
+                                <rhsso.image>registry.redhat.io/rh-sso-7/sso76-openshift-rhel8</rhsso.image>
                                 <postgresql.10.image>registry.redhat.io/rhscl/postgresql-10-rhel7</postgresql.10.image>
                                 <postgresql.13.image>registry.redhat.io/rhscl/postgresql-13-rhel7</postgresql.13.image>
                                 <mariadb.103.image>registry.redhat.io/rhscl/mariadb-103-rhel7</mariadb.103.image>
