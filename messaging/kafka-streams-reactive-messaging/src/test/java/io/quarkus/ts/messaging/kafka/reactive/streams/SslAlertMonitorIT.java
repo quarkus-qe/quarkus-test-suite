@@ -1,5 +1,7 @@
 package io.quarkus.ts.messaging.kafka.reactive.streams;
 
+import org.junit.jupiter.api.Tag;
+
 import io.quarkus.test.bootstrap.KafkaService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -8,6 +10,8 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.services.containers.model.KafkaProtocol;
 import io.quarkus.test.services.containers.model.KafkaVendor;
 
+//TODO https://github.com/quarkusio/quarkus/issues/23964
+@Tag("fips-incompatible")
 @QuarkusScenario
 public class SslAlertMonitorIT extends BaseKafkaStreamTest {
     /**
