@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.bootstrap.KeycloakService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.services.Container;
+import io.quarkus.test.services.KeycloakContainer;
 import io.quarkus.test.services.QuarkusApplication;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -20,11 +20,10 @@ import io.restassured.response.Response;
 public class RequestHeadersIT {
 
     static final String REALM_DEFAULT = "test-realm";
-    static final int KEYCLOAK_PORT = 8080;
 
     //TODO Remove workaround after Keycloak is fixed https://github.com/keycloak/keycloak/issues/9916
-    @Container(image = "${keycloak.image}", expectedLog = "Http management interface listening", port = KEYCLOAK_PORT)
-    static KeycloakService keycloak = new KeycloakService("/keycloak-realm.json", REALM_DEFAULT)
+    @KeycloakContainer(command = { "start-dev --import-realm --hostname-strict=false" })
+    static KeycloakService keycloak = new KeycloakService("/keycloak-realm.json", REALM_DEFAULT, "/realms")
             .withProperty("JAVA_OPTS", "-Dcom.redhat.fips=false");
 
     @QuarkusApplication

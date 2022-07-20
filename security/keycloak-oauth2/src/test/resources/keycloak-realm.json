@@ -53,6 +53,37 @@
       "secret": "test-application-client-secret",
       "protocolMappers": [
         {
+          "id": "f17f8d5f-2327-4e0b-8001-48a7706be252",
+          "name": "realm roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute": "foo",
+            "access.token.claim": "true",
+            "claim.name": "realm_access.roles",
+            "jsonType.label": "String",
+            "multivalued": "true"
+          }
+        },
+        {
+          "id": "0e0f1e8d-60f9-4435-b753-136d70e56af8",
+          "name": "username",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "userinfo.token.claim": "true",
+            "user.attribute": "username",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "preferred_username",
+            "jsonType.label": "String"
+          }
+        }
+      ],
+      "protocolMappers": [
+        {
           "id": "12c7ffdd-f1bc-4e98-a625-20002527e1f4",
           "name": "add-roles-to-claim",
           "protocol": "openid-connect",

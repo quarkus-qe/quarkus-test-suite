@@ -13,7 +13,7 @@ import org.keycloak.authorization.client.AuthzClient;
 
 import io.quarkus.test.bootstrap.KeycloakService;
 import io.quarkus.test.bootstrap.RestService;
-import io.quarkus.test.services.Container;
+import io.quarkus.test.services.KeycloakContainer;
 
 public abstract class BaseMicrometerOidcSecurityIT {
 
@@ -27,11 +27,9 @@ public abstract class BaseMicrometerOidcSecurityIT {
     static final String OK_HTTP_CALL_METRIC = HTTP_METRIC + "outcome=\"SUCCESS\",status=\"200\",uri=\"%s\",}";
     static final String UNAUTHORIZED_HTTP_CALL_METRIC = HTTP_METRIC + "outcome=\"CLIENT_ERROR\",status=\"401\",uri=\"%s\",}";
 
-    static final int KEYCLOAK_PORT = 8080;
-
     //TODO Remove workaround after Keycloak is fixed https://github.com/keycloak/keycloak/issues/9916
-    @Container(image = "${keycloak.image}", expectedLog = "Http management interface listening", port = KEYCLOAK_PORT)
-    static KeycloakService keycloak = new KeycloakService("/keycloak-realm.json", REALM_DEFAULT)
+    @KeycloakContainer(command = { "start-dev --import-realm" })
+    static KeycloakService keycloak = new KeycloakService("/keycloak-realm.json", REALM_DEFAULT, "/realms")
             .withProperty("JAVA_OPTS", "-Dcom.redhat.fips=false");
 
     private AuthzClient authzClient;
