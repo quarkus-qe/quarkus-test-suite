@@ -1,5 +1,6 @@
 package io.quarkus.ts.security.https.redirect;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
 
@@ -8,6 +9,7 @@ import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.vertx.http.runtime.HttpConfiguration;
 
+@Tag("fips-incompatible") // native-mode
 @QuarkusScenario
 @DisabledOnOs(OS.WINDOWS)
 public class UnixRedirectHttpsSecurityIT extends BaseRedirectHttpsSecurityIT {
