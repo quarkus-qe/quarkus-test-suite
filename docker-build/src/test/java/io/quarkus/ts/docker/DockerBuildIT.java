@@ -26,7 +26,7 @@ public class DockerBuildIT {
     }
 
     @Test
-    public void buildDockerImage() {
+    public void verifyContainerImageDockerExtensionBuildImageNameWithEmptySpace() {
         Image dockerImg = DockerUtils.getImage(DOCKER_IMG_NAME, DOCKER_IMG_VERSION);
         assertTrue(Objects.nonNull(dockerImg.getId()) && !dockerImg.getId().isEmpty(), "Docker image was not created");
     }
