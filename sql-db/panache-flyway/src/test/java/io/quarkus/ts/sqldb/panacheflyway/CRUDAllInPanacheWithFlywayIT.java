@@ -7,10 +7,13 @@ import static org.hamcrest.core.IsNot.not;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
 
+// TODO https://github.com/quarkus-qe/quarkus-test-suite/issues/756
+@Tag("fips-incompatible") // native-mode
 @QuarkusScenario
 class CRUDAllInPanacheWithFlywayIT extends PanacheWithFlywayBaseIT {
 
