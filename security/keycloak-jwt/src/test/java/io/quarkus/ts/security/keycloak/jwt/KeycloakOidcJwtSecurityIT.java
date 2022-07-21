@@ -1,11 +1,14 @@
 package io.quarkus.ts.security.keycloak.jwt;
 
+import org.junit.jupiter.api.Tag;
+
 import io.quarkus.test.bootstrap.KeycloakService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
+@Tag("fips-incompatible") // native-mode
 @QuarkusScenario
 public class KeycloakOidcJwtSecurityIT extends BaseOidcJwtSecurityIT {
     static final int KEYCLOAK_PORT = 8080;
