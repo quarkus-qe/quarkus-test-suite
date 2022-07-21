@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.startsWith;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.KeycloakService;
@@ -24,6 +25,7 @@ public abstract class BaseOidcClientSecurityIT {
                 .body(equalTo("Hello, user service-account-test-application-client"));
     }
 
+    @Tag("fips-incompatible") // native-mode
     @Test
     public void jwtSecretSecuredResource() {
         getApp().given()

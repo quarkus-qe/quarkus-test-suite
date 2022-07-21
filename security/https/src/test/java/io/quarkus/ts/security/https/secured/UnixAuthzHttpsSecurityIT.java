@@ -1,5 +1,6 @@
 package io.quarkus.ts.security.https.secured;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
 
@@ -7,6 +8,7 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.QuarkusApplication;
 
+@Tag("fips-incompatible") // native-mode
 @QuarkusScenario
 @DisabledOnOs(OS.WINDOWS)
 public class UnixAuthzHttpsSecurityIT extends BaseAuthzHttpsSecurityIT {
