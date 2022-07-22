@@ -259,7 +259,7 @@ public abstract class BaseHttpAdvancedReactiveIT {
         Assertions.assertTrue(
                 headers
                         .stream()
-                        .filter(h -> h.getName().equals(headerName))
+                        .filter(h -> h.getName().equalsIgnoreCase(headerName))
                         .map(Header::getValue)
                         .anyMatch(headerValue::equals));
     }
