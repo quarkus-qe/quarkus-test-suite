@@ -18,6 +18,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.sse.SseEventSource;
 
 import org.apache.http.HttpStatus;
+import org.apache.logging.log4j.util.Strings;
+import org.jboss.logging.Logger;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -26,13 +28,15 @@ import io.quarkus.test.bootstrap.inject.OpenShiftClient;
 
 public abstract class BaseOpenShiftAlertEventsIT {
 
+    private static final Logger LOG = Logger.getLogger(BaseOpenShiftAlertEventsIT.class);
     static final String PATH = "/monitor/stream";
     static final String KAFKA_CONSUMER_COUNT_METRIC = "kafka_consumer_response_total";
     static final String KAFKA_PRODUCER_COUNT_METRIC = "kafka_producer_response_total";
     static final int WAIT_FOR_ALERTS_COUNT = 1;
 
     static final String PROMETHEUS_NAMESPACE = "openshift-user-workload-monitoring";
-    static final String PROMETHEUS_POD = "prometheus-user-workload-0";
+    static final String PROMETHEUS_POD = "prometheus-user-workload-";
+    static final int POD_CARDINALITY = 10;
     static final String PROMETHEUS_CONTAINER = "prometheus";
     static final int ASSERT_PROMETHEUS_TIMEOUT_MINUTES = 5;
     static final int ASSERT_SERVICE_TIMEOUT_MINUTES = 1;
@@ -85,13 +89,27 @@ public abstract class BaseOpenShiftAlertEventsIT {
 
     private void thenMetricIsExposedInPrometheus(String name, Predicate<String> valueMatcher) throws Exception {
         await().ignoreExceptions().atMost(ASSERT_PROMETHEUS_TIMEOUT_MINUTES, TimeUnit.MINUTES).untilAsserted(() -> {
-            String output = client.execOnPod(PROMETHEUS_NAMESPACE, PROMETHEUS_POD, PROMETHEUS_CONTAINER, "curl",
-                    "http://localhost:9090/api/v1/query?query=" + name);
-
+            String output = runPrometheusCommandInPod(PROMETHEUS_POD, name);
             assertTrue(output.contains("\"status\":\"success\""), "Verify the status was ok");
             assertTrue(output.contains("\"__name__\":\"" + name + "\""), "Verify the metrics is found");
             assertTrue(valueMatcher.test(output), "Verify the metrics contains the correct number");
         });
+    }
+
+    private String runPrometheusCommandInPod(String podRootName, String metricName) {
+        String output = Strings.EMPTY;
+        for (int i = 0; i <= POD_CARDINALITY && output.isEmpty(); i++) {
+            String podName = podRootName + i;
+            LOG.info("ServiceMonitor expected podName " + podName);
+            try {
+                output = client.execOnPod(PROMETHEUS_NAMESPACE, podName, PROMETHEUS_CONTAINER, "curl",
+                        "http://localhost:9090/api/v1/query?query=" + metricName);
+            } catch (Exception e) {
+                LOG.warn("Unexpected response from " + podName);
+                LOG.warn(e.getMessage());
+            }
+        }
+        return output;
     }
 
     private void thenMetricIsExposedInServiceEndpoint(String name, Predicate<Double> valueMatcher) {
