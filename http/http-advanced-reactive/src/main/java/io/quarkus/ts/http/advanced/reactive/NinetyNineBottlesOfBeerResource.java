@@ -10,14 +10,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import io.quarkus.arc.properties.UnlessBuildProperty;
-import io.quarkus.runtime.annotations.RegisterForReflection;
 import io.smallrye.mutiny.Uni;
 
 /**
  * {@link Path#value()} set in this resource contains characters that were causing the build time
  * validation failure. The issue was resolved in 2.8.3 with https://github.com/quarkusio/quarkus/issues/25258.
  */
-@RegisterForReflection
 @UnlessBuildProperty(name = QUARKUS_PLATFORM_VERSION_LESS_THAN_2_8_3, stringValue = QUARKUS_PLATFORM_VERSION_LESS_THAN_2_8_3_VAL, enableIfMissing = true)
 @Path(NinetyNineBottlesOfBeerResource.PATH)
 public class NinetyNineBottlesOfBeerResource {
