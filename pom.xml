@@ -534,6 +534,12 @@
             </modules>
         </profile>
         <profile>
+            <id>service-binding-modules</id>
+            <modules>
+                <module>service-binding/postgresql-crunchy</module>
+            </modules>
+        </profile>
+        <profile>
             <id>spring-modules</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
