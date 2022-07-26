@@ -23,6 +23,12 @@
             <groupId>io.smallrye.stork</groupId>
             <artifactId>stork-service-discovery-kubernetes</artifactId>
         </dependency>
+        <!-- https://github.com/quarkusio/quarkus/issues/26927 -->
+        <!-- bouncycastle is required by stork-service-discovery-kubernetes in native mode-->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk15on</artifactId>
+        </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-reactive-routes</artifactId>
