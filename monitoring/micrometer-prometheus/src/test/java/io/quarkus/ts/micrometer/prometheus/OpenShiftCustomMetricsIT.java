@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import org.apache.http.HttpStatus;
+import org.jboss.logging.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -28,6 +29,8 @@ import io.quarkus.test.services.QuarkusApplication;
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
 public class OpenShiftCustomMetricsIT {
 
+    private static final Logger LOG = Logger.getLogger(OpenShiftCustomMetricsIT.class);
+
     static final String PRIME_NUMBER_MAX = "prime_number_max_%s";
 
     static final String PRIME_NUMBER_TEST_COUNT = "prime_number_test_%s_seconds_count";
@@ -35,7 +38,8 @@ public class OpenShiftCustomMetricsIT {
     static final String PRIME_NUMBER_TEST_SUM = "prime_number_test_%s_seconds_sum";
 
     static final String PROMETHEUS_NAMESPACE = "openshift-user-workload-monitoring";
-    static final String PROMETHEUS_POD = "prometheus-user-workload-0";
+    static final String PROMETHEUS_POD = "prometheus-user-workload-";
+    static final int POD_CARDINALITY = 10;
     static final String PROMETHEUS_CONTAINER = "prometheus";
 
     static final int ASSERT_PROMETHEUS_TIMEOUT_MINUTES = 5;
@@ -79,8 +83,7 @@ public class OpenShiftCustomMetricsIT {
 
     private void thenMetricIsExposedInPrometheus(String name, Integer expected) throws Exception {
         await().ignoreExceptions().atMost(ASSERT_PROMETHEUS_TIMEOUT_MINUTES, TimeUnit.MINUTES).untilAsserted(() -> {
-            String output = client.execOnPod(PROMETHEUS_NAMESPACE, PROMETHEUS_POD, PROMETHEUS_CONTAINER, "curl",
-                    "http://localhost:9090/api/v1/query?query=" + primeNumberCustomMetricName(name));
+            String output = runPrometheusCommandInPod(PROMETHEUS_POD, primeNumberCustomMetricName(name));
 
             assertTrue(output.contains("\"status\":\"success\""), "Verify the status was ok");
             assertTrue(output.contains("\"__name__\":\"" + primeNumberCustomMetricName(name) + "\""),
@@ -90,6 +93,23 @@ public class OpenShiftCustomMetricsIT {
             }
 
         });
+    }
+
+    private String runPrometheusCommandInPod(String podRootName, String metricName) {
+        String output = "";
+        for (int i = 0; i <= POD_CARDINALITY && output.isEmpty(); i++) {
+            String podName = podRootName + i;
+            LOG.info("ServiceMonitor expected podName " + podName);
+            try {
+                output = client.execOnPod(PROMETHEUS_NAMESPACE, podName, PROMETHEUS_CONTAINER, "curl",
+                        "http://localhost:9090/api/v1/query?query=" + metricName);
+
+            } catch (Exception e) {
+                LOG.warn("Unexpected response from " + podName);
+                LOG.warn(e.getMessage());
+            }
+        }
+        return output;
     }
 
     private void thenMetricIsExposedInServiceEndpoint(String name, Integer expected) {

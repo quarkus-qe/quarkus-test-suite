@@ -20,12 +20,14 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.bootstrap.inject.OpenShiftClient;
 import io.quarkus.test.scenarios.OpenShiftScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusSnapshot;
 import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.utils.FileUtils;
 
 @OpenShiftScenario
-@DisabledOnQuarkusVersion(version = "2\\..*", reason = "QE OCP user need more privilege in order to be able to create thr required ClusterRole")
+@DisabledOnQuarkusVersion(version = "2\\..*", reason = "QE OCP user need more privilege in order to be able to create the required ClusterRole")
+@DisabledOnQuarkusSnapshot(reason = "QE OCP user need more privilege in order to be able to create the required ClusterRole")
 public class OpenShiftStorkServiceDiscoveryIT extends AbstractCommonTestCases {
 
     private static final String CLUSTER_ROLE_FILE_NAME = "cluster-role.yaml";
