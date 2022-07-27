@@ -83,6 +83,12 @@
         }
       ],
       "authorizationSettings": {
+        "scopes": [
+          {
+            "id": "uma_protection",
+            "name": "uma_protection"
+          }
+        ],
         "resources": [
           {
             "name": "test-user-resource",
