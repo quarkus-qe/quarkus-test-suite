@@ -14,6 +14,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.runtime.util.ClassPathUtils;
@@ -24,6 +25,7 @@ import io.vertx.core.net.KeyStoreOptions;
 import io.vertx.ext.web.client.WebClientOptions;
 import io.vertx.mutiny.ext.web.client.WebClient;
 
+@Tag("fips-incompatible") // native-mode
 @QuarkusTest
 public class BouncyCastleFipsJsseIT {
 
