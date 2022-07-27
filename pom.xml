@@ -451,7 +451,8 @@
                 <module>security/keycloak-oidc-client-extended</module>
                 <module>security/keycloak-oidc-client-reactive</module>
                 <module>security/vertx-jwt</module>
-                <module>security/oidc-client-mutual-tls</module>
+                <!-- https://github.com/quarkus-qe/quarkus-test-suite/issues/768 -->
+                <!-- <module>security/oidc-client-mutual-tls</module>-->
             </modules>
         </profile>
         <profile>
