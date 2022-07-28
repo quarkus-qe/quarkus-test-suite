@@ -93,4 +93,47 @@ public class PlainBookResource {
             return Multi.createFrom().empty();
         }
     }
+
+    @GET
+    @Path("/suffix")
+    @Produces("application/text+json")
+    public Uni<String> getWithSuffixedType(@QueryParam("content") String text) {
+        return Uni.createFrom().item(text + "_text+json");
+    }
+
+    @GET
+    @Path("/suffix")
+    @Produces("application/text")
+    public Uni<String> getWithSubType(@QueryParam("content") String text) {
+        return Uni.createFrom().item(text + "_text");
+    }
+
+    @GET
+    @Path("/suffix")
+    @Produces("application/json")
+    public Uni<String> getWithSuffix(@QueryParam("content") String text) {
+        return Uni.createFrom().item(text + "_json");
+    }
+
+    @GET
+    @Path("/suffix")
+    @Produces("application/quarkus")
+    public Uni<String> getWithUnrelatedType(@QueryParam("content") String text) {
+        return Uni.createFrom().item(text + "_other");
+    }
+
+    @GET
+    @Path("/suffix_priority")
+    @Produces("application/text")
+    public Uni<String> getPriorityWithSubType(@QueryParam("content") String text) {
+        return Uni.createFrom().item(text + "_text");
+    }
+
+    @GET
+    @Path("/suffix_priority")
+    @Produces("application/json")
+    public Uni<String> getPriorityWithSuffix(@QueryParam("content") String text) {
+        return Uni.createFrom().item(text + "_json");
+    }
+
 }

@@ -94,4 +94,25 @@ public class ReactiveClientBookResource {
         multivaluedMap.put("additionalIds", List.of(5, 6));
         return bookInterface.getByRestQueryMap(primitiveParamsMap, classParamsMap, multivaluedMap);
     }
+
+    @GET
+    @Path("/suffix/{type}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Uni<String> getSuffixed(@QueryParam("content") String text,
+            @PathParam("type") String type) {
+        switch (type) {
+            case "complete":
+                return bookInterface.getCompleteType(text);
+            case "subtype":
+                return bookInterface.getWithSubType(text);
+            case "suffix":
+                return bookInterface.getWithSuffix(text);
+            case "other":
+                return bookInterface.getUnrelated(text);
+            case "priority":
+                return bookInterface.getPriorities(text);
+            default:
+                throw new IllegalStateException("Unexpected value: " + type);
+        }
+    }
 }
