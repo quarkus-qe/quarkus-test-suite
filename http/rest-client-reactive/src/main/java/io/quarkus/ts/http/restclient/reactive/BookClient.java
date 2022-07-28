@@ -86,4 +86,28 @@ public interface BookClient {
     Uni<List<Book>> getByRestQueryMap(@RestQuery Map<String, Integer> primitiveParams,
             @RestQuery Map<String, BookIdWrapper> classParams, @RestQuery MultivaluedMap<String, Integer> multivaluedMap);
 
+    @GET
+    @Path("/suffix")
+    @Produces("application/text+json")
+    Uni<String> getCompleteType(@QueryParam("content") String text);
+
+    @GET
+    @Path("/suffix")
+    @Produces("application/text")
+    Uni<String> getWithSubType(@QueryParam("content") String text);
+
+    @GET
+    @Path("/suffix")
+    @Produces("application/json")
+    Uni<String> getWithSuffix(@QueryParam("content") String text);
+
+    @GET
+    @Path("/suffix")
+    @Produces("application/quarkus")
+    Uni<String> getUnrelated(@QueryParam("content") String text);
+
+    @GET
+    @Path("/suffix_priority")
+    @Produces("application/text+json")
+    Uni<String> getPriorities(@QueryParam("content") String text);
 }
