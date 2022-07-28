@@ -157,4 +157,44 @@ public class ReactiveRestClientIT {
         // Path '/books/author/profession/name' is unique to AuthorClient#getProfession() and should not be part of OpenAPI document
         app.given().get("/q/openapi?format=json").then().body("paths.\"/books/author/profession/name\"", nullValue());
     }
+
+    @Test
+    @Tag("QUARKUS-2098")
+    public void checkMediaTypeWithSuffix() {
+        Response complete = app.given().get("/client/book/suffix/complete/?content=Hello");
+        assertEquals(HttpStatus.SC_OK, complete.statusCode());
+        assertEquals("Hello_text+json", complete.getBody().asString());
+    }
+
+    @Test
+    @Tag("QUARKUS-2098")
+    public void checkDifferentMediaType() {
+        Response other = app.given().get("/client/book/suffix/other/?content=Hello");
+        assertEquals(HttpStatus.SC_OK, other.statusCode());
+        assertEquals("Hello_other", other.getBody().asString());
+    }
+
+    @Test
+    @Tag("QUARKUS-2098")
+    public void checkSuffixOnly() {
+        Response subtype = app.given().get("/client/book/suffix/subtype/?content=Heller");
+        assertEquals(HttpStatus.SC_OK, subtype.statusCode());
+        assertEquals("Heller_text", subtype.getBody().asString());
+    }
+
+    @Test
+    @Tag("QUARKUS-2098")
+    public void checkSuffixesOnly() {
+        Response suffix = app.given().get("/client/book/suffix/suffix/?content=Heller");
+        assertEquals(HttpStatus.SC_OK, suffix.statusCode());
+        assertEquals("Heller_json", suffix.getBody().asString());
+    }
+
+    @Test
+    @Tag("QUARKUS-2098")
+    public void checkSuffixPriority() {
+        Response suffix = app.given().get("/client/book/suffix/priority/?content=Heller");
+        assertEquals(HttpStatus.SC_OK, suffix.statusCode());
+        assertEquals("Heller_text", suffix.getBody().asString());
+    }
 }
