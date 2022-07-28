@@ -10,6 +10,9 @@
     <artifactId>docker-build</artifactId>
     <packaging>jar</packaging>
     <name>Quarkus QE TS: Docker-build</name>
+    <properties>
+        <quarkus.container-image.build>true</quarkus.container-image.build>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -29,6 +32,9 @@
                     <family>windows</family>
                 </os>
             </activation>
+            <properties>
+                <quarkus.container-image.build>false</quarkus.container-image.build>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
