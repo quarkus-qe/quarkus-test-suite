@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 
 import javax.enterprise.inject.spi.CDI;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -18,6 +19,7 @@ import io.quarkus.test.junit.QuarkusTest;
 
 // Not converted into @QuarkusScenario, because invoking javax.enterprise.inject.spi.CDI / io.quarkus.arc.Arc is not supported.
 // TODO: Workaround by implementing REST endpoints which expose all necessary information.
+@Tag("fips-incompatible") // native-mode
 @QuarkusTest
 public class SpringDiTest {
 

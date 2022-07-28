@@ -1,11 +1,14 @@
 package io.quarkus.ts.http.advanced.reactive;
 
+import org.junit.jupiter.api.Tag;
+
 import io.quarkus.test.bootstrap.KeycloakService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.KeycloakContainer;
 import io.quarkus.test.services.QuarkusApplication;
 
+@Tag("fips-incompatible") // native-mode
 @QuarkusScenario
 public class HttpAdvancedReactiveIT extends BaseHttpAdvancedReactiveIT {
 
