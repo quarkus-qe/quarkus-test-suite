@@ -19,8 +19,14 @@
           "value": "test-normal-user"
         }
       ],
+      "clientRoles": {
+        "test-application-client": [
+          "uma_protection"
+        ]
+      },
       "realmRoles": [
-        "test-user-role"
+        "test-user-role",
+        "uma_protection"
       ]
     }
   ],
@@ -65,7 +71,28 @@
           }
         }
       ],
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "uma_protection",
+        "email"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "offline_access",
+        "uma_protection",
+        "microprofile-jwt"
+      ],
       "authorizationSettings": {
+        "scopes": [
+          {
+            "id": "uma_authorization",
+            "name": "uma_authorization"
+          }
+        ],
         "resources": [
           {
             "name": "test-user-resource",
