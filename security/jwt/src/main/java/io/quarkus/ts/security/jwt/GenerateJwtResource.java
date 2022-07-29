@@ -38,7 +38,8 @@ public class GenerateJwtResource {
     @PermitAll
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.TEXT_PLAIN)
-    public String login(@QueryParam("invalidity") String invalidity, String body) throws NoSuchAlgorithmException {
+    public String login(@QueryParam("invalidity") String invalidity, String body, @QueryParam("subClaim") String subClaim)
+            throws NoSuchAlgorithmException {
         Date now = new Date();
         Date expiration = new Date(TimeUnit.SECONDS.toMillis(TEN) + now.getTime());
         String issuer = DEFAULT_ISSUER;
@@ -61,7 +62,7 @@ public class GenerateJwtResource {
         JwtClaimsBuilder jwtbuilder = Jwt.issuer(issuer)
                 .expiresAt(expiration.getTime())
                 .issuedAt(now.getTime())
-                .subject("test_subject_at_example_com")
+                .subject(Objects.requireNonNullElse(subClaim, "test_subject_at_example_com"))
                 .groups(Set.of(body))
                 .claim("upn", "test-subject@example.com")
                 .claim("roleMappings", Collections.singletonMap("admin", "superuser"));

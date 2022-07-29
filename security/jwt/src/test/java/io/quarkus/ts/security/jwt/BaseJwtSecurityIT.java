@@ -8,8 +8,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import org.apache.http.HttpStatus;
+import org.hamcrest.CoreMatchers;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import io.restassured.http.ContentType;
@@ -264,6 +267,23 @@ public abstract class BaseJwtSecurityIT {
                 .body(equalTo("Restricted area! Admin access granted!"));
     }
 
+    @DisplayName("Smallrye GraphQL - Route context termination test")
+    @Test
+    public void testRouteContextTermination() {
+        // resource accesses a route context, takes a "sub" claim and sends it back
+        // thus if resource accessed incorrect route context, we would recognize it
+        Stream.of("USA", "Canada", "Australia").forEach(this::executeGraphQLRequest);
+    }
+
+    private void executeGraphQLRequest(String expectedSubClaim) {
+        givenWithToken(createTokenWithSubClaim(expectedSubClaim))
+                .body("{\"query\":\"{\nsubject\n}\",\"variables\":null}")
+                .when().post("/graphql")
+                .then()
+                .statusCode(200)
+                .body("data.subject", CoreMatchers.equalTo(expectedSubClaim));
+    }
+
     protected abstract RequestSpecification givenWithToken(String token);
 
     private static String createToken(String group) {
@@ -271,7 +291,17 @@ public abstract class BaseJwtSecurityIT {
     }
 
     private static String createToken(Invalidity invalidity, String group) {
+        return createToken(invalidity, group, null);
+    }
+
+    private static String createTokenWithSubClaim(String subClaim) {
+        return createToken(null, EMPTY_GROUP, subClaim);
+    }
+
+    private static String createToken(Invalidity invalidity, String group, String subClaim) {
         return given()
+                // create token with this "sub" claim
+                .queryParam("subClaim", subClaim)
                 .body(group)
                 .when()
                 .post("/login/jwt?invalidity=" + (Objects.isNull(invalidity) ? "" : invalidity.name())).then()

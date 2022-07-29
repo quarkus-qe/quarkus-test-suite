@@ -15,8 +15,8 @@ public class CookieJwtSecurityIT extends BaseJwtSecurityIT {
 
     @QuarkusApplication
     static RestService app = new RestService()
-            .withProperty("smallrye.jwt.token.header", "Cookie")
-            .withProperty("smallrye.jwt.token.cookie", COOKIE_NAME);
+            .withProperty("mp.jwt.token.header", "Cookie")
+            .withProperty("mp.jwt.token.cookie", COOKIE_NAME);
 
     @Override
     protected RequestSpecification givenWithToken(String token) {
