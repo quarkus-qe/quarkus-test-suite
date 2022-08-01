@@ -41,9 +41,15 @@
           "value": "test-admin-user"
         }
       ],
+      "clientRoles": {
+        "test-application-client": [
+          "uma_protection"
+        ]
+      },
       "realmRoles": [
         "test-admin-role",
-        "test-user-role"
+        "test-user-role",
+        "uma_protection"
       ]
     }
   ],
