@@ -1,6 +1,9 @@
 package io.quarkus.ts.security.oidcclient.mtls;
 
 import static io.quarkus.ts.security.oidcclient.mtls.MutualTlsKeycloakService.newRhSsoInstance;
+import static org.keycloak.representations.idm.CredentialRepresentation.PASSWORD;
+
+import java.nio.file.Paths;
 
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
@@ -14,22 +17,45 @@ import io.quarkus.test.services.QuarkusApplication;
 @EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
 public class OpenShiftRhSsoOidcMtlsIT extends KeycloakMtlsAuthN {
 
+    protected static final String EXPECTED_LOG = "Http management interface listening";
+
     @Container(image = "${rhsso.image}", expectedLog = EXPECTED_LOG, port = KEYCLOAK_PORT)
-    static KeycloakService rhsso = newRhSsoInstance().withRedHatFipsDisabled();
+    static KeycloakService rhsso = newRhSsoInstance("/keycloak-realm.json", REALM_DEFAULT).withRedHatFipsDisabled();
 
     /**
      * Keystore file type is automatically detected by file extension by quarkus-oidc.
      */
     @QuarkusApplication
-    static RestService app = createRestService(JKS_KEY_STORE_FILE_EXTENSION, "", rhsso::getRealmUrl);
+    static RestService app = new RestService()
+            .withProperty("quarkus.oidc.auth-server-url", rhsso::getRealmUrl)
+            .withProperty("quarkus.oidc.client-id", CLIENT_ID_DEFAULT)
+            .withProperty("quarkus.oidc.tls.trust-store-file-type", JKS_KEYSTORE_FILE_EXTENSION)
+            .withProperty("quarkus.oidc.tls.key-store-file-type", JKS_KEYSTORE_FILE_EXTENSION)
+            .withProperty("quarkus.oidc.credentials.secret", CLIENT_SECRET_DEFAULT)
+            .withProperty("ks-file-extension", JKS_KEYSTORE_FILE_TYPE)
+            .withProperty("quarkus.oidc.tls.key-store-file", "rhsso-client-keystore.jks")
+            .withProperty("quarkus.oidc.tls.trust-store-file", "rhsso-client-truststore.jks")
+            .withProperty("ks-pwd", PASSWORD);
 
     @Override
-    protected String getKeyStoreFileExtension() {
-        return JKS_KEY_STORE_FILE_EXTENSION;
+    protected String getKeystoreFileExtension() {
+        return JKS_KEYSTORE_FILE_EXTENSION;
     }
 
     @Override
     protected KeycloakService getKeycloakService() {
         return rhsso;
+    }
+
+    @Override
+    protected String getTrustStorePath() {
+        String truststore = "rhsso-client-truststore." + getKeystoreFileExtension();
+        return Paths.get("src", "main", "resources", truststore).toAbsolutePath().toString();
+    }
+
+    @Override
+    protected String getKeyStorePath() {
+        String keystore = "rhsso-client-keystore." + getKeystoreFileExtension();
+        return Paths.get("src", "main", "resources", keystore).toAbsolutePath().toString();
     }
 }

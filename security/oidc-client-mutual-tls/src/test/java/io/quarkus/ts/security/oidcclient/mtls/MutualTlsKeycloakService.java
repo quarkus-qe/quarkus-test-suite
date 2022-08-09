@@ -1,6 +1,5 @@
 package io.quarkus.ts.security.oidcclient.mtls;
 
-import static io.quarkus.test.utils.PropertiesUtils.RESOURCE_PREFIX;
 import static io.quarkus.test.utils.PropertiesUtils.SECRET_PREFIX;
 import static java.lang.String.format;
 
@@ -9,39 +8,30 @@ import io.quarkus.test.bootstrap.Protocol;
 
 public class MutualTlsKeycloakService extends KeycloakService {
 
-    private static final String REALM_DEFAULT = "test-mutual-tls-realm";
-    private static final String CERT_PATH = "/etc/x509/https/";
-    private static final String MUTUAL_TLS_BUNDLE_PATH = CERT_PATH + "ca-client.bundle";
-    private static final String TLS_CRT_PATH = CERT_PATH + "tls.crt";
-    private static final String TLS_KEY_PATH = CERT_PATH + "tls.key";
-    private static final String CREATE_REALM_FILE_PATH = "/keycloak-realm.json";
     private static final String X509_CA_BUNDLE = "X509_CA_BUNDLE";
-    private final boolean openshiftScenario;
+
     private final String realm;
+    private final String realmBasePath;
+    private final boolean openshiftScenario;
 
-    private MutualTlsKeycloakService(String createKeycloakRealmPath, String realm) {
-        super(createKeycloakRealmPath, realm);
-        openshiftScenario = false;
-        this.realm = realm;
-    }
+    // command used by Keycloak 18+ container in order to launch JKS secured Keycloak
+    public static final String KC_DEV_MODE_JKS_CMD = "start-dev " +
+            "--import-realm --hostname-strict=false --hostname-strict-https=false --features=token-exchange " +
+            "--https-client-auth=required " +
+            "--https-key-store-file=/etc/server-keystore.jks " +
+            "--https-trust-store-file=/etc/server-truststore.jks " +
+            "--https-trust-store-password=password";
 
-    private MutualTlsKeycloakService(String realm) {
-        super(realm);
-        openshiftScenario = true;
-        this.realm = realm;
-    }
+    // command used by Keycloak 18+ container in order to launch P12 secured Keycloak
+    public static final String KC_DEV_MODE_P12_CMD = "start-dev " +
+            "--import-realm --hostname-strict=false --hostname-strict-https=false --features=token-exchange " +
+            "--https-client-auth=required " +
+            "--https-key-store-file=/etc/server-keystore.p12 " +
+            "--https-trust-store-file=/etc/server-truststore.p12 " +
+            "--https-trust-store-password=password";
 
-    public static KeycloakService newKeycloakInstance(String realmFilePath, String realm) {
-        return new MutualTlsKeycloakService(realmFilePath, realm)
-                .withRedHatFipsDisabled()
-                .withProperty("MOUNT_CA_BUNDLE", RESOURCE_PREFIX + MUTUAL_TLS_BUNDLE_PATH)
-                .withProperty("MOUNT_TLS_CRT", RESOURCE_PREFIX + TLS_CRT_PATH)
-                .withProperty("MOUNT_TLS_KEY", RESOURCE_PREFIX + TLS_KEY_PATH)
-                .withProperty(X509_CA_BUNDLE, MUTUAL_TLS_BUNDLE_PATH);
-    }
-
-    public static KeycloakService newKeycloakInstance() {
-        return newKeycloakInstance(CREATE_REALM_FILE_PATH, REALM_DEFAULT);
+    public static MutualTlsKeycloakService newKeycloakInstance(String realmFile, String realmName, String realmBasePath) {
+        return new MutualTlsKeycloakService(realmFile, realmName, realmBasePath);
     }
 
     public static MutualTlsKeycloakService newRhSsoInstance(String realmFilePath, String realm) {
@@ -50,8 +40,18 @@ public class MutualTlsKeycloakService extends KeycloakService {
                 .withProperty("SSO_IMPORT_FILE", SECRET_PREFIX + realmFilePath);
     }
 
-    public static MutualTlsKeycloakService newRhSsoInstance() {
-        return newRhSsoInstance(CREATE_REALM_FILE_PATH, REALM_DEFAULT);
+    private MutualTlsKeycloakService(String realmFile, String realmName, String realmBasePath) {
+        super(realmFile, realmName, realmBasePath);
+        this.realm = realmName;
+        this.realmBasePath = realmBasePath;
+        openshiftScenario = false;
+    }
+
+    private MutualTlsKeycloakService(String realm) {
+        super(realm);
+        openshiftScenario = true;
+        this.realm = realm;
+        this.realmBasePath = "auth/realms";
     }
 
     /**
@@ -68,12 +68,9 @@ public class MutualTlsKeycloakService extends KeycloakService {
      */
     @Override
     public String getRealmUrl() {
-        return format("%s:%s/auth/realms/%s", getHost(Protocol.HTTPS), getPort(), realm);
+        return format("%s:%s/%s/%s", getHost(Protocol.HTTPS), getPort(), realmBasePath, realm);
     }
 
-    /**
-     * OpenShift 'passThrough' route listens on 443 and redirects to internal port 8443.
-     */
     @Override
     public Integer getPort() {
         return openshiftScenario ? 443 : super.getPort();

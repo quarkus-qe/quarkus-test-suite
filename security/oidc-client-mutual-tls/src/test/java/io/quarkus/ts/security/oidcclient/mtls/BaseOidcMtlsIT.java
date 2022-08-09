@@ -6,6 +6,7 @@ import static org.keycloak.OAuth2Constants.GRANT_TYPE;
 import static org.keycloak.OAuth2Constants.USERNAME;
 import static org.keycloak.representations.idm.CredentialRepresentation.PASSWORD;
 
+import java.nio.file.Paths;
 import java.util.function.Supplier;
 
 import org.junit.jupiter.api.Tag;
@@ -19,47 +20,50 @@ import io.restassured.specification.RequestSpecification;
 
 @Tag("QUARKUS-1676")
 public abstract class BaseOidcMtlsIT {
-
+    protected static final String REALM_DEFAULT = "test-mutual-tls-realm";
+    protected static final String REALM_FILE_PATH = "/keycloak-realm.json";
     protected static final String RESOURCE_PATH = "/ping";
     protected static final String NORMAL_USER = "test-normal-user";
-    protected static final String JKS_KEY_STORE_FILE_EXTENSION = "jks";
-    protected static final String PKCS12_KEY_STORE_FILE_EXTENSION = "p12";
-    protected static final String EXPECTED_LOG = "Http management interface listening";
+    protected static final String CLIENT_ID_DEFAULT = "test-mutual-tls";
+    protected static final String CLIENT_SECRET_DEFAULT = "test-mutual-tls-secret";
     protected static final int KEYCLOAK_PORT = 8443;
-    private static final String CLIENT_KEYSTORE_PATH = "client-keystore.";
-    private static final String CLIENT_TRUSTSTORE_PATH = "client-truststore.";
-    private static final String CLIENT_ID_DEFAULT = "test-mutual-tls";
-    private static final String CLIENT_SECRET_DEFAULT = "test-mutual-tls-secret";
+    protected static final String JKS_KEYSTORE_FILE_TYPE = "jks";
+    protected static final String JKS_KEYSTORE_FILE_EXTENSION = "jks";
+    protected static final String P12_KEYSTORE_FILE_TYPE = "PKCS12";
+    protected static final String P12_KEYSTORE_FILE_EXTENSION = "p12";
 
-    protected static RestService createRestService(String keystoreFileExtension, String fileType,
-            Supplier<String> realmUrl) {
+    protected static RestService createRestService(String fileType, String keystoreFileExtension, Supplier<String> realmUrl) {
         return new RestService()
+                .withProperty("quarkus.oidc.tls.verification", "required")
+                .withProperty("quarkus.oidc.tls.trust-store-file", "client-truststore." + keystoreFileExtension)
+                .withProperty("quarkus.oidc.tls.trust-store-password", "password")
+                .withProperty("quarkus.oidc.tls.key-store-file", "client-keystore." + keystoreFileExtension)
+                .withProperty("quarkus.oidc.tls.key-store-password", "password")
                 .withProperty("quarkus.oidc.auth-server-url", realmUrl)
                 .withProperty("quarkus.oidc.client-id", CLIENT_ID_DEFAULT)
                 .withProperty("quarkus.oidc.tls.trust-store-file-type", fileType)
-                .withProperty("quarkus.oidc.tls.key-store-file-type", fileType)
-                .withProperty("quarkus.oidc.credentials.secret", CLIENT_SECRET_DEFAULT)
-                .withProperty("ks-file-extension", keystoreFileExtension)
-                .withProperty("ks-pwd", PASSWORD);
+                .withProperty("quarkus.oidc.credentials.secret", CLIENT_SECRET_DEFAULT);
     }
 
-    protected abstract String getKeyStoreFileExtension();
-
     protected abstract KeycloakService getKeycloakService();
+
+    protected abstract String getKeystoreFileExtension();
+
+    protected String getTrustStorePath() {
+        String truststore = "client-truststore." + getKeystoreFileExtension();
+        return Paths.get("src", "main", "resources", truststore).toAbsolutePath().toString();
+    }
+
+    protected String getKeyStorePath() {
+        String keystore = "client-keystore." + getKeystoreFileExtension();
+        return Paths.get("src", "main", "resources", keystore).toAbsolutePath().toString();
+    }
 
     protected String getToken(String userName) {
         return new TokenRequest(getKeycloakService().getRealmUrl(), userName, userName)
                 .withKeystore(getKeyStorePath())
                 .withTrustStore(getTrustStorePath())
                 .execAndReturnAccessToken();
-    }
-
-    private String getTrustStorePath() {
-        return CLIENT_TRUSTSTORE_PATH + getKeyStoreFileExtension();
-    }
-
-    private String getKeyStorePath() {
-        return CLIENT_KEYSTORE_PATH + getKeyStoreFileExtension();
     }
 
     protected static final class TokenRequest {
@@ -96,6 +100,5 @@ public abstract class BaseOidcMtlsIT {
         Response execute() {
             return requestSpecification.post(url);
         }
-
     }
 }

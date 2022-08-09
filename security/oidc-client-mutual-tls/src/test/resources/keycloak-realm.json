@@ -22,8 +22,14 @@
           "value": "test-normal-user"
         }
       ],
+      "clientRoles": {
+        "test-mutual-tls": [
+          "uma_protection"
+        ]
+      },
       "realmRoles": [
-        "user"
+        "user",
+        "uma_protection"
       ]
     }
   ],
@@ -37,7 +43,15 @@
       "directAccessGrantsEnabled": true,
       "clientAuthenticatorType": "client-secret",
       "secret": "test-mutual-tls-secret",
-      "serviceAccountsEnabled": true
+      "serviceAccountsEnabled": true,
+      "authorizationSettings": {
+        "scopes": [
+          {
+            "id": "uma_authorization",
+            "name": "uma_authorization"
+          }
+        ]
+      }
     }
   ]
 }
