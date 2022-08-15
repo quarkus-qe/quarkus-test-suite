@@ -17,7 +17,7 @@ public class ConfigValueIT {
     public void shouldInjectConfigValueServerHost() {
         assertResponseIs("/serverUrl/name", "server.url");
         assertResponseIs("/serverUrl/value", "http://example.org/endpoint");
-        assertResponseContains("/serverUrl/sourceName", "PropertiesConfigSource");
+        assertResponseContains("/serverUrl/sourceName", getExpectedSourceNameValue());
         assertResponseIs("/serverUrl/rawValue", "http://${server.host}/endpoint");
     }
 
@@ -33,5 +33,14 @@ public class ConfigValueIT {
         given().when().get("/config-value" + path)
                 .then().statusCode(HttpStatus.SC_OK)
                 .body(matcher);
+    }
+
+    // Clarification: https://github.com/quarkusio/quarkus/issues/27231#issuecomment-1211783882
+    private String getExpectedSourceNameValue() {
+        return isNativeExecution() ? "RunTime Defaults" : "PropertiesConfigSource";
+    }
+
+    private boolean isNativeExecution() {
+        return System.getProperties().contains("native");
     }
 }
