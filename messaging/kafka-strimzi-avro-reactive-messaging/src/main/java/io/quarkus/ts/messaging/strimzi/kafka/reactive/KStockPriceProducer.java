@@ -7,6 +7,7 @@ import java.util.stream.IntStream;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.eclipse.microprofile.reactive.messaging.OnOverflow;
@@ -28,18 +29,23 @@ public class KStockPriceProducer {
     @OnOverflow(value = OnOverflow.Strategy.DROP)
     Emitter<StockPrice> emitter;
 
+    @ConfigProperty(name = "cron.expr.skip", defaultValue = "false")
+    String skipCronJob;
+
     private Random random = new Random();
 
     @Scheduled(cron = "{cron.expr}")
     public void generate() {
-        IntStream.range(0, BATCH_SIZE).forEach(next -> {
-            StockPrice event = StockPrice.newBuilder()
-                    .setId("IBM")
-                    .setPrice(random.nextDouble())
-                    .setStatus(status.PENDING)
-                    .build();
-            emitter.send(event).whenComplete(handlerEmitterResponse(KStockPriceProducer.class.getName()));
-        });
+        if (!Boolean.parseBoolean(skipCronJob)) {
+            IntStream.range(0, BATCH_SIZE).forEach(next -> {
+                StockPrice event = StockPrice.newBuilder()
+                        .setId("IBM")
+                        .setPrice(random.nextDouble())
+                        .setStatus(status.PENDING)
+                        .build();
+                emitter.send(event).whenComplete(handlerEmitterResponse(KStockPriceProducer.class.getName()));
+            });
+        }
     }
 
     @NotNull
