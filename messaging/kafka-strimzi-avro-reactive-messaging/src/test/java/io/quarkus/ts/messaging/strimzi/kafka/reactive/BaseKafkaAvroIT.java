@@ -35,7 +35,7 @@ public abstract class BaseKafkaAvroIT {
     @Test
     public void batchMustBeGreaterThanSingleEvent() throws InterruptedException {
         givenAnApplicationEndpoint(getEndpoint() + "/stock-price/stream-batch");
-        whenRequestSomeEvents(EVENTS_AMOUNT, 2);
+        whenRequestSomeEvents(SINGLE, 2); // we expected that a single batch retrieve all events
         thenVerifyAllEventsArrived();
     }
 
