@@ -19,16 +19,20 @@ public class StrimziKafkaAvroGroupIdIT extends BaseKafkaAvroGroupIdIT {
     @QuarkusApplication
     static RestService appGroupIdA = new RestService()
             .withProperties("strimzi-application.properties")
-            .withProperty("cron.expr", "0 0 0 ? * * *")
+            .withProperty("cron.expr", "*/1 * * * * ?")
+            .withProperty("cron.expr.skip", "true")
             .withProperty("kafka.bootstrap.servers", kafka::getBootstrapUrl)
-            .withProperty("kafka.registry.url", kafka::getRegistryUrl);
+            .withProperty("kafka.registry.url", kafka::getRegistryUrl)
+            .withProperty("mp.messaging.incoming.channel-stock-price.group.id", "groupA");
 
     @QuarkusApplication
     static RestService appGroupIdB = new RestService()
             .withProperties("strimzi-application.properties")
-            .withProperty("cron.expr", "0 0 0 ? * * *")
+            .withProperty("cron.expr", "*/1 * * * * ?")
+            .withProperty("cron.expr.skip", "true")
             .withProperty("kafka.bootstrap.servers", kafka::getBootstrapUrl)
-            .withProperty("kafka.registry.url", kafka::getRegistryUrl);
+            .withProperty("kafka.registry.url", kafka::getRegistryUrl)
+            .withProperty("mp.messaging.incoming.channel-stock-price.group.id", "groupB");
 
     @Override
     public RestService getAppA() {
