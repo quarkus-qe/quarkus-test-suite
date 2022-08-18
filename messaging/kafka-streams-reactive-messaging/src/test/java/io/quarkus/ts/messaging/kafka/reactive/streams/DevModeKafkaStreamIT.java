@@ -1,5 +1,6 @@
 package io.quarkus.ts.messaging.kafka.reactive.streams;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -10,6 +11,8 @@ import io.quarkus.test.services.DevModeQuarkusApplication;
 @Tag("QUARKUS-1026")
 @Tag("QUARKUS-959")
 @QuarkusScenario
+//TODO https://github.com/quarkusio/quarkus/issues/27352
+@Disabled
 public class DevModeKafkaStreamIT extends BaseKafkaStreamTest {
 
     /**
