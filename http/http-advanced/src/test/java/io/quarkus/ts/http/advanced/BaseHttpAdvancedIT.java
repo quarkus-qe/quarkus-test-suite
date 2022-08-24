@@ -3,9 +3,11 @@ package io.quarkus.ts.http.advanced;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.in;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -24,6 +26,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -32,6 +35,8 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
+import io.quarkus.test.scenarios.OpenShiftScenario;
+import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.EnabledOnQuarkusVersion;
 import io.quarkus.ts.http.advanced.clients.HealthClientService;
 import io.quarkus.ts.http.advanced.clients.HttpVersionClientService;
@@ -64,6 +69,49 @@ public abstract class BaseHttpAdvancedIT {
         getApp().given().get("/api/hello")
                 .then().statusLine("HTTP/1.1 200 OK").statusCode(HttpStatus.SC_OK)
                 .body("content", is("Hello, World!"));
+    }
+
+    @Test
+    public void serverHostAddress(TestInfo testInfo) {
+        boolean isQuarkusScenario = testInfo.getTestClass().get().getAnnotation(QuarkusScenario.class) != null;
+        boolean isOpenShiftScenario = testInfo.getTestClass().get().getAnnotation(OpenShiftScenario.class) != null;
+
+        String responseBody = getApp().given().get("/api/details/server/address")
+                .then().statusCode(HttpStatus.SC_OK)
+                .extract().asString();
+
+        if (isQuarkusScenario) {
+            assertThat(responseBody, containsString("127.0.0.1")); // used on bare metal testing
+            assertThat(responseBody, containsString(":")); // assert IP:PORT format
+            int port = Integer.parseInt(responseBody.substring(responseBody.indexOf(':') + 1));
+            assertThat(port, greaterThan(1000)); // TS sets custom ports
+        } else if (isOpenShiftScenario) {
+            assertThat(responseBody, containsString("10.")); // OpenShift uses private network 10.x.x.x
+            assertThat(responseBody, containsString(":8080")); // fixed port 8080 is used
+        } else {
+            fail("Check is not implemented for this kind of scenario");
+        }
+    }
+
+    @Test
+    public void clientHostAddress(TestInfo testInfo) {
+        boolean isQuarkusScenario = testInfo.getTestClass().get().getAnnotation(QuarkusScenario.class) != null;
+        boolean isOpenShiftScenario = testInfo.getTestClass().get().getAnnotation(OpenShiftScenario.class) != null;
+        String responseBody = getApp().given().get("/api/details/client/address")
+                .then().statusCode(HttpStatus.SC_OK)
+                .extract().asString();
+
+        assertThat(responseBody, containsString(":")); // assert IP:PORT format
+        int port = Integer.parseInt(responseBody.substring(responseBody.indexOf(':') + 1));
+        assertThat(port, greaterThan(32767)); // ephemeral ports - Linux 32768-61000, Windows 49152-65535
+
+        if (isQuarkusScenario) {
+            assertThat(responseBody, containsString("127.0.0.1")); // used on bare metal testing
+        } else if (isOpenShiftScenario) {
+            assertThat(responseBody, containsString("10.")); // OpenShift uses private network 10.x.x.x
+        } else {
+            fail("Check is not implemented for this kind of scenario");
+        }
     }
 
     @Test
