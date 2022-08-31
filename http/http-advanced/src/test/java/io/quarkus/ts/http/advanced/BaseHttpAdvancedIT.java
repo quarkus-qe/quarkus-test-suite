@@ -19,9 +19,16 @@ import java.util.concurrent.TimeUnit;
 import javax.ws.rs.core.Response;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
@@ -156,6 +163,22 @@ public abstract class BaseHttpAdvancedIT {
 
         done.await(TIMEOUT_SEC, TimeUnit.SECONDS);
         assertThat(done.getCount(), equalTo(0L));
+    }
+
+    @Test
+    @Tag("QUARKUS-2004")
+    public void constraintsExist() throws JsonProcessingException {
+        io.restassured.response.Response response = getApp().given().get("/q/openapi");
+        Assertions.assertEquals(HttpStatus.SC_OK, response.statusCode());
+
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+        JsonNode body = mapper.readTree(response.body().asString());
+
+        JsonNode validation = body.get("components").get("schemas").get("Hello").get("properties").get("content");
+
+        Assertions.assertEquals(4, validation.get("maxLength").asInt());
+        Assertions.assertEquals(1, validation.get("minLength").asInt());
+        Assertions.assertEquals("^[A-Za-z]+$", validation.get("pattern").asText());
     }
 
     protected Protocol getProtocol() {
