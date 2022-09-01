@@ -354,6 +354,15 @@
     </repositories>
     <profiles>
         <profile>
+            <id>env-info</id>
+            <build>
+                <defaultGoal>clean compile</defaultGoal>
+            </build>
+            <modules>
+                <module>env-info</module>
+            </modules>
+        </profile>
+        <profile>
             <id>root-modules</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -362,6 +371,7 @@
                 </property>
             </activation>
             <modules>
+                <module>env-info</module>
                 <module>config</module>
                 <module>properties</module>
                 <module>docker-build</module>
@@ -384,6 +394,7 @@
         <profile>
             <id>root-modules-no-qute</id>
             <modules>
+                <module>env-info</module>
                 <module>config</module>
                 <module>properties</module>
                 <module>docker-build</module>
@@ -409,6 +420,7 @@
                 </property>
             </activation>
             <modules>
+                <module>env-info</module>
                 <module>http/http-minimum</module>
                 <module>http/http-minimum-reactive</module>
                 <module>http/http-advanced</module>
@@ -435,6 +447,7 @@
                 </property>
             </activation>
             <modules>
+                <module>env-info</module>
                 <module>security/basic</module>
                 <module>security/bouncycastle-fips</module>
                 <module>security/form-authn</module>
@@ -463,6 +476,7 @@
                 </property>
             </activation>
             <modules>
+                <module>env-info</module>
                 <module>messaging/amqp-reactive</module>
                 <module>messaging/qpid</module>
                 <module>messaging/kafka-streams-reactive-messaging</module>
@@ -478,6 +492,7 @@
         <profile>
             <id>messaging-modules-no-kafka</id>
             <modules>
+                <module>env-info</module>
                 <module>messaging/amqp-reactive</module>
                 <module>messaging/qpid</module>
             </modules>
@@ -491,6 +506,7 @@
                 </property>
             </activation>
             <modules>
+                <module>env-info</module>
                 <module>monitoring/micrometer-prometheus</module>
                 <module>monitoring/micrometer-prometheus-kafka</module>
                 <module>monitoring/micrometer-prometheus-kafka-reactive</module>
@@ -510,6 +526,7 @@
                 </property>
             </activation>
             <modules>
+                <module>env-info</module>
                 <module>sql-db/hibernate</module>
                 <module>sql-db/sql-app</module>
                 <module>sql-db/multiple-pus</module>
@@ -529,6 +546,7 @@
                 </property>
             </activation>
             <modules>
+                <module>env-info</module>
                 <module>nosql-db/mongodb</module>
                 <module>nosql-db/mongodb-reactive</module>
             </modules>
@@ -542,6 +560,7 @@
                 </property>
             </activation>
             <modules>
+                <module>env-info</module>
                 <module>service-binding/postgresql-crunchy</module>
             </modules>
         </profile>
@@ -554,6 +573,7 @@
                 </property>
             </activation>
             <modules>
+                <module>env-info</module>
                 <module>spring/spring-data</module>
                 <module>spring/spring-web</module>
                 <module>spring/spring-web-reactive</module>
@@ -584,6 +604,7 @@
                 </property>
             </activation>
             <modules>
+                <module>env-info</module>
                 <module>websockets/quarkus-websockets</module>
                 <module>websockets/websockets-client</module>
             </modules>
