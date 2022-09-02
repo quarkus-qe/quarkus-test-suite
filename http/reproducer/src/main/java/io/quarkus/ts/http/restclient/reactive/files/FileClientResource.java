@@ -42,6 +42,24 @@ public class FileClientResource {
         return Uni.createFrom().item(() -> utils.getSum(file));
     }
 
+    @GET
+    @Path("/hash")
+    public String hash() {
+        return client.hash();
+    }
+
+    @GET
+    @Path("/download")
+    public Uni<String> download() {
+        return client.download()
+                       .map(file -> {
+                           java.nio.file.Path path = file.toPath().toAbsolutePath();
+                           deathRow.add(path);
+                           return path;
+                       })
+                       .map(utils::getSum);
+    }
+
     @POST
     @Path("/multipart")
     @Blocking
@@ -50,6 +68,13 @@ public class FileClientResource {
         wrapper.file = file.toFile();
         wrapper.name = file.toString();
         return client.sendMultipart(wrapper);
+    }
+
+
+    @POST
+    @Path("/upload-file")
+    public Uni<String> upload() {
+        return client.sendFile(file.toFile());
     }
 
     @DELETE
