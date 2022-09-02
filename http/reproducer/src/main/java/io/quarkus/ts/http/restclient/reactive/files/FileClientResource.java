@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.DELETE;
@@ -12,7 +11,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.resteasy.reactive.RestResponse;
 
@@ -30,14 +28,10 @@ public class FileClientResource {
     private final OsUtils utils;
 
     @Inject
-    public FileClientResource(@RestClient FileClient client,
-            @ConfigProperty(name = "client.filepath") Optional<String> folder) {
+    public FileClientResource(@RestClient FileClient client) {
         utils = OsUtils.get();
-        file = folder
-                .stream()
-                .map(existing -> java.nio.file.Path.of(existing).resolve("upload.txt").toAbsolutePath())
-                .peek(path -> utils.createFile(path, BIGGER_THAN_TWO_GIGABYTES))
-                .findFirst().orElse(null);
+        file = utils.getTempDirectory().resolve("upload.txt").toAbsolutePath();
+        utils.createFile(file, BIGGER_THAN_TWO_GIGABYTES);
         this.client = client;
     }
 

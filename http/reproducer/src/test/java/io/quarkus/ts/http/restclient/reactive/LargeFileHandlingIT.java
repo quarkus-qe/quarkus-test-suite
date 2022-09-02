@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.ts.http.restclient.reactive.files.OsUtils;
 import io.restassured.response.Response;
 
 @QuarkusScenario
@@ -22,16 +23,14 @@ public class LargeFileHandlingIT {
 
     private static Path getTempDirectory() {
         try {
-            return Files.createTempDirectory("large_files");
+            return OsUtils.get().createTempDirectory();
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }
 
     @QuarkusApplication
-    static RestService app = new RestService()
-            .withProperty("client.filepath", () -> files.toAbsolutePath().toString())
-            .withProperties("modern.properties");
+    static RestService app = new RestService();
 
     @Test
     public void uploadMultipart() {

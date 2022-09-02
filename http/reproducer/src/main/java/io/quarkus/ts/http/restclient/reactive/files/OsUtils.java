@@ -19,12 +19,18 @@ public abstract class OsUtils {
 
     public abstract void createFile(Path path, long size);
 
+    public abstract Path createTempDirectory() throws IOException;
+
+    public abstract Path getTempDirectory();
+
     public static OsUtils get() {
         return new JavaUtils();
     }
 }
 
 class JavaUtils extends OsUtils {
+    private static final Path tmpdir = Path.of(System.getProperty("java.io.tmpdir"));
+    private static final Path TESTS_DIRECTORY = tmpdir.resolve("large_files");
 
     @Override
     public String getSum(Path path) {
@@ -49,5 +55,15 @@ class JavaUtils extends OsUtils {
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    @Override
+    public Path createTempDirectory() throws IOException {
+        return Files.createDirectory(TESTS_DIRECTORY);
+    }
+
+    @Override
+    public Path getTempDirectory() {
+        return TESTS_DIRECTORY;
     }
 }
