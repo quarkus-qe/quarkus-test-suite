@@ -59,7 +59,13 @@ class JavaUtils extends OsUtils {
 
     @Override
     public Path createTempDirectory() throws IOException {
-        return Files.createDirectory(TESTS_DIRECTORY);
+        if (Files.exists(TESTS_DIRECTORY)) {
+            System.out.println(TESTS_DIRECTORY + " already exists!");
+            return TESTS_DIRECTORY;
+        } else {
+            System.out.println(TESTS_DIRECTORY + " is being created.");
+            return Files.createDirectory(TESTS_DIRECTORY);
+        }
     }
 
     @Override
