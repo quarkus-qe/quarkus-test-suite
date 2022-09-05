@@ -44,11 +44,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.awaitility</groupId>
-            <artifactId>awaitility</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>io.quarkus.qe</groupId>
             <artifactId>quarkus-test-service-infinispan</artifactId>
             <scope>test</scope>

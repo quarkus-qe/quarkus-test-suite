@@ -80,11 +80,6 @@
             <artifactId>quarkus-test-service-database</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>io.rest-assured</groupId>
-            <artifactId>rest-assured</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
     <profiles>
         <!-- Skipped on Windows as does not support Linux Containers / Testcontainers -->
