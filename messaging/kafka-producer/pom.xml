@@ -18,21 +18,6 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-reactive-routes</artifactId>
         </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-junit5</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.rest-assured</groupId>
-            <artifactId>rest-assured</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkus.qe</groupId>
-            <artifactId>quarkus-test-containers</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
     <profiles>
         <!-- Skipped on Windows as does not support Linux Containers / Testcontainers -->
