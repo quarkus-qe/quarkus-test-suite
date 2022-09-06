@@ -1,5 +1,6 @@
 package io.quarkus.ts.hibernate.reactive;
 
+import static org.hamcrest.Matchers.hasItem;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -164,12 +165,11 @@ public abstract class AbstractDatabaseHibernateReactiveIT {
         assertEquals("Vern", author);
         Response creation = getApp().given().put("library/books/2/Around_the_World_in_Eighty_Days");
         assertEquals(HttpStatus.SC_CREATED, creation.statusCode());
-        String result = getApp().given()
+        getApp().given()
                 .when().get("library/books/author/Vern")
                 .then()
                 .statusCode(HttpStatus.SC_OK)
-                .extract().body().asString();
-        assertEquals("[Around_the_World_in_Eighty_Days]", result);
+                .body("$", hasItem("Around_the_World_in_Eighty_Days"));
     }
 
     @Test
@@ -207,10 +207,10 @@ public abstract class AbstractDatabaseHibernateReactiveIT {
                 .contentType(ContentType.JSON)
                 .post("hibernate/books/Dick/Ubik");
         assertEquals(HttpStatus.SC_CREATED, creation.statusCode());
-        Response response = getApp().given()
-                .when().get("/library/books/author/Dick");
-        assertEquals(HttpStatus.SC_OK, response.statusCode());
-        assertEquals("[Ubik]", response.getBody().asString());
+        getApp().given()
+                .when().get("/library/books/author/Dick")
+                .then().statusCode(HttpStatus.SC_OK)
+                .body("$", hasItem("Ubik"));
     }
 
     @Test
