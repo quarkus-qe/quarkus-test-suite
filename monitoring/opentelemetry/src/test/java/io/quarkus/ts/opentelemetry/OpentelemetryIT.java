@@ -29,20 +29,20 @@ public class OpentelemetryIT {
 
     private Response resp;
 
-    @JaegerContainer(restPort = GRPC_COLLECTOR_PORT, expectedLog = "\"Health Check state change\",\"status\":\"ready\"")
+    @JaegerContainer(useOtlpCollector = true, expectedLog = "\"Health Check state change\",\"status\":\"ready\"")
     static final JaegerService jaeger = new JaegerService();
 
     @QuarkusApplication(classes = PongResource.class, properties = "pong.properties")
     static final RestService pongservice = new RestService()
             .withProperty("quarkus.application.name", "pongservice")
-            .withProperty("quarkus.opentelemetry.tracer.exporter.jaeger.endpoint", jaeger::getRestUrl);
+            .withProperty("quarkus.opentelemetry.tracer.exporter.otlp.endpoint", jaeger::getCollectorUrl);
 
     @QuarkusApplication(classes = { PingResource.class, PingPongService.class })
     static final RestService pingservice = new RestService()
             .withProperty("quarkus.application.name", "pingservice")
             .withProperty("pongservice_url", pongservice::getHost)
             .withProperty("pongservice_port", () -> String.valueOf(pongservice.getPort()))
-            .withProperty("quarkus.opentelemetry.tracer.exporter.jaeger.endpoint", jaeger::getRestUrl);
+            .withProperty("quarkus.opentelemetry.tracer.exporter.otlp.endpoint", jaeger::getCollectorUrl);
 
     @Test
     public void testContextPropagation() {

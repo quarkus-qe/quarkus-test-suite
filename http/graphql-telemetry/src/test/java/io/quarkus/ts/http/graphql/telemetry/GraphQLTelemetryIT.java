@@ -21,14 +21,13 @@ import io.restassured.response.Response;
 
 @QuarkusScenario
 public class GraphQLTelemetryIT {
-    private static final int GRPC_COLLECTOR_PORT = 14250;
 
-    @JaegerContainer(restPort = GRPC_COLLECTOR_PORT)
+    @JaegerContainer(useOtlpCollector = true)
     static JaegerService jaeger = new JaegerService();
 
     @QuarkusApplication
     static RestService app = new RestService()
-            .withProperty("quarkus.opentelemetry.tracer.exporter.jaeger.endpoint", jaeger::getRestUrl);
+            .withProperty("quarkus.opentelemetry.tracer.exporter.otlp.endpoint", jaeger::getCollectorUrl);
 
     @Test
     void verifyTelemetry() {
