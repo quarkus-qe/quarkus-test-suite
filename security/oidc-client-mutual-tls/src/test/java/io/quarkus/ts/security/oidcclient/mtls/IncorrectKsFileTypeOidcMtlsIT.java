@@ -25,7 +25,7 @@ public class IncorrectKsFileTypeOidcMtlsIT extends BaseOidcMtlsIT {
     static final String KEYSTORE_FILE_EXTENSION = "jks";
 
     //TODO Remove workaround after Keycloak is fixed https://github.com/keycloak/keycloak/issues/9916
-    @KeycloakContainer(command = KC_DEV_MODE_JKS_CMD, image = "quay.io/keycloak/keycloak:19.0.1", port = KEYCLOAK_PORT)
+    @KeycloakContainer(command = KC_DEV_MODE_JKS_CMD, port = KEYCLOAK_PORT)
     static KeycloakService keycloak = newKeycloakInstance(REALM_FILE_PATH, REALM_DEFAULT, "realms")
             .withRedHatFipsDisabled()
             .withProperty("HTTPS_KEYSTORE", "resource_with_destination::/etc/|server-keystore." + KEYSTORE_FILE_EXTENSION)

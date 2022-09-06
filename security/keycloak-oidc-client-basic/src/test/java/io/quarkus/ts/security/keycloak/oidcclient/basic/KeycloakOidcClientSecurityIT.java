@@ -11,7 +11,7 @@ public class KeycloakOidcClientSecurityIT extends BaseOidcClientSecurityIT {
 
     //TODO Remove workaround after Keycloak is fixed https://github.com/keycloak/keycloak/issues/9916
     @KeycloakContainer(command = {
-            "start-dev --import-realm --hostname-strict-https=false --features=token-exchange" }, image = "quay.io/keycloak/keycloak:19.0.1")
+            "start-dev --import-realm --hostname-strict-https=false --features=token-exchange" })
     static KeycloakService keycloak = new KeycloakService("/keycloak-realm.json", REALM_DEFAULT, "/realms")
             .withProperty("JAVA_OPTS", "-Dcom.redhat.fips=false");
 
