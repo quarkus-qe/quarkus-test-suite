@@ -462,7 +462,7 @@ Container images used in the tests are:
   - version 10.6: `mariadb:10.6`
 - MSSQL: `mcr.microsoft.com/mssql/rhel/server`
 - Oracle
-  - version 21 XE: `gvenzl/oracle-xe:21-slim`
+  - version 21 XE: `gvenzl/oracle-xe:21-slim-faststart`
 
 ### `sql-db/sql-app-oracle`
 Functionally identical to `sql-db/sql-app`, but using only `quarkus-jdbc-oracle` driver. This is a workaround for the missing native Oracle coverage in `sql-db/sql-app`.
