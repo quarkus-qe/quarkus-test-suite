@@ -29,7 +29,7 @@ public abstract class AbstractTraceIT {
 
     @QuarkusApplication
     static RestService app = new RestService()
-            .withProperty("quarkus.jaeger.endpoint", jaeger::getRestUrl);
+            .withProperty("quarkus.jaeger.endpoint", jaeger::getCollectorUrl);
 
     @Test
     public void testServerClientTrace() {

@@ -48,14 +48,11 @@ public class VertxWebClientIT {
     static final String EXPECTED_ID = "aBanNLDwR-SAz7iMHuCiyw";
     static final String EXPECTED_VALUE = "Chuck Norris has already been to mars; that why there's no signs of life";
     static final int DELAY = 3500; // must be greater than vertx.webclient.timeout-sec
-
-    private static final int REST_PORT = 16686;
-    private static final int TRACE_PORT = 14250;
     private static final String TRACE_PING_PATH = "/trace/ping";
 
     private Response resp;
 
-    @JaegerContainer(tracePort = TRACE_PORT, restPort = REST_PORT, expectedLog = "\"Health Check state change\",\"status\":\"ready\"")
+    @JaegerContainer(useOtlpCollector = true, expectedLog = "\"Health Check state change\",\"status\":\"ready\"")
     static final JaegerService jaeger = new JaegerService();
 
     @Container(image = "${wiremock.image}", port = 8080, expectedLog = "verbose")
@@ -64,7 +61,7 @@ public class VertxWebClientIT {
     @QuarkusApplication
     static RestService vertx = new RestService()
             .withProperty("chucknorris.api.domain", () -> wiremock.getHost() + ":" + wiremock.getPort())
-            .withProperty("quarkus.opentelemetry.tracer.exporter.jaeger.endpoint", jaeger::getTraceUrl);
+            .withProperty("quarkus.opentelemetry.tracer.exporter.otlp.endpoint", jaeger::getCollectorUrl);
 
     @Test
     @DisplayName("Vert.x WebClient [flavor: mutiny] -> Map json response body to POJO")
@@ -147,7 +144,7 @@ public class VertxWebClientIT {
                 .queryParam("lookback", lookBack)
                 .queryParam("service", serviceName)
                 .queryParam("operation", operationName)
-                .get(jaeger.getRestUrl());
+                .get(jaeger.getTraceUrl());
     }
 
     private void thenStatusCodeMustBe(int expectedStatusCode) {

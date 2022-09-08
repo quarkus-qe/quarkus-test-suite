@@ -43,7 +43,7 @@ public class MicroProfileIT {
     @QuarkusApplication
     static RestService app = new RestService()
             .withProperty("quarkus.jaeger.service-name", SERVICE_NAME)
-            .withProperty("quarkus.jaeger.endpoint", jaeger::getRestUrl);
+            .withProperty("quarkus.jaeger.endpoint", jaeger::getCollectorUrl);
 
     @Order(1)
     @Test
