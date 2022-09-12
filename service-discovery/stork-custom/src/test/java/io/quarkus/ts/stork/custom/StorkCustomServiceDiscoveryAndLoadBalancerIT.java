@@ -44,9 +44,13 @@ public class StorkCustomServiceDiscoveryAndLoadBalancerIT {
             .withProperty("quarkus.stork.pong.service-discovery.type", "simple")
             .withProperty("quarkus.stork.pong-replica.load-balancer.type", "simplelb")
             .withProperty("quarkus.stork.pong-replica.service-discovery.type", "simple")
-            .withProperty("quarkus.stork.pong.service-discovery.pongServicePort", () -> "" + pongService.getPort())
+            .withProperty("quarkus.stork.pong.service-discovery.pongServicePort", () -> "" + pongService.getURI().getPort())
             .withProperty("quarkus.stork.pong-replica.service-discovery.pongReplicaServicePort",
-                    () -> "" + pongReplicaService.getPort());
+                    () -> "" + pongReplicaService.getURI().getPort())
+            // TODO: https://github.com/quarkusio/quarkus/issues/27870
+            // following custom service discovery host properties could be removed once the above issue is resolved
+            .withProperty("quarkus.stork.pong-replica.service-discovery.pongReplicaServiceHost", "localhost")
+            .withProperty("quarkus.stork.pong.service-discovery.pongServiceHost", "localhost");
 
     @Test
     public void verifyStorkCustomServiceDiscoveryAndLoadBalancer() {
