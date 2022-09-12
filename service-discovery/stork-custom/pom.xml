@@ -45,7 +45,6 @@
                         <path>
                             <groupId>io.smallrye.stork</groupId>
                             <artifactId>stork-configuration-generator</artifactId>
-                            <version>${smallrye-stork.version}</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
