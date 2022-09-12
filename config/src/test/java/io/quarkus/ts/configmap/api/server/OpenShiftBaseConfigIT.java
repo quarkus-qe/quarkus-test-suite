@@ -32,13 +32,13 @@ public abstract class OpenShiftBaseConfigIT {
     @Test
     public void configMapEndToEnd() {
         // Simple invocation
-        getApp().given().get("/hello")
+        getApp().given().get("/hello/message")
                 .then().statusCode(HttpStatus.SC_OK)
                 .body("content", is("Hello World from " + getConfigType()));
 
         // Parameterized invocation
         getApp().given().queryParam("name", "Albert Einstein")
-                .when().get("/hello").then().statusCode(HttpStatus.SC_OK)
+                .when().get("/hello/message").then().statusCode(HttpStatus.SC_OK)
                 .body("content", is("Hello Albert Einstein from " + getConfigType()));
 
         // Update config map
@@ -46,7 +46,7 @@ public abstract class OpenShiftBaseConfigIT {
         getApp().restart();
 
         await().atMost(ASSERT_TIMEOUT_MINUTES, TimeUnit.MINUTES).untilAsserted(() -> {
-            getApp().given().get("/hello").then().statusCode(HttpStatus.SC_OK)
+            getApp().given().get("/hello/message").then().statusCode(HttpStatus.SC_OK)
                     .body(containsString("Good morning World from an updated " + getConfigType()));
         });
 
@@ -55,7 +55,7 @@ public abstract class OpenShiftBaseConfigIT {
         getApp().restart();
 
         await().atMost(ASSERT_TIMEOUT_MINUTES, TimeUnit.MINUTES).untilAsserted(() -> {
-            getApp().given().get("/hello").then().statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+            getApp().given().get("/hello/message").then().statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
         });
     }
 
@@ -72,6 +72,10 @@ public abstract class OpenShiftBaseConfigIT {
     }
 
     private static void applyConfig(String name) {
+        applyConfig(name, openshift);
+    }
+
+    static void applyConfig(String name, OpenShiftClient openshift) {
         openshift.apply(Paths.get(new File("target/test-classes/" + name + ".yaml").toURI()));
     }
 }
