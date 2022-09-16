@@ -29,6 +29,12 @@
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcpkix-jdk15on</artifactId>
         </dependency>
+        <!-- https://github.com/quarkusio/quarkus/issues/27886 -->
+        <!-- quarkus-kubernetes-client is required by stork-service-discovery-kubernetes in native mode-->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-kubernetes-client</artifactId>
+        </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-reactive-routes</artifactId>
@@ -44,20 +50,6 @@
         </dependency>
     </dependencies>
     <profiles>
-        <profile>
-            <!-- Disable native build on this module -->
-            <!-- TODO  https://github.com/quarkusio/quarkus/issues/27886 -->
-            <id>native</id>
-            <activation>
-                <property>
-                    <name>native</name>
-                </property>
-            </activation>
-            <properties>
-                <!-- To not build the module on Native -->
-                <quarkus.package.type>fast-jar</quarkus.package.type>
-            </properties>
-        </profile>
         <!-- Skipped on Windows as does not support Linux Containers / Testcontainers -->
         <profile>
             <id>skip-tests-on-windows</id>
