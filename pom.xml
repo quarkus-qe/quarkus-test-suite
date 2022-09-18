@@ -19,7 +19,7 @@
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
         <quarkus.platform.version>999-SNAPSHOT</quarkus.platform.version>
-        <quarkus.qe.framework.version>1.2.0.Beta9</quarkus.qe.framework.version>
+        <quarkus.qe.framework.version>1.2.0.Beta11</quarkus.qe.framework.version>
         <quarkus-qpid-jms.version>0.37.0</quarkus-qpid-jms.version>
         <quarkus-ide-config.version>2.12.1.Final</quarkus-ide-config.version>
         <apache-httpclient-fluent.version>4.5.13</apache-httpclient-fluent.version>
@@ -384,7 +384,8 @@
                 <module>infinispan-client</module>
                 <module>super-size/many-extensions</module>
                 <module>quarkus-cli</module>
-                <module>kamelet</module>
+                <!-- TODO: https://github.com/quarkusio/quarkus/issues/28007 -->
+                <!-- <module>kamelet</module>-->
                 <module>logging/jboss</module>
                 <module>cache/caffeine</module>
                 <module>qute/multimodule</module>
@@ -405,7 +406,8 @@
                 <module>infinispan-client</module>
                 <module>super-size/many-extensions</module>
                 <module>quarkus-cli</module>
-                <module>kamelet</module>
+                <!-- TODO: https://github.com/quarkusio/quarkus/issues/28007 -->
+                <!-- <module>kamelet</module>-->
                 <module>logging/jboss</module>
                 <module>cache/caffeine</module>
             </modules>
