@@ -50,3 +50,5 @@ public class SecuredResource {
         return "How did you get here?";
     }
 }
+
+
