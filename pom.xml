@@ -395,6 +395,8 @@
                 <module>logging/jboss</module>
                 <module>cache/caffeine</module>
                 <module>qute/multimodule</module>
+                <module>qute/synchronous</module>
+                <module>qute/reactive</module>
                 <module>helm/helm-minimum</module>
             </modules>
         </profile>
