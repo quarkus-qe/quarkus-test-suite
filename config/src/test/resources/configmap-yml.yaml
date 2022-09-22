@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config-yml
+data:
+  application.yml: |
+    hello:
+      message: message configmap-yml
+      epilogue: epilogue configmap-yml
+      preamble: preamble configmap-yml
