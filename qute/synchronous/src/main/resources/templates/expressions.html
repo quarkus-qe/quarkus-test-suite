@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<p>This page is rendered by {server}</p>
+The book is called {book.title} and is written by {book.['author']}
+<br>
+It has {book.characters.length} characters:
+<br>
+{#for character in book.characters}
+{character_count}. {character}{#if character_hasNext} {#if character_odd }as well as{/if}{#if character_even }and also{/if}{/if}<br>
+{/for}
+<br>
+At first, {book.characters.take(1).0} tries to fight on a duel with {book.characters.takeLast(3)[0]}, {book.characters.takeLast(3).get(1)} and {book.characters.takeLast(3).2}, but later they become friends.<br>
+Here are some numbers:{#for i in 5} {i_index}{/for}<br>
+{#for i in 5}
+{#if i_isFirst}I have to say, that{#else}and{/if} this is {i_indexParity}{#if i_isLast}.{/if}<br>
+{/for}
+</html>

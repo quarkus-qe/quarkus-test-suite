@@ -936,7 +936,10 @@ in order to instantiate these templates by your self (as an example).
 need it to be deployed into ocp or some other platform.
 
 ### `Qute`
-Coverage for Qute template engine
+Coverage for Qute template engine.
+Module `qute/synchronous` contains coverage for Qute templating and integration with RESTEasy.
+Module `qute/reactive` contains coverage for Qute templating and integration with RESTEasy reactive.
+Module `qute/multimodule` provides coverage for complicated issue of having localised messages in separate modules.
 
 ### `spring/spring-data`
 - Spring Data JPA: CRUD repository operation (default and custom), mapped superclass, query over embedded camelCase field, HTTP response filter.
