@@ -17,8 +17,6 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import io.smallrye.mutiny.Multi;
-
 @Entity
 @Table(name = "authors")
 public class Author {
@@ -56,7 +54,7 @@ public class Author {
         return id;
     }
 
-    public Multi<Book> getBooks() {
-        return Multi.createFrom().iterable(books);
+    public List<Book> getBooks() {
+        return books;
     }
 }
