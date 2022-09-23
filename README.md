@@ -235,7 +235,8 @@ These requirements are necessary to verify the tests using Operators.
 
 ## Running against Red Hat build of Quarkus
 
-When running against released Red Hat build of Quarkus make sure https://maven.repository.redhat.com/ga/ repository is defined in settings.xml.
+When running against released Red Hat build of Quarkus, https://maven.repository.redhat.com/ga/ repository
+is already defined in parent POM and there should be no need to provide it in settings.xml.
 
 Example command for released Red Hat build of Quarkus:
 ```
