@@ -86,16 +86,15 @@ public class PanacheEndpoint {
     @Path("books/author/{name}")
     public Multi<String> search(String name) {
         return authors.findByName(name)
-                .flatMap(Author::getBooks)
+                .map(Author::getBooks)
+                .flatMap(Multi.createFrom()::iterable)
                 .map(Book::getTitle);
     }
 
     @GET
     @Path("authors")
-    // TODO: Return Json, when this will be fixed: https://github.com/quarkusio/quarkus/issues/18043
-    public Multi<String> authors() {
-        return authors.streamAll()
-                .map(author -> author.getId() + " " + author.getName());
+    public Multi<Author> authors() {
+        return authors.streamAll();
     }
 
     @GET

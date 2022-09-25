@@ -21,7 +21,7 @@ import io.restassured.response.Response;
 public abstract class AbstractDatabaseHibernateReactiveIT {
 
     @Test
-    @Order(1)
+    @Order(2)
     public void createAuthorWithPanache() {
         Response post = getApp().given()
                 .contentType(ContentType.JSON)
@@ -36,7 +36,7 @@ public abstract class AbstractDatabaseHibernateReactiveIT {
     }
 
     @Test
-    @Order(2)
+    @Order(3)
     public void validateWithPanache() {
         Response creation = getApp().given().contentType(ContentType.JSON).post("library/author/Subrahmanyakavi");
         assertEquals(HttpStatus.SC_BAD_REQUEST, creation.statusCode());
@@ -47,7 +47,7 @@ public abstract class AbstractDatabaseHibernateReactiveIT {
     }
 
     @Test
-    @Order(3)
+    @Order(4)
     public void createAuthorWithoutPanache() {
         Response post = getApp().given()
                 .contentType(ContentType.JSON)
@@ -108,11 +108,37 @@ public abstract class AbstractDatabaseHibernateReactiveIT {
     }
 
     @Test
+    @Order(1)
     public void searchByQuery() {
-        getApp().given()
+        JsonPath body = getApp().given()
                 .when().get("/library/authors")
                 .then()
-                .statusCode(HttpStatus.SC_OK);
+                .statusCode(HttpStatus.SC_OK)
+                .extract().body().jsonPath();
+
+        assertEquals(4, body.getList(".").size());
+
+        assertEquals(1, body.getInt("[0].id"));
+        assertEquals("Homer", body.getString("[0].name"));
+        assertTrue(body.getList("[0].books").isEmpty());
+
+        assertEquals(2, body.getInt("[1].id"));
+        assertEquals("Vern", body.getString("[1].name"));
+        assertTrue(body.getList("[1].books").isEmpty());
+
+        assertEquals(3, body.getInt("[2].id"));
+        assertEquals("Dlugi", body.getString("[2].name"));
+        assertEquals(1, body.getList("[2].books").size());
+        assertEquals("Slovník", body.getString("[2].books[0].title"));
+        assertEquals(0, body.getInt("[2].books[0].isbn"));
+
+        assertEquals(4, body.getInt("[3].id"));
+        assertEquals("Kahneman", body.getString("[3].name"));
+        assertEquals(2, body.getList("[3].books").size());
+        assertEquals("Thinking fast and slow", body.getString("[3].books[0].title"));
+        assertEquals(9780374275631L, body.getLong("[3].books[0].isbn"));
+        assertEquals("Attention and Effort", body.getString("[3].books[1].title"));
+        assertEquals(0, body.getInt("[3].books[1].isbn"));
     }
 
     @Test
