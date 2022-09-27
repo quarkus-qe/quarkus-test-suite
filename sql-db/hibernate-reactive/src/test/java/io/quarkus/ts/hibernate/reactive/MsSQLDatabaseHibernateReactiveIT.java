@@ -1,8 +1,5 @@
 package io.quarkus.ts.hibernate.reactive;
 
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.bootstrap.SqlServerService;
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -10,7 +7,6 @@ import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
-//TODO: enable disabled methods then the issue will be fixed
 public class MsSQLDatabaseHibernateReactiveIT extends AbstractDatabaseHibernateReactiveIT {
 
     private static final int MSSQL_PORT = 1433;
@@ -29,17 +25,4 @@ public class MsSQLDatabaseHibernateReactiveIT extends AbstractDatabaseHibernateR
         return app;
     }
 
-    @Test
-    @Override
-    @Disabled("https://github.com/quarkusio/quarkus/issues/19539")
-    public void connectToUniEndpoint() {
-        // MSSQL hibernate has some problems with extended Latin
-    }
-
-    @Test
-    @Override
-    @Disabled("https://github.com/quarkusio/quarkus/issues/19539")
-    public void connectToMultiEndpoint() {
-        // MSSQL hibernate has some problems with extended Latin
-    }
 }

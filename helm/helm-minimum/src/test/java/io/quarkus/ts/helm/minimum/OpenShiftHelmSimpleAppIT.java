@@ -25,8 +25,7 @@ import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.restassured.RestAssured;
 
 @OpenShiftScenario
-// Helm is concerned just about image name, Native compilation is not relevant
-@DisabledOnNative
+@DisabledOnNative(reason = "Helm is only concerned with image name, Native compilation is not relevant")
 public class OpenShiftHelmSimpleAppIT {
 
     private static final Logger LOG = Logger.getLogger(OpenShiftHelmSimpleAppIT.class);

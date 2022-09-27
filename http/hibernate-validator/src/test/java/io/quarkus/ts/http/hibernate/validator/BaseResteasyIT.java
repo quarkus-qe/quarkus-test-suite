@@ -1,13 +1,13 @@
 package io.quarkus.ts.http.hibernate.validator;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.http.HttpStatus;
 
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import io.restassured.response.ValidatableResponse;
 
 public abstract class BaseResteasyIT {
 
@@ -22,33 +22,58 @@ public abstract class BaseResteasyIT {
 
     private static final String EXPECTED_VALIDATOR_ERROR_MESSAGE = "numeric value out of bounds";
 
-    protected void assertBadRequestInJsonFormat(String path) {
-        assertBadRequestInJsonFormat(given().get(path));
+    protected static ResponseValidator validate(String path) {
+        return BaseResteasyIT.validate(given().get(path));
     }
 
-    protected void assertBadRequestInJsonFormat(Response response) {
-        isBadRequest(response)
-                .contentType(ContentType.JSON)
-                .body("parameterViolations[0].message", containsString(EXPECTED_VALIDATOR_ERROR_MESSAGE));
+    protected static ResponseValidator validate(Response response) {
+        return new ResponseValidator(response);
     }
 
-    protected void assertBadRequestInXmlFormat(Response response) {
-        isBadRequest(response)
-                .contentType(ContentType.XML)
-                .body("violationReport.parameterViolations.message", containsString(EXPECTED_VALIDATOR_ERROR_MESSAGE));
-    }
+    static class ResponseValidator {
+        final Response response;
 
-    protected void assertBadRequestInTextFormat(String path) {
-        assertBadRequestInTextFormat(given().get(path));
-    }
+        private ResponseValidator(Response response) {
+            this.response = response;
+        }
 
-    protected void assertBadRequestInTextFormat(Response response) {
-        isBadRequest(response)
-                .contentType(ContentType.TEXT)
-                .body(containsString(EXPECTED_VALIDATOR_ERROR_MESSAGE));
-    }
+        protected ResponseValidator isBadRequest() {
+            assertEquals(HttpStatus.SC_BAD_REQUEST, response.statusCode());
+            return this;
+        }
 
-    private ValidatableResponse isBadRequest(Response response) {
-        return response.then().statusCode(HttpStatus.SC_BAD_REQUEST);
+        protected ResponseValidator hasReactiveJsonError() {
+            response.then().contentType(ContentType.JSON);
+            assertEquals(EXPECTED_VALIDATOR_ERROR_MESSAGE, response.body().jsonPath().getString("violations[0].message"));
+            return this;
+        }
+
+        protected ResponseValidator hasClassicJsonError() {
+            response.then().contentType(ContentType.JSON);
+            assertEquals(EXPECTED_VALIDATOR_ERROR_MESSAGE,
+                    response.body().jsonPath().getString("parameterViolations[0].message"));
+            return this;
+        }
+
+        protected ResponseValidator hasReactiveXMLError() {
+            response.then().contentType(ContentType.XML);
+            assertEquals(EXPECTED_VALIDATOR_ERROR_MESSAGE,
+                    response.body().xmlPath().getString("violationReport.violations.message"));
+            return this;
+        }
+
+        protected ResponseValidator hasClassicXMLError() {
+            response.then().contentType(ContentType.XML);
+            assertEquals(EXPECTED_VALIDATOR_ERROR_MESSAGE,
+                    response.body().xmlPath().getString("violationReport.parameterViolations.message"));
+            return this;
+        }
+
+        protected ResponseValidator hasTextError() {
+            response.then().contentType(ContentType.TEXT);
+            String body = response.body().asString();
+            assertTrue(body.contains(EXPECTED_VALIDATOR_ERROR_MESSAGE), body);
+            return this;
+        }
     }
 }

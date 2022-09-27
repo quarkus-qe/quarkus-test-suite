@@ -18,7 +18,6 @@ import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 @Tag("quarkus-cli")
 @QuarkusScenario
 @Disabled("Move to Quarkus 2.7 instead of Quarkus main")
-@DisabledOnQuarkusVersion(version = "1\\..*", reason = "Quarkus CLI has been reworked in 2.x")
 @DisabledOnQuarkusVersion(version = ".*redhat.*", reason = "Do not run CLI version check on productized bits")
 @DisabledIfSystemProperty(named = "profile.id", matches = "native", disabledReason = "Only for JVM verification")
 public class QuarkusCliVersionIT {
