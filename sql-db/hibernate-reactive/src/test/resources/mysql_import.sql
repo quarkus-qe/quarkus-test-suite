@@ -1,5 +1,5 @@
 DROP TABLE IF EXISTS authors;
-CREATE TABLE authors (id INT NOT NULL AUTO_INCREMENT,name TEXT NOT NULL,PRIMARY KEY(id));
+CREATE TABLE authors (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(31) NOT NULL, PRIMARY KEY(id));
 INSERT INTO authors(id,name) VALUES (1, 'Homer');
 INSERT INTO authors(id,name) VALUES (2, 'Vern');
 INSERT INTO authors(id,name) VALUES (3, 'Dlugi');
@@ -8,8 +8,8 @@ DROP TABLE IF EXISTS books;
 CREATE TABLE books (
     id INT NOT NULL AUTO_INCREMENT,
     author INT,
-    title TEXT NOT NULL,
-    isbn TEXT,
+    title VARCHAR(63)  NOT NULL,
+    isbn VARCHAR(63),
     PRIMARY KEY(id),
     FOREIGN KEY (author) REFERENCES authors(id) ON DELETE CASCADE ON UPDATE RESTRICT);
 INSERT INTO books(author, title) VALUES (3, 'Slovník');

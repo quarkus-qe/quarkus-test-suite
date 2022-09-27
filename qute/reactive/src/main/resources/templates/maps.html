@@ -1,11 +1,10 @@
 <html>
 {#if !map.isEmpty}
 The capital of Tasmania is {map.Tasmania}, {map.['Java']} is a capital of Java and {map.get('The Great Britain')} is a capital of the UK.
-{/if}
-<!--  todo uncomment when https://github.com/quarkusio/quarkus/issues/28013 is fixed
-{|Yes, you right, it's {map.['The Great Britain']}!|}
--->
 <br>
+Yes, you're right, it's {map['The Great Britain']}!
+<br>
+{/if}
 {#for country in map.keySet}
     {country_count}. {country}<br>
 {/for}

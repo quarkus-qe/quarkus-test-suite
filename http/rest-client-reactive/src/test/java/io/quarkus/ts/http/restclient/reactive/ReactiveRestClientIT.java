@@ -29,7 +29,7 @@ public class ReactiveRestClientIT {
     static RestService app = new RestService().withProperties("modern.properties");
 
     @Test
-    @DisabledOnOs(value = OS.WINDOWS, disabledReason = "https://github.com/quarkusio/quarkus/issues/24763")
+    @DisabledOnOs(value = OS.WINDOWS, disabledReason = "https://github.com/quarkus-qe/quarkus-test-framework/issues/584")
     public void shouldGetBookFromRestClientJson() {
         Response response = app.given().with().pathParam("id", "123")
                 .get("/client/book/{id}/json");
@@ -39,7 +39,7 @@ public class ReactiveRestClientIT {
 
     @Tag("QUARKUS-1568")
     @Test
-    @DisabledOnOs(value = OS.WINDOWS, disabledReason = "https://github.com/quarkusio/quarkus/issues/24763")
+    @DisabledOnOs(value = OS.WINDOWS, disabledReason = "https://github.com/quarkus-qe/quarkus-test-framework/issues/584")
     public void supportPathParamFromBeanParam() {
         Response response = app.given().with().pathParam("id", "123")
                 .get("/client/book/{id}/jsonByBeanParam");

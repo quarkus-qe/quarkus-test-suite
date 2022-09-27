@@ -38,7 +38,6 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.EnabledOnQuarkusVersion;
-import io.quarkus.ts.http.advanced.clients.HealthClientService;
 import io.quarkus.ts.http.advanced.clients.HttpVersionClientService;
 import io.quarkus.ts.http.advanced.clients.HttpVersionClientServiceAsync;
 import io.quarkus.ts.http.advanced.clients.RestClientServiceBuilder;
@@ -186,13 +185,9 @@ public abstract class BaseHttpAdvancedIT {
     }
 
     @Test
-    @Disabled("blocked by: https://issues.redhat.com/browse/QUARKUS-781")
-    public void microprofileHttpClientRedirection() throws Exception {
-        HealthClientService healthHttpClient = new RestClientServiceBuilder<HealthClientService>(getAppEndpoint())
-                .withHostVerified(true).withPassword(PASSWORD).withKeyStorePath(KEY_STORE_PATH)
-                .build(HealthClientService.class);
-
-        assertThat(HttpStatus.SC_OK, equalTo(healthHttpClient.health().getStatus()));
+    public void microprofileHttpClientRedirection() {
+        io.restassured.response.Response health = getApp().given().get("api/client");
+        assertEquals(HttpStatus.SC_OK, health.statusCode());
     }
 
     @Test

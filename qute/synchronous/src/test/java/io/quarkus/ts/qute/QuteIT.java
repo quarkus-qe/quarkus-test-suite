@@ -182,15 +182,16 @@ public class QuteIT {
         final String[] content = response.body().asString().split("\n");
         assertEquals("The capital of Tasmania is Hobart, Jakarta is a capital of Java and London is a capital of the UK.",
                 content[1].stripLeading());
-        int keysLine = 6;
+        assertEquals("Yes, you're right, it's London!", content[3].stripLeading());
+        int keysLine = 5;
         assertEquals("1. Java<br>", content[keysLine].stripLeading());
         assertEquals("2. Tasmania<br>", content[keysLine + 1].stripLeading());
         assertEquals("3. The Great Britain<br>", content[keysLine + 2].stripLeading());
-        assertEquals("I am a Java programmer and there are 3 cities I know:<br>", content[9].stripLeading());
-        int valuesLine = 10;
-        assertEquals("0. Jakarta<br>", content[valuesLine].stripLeading());
-        assertEquals("1. Hobart<br>", content[valuesLine + 1].stripLeading());
-        assertEquals("2. London<br>", content[valuesLine + 2].stripLeading());
+        int valuesLine = 8;
+        assertEquals("I am a Java programmer and there are 3 cities I know:<br>", content[valuesLine].stripLeading());
+        assertEquals("0. Jakarta<br>", content[valuesLine + 1].stripLeading());
+        assertEquals("1. Hobart<br>", content[valuesLine + 2].stripLeading());
+        assertEquals("2. London<br>", content[valuesLine + 3].stripLeading());
     }
 
     @Test
@@ -198,7 +199,7 @@ public class QuteIT {
         Response response = app.given().get("/map?name=europe");
         assertEquals(200, response.statusCode());
         final String[] content = response.body().asString().split("\n");
-        assertEquals("I am a Java programmer and there are zero cities I know:<br>", content[5].stripLeading());
+        assertEquals("I am a Java programmer and there are zero cities I know:<br>", content[1].stripLeading());
     }
 
     @Test

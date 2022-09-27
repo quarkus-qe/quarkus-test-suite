@@ -28,7 +28,6 @@ import io.quarkus.test.services.quarkus.model.QuarkusProperties;
 @Tag("QUARKUS-960")
 @Tag("quarkus-cli")
 @QuarkusScenario
-@DisabledOnQuarkusVersion(version = "1\\..*", reason = "Quarkus CLI has been reworked in 2.x")
 @DisabledIfSystemProperty(named = "profile.id", matches = "native", disabledReason = "Only for JVM verification")
 public class QuarkusCliExtensionsIT {
 

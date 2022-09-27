@@ -12,8 +12,7 @@ import io.quarkus.test.services.QuarkusApplication;
 
 @OpenShiftScenario
 @EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
-@Disabled
-//TODO https://github.com/quarkus-qe/quarkus-test-framework/issues/427
+@Disabled("https://github.com/quarkus-qe/quarkus-test-framework/issues/427")
 public class OpenShiftMysqlMultitenantHibernateSearchIT extends AbstractMultitenantHibernateSearchIT {
     static final int ELASTIC_PORT = 9200;
     static final int MYSQL_PORT = 3306;

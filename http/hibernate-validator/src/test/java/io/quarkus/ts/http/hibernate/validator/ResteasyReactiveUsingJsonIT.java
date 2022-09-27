@@ -2,7 +2,6 @@ package io.quarkus.ts.http.hibernate.validator;
 
 import static io.restassured.RestAssured.given;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -14,7 +13,6 @@ import io.quarkus.ts.http.hibernate.validator.sources.ReactiveResource;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
-@Disabled("Wrong MediaType resolution in Resteasy Reactive: https://github.com/quarkusio/quarkus/issues/20888")
 @DisabledOnNative(reason = "Due to high native build execution time")
 @QuarkusScenario
 public class ResteasyReactiveUsingJsonIT extends BaseResteasyIT {
@@ -26,18 +24,24 @@ public class ResteasyReactiveUsingJsonIT extends BaseResteasyIT {
 
     @Test
     public void validateDefaultMediaType() {
-        assertBadRequestInJsonFormat(REACTIVE_ENDPOINT_WITH_NO_PRODUCES);
+        validate(REACTIVE_ENDPOINT_WITH_NO_PRODUCES)
+                .isBadRequest()
+                .hasTextError();
     }
 
     @Test
     public void validateMultipleMediaTypesUsingAcceptJson() {
         Response response = given().accept(ContentType.JSON).get(REACTIVE_ENDPOINT_WITH_MULTIPLE_PRODUCES);
-        assertBadRequestInJsonFormat(response);
+        validate(response)
+                .isBadRequest()
+                .hasReactiveJsonError();
     }
 
     @Test
     public void validateMultipleMediaTypesUsingAcceptText() {
         Response response = given().accept(ContentType.TEXT).get(REACTIVE_ENDPOINT_WITH_MULTIPLE_PRODUCES);
-        assertBadRequestInTextFormat(response);
+        validate(response)
+                .isBadRequest()
+                .hasTextError();
     }
 }
