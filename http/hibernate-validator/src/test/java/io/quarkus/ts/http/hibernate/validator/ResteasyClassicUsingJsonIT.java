@@ -20,6 +20,8 @@ public class ResteasyClassicUsingJsonIT extends BaseResteasyIT {
 
     @Test
     public void validateDefaultMediaType() {
-        assertBadRequestInJsonFormat(CLASSIC_ENDPOINT_WITH_NO_PRODUCES);
+        validate(CLASSIC_ENDPOINT_WITH_NO_PRODUCES)
+                .isBadRequest()
+                .hasClassicJsonError();
     }
 }

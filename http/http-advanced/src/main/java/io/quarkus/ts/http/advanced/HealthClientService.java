@@ -1,4 +1,4 @@
-package io.quarkus.ts.http.advanced.reactive.clients;
+package io.quarkus.ts.http.advanced;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -10,6 +10,6 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 public interface HealthClientService {
 
     @GET
-    @Path("/health")
+    @Path("/q/health")
     Response health();
 }

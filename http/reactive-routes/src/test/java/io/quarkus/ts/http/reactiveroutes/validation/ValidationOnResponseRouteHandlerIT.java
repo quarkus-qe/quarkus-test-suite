@@ -7,7 +7,6 @@ import static io.quarkus.ts.http.reactiveroutes.validation.utils.ValidationAsser
 import static io.restassured.RestAssured.given;
 
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -39,18 +38,4 @@ public class ValidationOnResponseRouteHandlerIT {
         assertValidationErrorField(response, "id", "id can't be null");
     }
 
-    @Disabled("Not validating Java types. Reported in: https://github.com/quarkusio/quarkus/issues/15168")
-    @Test
-    public void shouldGetValidationErrorWhenUniResponseStringIsWrong() {
-        ValidationErrorResponse response = given()
-                .when()
-                .get("/validate/response-uni-invalid-string")
-                .then()
-                .statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR)
-                .extract().as(ValidationErrorResponse.class);
-
-        assertValidationErrorTitle(response);
-        assertValidationErrorDetails(response);
-        assertValidationErrorStatus(response, HttpStatus.SC_INTERNAL_SERVER_ERROR);
-    }
 }

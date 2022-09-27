@@ -20,6 +20,8 @@ public class ResteasyClassicUsingTextIT extends BaseResteasyIT {
 
     @Test
     public void validateDefaultMediaType() {
-        assertBadRequestInTextFormat(CLASSIC_ENDPOINT_WITH_NO_PRODUCES);
+        validate(CLASSIC_ENDPOINT_WITH_NO_PRODUCES)
+                .isBadRequest()
+                .hasTextError();
     }
 }
