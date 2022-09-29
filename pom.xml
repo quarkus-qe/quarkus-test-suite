@@ -31,7 +31,7 @@
         <jjwt.version>0.11.5</jjwt.version>
         <jsoup.version>1.15.3</jsoup.version>
         <camel-quarkus-bom.version>2.13.0</camel-quarkus-bom.version>
-        <quarkus-helm.version>0.0.6</quarkus-helm.version>
+        <quarkus-helm.version>0.0.7</quarkus-helm.version>
         <quarkiverse.config.version>1.1.0</quarkiverse.config.version>
         <smallrye-stork.version>1.2.0</smallrye-stork.version>
         <assertj.version>3.23.1</assertj.version>
