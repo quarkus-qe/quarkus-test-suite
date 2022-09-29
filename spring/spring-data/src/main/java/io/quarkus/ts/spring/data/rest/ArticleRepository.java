@@ -1,6 +1,5 @@
 package io.quarkus.ts.spring.data.rest;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -15,9 +14,6 @@ public interface ArticleRepository extends PagingAndSortingRepository<Article, L
     @Override
     @RestResource(exported = true)
     Page<Article> findAll(Pageable pageable);
-
-    @RestResource(exported = true)
-    List<Article> findByOrderByNameDesc();
 
     @Override
     @RestResource(path = "id")

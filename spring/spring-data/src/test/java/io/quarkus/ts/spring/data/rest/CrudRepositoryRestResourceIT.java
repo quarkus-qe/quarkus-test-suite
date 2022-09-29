@@ -1,79 +1,63 @@
 package io.quarkus.ts.spring.data.rest;
 
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.notNullValue;
+
+import java.util.List;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.ts.spring.data.AbstractDbIT;
 
 @QuarkusScenario
-public class CrudRepositoryRestResourceIT extends AbstractDbIT {
-    @Test
-    void testAllRepositoryMethods() throws InterruptedException {
+public class CrudRepositoryRestResourceIT extends AbstractRepositoryRestResourceIT {
 
-        //GET - List all libraries
-        app.given()
-                .accept("application/json")
-                .when().get("/library")
-                .then()
-                .statusCode(200)
-                .body(
-                        containsString("Library1"));
+    protected static final List<String> ORIGINAL_ITEMS = List.of("Library1");
+    protected static final String CREATED_ITEM = "Library2";
+    protected static final String UPDATED_ITEM = "Library Two";
 
-        //POST - Create a new Library
-        app.given()
-                .contentType("application/json")
-                .accept("application/json")
-                .body("{\"name\": \"Library2\"}")
-                .when().post("/library")
-                .then()
-                .statusCode(201)
-                .body(containsString("Library2"))
-                .body("id", notNullValue())
-                .extract().body().jsonPath().getString("id");
+    @Override
+    protected String getUrl() {
+        return "/library";
+    }
 
-        //GET{id} - Find new library by id
-        app.given()
-                .when().get("/library/id/2")
-                .then()
-                .statusCode(200)
-                .body(
-                        containsString("Library2"));
+    @Override
+    protected List<String> getOriginalItems() {
+        return ORIGINAL_ITEMS;
+    }
 
-        //PUT - Update library entry
-        app.given()
-                .contentType("application/json")
-                .accept("application/json")
-                .body("{\"name\": \"Library Two\"}")
-                .when().put("/library/2")
-                .then()
-                .statusCode(204);
+    @Override
+    protected String getCreatedItem() {
+        return CREATED_ITEM;
+    }
 
-        //GET{id} - Verify update
-        app.given()
-                .when().get("/library/id/2")
-                .then()
-                .statusCode(200)
-                .body(
-                        containsString("Library Two"));
+    @Override
+    protected long getCreatedItemId() {
+        return 2;
+    }
 
-        //DELETE - Delete a library
-        app.given()
-                .when().delete("/library/2")
-                .then()
-                .statusCode(204);
+    @Override
+    protected String getUpdatedItem() {
+        return UPDATED_ITEM;
+    }
+
+    @Override
+    protected String getItemNameHalJsonPath() {
+        return "_embedded.library.name";
+    }
+
+    @Override
+    protected String getItemIdUrl(long id) {
+        return getUrl() + "/id/" + id;
     }
 
     @Test
-    void testRepositoryValidator() throws InterruptedException {
-        //Try to add a library with invalid constraints
+    void createWithEntityConstraintViolation() {
+        //Try to add a article with invalid constraints
         app.given()
                 .contentType("application/json")
                 .body("{\"name\": \"\"}")
-                .when().post("/library")
+                .when().post(getUrl())
                 .then()
                 .statusCode(HttpStatus.SC_BAD_REQUEST)
                 .body(containsString("Name may not be blank"));
