@@ -53,12 +53,15 @@ Used quarkus-spring-data-rest repositories:
 
 - CrudRepository
 - PagingAndSortingRepository
+- JpaRepository
 
-Test for the CrudRepository:
+Test for the CrudRepository and JpaRepository:
 
 - Verify all the CRUD methods are available for end user
+- Verify invalid input data
+- Verify entity validation
 
-Test for the PagingAndSortingRepository:
+Additional test for the PagingAndSortingRepository:
 
 - Redefine default path via *path* attribute
 - Define collection's root name via *collectionResourceRel* attribute
