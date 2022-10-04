@@ -541,6 +541,7 @@
                 <module>sql-db/sql-app</module>
                 <module>sql-db/multiple-pus</module>
                 <module>sql-db/panache-flyway</module>
+                <module>sql-db/reactive-rest-data-panache</module>
                 <module>sql-db/vertx-sql</module>
                 <module>sql-db/hibernate-reactive</module>
                 <module>sql-db/reactive-vanilla</module>
