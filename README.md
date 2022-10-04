@@ -521,6 +521,19 @@ PanacheRepositoryResource methods.
 
 - AgroalPoolTest, will cover how the db pool is managed in terms of IDLE-timeout, max connections and concurrency. 
 
+### `sql-db/reactive-rest-data-panache`
+
+This is a subset of `sql-db/panache-flyway` module modified to use RESTEasy Reactive instead of RESTEasy Classic.
+
+It focuses on single topic: https://quarkus.io/guides/rest-data-panache.
+
+Base application is reduced to two REST resources:
+- `ApplicationResource`, which extends `PanacheEntityResource`, and its Panache entities: `ApplicationEntity`, `VersionEntity`, `ServiceEntity`.
+- `UserResource`, which extends `PanacheRepositoryResource`, a Panache repository facade `UserRepository` and related Panache entity `UserEntity`.
+
+Tests cover the supported functionality of `rest-data-panache`: CRUD operations, `json` and `hal+json` data types,
+invalid input, filtering, sorting, pagination.
+
 ### `security/basic`
 
 Verifies the simplest way of doing authn/authz.
