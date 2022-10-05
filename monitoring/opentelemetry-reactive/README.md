@@ -6,7 +6,6 @@
 ## Scope of the test
 1. Testing OpenTelemetry with Jaeger components and RESTEasy Reactive
  - Extension `quarkus-opentelemetry` - responsible for traces generation in OpenTelemetry format
- - Extension `quarkus-opentelemetry-exporter-jaeger` - responsible for traces export into Jaeger components (jaeger-agent, jaeger-collector)
  - Extension `quarkus-opentelemetry-exporter-otlp` -responsible for traces export into OpenTelemetry components (opentelemetry-agent, opentelemetry-collector)
  
 Scenarios that test proper traces export to Jaeger components and context propagation. 
