@@ -1,0 +1,137 @@
+{
+  "realm": "test-realm",
+  "enabled": true,
+  "sslRequired": "none",
+  "roles": {
+    "realm": [
+      {
+        "name": "test-user-role"
+      },
+      {
+        "name": "test-admin-role"
+      }
+    ]
+  },
+  "users": [
+    {
+      "username": "test-normal-user",
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test-normal-user"
+        }
+      ],
+      "clientRoles": {
+        "test-application-client": [
+          "uma_protection"
+        ]
+      },
+      "realmRoles": [
+        "test-user-role",
+        "uma_protection"
+      ]
+    },
+    {
+      "username": "test-admin-user",
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test-admin-user"
+        }
+      ],
+      "clientRoles": {
+        "test-application-client": [
+          "uma_protection"
+        ]
+      },
+      "realmRoles": [
+        "test-admin-role",
+        "test-user-role",
+        "uma_protection"
+      ]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "test-application-client",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "test-application-client-secret"
+    },
+    {
+      "clientId": "test-application-client-jwt",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "clientAuthenticatorType": "client-secret-jwt",
+      "secret": "AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow",
+      "protocolMappers": [
+        {
+          "id": "f17f8d5f-2327-4e0b-8001-48a7706be252",
+          "name": "realm roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute": "foo",
+            "access.token.claim": "true",
+            "claim.name": "realm_access.roles",
+            "jsonType.label": "String",
+            "multivalued": "true"
+          }
+        },
+        {
+          "id": "0e0f1e8d-60f9-4435-b753-136d70e56af8",
+          "name": "username",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "userinfo.token.claim": "true",
+            "user.attribute": "username",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "preferred_username",
+            "jsonType.label": "String"
+          }
+        }
+      ],
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "uma_protection",
+        "email"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "offline_access",
+        "uma_protection",
+        "microprofile-jwt"
+      ],
+      "authorizationSettings": {
+        "scopes": [
+          {
+            "id": "uma_authorization",
+            "name": "uma_authorization"
+          }
+        ]
+      },
+      "redirectUris": [
+        "*"
+      ]
+    }
+  ]
+}
