@@ -10,6 +10,7 @@ Please select the relevant options.
 - [ ] Backport
 - [ ] New scenario (non-breaking change which adds functionality)
 - [ ] This change requires a documentation update
+- [ ] This change requires execution against OCP (use `run tests` phrase in comment)
 
 ### Checklist:
 - [ ] Methods and classes used in PR scenarios are meaningful
