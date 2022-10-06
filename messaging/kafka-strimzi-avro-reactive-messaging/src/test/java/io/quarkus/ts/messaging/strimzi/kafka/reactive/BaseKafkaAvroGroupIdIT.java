@@ -71,8 +71,12 @@ abstract class BaseKafkaAvroGroupIdIT {
             CountDownLatch latch = new CountDownLatch(expectedAmount);
             SseEventSource source = SseEventSource.target(target).build();
             source.register(inboundSseEvent -> {
-                receive.add(inboundSseEvent.readData(String.class, MediaType.APPLICATION_JSON_TYPE));
+                // FIXME: remove logging once flaky tests are fixed
+                final var data = inboundSseEvent.readData(String.class, MediaType.APPLICATION_JSON_TYPE);
+                receive.add(data);
                 totalAmountReceived.incrementAndGet();
+                System.out.printf("Received inboundSseEvent '%s' %n total amount is '%d' %n 'receive' is %s.%n%n%n", data,
+                        totalAmountReceived.get(), receive);
             });
 
             source.open();
