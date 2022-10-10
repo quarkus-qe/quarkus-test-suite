@@ -18,9 +18,9 @@ jobs:
           distribution: 'temurin'
           java-version: ${{ matrix.java }}
           check-latest: true
-      - name: Build Quarkus main
+      - name: Build Quarkus 2.13
         run: |
-          git clone https://github.com/quarkusio/quarkus.git && cd quarkus && ./mvnw -B -s .github/mvn-settings.xml clean install -Dquickly -Prelocations
+          git clone https://github.com/quarkusio/quarkus.git && cd quarkus && git checkout 2.13 && ./mvnw -B -s .github/mvn-settings.xml clean install -Dquickly -Prelocations -pl devtools/cli -am
       - name: Tar Maven Repo
         shell: bash
         run: tar -I 'pigz -9' -cf maven-repo.tgz -C ~ .m2/repository
@@ -113,11 +113,7 @@ jobs:
         run: tar -xzf maven-repo.tgz -C ~
       - name: Install Quarkus CLI
         run: |
-          cat <<EOF > ./quarkus-dev-cli
-          #!/bin/bash
-          java -jar ~/.m2/repository/io/quarkus/quarkus-cli/999-SNAPSHOT/quarkus-cli-999-SNAPSHOT-runner.jar "\$@"
-          EOF
-          chmod +x ./quarkus-dev-cli
+          git clone https://github.com/quarkusio/quarkus.git && cd quarkus/devtools/cli && git checkout 2.13 && mvn -B -s ../../../.github/mvn-settings.xml clean install -Dquickly -Prelocations
       - name: Build with Maven
         run: |
           MODULES_MAVEN_PARAM=""
@@ -167,11 +163,7 @@ jobs:
         run: tar -xzf maven-repo.tgz -C ~
       - name: Install Quarkus CLI
         run: |
-          cat <<EOF > ./quarkus-dev-cli
-          #!/bin/bash
-          java -jar ~/.m2/repository/io/quarkus/quarkus-cli/999-SNAPSHOT/quarkus-cli-999-SNAPSHOT-runner.jar "\$@"
-          EOF
-          chmod +x ./quarkus-dev-cli
+          git clone https://github.com/quarkusio/quarkus.git && cd quarkus/devtools/cli && git checkout 2.13 && mvn -B -s ../../../.github/mvn-settings.xml clean install -Dquickly -Prelocations
       - name: Build with Maven
         run: |
           if [[ -n ${MODULES_ARG} ]]; then
