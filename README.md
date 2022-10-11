@@ -1063,3 +1063,40 @@ Coverage for sending messages over websockets
 
 ### `websockets/websockets-client`
 Coverage for sending messages over websockets with only a client library
+
+### `funqy/knative-events`
+
+Verifies [Quarkus Funqy Knative Events](https://quarkus.io/guides/funqy-knative-events) deployed to OpenShift and unit testing using RestAssured works according to the documentation.
+
+#### Prerequisites
+- OpenShift Serverless Functions installed.
+- Knative Eventing installed.
+- Logged user must have a cluster role with all permissions to `knativeeventings` resource in the `operator.knative.dev` API group.
+
+Test coverage includes:
+- Quarkus function deployment using Quarkus OpenShift extension
+- Quarkus function receives and processes:
+  - bean (f.e. POJO)
+  - `CloudEvent` using the Funqy `@Context` annotation
+  - binary data
+  - primitive type or its wrapper
+- Reading and writing of the attributes of a `CloudEvent`
+- Permitted return types:
+  - void
+  - String
+  - byte[]
+  - primitive type and its wrapper
+  - maps
+  - `CloudEvents<E>`
+  - `Uni<T>`, where `T` is any of types listed above
+- Quarkus function accepts events from custom resource created by us as well as from Event Sources provided out of the box
+- Cloud Event type and source matching:
+  - default mapping when the type match the function name for the function to trigger
+  - mapping changed by configuration within application.properties
+  - mapping with `@CloudEventMapping` annotation
+- Complex function chain, when one function triggers the next and so on
+- Unit testing using RestAssured using:
+  - normal HTTP requests
+  - Cloud Event Binary mode
+  - Structured Mode
+- Multiple functions declared in one application
