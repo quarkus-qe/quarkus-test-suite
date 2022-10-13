@@ -18,14 +18,6 @@ public class ValueController {
     @Value("${values.list}")
     String[] fieldUsingArray;
 
-    // Complex SpEL expresions is not supported: https://github.com/quarkusio/quarkus/issues/19368"
-    //    @Value("#{'${values.list}'.split(',')}")
-    //    List<String> fieldUsingList;
-
-    // Complex SpEL expresions is not supported: https://github.com/quarkusio/quarkus/issues/19368"
-    //    @Value("#{${values.map}}")
-    //    Map<String, String> fieldUsingMap;
-
     @GetMapping("/fieldUsingValue")
     public String fieldUsingValue() {
         return fieldUsingValue;
@@ -35,18 +27,5 @@ public class ValueController {
     public String fieldUsingArray() {
         return Stream.of(fieldUsingArray).collect(Collectors.joining(", "));
     }
-
-    // Complex SpEL expresions is not supported: https://github.com/quarkusio/quarkus/issues/19368"
-    //    @GetMapping("/fieldUsingList")
-    //    public String fieldUsingList() {
-    //        return fieldUsingList.stream().collect(Collectors.joining(", "));
-    //    }
-    //
-    //    @GetMapping("/fieldUsingMap")
-    //    public String fieldUsingMap() {
-    //        return fieldUsingMap.entrySet().stream()
-    //                .map(e -> e.getKey() + ": " + e.getValue())
-    //                .collect(Collectors.joining(", "));
-    //    }
 
 }

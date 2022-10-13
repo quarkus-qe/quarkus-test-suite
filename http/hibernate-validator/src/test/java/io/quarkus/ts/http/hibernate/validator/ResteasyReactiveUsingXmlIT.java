@@ -2,7 +2,6 @@ package io.quarkus.ts.http.hibernate.validator;
 
 import static io.restassured.RestAssured.given;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -24,7 +23,6 @@ public class ResteasyReactiveUsingXmlIT extends BaseResteasyIT {
     static final RestService app = new RestService();
 
     @Test
-    @Disabled("https://github.com/quarkusio/quarkus/issues/28324")
     public void validateDefaultMediaType() {
         validate(REACTIVE_ENDPOINT_WITH_NO_PRODUCES)
                 .isBadRequest()

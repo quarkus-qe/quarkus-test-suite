@@ -3,15 +3,16 @@ package io.quarkus.ts.messaging.kafka.producer;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
-import java.util.Map;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import io.quarkus.test.bootstrap.KafkaService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.services.KafkaContainer;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.test.services.containers.model.KafkaVendor;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.helpers.test.UniAssertSubscriber;
 
@@ -24,23 +25,11 @@ public class BlockingProducerIT {
     static final long NETWORK_DELAY_MS = 300;
     static final long KAFKA_MAX_BLOCK_TIME_MS = KAFKA_MAX_BLOCK_MS + NETWORK_DELAY_MS;
 
-    static CustomStrimziKafkaContainer kafkaContainer;
+    @KafkaContainer(vendor = KafkaVendor.STRIMZI, version = "0.24.0-kafka-2.7.0")
+    static final KafkaService kafka = new KafkaService().withProperty("auto.create.topics.enable", "false");
 
     @QuarkusApplication
-    static RestService app = new RestService()
-            .onPreStart(app -> {
-                Map<String, String> kafkaProp = Map.of("auto.create.topics.enable", "false");
-                kafkaContainer = new CustomStrimziKafkaContainer("0.24.0-kafka-2.7.0", kafkaProp);
-                kafkaContainer.start();
-            })
-            .withProperty("kafka.bootstrap.servers", () -> kafkaContainer.getBootstrapServers());
-
-    // TODO https://github.com/quarkus-qe/quarkus-test-framework/issues/248
-    // Remove after all once this ticket is resolved
-    @AfterAll
-    public static void afterAll() {
-        kafkaContainer.stop();
-    }
+    static RestService app = new RestService().withProperty("kafka.bootstrap.servers", kafka::getBootstrapUrl);
 
     @Test
     public void kafkaProducerBlocksIfTopicsNotExistWithMetadata() {
@@ -77,7 +66,7 @@ public class BlockingProducerIT {
     }
 
     private String getAppEndpoint() {
-        return String.format("http://localhost:%d/", app.getPort());
+        return String.format("http://localhost:%d/", app.getURI().getPort());
     }
 
     private String getErrorMsg(long reqTime) {
