@@ -19,8 +19,7 @@ public class StrimziKafkaAvroGroupIdIT extends BaseKafkaAvroGroupIdIT {
     @QuarkusApplication
     static RestService appGroupIdA = new RestService()
             .withProperties("strimzi-application.properties")
-            .withProperty("cron.expr", "*/1 * * * * ?")
-            .withProperty("cron.expr.skip", "true")
+            .withProperty("cron.expr", "disabled")
             .withProperty("kafka.bootstrap.servers", kafka::getBootstrapUrl)
             .withProperty("kafka.registry.url", kafka::getRegistryUrl)
             .withProperty("mp.messaging.incoming.channel-stock-price.group.id", "groupA");
@@ -28,8 +27,7 @@ public class StrimziKafkaAvroGroupIdIT extends BaseKafkaAvroGroupIdIT {
     @QuarkusApplication
     static RestService appGroupIdB = new RestService()
             .withProperties("strimzi-application.properties")
-            .withProperty("cron.expr", "*/1 * * * * ?")
-            .withProperty("cron.expr.skip", "true")
+            .withProperty("cron.expr", "disabled")
             .withProperty("kafka.bootstrap.servers", kafka::getBootstrapUrl)
             .withProperty("kafka.registry.url", kafka::getRegistryUrl)
             .withProperty("mp.messaging.incoming.channel-stock-price.group.id", "groupB");
