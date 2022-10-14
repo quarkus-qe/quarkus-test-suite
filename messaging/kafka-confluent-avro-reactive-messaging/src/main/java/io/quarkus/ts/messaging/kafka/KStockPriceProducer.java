@@ -1,6 +1,9 @@
 package io.quarkus.ts.messaging.kafka;
 
+import static io.quarkus.scheduler.Scheduled.ConcurrentExecution.SKIP;
+
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.stream.IntStream;
 
@@ -13,6 +16,7 @@ import org.eclipse.microprofile.reactive.messaging.OnOverflow;
 import org.jboss.logging.Logger;
 
 import io.quarkus.scheduler.Scheduled;
+import io.quarkus.scheduler.Scheduled.ApplicationNotRunning;
 import io.smallrye.common.constraint.NotNull;
 
 @ApplicationScoped
@@ -20,6 +24,8 @@ public class KStockPriceProducer {
 
     private static final Logger LOG = Logger.getLogger(KStockPriceProducer.class);
     private static final int BATCH_SIZE = 100;
+    // FIXME: remove EXECUTION_COUNT once https://github.com/quarkusio/quarkus/issues/28567 is resolved
+    private static final AtomicInteger EXECUTION_COUNT = new AtomicInteger(4);
 
     @Inject
     @Channel("source-stock-price")
@@ -28,16 +34,18 @@ public class KStockPriceProducer {
 
     private Random random = new Random();
 
-    @Scheduled(cron = "{cron.expr}")
+    @Scheduled(cron = "{cron.expr}", skipExecutionIf = ApplicationNotRunning.class, concurrentExecution = SKIP)
     public void generate() {
-        IntStream.range(0, BATCH_SIZE).forEach(next -> {
-            StockPrice event = StockPrice.newBuilder()
-                    .setId("IBM")
-                    .setPrice(random.nextDouble())
-                    .setStatus(status.PENDING)
-                    .build();
-            emitter.send(event).whenComplete(handlerEmitterResponse(KStockPriceProducer.class.getName()));
-        });
+        if (EXECUTION_COUNT.getAndDecrement() > 0) {
+            IntStream.range(0, BATCH_SIZE).forEach(next -> {
+                StockPrice event = StockPrice.newBuilder()
+                        .setId("IBM")
+                        .setPrice(random.nextDouble())
+                        .setStatus(status.PENDING)
+                        .build();
+                emitter.send(event).whenComplete(handlerEmitterResponse(KStockPriceProducer.class.getName()));
+            });
+        }
     }
 
     @NotNull
