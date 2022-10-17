@@ -16,6 +16,7 @@
         <compiler-plugin.version>3.10.1</compiler-plugin.version>
         <surefire-plugin.version>2.22.2</surefire-plugin.version>
         <failsafe-plugin.version>2.22.2</failsafe-plugin.version>
+        <dependency-check-maven.version>7.2.1</dependency-check-maven.version>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
         <quarkus.platform.version>999-SNAPSHOT</quarkus.platform.version>
@@ -747,6 +748,34 @@
                 <src.sort.goal>check</src.sort.goal>
                 <xml.format.goal>xml-check</xml.format.goal>
             </properties>
+        </profile>
+        <profile>
+            <id>static-analysis-cve</id>
+            <activation>
+                <property>
+                    <name>static-analysis-cve</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.owasp</groupId>
+                        <artifactId>dependency-check-maven</artifactId>
+                        <version>${dependency-check-maven.version}</version>
+                        <configuration>
+                            <skipProvidedScope>true</skipProvidedScope>
+                            <skipRuntimeScope>true</skipRuntimeScope>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 </project>
