@@ -751,8 +751,7 @@ Jaeger is deployed in an "all-in-one" configuration, and the OpenShift test veri
 ### `monitoring/opentelemetry`
 
 Testing OpenTelemetry with Jaeger components
- - Extension `quarkus-opentelemetry` - responsible for traces generation in OpenTelemetry format
- - Extension `quarkus-opentelemetry-exporter-otlp` -responsible for traces export into OpenTelemetry components (opentelemetry-agent, opentelemetry-collector)
+ - Extension `quarkus-opentelemetry` - responsible for traces generation in OpenTelemetry format and export into OpenTelemetry components (opentelemetry-agent, opentelemetry-collector)
  
 Scenarios that test proper traces export to Jaeger components and context propagation.  
 See also `monitoring/opentelemetry/README.md`
