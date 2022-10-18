@@ -1,5 +1,6 @@
 package io.quarkus.ts.cache.spring;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -38,7 +39,7 @@ public class RestControllerWithCacheResource {
     @GetMapping("/using-prefix/{prefix}")
     @Cacheable(CACHE_NAME)
     public String getValueWithPrefix(@PathVariable("prefix") String prefix) {
-        return prefix + ": " + counter++;
+        return StringEscapeUtils.escapeHtml4(prefix) + ": " + counter++;
     }
 
     @PostMapping("/using-prefix/{prefix}/invalidate-cache")

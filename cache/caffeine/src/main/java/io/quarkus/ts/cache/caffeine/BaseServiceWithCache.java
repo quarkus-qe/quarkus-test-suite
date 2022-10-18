@@ -1,5 +1,7 @@
 package io.quarkus.ts.cache.caffeine;
 
+import org.apache.commons.text.StringEscapeUtils;
+
 import io.quarkus.cache.CacheInvalidate;
 import io.quarkus.cache.CacheInvalidateAll;
 import io.quarkus.cache.CacheKey;
@@ -23,7 +25,7 @@ public abstract class BaseServiceWithCache {
 
     @CacheResult(cacheName = CACHE_NAME)
     public String getValueWithPrefix(@CacheKey String prefix) {
-        return prefix + ": " + counter++;
+        return StringEscapeUtils.escapeHtml4(prefix) + ": " + counter++;
     }
 
     @CacheInvalidate(cacheName = CACHE_NAME)
