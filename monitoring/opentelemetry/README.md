@@ -5,8 +5,7 @@
 
 ## Scope of the test
 1. Testing OpenTelemetry with Jaeger components
- - Extension `quarkus-opentelemetry` - responsible for traces generation in OpenTelemetry format
- - Extension `quarkus-opentelemetry-exporter-otlp` -responsible for traces export into OpenTelemetry components (opentelemetry-agent, opentelemetry-collector)
+ - Extension `quarkus-opentelemetry` - responsible for traces generation in OpenTelemetry format and export into OpenTelemetry components (opentelemetry-agent, opentelemetry-collector)
  
 Scenarios that test proper traces export to Jaeger components and context propagation. 
 Implementation: two REST services, one Jaeger all-in-one pod (creating jaeger-rest & jaeger-query services).  
