@@ -12,7 +12,7 @@ public class OracleHandlerIT extends CommonTestCases {
     private static final String DATABASE = "amadeus";
 
     @Container(image = "${oracle.image}", port = ORACLE_PORT, expectedLog = "DATABASE IS READY TO USE!")
-    static OracleService oracle = new ProvisionalOracleService()
+    static OracleService oracle = new OracleService()
             .with("test", "test", DATABASE);
 
     @QuarkusApplication
@@ -24,12 +24,4 @@ public class OracleHandlerIT extends CommonTestCases {
             .withProperty("app.selected.db", "oracle")
             // Enable Flyway for Oracle
             .withProperty("quarkus.flyway.oracle.migrate-at-start", "true");
-
-    // TODO: Remove after https://github.com/quarkus-qe/quarkus-test-framework/issues/503 is resolved
-    private static class ProvisionalOracleService extends OracleService {
-        @Override
-        public String getReactiveUrl() {
-            return getHost().replace("http://", getJdbcName() + ":thin:@") + ":" + getPort() + "/" + getDatabase();
-        }
-    }
 }

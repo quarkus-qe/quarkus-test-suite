@@ -4,7 +4,6 @@ import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -59,32 +58,10 @@ public class SpringPropertiesIT {
     @Test
     public void shouldInjectListsOfStringFromConfigurationProperties() {
         // These values comes from the application.properties
-        assertEquals("Value 1", getCollectionsWithPath("/list/strings"));
+        assertEquals("Value 1", get("/collections/list/strings"));
 
         setApplicationProperty("lists.strings[1]", "Value 2");
-        assertEquals("Value 1, Value 2", getCollectionsWithPath("/list/strings"));
-    }
-
-    @Disabled("Inject of complex objects in lists is not supported: https://github.com/quarkusio/quarkus/issues/19365")
-    @Test
-    public void shouldInjectListsOfPersonFromConfigurationProperties() {
-        // These values comes from the application.properties
-        assertEquals("person[Sarah:19], person[Terminator:999]", getCollectionsWithPath("/list/persons"));
-    }
-
-    @Disabled("Inject maps is not supported: https://github.com/quarkusio/quarkus/issues/19366")
-    @Test
-    public void shouldInjectMapsOfIntegerFromConfigurationProperties() {
-        // These values comes from the application.properties
-        assertEquals("1=Value 1, 2=Value 2", getCollectionsWithPath("/maps/integers"));
-    }
-
-    @Disabled("Inject maps is not supported: https://github.com/quarkusio/quarkus/issues/19366")
-    @Test
-    public void shouldInjectMapsOfPersonFromConfigurationProperties() {
-        // These values comes from the application.properties
-        assertEquals("character1=person[Sarah:19], character2=person[Terminator:999]",
-                getCollectionsWithPath("/maps/persons"));
+        assertEquals("Value 1, Value 2", get("/collections/list/strings"));
     }
 
     @Test
@@ -97,18 +74,6 @@ public class SpringPropertiesIT {
         assertEquals("A, B", getValuesWithPath("/fieldUsingArray"));
     }
 
-    @Disabled("Complex SpEL expresions is not supported: https://github.com/quarkusio/quarkus/issues/19368")
-    @Test
-    public void shouldInjectListFieldsUsingValueAnnotation() {
-        assertEquals("A, B", getValuesWithPath("/fieldUsingList"));
-    }
-
-    @Disabled("Complex SpEL expresions is not supported: https://github.com/quarkusio/quarkus/issues/19368")
-    @Test
-    public void shouldInjectMapFieldsUsingValueAnnotation() {
-        assertEquals("key1: 1, key2: 2, key3: 3", getValuesWithPath("/fieldUsingMap"));
-    }
-
     private void setApplicationProperty(String name, String value) {
         app.stop();
         app.withProperty(name, value);
@@ -117,10 +82,6 @@ public class SpringPropertiesIT {
 
     private String getValuesWithPath(String path) {
         return get("/values" + path);
-    }
-
-    private String getCollectionsWithPath(String path) {
-        return get("/collections" + path);
     }
 
     private String getGreetingsWithPath(String path) {

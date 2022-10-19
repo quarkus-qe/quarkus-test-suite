@@ -63,7 +63,7 @@ public class CommonsHeadersIT extends AbstractDbIT {
 
     //This is for regression test for https://github.com/quarkusio/quarkus/pull/12234
     @Test
-    @Disabled("Session ID is not supported in Reactive Resteasy. Reported https://github.com/quarkusio/quarkus/issues/20003")
+    @Disabled("Session ID is not supported in Reactive Resteasy. https://github.com/quarkus-qe/quarkus-test-suite/issues/567")
     @DisplayName("session scope")
     public void testSessionScope() {
         final Response first = app.given().get("/cat/customFindDistinctivePrimitive/2");
