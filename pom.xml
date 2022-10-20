@@ -397,7 +397,8 @@
                 <module>qute/multimodule</module>
                 <module>qute/synchronous</module>
                 <module>qute/reactive</module>
-                <module>helm/helm-minimum</module>
+                <!-- TODO: https://github.com/quarkiverse/quarkus-helm/issues/114-->
+                <!-- <module>helm/helm-minimum</module> -->
                 <module>funqy/knative-events</module>
             </modules>
         </profile>
