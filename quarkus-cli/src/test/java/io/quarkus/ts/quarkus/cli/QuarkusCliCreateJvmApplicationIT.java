@@ -29,7 +29,6 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
@@ -37,13 +36,11 @@ import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import io.quarkus.test.bootstrap.QuarkusCliClient;
 import io.quarkus.test.bootstrap.QuarkusCliRestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 import io.quarkus.test.services.quarkus.model.QuarkusProperties;
 
 @Tag("QUARKUS-960")
 @Tag("quarkus-cli")
 @QuarkusScenario
-@DisabledOnQuarkusVersion(version = "1\\..*", reason = "Quarkus CLI has been reworked in 2.x")
 @DisabledIfSystemProperty(named = "profile.id", matches = "native", disabledReason = "Only for JVM verification")
 public class QuarkusCliCreateJvmApplicationIT {
 
@@ -113,7 +110,6 @@ public class QuarkusCliCreateJvmApplicationIT {
 
     @Tag("QUARKUS-1071")
     @Test
-    @DisabledOnQuarkusVersion(version = ".*redhat.*", reason = "Do not run on productized bits - https://issues.redhat.com/browse/QUARKUS-1740")
     public void shouldCreateApplicationWithGradleOnJvm() {
 
         // Create application
@@ -129,8 +125,6 @@ public class QuarkusCliCreateJvmApplicationIT {
     }
 
     @Tag("QUARKUS-1071")
-    // TODO https://github.com/quarkusio/quarkus/issues/22964
-    @Disabled("There is an issue related to Jbang and maven local repository on github actions")
     @Test
     public void shouldCreateApplicationWithJbangOnJvm() {
 

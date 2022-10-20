@@ -93,12 +93,9 @@ public class OperatorOpenShiftInfinispanObjectsIT extends BaseOpenShiftInfinispa
         thenCacheBodyMust(not(containsString("MECHANICAL")));
     }
 
-    /**
-     * TODO JIRA ISPN issue: https://issues.redhat.com/browse/ISPN-13292
-     */
     @Test
     @Order(4)
-    @Disabled
+    @Disabled("https://issues.redhat.com/browse/ISPN-13292")
     public void testCacheEvictionByLifespanAndIdleTime() {
         whenAddCacheItemsWithLifespanAndIdleTime(maxThresholdItemList, CACHE_LIFESPAN_SEC + 20, CACHE_IDLE_TIME_SEC);
         await().pollDelay(Duration.ofSeconds(15)).atMost(Duration.ofSeconds(20)).untilAsserted(() -> {

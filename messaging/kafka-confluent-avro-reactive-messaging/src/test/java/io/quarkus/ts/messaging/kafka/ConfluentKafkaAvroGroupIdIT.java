@@ -18,13 +18,13 @@ public class ConfluentKafkaAvroGroupIdIT extends BaseKafkaAvroGroupIdIT {
 
     @QuarkusApplication
     static RestService appGroupIdA = new RestService()
-            .withProperty("cron.expr", "0 0 0 ? * * *")
+            .withProperty("cron.expr", "disabled")
             .withProperty("kafka.bootstrap.servers", kafka::getBootstrapUrl)
             .withProperty("confluent.registry.url", kafka::getRegistryUrl);
 
     @QuarkusApplication
     static RestService appGroupIdB = new RestService()
-            .withProperty("cron.expr", "0 0 0 ? * * *")
+            .withProperty("cron.expr", "disabled")
             .withProperty("kafka.bootstrap.servers", kafka::getBootstrapUrl)
             .withProperty("confluent.registry.url", kafka::getRegistryUrl);
 

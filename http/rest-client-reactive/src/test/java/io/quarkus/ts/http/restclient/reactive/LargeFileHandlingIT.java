@@ -23,9 +23,9 @@ import org.junit.jupiter.api.condition.OS;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.http.restclient.reactive.files.OsUtils;
+import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
 @QuarkusScenario
@@ -58,7 +58,7 @@ public class LargeFileHandlingIT {
     }
 
     @Test
-    @DisabledOnOs(value = OS.WINDOWS, disabledReason = "https://github.com/quarkusio/quarkus/issues/24763")
+    @DisabledOnOs(value = OS.WINDOWS, disabledReason = "https://github.com/quarkus-qe/quarkus-test-framework/issues/584")
     public void validateClientResponse() {
         Response original = app.given().get("/file/hash");
         Response wrapped = app.given().get("/file-client/hash");
@@ -83,7 +83,7 @@ public class LargeFileHandlingIT {
     }
 
     @Test
-    @DisabledOnOs(value = OS.WINDOWS, disabledReason = "https://github.com/quarkusio/quarkus/issues/24763")
+    @DisabledOnOs(value = OS.WINDOWS, disabledReason = "https://github.com/quarkus-qe/quarkus-test-framework/issues/584")
     public void downloadThroughClient() {
         Response hashSum = app.given().get("/file/hash");
         assertEquals(HttpStatus.SC_OK, hashSum.statusCode());
@@ -97,8 +97,7 @@ public class LargeFileHandlingIT {
     }
 
     @Test
-    @Disabled("https://github.com/quarkusio/quarkus/issues/24415")
-    @DisabledOnOs(value = OS.WINDOWS, disabledReason = "https://github.com/quarkusio/quarkus/issues/24763")
+    @DisabledOnOs(value = OS.WINDOWS, disabledReason = "https://github.com/quarkus-qe/quarkus-test-framework/issues/584")
     public void downloadMultipart() {
         Response hashSum = app.given().get("/file/hash");
         assertEquals(HttpStatus.SC_OK, hashSum.statusCode());
@@ -112,7 +111,6 @@ public class LargeFileHandlingIT {
     }
 
     @Test
-    @Disabled("https://github.com/rest-assured/rest-assured/issues/1480")
     public void uploadInputStream() throws IOException {
         utils.createFile(uploaded, BIGGER_THAN_TWO_GIGABYTES);
         String hashsum = utils.getSum(uploaded);
@@ -120,6 +118,7 @@ public class LargeFileHandlingIT {
         try (InputStream stream = new FileInputStream(uploaded.toFile())) {
             Response response = app.given()
                     .body(stream)
+                    .contentType(ContentType.BINARY)
                     .post("/file/upload/");
             assertEquals(HttpStatus.SC_OK, response.statusCode());
             assertEquals(hashsum, response.body().asString());
@@ -140,8 +139,7 @@ public class LargeFileHandlingIT {
     }
 
     @Test
-    @DisabledOnOs(value = OS.WINDOWS, disabledReason = "https://github.com/quarkusio/quarkus/issues/24763")
-    @DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/25973")
+    @DisabledOnOs(value = OS.WINDOWS, disabledReason = "https://github.com/quarkus-qe/quarkus-test-framework/issues/584")
     public void uploadFileThroughClient() {
         Response hashSum = app.given().get("/file-client/client-hash");
         assertEquals(HttpStatus.SC_OK, hashSum.statusCode());
@@ -155,8 +153,7 @@ public class LargeFileHandlingIT {
     }
 
     @Test
-    @DisabledOnOs(value = OS.WINDOWS, disabledReason = "https://github.com/quarkusio/quarkus/issues/24763")
-    @Disabled("https://github.com/quarkusio/quarkus/issues/26187")
+    @DisabledOnOs(value = OS.WINDOWS, disabledReason = "https://github.com/quarkus-qe/quarkus-test-framework/issues/584")
     public void uploadMultipart() {
         Response hashSum = app.given().get("/file-client/client-hash");
         assertEquals(HttpStatus.SC_OK, hashSum.statusCode());
@@ -170,7 +167,7 @@ public class LargeFileHandlingIT {
     }
 
     @Test
-    @DisabledOnOs(value = OS.WINDOWS, disabledReason = "https://github.com/quarkusio/quarkus/issues/24763")
+    @DisabledOnOs(value = OS.WINDOWS, disabledReason = "https://github.com/quarkus-qe/quarkus-test-framework/issues/584")
     public void failOnMalformedMultipart() {
         Response download = app.given().get("/file-client/download-broken-multipart");
         assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, download.statusCode());

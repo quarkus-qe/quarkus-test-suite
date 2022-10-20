@@ -1,6 +1,5 @@
 package io.quarkus.ts.hibernate.reactive;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 
 import io.quarkus.test.bootstrap.MySqlService;
@@ -34,17 +33,5 @@ public class MySQLDatabaseHibernateReactiveIT extends AbstractDatabaseHibernateR
     @Override
     protected RestService getApp() {
         return app;
-    }
-
-    @Override
-    @Disabled // due to https://github.com/quarkusio/quarkus/issues/22254
-    public void convertValue() {
-
-    }
-
-    @Override
-    @Disabled // due to https://github.com/quarkusio/quarkus/issues/22254
-    public void setConvertedValue() {
-
     }
 }

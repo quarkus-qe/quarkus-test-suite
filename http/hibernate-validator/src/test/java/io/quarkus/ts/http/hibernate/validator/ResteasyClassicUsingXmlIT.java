@@ -25,18 +25,24 @@ public class ResteasyClassicUsingXmlIT extends BaseResteasyIT {
     @Test
     public void validateDefaultMediaType() {
         // The default media type is TEXT which looks wrong for me, but it's how has been designed following the TCK standard.
-        assertBadRequestInTextFormat(CLASSIC_ENDPOINT_WITH_NO_PRODUCES);
+        validate(CLASSIC_ENDPOINT_WITH_NO_PRODUCES)
+                .isBadRequest()
+                .hasTextError();
     }
 
     @Test
     public void validateMultipleMediaTypesUsingAcceptXml() {
         Response response = given().accept(ContentType.XML).get(CLASSIC_ENDPOINT_WITH_MULTIPLE_PRODUCES);
-        assertBadRequestInXmlFormat(response);
+        validate(response)
+                .isBadRequest()
+                .hasClassicXMLError();
     }
 
     @Test
     public void validateMultipleMediaTypesUsingAcceptText() {
         Response response = given().accept(ContentType.TEXT).get(CLASSIC_ENDPOINT_WITH_MULTIPLE_PRODUCES);
-        assertBadRequestInTextFormat(response);
+        validate(response)
+                .isBadRequest()
+                .hasTextError();
     }
 }

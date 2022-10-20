@@ -26,24 +26,32 @@ public class ResteasyClassicUsingJsonAndXmlIT extends BaseResteasyIT {
      */
     @Test
     public void validateDefaultMediaType() {
-        assertBadRequestInJsonFormat(CLASSIC_ENDPOINT_WITH_NO_PRODUCES);
+        validate(CLASSIC_ENDPOINT_WITH_NO_PRODUCES)
+                .isBadRequest()
+                .hasClassicJsonError();
     }
 
     @Test
     public void validateMultipleMediaTypesUsingAcceptXml() {
         Response response = given().accept(ContentType.XML).get(CLASSIC_ENDPOINT_WITH_MULTIPLE_PRODUCES);
-        assertBadRequestInXmlFormat(response);
+        validate(response)
+                .isBadRequest()
+                .hasClassicXMLError();
     }
 
     @Test
     public void validateMultipleMediaTypesUsingAcceptJson() {
         Response response = given().accept(ContentType.JSON).get(CLASSIC_ENDPOINT_WITH_MULTIPLE_PRODUCES);
-        assertBadRequestInJsonFormat(response);
+        validate(response)
+                .isBadRequest()
+                .hasClassicJsonError();
     }
 
     @Test
     public void validateMultipleMediaTypesUsingAcceptText() {
         Response response = given().accept(ContentType.TEXT).get(CLASSIC_ENDPOINT_WITH_MULTIPLE_PRODUCES);
-        assertBadRequestInTextFormat(response);
+        validate(response)
+                .isBadRequest()
+                .hasTextError();
     }
 }

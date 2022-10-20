@@ -1,7 +1,10 @@
 package io.quarkus.ts.http.hibernate.validator;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.containsString;
 
+import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +16,6 @@ import io.quarkus.ts.http.hibernate.validator.sources.ReactiveResource;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
-@Disabled("Wrong MediaType resolution in Resteasy Reactive: https://github.com/quarkusio/quarkus/issues/20888")
 @QuarkusScenario
 public class ResteasyReactiveUsingJsonAndXmlIT extends BaseResteasyIT {
 
@@ -23,29 +25,45 @@ public class ResteasyReactiveUsingJsonAndXmlIT extends BaseResteasyIT {
     })
     static final RestService app = new RestService();
 
-    /**
-     * When JSON and XML library are present, default is JSON
-     */
     @Test
     public void validateDefaultMediaType() {
-        assertBadRequestInJsonFormat(REACTIVE_ENDPOINT_WITH_NO_PRODUCES);
+        validate(REACTIVE_ENDPOINT_WITH_NO_PRODUCES)
+                .isBadRequest()
+                .hasTextError();
     }
 
     @Test
     public void validateMultipleMediaTypesUsingAcceptXml() {
         Response response = given().accept(ContentType.XML).get(REACTIVE_ENDPOINT_WITH_MULTIPLE_PRODUCES);
-        assertBadRequestInXmlFormat(response);
+        validate(response)
+                .isBadRequest()
+                .hasReactiveXMLError();
     }
 
     @Test
     public void validateMultipleMediaTypesUsingAcceptJson() {
         Response response = given().accept(ContentType.JSON).get(REACTIVE_ENDPOINT_WITH_MULTIPLE_PRODUCES);
-        assertBadRequestInJsonFormat(response);
+        validate(response)
+                .isBadRequest()
+                .hasReactiveJsonError();
     }
 
     @Test
     public void validateMultipleMediaTypesUsingAcceptText() {
         Response response = given().accept(ContentType.TEXT).get(REACTIVE_ENDPOINT_WITH_MULTIPLE_PRODUCES);
-        assertBadRequestInTextFormat(response);
+        validate(response)
+                .isBadRequest()
+                .hasTextError();
+    }
+
+    @Test
+    @Disabled("https://github.com/quarkusio/quarkus/issues/28421")
+    public void validateReturnValue() {
+        Response response = given()
+                .accept(ContentType.TEXT)
+                .get("/reactive/validate-response-uni/mouse");
+        Assertions.assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, //https://github.com/quarkusio/quarkus/issues/28422
+                response.statusCode());
+        response.then().body(containsString("response must have 3 characters"));
     }
 }
