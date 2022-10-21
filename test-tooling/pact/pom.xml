@@ -11,22 +11,22 @@
     <packaging>jar</packaging>
     <name>Quarkus QE TS: Test Tooling: Pact</name>
     <properties>
-        <pact.version>4.0.10</pact.version>
+        <pact.version>4.1.39</pact.version>
     </properties>
     <dependencies>
         <dependency>
-            <groupId>au.com.dius</groupId>
-            <artifactId>pact-jvm-consumer-junit5</artifactId>
+            <groupId>au.com.dius.pact.consumer</groupId>
+            <artifactId>junit5</artifactId>
             <version>${pact.version}</version>
         </dependency>
         <dependency>
-            <groupId>au.com.dius</groupId>
-            <artifactId>pact-jvm-consumer-java8</artifactId>
+            <groupId>au.com.dius.pact.consumer</groupId>
+            <artifactId>java8</artifactId>
             <version>${pact.version}</version>
         </dependency>
         <dependency>
-            <groupId>au.com.dius</groupId>
-            <artifactId>pact-jvm-provider-junit5</artifactId>
+            <groupId>au.com.dius.pact.provider</groupId>
+            <artifactId>junit5</artifactId>
             <version>${pact.version}</version>
         </dependency>
         <!-- Required for native compilation -->
