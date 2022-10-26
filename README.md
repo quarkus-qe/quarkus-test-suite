@@ -330,6 +330,7 @@ Additional coverage:
 - Execution model (blocking vs. non-blocking) of endpoints based on method signature.
 - HTTP Caching features.
 - Advanced JSON serialization.
+- Gzip compression
 - REST Client reactive - support for POJO JSON serialization in multipart forms.
 
 ### `http/rest-client`
@@ -353,6 +354,7 @@ This module will setup a simple endpoint and will validate the right message for
 ### `http/reactive-routes`
 This module covers some basic scenarios around reactive routes in general and also:
 - Validation on request params, request body and responses.
+- Gzip compression
 
 ### `http/vertx-web-client`
 Vert.x Mutiny webClient exploratory test.
