@@ -99,8 +99,8 @@ public class LargeFileHandlingIT {
 
     @Test
     @DisabledOnOs(value = OS.WINDOWS, disabledReason = "https://github.com/quarkus-qe/quarkus-test-framework/issues/584")
-    //TODO: https://github.com/quarkusio/quarkus/issues/28782
-    @DisabledOnQuarkusSnapshot(reason = "multiplart form data request body is always null")
+    //TODO https://github.com/quarkusio/quarkus/issues/28920
+    @DisabledOnQuarkusSnapshot(reason = "OutOfMemoryError on upstream")
     public void downloadMultipart() {
         Response hashSum = app.given().get("/file/hash");
         assertEquals(HttpStatus.SC_OK, hashSum.statusCode());
@@ -157,8 +157,6 @@ public class LargeFileHandlingIT {
 
     @Test
     @DisabledOnOs(value = OS.WINDOWS, disabledReason = "https://github.com/quarkus-qe/quarkus-test-framework/issues/584")
-    //TODO: https://github.com/quarkusio/quarkus/issues/28782
-    @DisabledOnQuarkusSnapshot(reason = "multiplart form data request body is always null")
     public void uploadMultipart() {
         Response hashSum = app.given().get("/file-client/client-hash");
         assertEquals(HttpStatus.SC_OK, hashSum.statusCode());
