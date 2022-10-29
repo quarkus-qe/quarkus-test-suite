@@ -30,14 +30,14 @@ public class FileResource {
     private final OsUtils utils;
     private final List<File> deathRow = new LinkedList<>();
 
-    public FileResource(@ConfigProperty(name = "client.filepath") Optional<String> folder) {
+    public FileResource(@ConfigProperty(name = "client.filepath", defaultValue = "/tmp") Optional<String> folder) {
         utils = OsUtils.get();
         file = folder
                 .stream()
                 .map(existing -> java.nio.file.Path.of(existing).resolve("server.txt").toAbsolutePath())
                 .peek(path -> utils.createFile(path, BIGGER_THAN_TWO_GIGABYTES))
                 .map(java.nio.file.Path::toFile)
-                .findFirst().orElse(null);
+                .findFirst().orElseThrow(() -> new RuntimeException("server.txt creation failed!."));
     }
 
     @GET
@@ -68,20 +68,20 @@ public class FileResource {
     @GET
     @Produces(MediaType.MULTIPART_FORM_DATA)
     @Path("/download-multipart")
-    @Blocking //https://github.com/quarkusio/quarkus/issues/25909
-    public Uni<FileWrapper> downloadMultipart() {
+    // @Blocking -> https://github.com/quarkusio/quarkus/issues/25909
+    public FileWrapper downloadMultipart() {
         FileWrapper wrapper = new FileWrapper();
         wrapper.file = file;
         wrapper.name = file.getName();
-        return Uni.createFrom().item(() -> wrapper);
+        return wrapper;
     }
 
     @GET
     @Produces(MediaType.MULTIPART_FORM_DATA)
     @Path("/download-broken-multipart")
-    @Blocking //https://github.com/quarkusio/quarkus/issues/25909
-    public Uni<RestResponse> brokenMultipart() {
-        return Uni.createFrom().item(() -> RestResponse.ok("Not a multipart message"));
+    // @Blocking -> //https://github.com/quarkusio/quarkus/issues/25909
+    public RestResponse brokenMultipart() {
+        return RestResponse.ok("Not a multipart message");
     }
 
     @GET
