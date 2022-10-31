@@ -25,14 +25,15 @@ import io.smallrye.mutiny.Uni;
 
 @Path("/file")
 public class FileResource {
+    private static final String DEFAULT_FOLDER = System.getProperty("java.io.tmpdir");
     private static final long BIGGER_THAN_TWO_GIGABYTES = OsUtils.SIZE_2049MiB;
     private final File file;
     private final OsUtils utils;
     private final List<File> deathRow = new LinkedList<>();
 
-    public FileResource(@ConfigProperty(name = "client.filepath", defaultValue = "/tmp") Optional<String> folder) {
+    public FileResource(@ConfigProperty(name = "client.filepath") Optional<String> folder) {
         utils = OsUtils.get();
-        file = folder
+        file = folder.or(() -> Optional.of(DEFAULT_FOLDER))
                 .stream()
                 .map(existing -> java.nio.file.Path.of(existing).resolve("server.txt").toAbsolutePath())
                 .peek(path -> utils.createFile(path, BIGGER_THAN_TWO_GIGABYTES))
