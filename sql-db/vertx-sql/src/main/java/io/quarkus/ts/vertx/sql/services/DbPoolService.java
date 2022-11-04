@@ -36,8 +36,6 @@ public class DbPoolService extends Pool {
         switch (selectedDb) {
             case "mysql":
                 return saveMysql(tableName, fieldsNames, fieldsValues);
-            case "db2":
-                return saveDb2(tableName, fieldsNames, fieldsValues);
             case "mssql":
                 return saveMS(tableName, fieldsNames, fieldsValues);
             case "oracle":
@@ -84,18 +82,6 @@ public class DbPoolService extends Pool {
                     .execute()
                     .onItem().invoke(r -> this.query("SELECT LAST_INSERT_ID();"))
                     .onItem().transform(id -> (Long) id.getDelegate().property(LAST_INSERTED_ID));
-        });
-    }
-
-    protected Uni<Long> saveDb2(String tableName, List<String> fieldsNames, List<Object> fieldsValues) {
-        return SqlClientHelper.inTransactionUni(this, tx -> {
-            String fields = tableFieldsToString(fieldsNames);
-            String values = tableFieldsValuesToString(fieldsValues);
-
-            return tx
-                    .preparedQuery("select id from NEW TABLE (INSERT INTO " + getTableName(tableName) + " ("
-                            + fields + ") VALUES (" + values + "))")
-                    .execute().onItem().transform(id -> id.iterator().next().getLong("id"));
         });
     }
 

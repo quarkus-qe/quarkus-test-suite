@@ -33,8 +33,8 @@ public class PostgresqlResource implements QuarkusTestResourceLifecycleManager {
         config.put("quarkus.flyway.migrate-at-start", "true");
         // Disable Flyway for MySQL
         config.put("quarkus.flyway.mysql.migrate-at-start", "false");
-        // Disable Flyway for DB2
-        config.put("quarkus.flyway.db2.migrate-at-start", "false");
+        // Disable Flyway for MSSQL
+        config.put("quarkus.flyway.mssql.migrate-at-start", "false");
 
         return config;
     }

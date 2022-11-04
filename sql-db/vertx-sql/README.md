@@ -10,7 +10,6 @@ To compile and run this demo you will need:
 - Docker
 - PostgreSQL
 - MySQL
-- DB2
 - Oracle
 
 ## Scope of the testing
@@ -19,7 +18,7 @@ Quarkus / Vertx SQL exploratory testing
 
 * Quarkus Vertx Reactive Routes (annotations)
 * OpenAPI from annotations
-* Reactive SQL / PostgreSQL / MySQL / DB2 / Oracle
+* Reactive SQL / PostgreSQL / MySQL / Oracle
     * Select / insert statements
     * Transaction statement between several tables 
 * Error mapping through routes
