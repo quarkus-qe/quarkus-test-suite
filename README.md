@@ -634,6 +634,7 @@ Applications:
 - Pong application that will return the "pong" output.
 - Secured endpoints to output the claims data
 - Token generator endpoint to generate tokens using the OIDC Client
+- OIDC logout flow
 
 Test cases:
 - When calling `/ping` or `/pong` endpoints without bearer token, then it should return 401 Unauthorized. 
