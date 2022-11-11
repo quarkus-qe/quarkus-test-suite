@@ -20,7 +20,6 @@ import io.quarkus.ts.vertx.sql.services.DbPoolService;
 import io.vertx.core.impl.logging.Logger;
 import io.vertx.core.impl.logging.LoggerFactory;
 import io.vertx.core.json.jackson.DatabindCodec;
-import io.vertx.mutiny.db2client.DB2Pool;
 import io.vertx.mutiny.mssqlclient.MSSQLPool;
 import io.vertx.mutiny.mysqlclient.MySQLPool;
 import io.vertx.mutiny.oracleclient.OraclePool;
@@ -43,9 +42,6 @@ public class Application {
     @ConfigProperty(name = "quarkus.flyway.mysql.schemas")
     String mysqlDbName;
 
-    @ConfigProperty(name = "quarkus.flyway.db2.schemas")
-    String db2DbName;
-
     @Inject
     PgPool postgresql;
 
@@ -53,11 +49,6 @@ public class Application {
     @Named("mysql")
     @IfBuildProfile("mysql")
     MySQLPool mysql;
-
-    @Inject
-    @Named("db2")
-    @IfBuildProfile("db2")
-    DB2Pool db2;
 
     @Inject
     @Named("mssql")
@@ -83,8 +74,6 @@ public class Application {
         switch (selectedDB) {
             case "mysql":
                 return new DbPoolService(mysql, mysqlDbName, selectedDB);
-            case "db2":
-                return new DbPoolService(db2, "\"" + db2DbName + "\"", selectedDB);
             case "mssql":
                 return new DbPoolService(mssql, null, selectedDB);
             case "oracle":

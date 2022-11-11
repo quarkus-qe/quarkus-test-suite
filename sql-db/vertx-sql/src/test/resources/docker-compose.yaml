@@ -23,17 +23,3 @@ services:
       MYSQL_PASSWORD: test
       MYSQL_DATABASE: amadeus
 
-  db2:
-    image: quay.io/quarkusqeteam/db2:11.5.5.0
-    hostname: db2
-    container_name: db2
-    privileged: true
-    ports:
-      - "50000:50000"
-    environment:
-      LICENSE: accept
-      DB2INST1_PASSWORD: test
-      DB2INSTANCE: test
-      AUTOCONFIG: "false"
-      ARCHIVE_LOGS: "false"
-      DBNAME: amadeus
