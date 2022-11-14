@@ -12,6 +12,7 @@ import io.restassured.response.Response;
 public class ConfigIT {
 
     @QuarkusApplication
+    // Adding a new comment test to trigger GHA....
     static RestService app = new RestService()
             .withProperty("the.answer", "42")
             .withProperty("secret.password", "T0tallySafePa\\$\\$word")
