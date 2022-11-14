@@ -11,7 +11,7 @@ jobs:
       matrix:
         java: [ 11 ]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Reclaim Disk Space
         run: .github/ci-prerequisites.sh
       - name: Install JDK {{ matrix.java }}
@@ -27,7 +27,7 @@ jobs:
         shell: bash
         run: tar -I 'pigz -9' -cf maven-repo.tgz -C ~ .m2/repository
       - name: Persist Maven Repo
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: maven-repo
           path: maven-repo.tgz
@@ -42,7 +42,7 @@ jobs:
                    "sql-db-modules",
                    "messaging-modules,websockets-modules"]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Reclaim Disk Space
         run: .github/ci-prerequisites.sh
       - name: Install JDK {{ matrix.java }}
@@ -53,7 +53,7 @@ jobs:
           check-latest: true
           cache: 'maven'
       - name: Download Maven Repo
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v3
         with:
           name: maven-repo
           path: .
@@ -76,7 +76,7 @@ jobs:
           zip -R artifacts-jvm${{ matrix.java }}.zip '*-reports/*'
       - name: Archive artifacts
         if: failure()
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: ci-artifacts
           path: artifacts-jvm${{ matrix.java }}.zip
@@ -94,7 +94,7 @@ jobs:
                    "sql-db-modules",
                    "messaging-modules,websockets-modules"]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Reclaim Disk Space
         run: .github/ci-prerequisites.sh
       - name: Install JDK {{ matrix.java }}
@@ -105,7 +105,7 @@ jobs:
           check-latest: true
           cache: 'maven'
       - name: Download Maven Repo
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v3
         with:
           name: maven-repo
           path: .
@@ -130,7 +130,7 @@ jobs:
           zip -R artifacts-native${{ matrix.java }}.zip '*-reports/*'
       - name: Archive artifacts
         if: failure()
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: ci-artifacts
           path: artifacts-native${{ matrix.java }}.zip
@@ -142,7 +142,7 @@ jobs:
       matrix:
         java: [ 11, 17 ]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Install JDK {{ matrix.java }}
         uses: actions/setup-java@v3
         with:
@@ -151,7 +151,7 @@ jobs:
           check-latest: true
           cache: 'maven'
       - name: Download Maven Repo
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v3
         with:
           name: maven-repo
           path: .
@@ -170,7 +170,7 @@ jobs:
           /usr/bin/find . -name '*-reports/*' -type d | tar -czf artifacts-latest-windows-jvm${{ matrix.java }}.tar -T -
       - name: Archive artifacts
         if: failure()
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: ci-artifacts
           path: artifacts-latest-windows-jvm${{ matrix.java }}.tar
@@ -181,9 +181,10 @@ jobs:
     strategy:
       matrix:
         java: [ 11 ]
-        graalvm-version: [ "22.3.0.java17"]
+        graalvm-version: [ "22.3.0" ]
+        graalvm-java-version: [ "17" ]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Install JDK {{ matrix.java }}
         uses: actions/setup-java@v3
         with:
@@ -192,28 +193,24 @@ jobs:
           check-latest: true
           cache: 'maven'
       - name: Download Maven Repo
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v3
         with:
           name: maven-repo
           path: .
       - name: Extract Maven Repo
         shell: bash
         run: tar -xzf maven-repo.tgz -C ~
-      - name: Install cl.exe
-        uses: ilammy/msvc-dev-cmd@v1
-      - uses: microsoft/setup-msbuild@v1
       - name: Setup GraalVM
         id: setup-graalvm
-        uses: DeLaGuardo/setup-graalvm@master
+        uses: graalvm/setup-graalvm@v1
         with:
-          graalvm-version: ${{ matrix.graalvm-version }}
-      - name: Install native-image component
-        run: |
-          gu.cmd install native-image
+          version: ${{ matrix.graalvm-version }}
+          java-version: ${{ matrix.graalvm-java-version }}
+          components: 'native-image'
       - name: Configure Pagefile
         # Increased the page-file size due to memory-consumption of native-image command
         # For details see https://github.com/actions/virtual-environments/issues/785
-        uses: al-cheb/configure-pagefile-action@v1.2
+        uses: al-cheb/configure-pagefile-action@v1.3
       - name: Build in Native mode
         shell: bash
         run: |
@@ -227,7 +224,7 @@ jobs:
           /usr/bin/find . -name '*-reports/*' -type d | tar -czf artifacts-latest-windows-native${{ matrix.java }}.tar -T -
       - name: Archive artifacts
         if: failure()
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: ci-artifacts
           path: artifacts-latest-windows-native${{ matrix.java }}.tar
