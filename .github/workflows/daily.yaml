@@ -87,7 +87,7 @@ jobs:
     strategy:
       matrix:
         java: [ 11 ]
-        image: [ "ubi-quarkus-native-image:22.2-java17", "ubi-quarkus-mandrel:22.2-java17" ]
+        image: [ "ubi-quarkus-native-image:22.3-java17", "ubi-quarkus-mandrel:22.3-java17" ]
         profiles: [ "root-modules,monitoring-modules,spring-modules,test-tooling-modules",
                    "http-modules",
                    "security-modules",
@@ -181,7 +181,7 @@ jobs:
     strategy:
       matrix:
         java: [ 11 ]
-        graalvm-version: [ "22.2.0.java11"]
+        graalvm-version: [ "22.3.0.java17"]
     steps:
       - uses: actions/checkout@v2
       - name: Install JDK {{ matrix.java }}

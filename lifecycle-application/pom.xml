@@ -40,7 +40,7 @@
             </activation>
             <properties>
                 <!-- please keep Mandrel and RHBQ version compatible -->
-                <quarkus.platform.version>2.11.2.Final</quarkus.platform.version>
+                <quarkus.platform.version>2.13.4.Final</quarkus.platform.version>
             </properties>
             <repositories>
                 <repository>
