@@ -14,7 +14,7 @@ du -cskh /usr/bin/*
 
 du -cskh /usr/local/*
 
-du -cskh /opt*
+du -cskh /opt/*
 
 
 
