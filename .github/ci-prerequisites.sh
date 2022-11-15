@@ -10,11 +10,15 @@ sudo rm -rf /usr/share/swift
 sudo rm -rf /usr/share/gradle-7.5.1
 
 
-du -cskh /usr/bin/*
+du -cskh /opt/az/*
+du -cskh /opt/google/*
+du -cskh /opt/hhvm/*
+du -cskh /opt/hostedtoolcache/*
+du -cskh /opt/microsoft/*
 
-du -cskh /usr/local/*
+du -cskh /usr/local/graalvm/*
+du -cskh /usr/local/julia1.8.2/*
 
-du -cskh /opt/*
 
 
 
