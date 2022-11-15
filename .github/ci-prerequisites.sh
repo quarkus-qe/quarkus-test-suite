@@ -9,18 +9,14 @@ sudo rm -rf /usr/share/dotnet
 sudo rm -rf /usr/share/swift
 sudo rm -rf /usr/share/gradle-7.5.1
 
-
-du -cskh /opt/az/*
-du -cskh /opt/google/*
-du -cskh /opt/hhvm/*
-du -cskh /opt/hostedtoolcache/*
-du -cskh /opt/microsoft/*
-
-du -cskh /usr/local/graalvm/*
-du -cskh /usr/local/julia1.8.2/*
-
-
-
+du -cskh /opt/az /opt/google /opt/hhvm /opt/hostedtoolcache/CodeQL /opt/microsoft /usr/local/graalvm /usr/local/julia*
+sudo rm -rf /opt/az
+sudo rm -rf /opt/google
+sudo rm -rf /opt/hhvm
+sudo rm -rf /opt/hostedtoolcache/CodeQL
+sudo rm -rf /opt/microsoft
+sudo rm -rf /usr/local/graalvm
+sudo rm -rf /usr/local/julia*
 
 echo "Reclaim disk space end."
 df -h /
