@@ -1,4 +1,4 @@
-# Reclaim disk space, otherwise we only have 13 GB free at the start of a job
+# Reclaim ~14 GB disk space, otherwise we do not have enough disk space for TS execution
 echo "Reclaim disk space."
 df -h /
 docker images
