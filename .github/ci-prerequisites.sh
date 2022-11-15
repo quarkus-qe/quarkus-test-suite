@@ -8,6 +8,12 @@ du -cskh /usr/share/dotnet /usr/share/swift
 time sudo rm -rf /usr/share/dotnet
 time sudo rm -rf /usr/share/swift
 
+
+du -cskh /usr/share/*
+du -cskh /usr/*
+
+du -cskh /*
+
 echo "Reclaim disk space end."
 df -h
 docker images
