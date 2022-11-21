@@ -390,6 +390,7 @@
                 <module>qute/multimodule</module>
                 <module>qute/synchronous</module>
                 <module>qute/reactive</module>
+                <module>funqy/knative-events</module>
             </modules>
         </profile>
         <profile>
@@ -564,7 +565,8 @@
             </activation>
             <modules>
                 <module>env-info</module>
-                <module>service-binding/postgresql-crunchy</module>
+                <module>service-binding/postgresql-crunchy-classic</module>
+                <module>service-binding/postgresql-crunchy-reactive</module>
             </modules>
         </profile>
         <profile>
