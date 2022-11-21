@@ -11,7 +11,7 @@ jobs:
       matrix:
         java: [ 11 ]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Reclaim Disk Space
         run: .github/ci-prerequisites.sh
       - name: Install JDK {{ matrix.java }}
@@ -42,7 +42,7 @@ jobs:
                    "sql-db-modules",
                    "messaging-modules,websockets-modules"]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Reclaim Disk Space
         run: .github/ci-prerequisites.sh
       - name: Install JDK {{ matrix.java }}
@@ -94,7 +94,7 @@ jobs:
                    "sql-db-modules",
                    "messaging-modules,websockets-modules"]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Reclaim Disk Space
         run: .github/ci-prerequisites.sh
       - name: Install JDK {{ matrix.java }}
@@ -142,7 +142,7 @@ jobs:
       matrix:
         java: [ 11, 17 ]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Install JDK {{ matrix.java }}
         uses: actions/setup-java@v3
         with:
@@ -183,7 +183,7 @@ jobs:
         java: [ 11 ]
         graalvm-version: [ "22.3.0.java17"]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Install JDK {{ matrix.java }}
         uses: actions/setup-java@v3
         with:
