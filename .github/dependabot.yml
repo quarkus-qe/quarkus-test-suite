@@ -1,6 +1,6 @@
 version: 2
 updates:
-  # Maintain dependencies for GitHub Actions
+  # Maintain dependencies for Maven
   - package-ecosystem: "maven"
     directory: "/"
     schedule:
@@ -10,3 +10,8 @@ updates:
       - dependency-name: io.quarkus:quarkus-maven-plugin
       # This dependency is used in `lifecycle-application` to verify Maven errors, we need to ignore it
       - dependency-name: io.quarkus:quarkus-spring-di
+  # Maintain dependencies for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
