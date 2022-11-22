@@ -29,7 +29,9 @@ public class GraphQLTracingIT {
     @QuarkusApplication
     static RestService app = new RestService()
             .withProperty("quarkus.jaeger.service-name", SERVICE_NAME)
-            .withProperty("quarkus.jaeger.endpoint", jaeger::getCollectorUrl);
+            .withProperty("quarkus.jaeger.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.jaeger.sampler-type", "const")
+            .withProperty("quarkus.jaeger.sampler-param", "1");
 
     @Test
     void verifyTracesInJaegerTest() {
