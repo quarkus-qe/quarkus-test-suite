@@ -8,7 +8,7 @@ import io.quarkus.test.services.QuarkusApplication;
 public class AbstractDbIT {
     static final int POSTGRESQL_PORT = 5432;
 
-    @Container(image = "${postgresql.13.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
+    @Container(image = "${postgresql.latest.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
     static final PostgresqlService database = new PostgresqlService()
             //fixme https://github.com/quarkus-qe/quarkus-test-framework/issues/455
             .withProperty("POSTGRES_USER", "user")

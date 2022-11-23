@@ -10,7 +10,7 @@ import io.quarkus.test.services.QuarkusApplication;
 public class PostgresqlHandlerIT extends CommonTestCases {
     private static final String POSTGRESQL_DATABASE = "amadeus";
 
-    @Container(image = "${postgresql.13.image}", port = 5432, expectedLog = "listening on IPv4 address")
+    @Container(image = "${postgresql.latest.image}", port = 5432, expectedLog = "listening on IPv4 address")
     static PostgresqlService postgres = new PostgresqlService()
             .with("test", "test", POSTGRESQL_DATABASE)
             .withProperty("POSTGRES_USER", "test") //fixme https://github.com/quarkus-qe/quarkus-test-framework/issues/455

@@ -11,7 +11,7 @@ public class PostgresqlPanacheResourceIT extends AbstractPanacheResourceIT {
 
     static final int POSTGRESQL_PORT = 5432;
 
-    @Container(image = "${postgresql.13.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
+    @Container(image = "${postgresql.latest.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
     public static final PostgresqlService database = new PostgresqlService()
             .withProperty("POSTGRES_DB", "mydb")
             .withProperty("PGDATA", "/tmp/psql");

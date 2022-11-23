@@ -1,5 +1,8 @@
 package io.quarkus.ts.sqldb.sqlapp;
 
+import static io.quarkus.ts.sqldb.sqlapp.DbUtil.getImageName;
+import static io.quarkus.ts.sqldb.sqlapp.DbUtil.getImageVersion;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -14,15 +17,14 @@ import io.quarkus.test.utils.SocketUtils;
 @QuarkusScenario
 public class DevModeOracleDevServiceUserExperienceIT {
 
-    private static final String[] ORACLE_IMAGE = System.getProperty("oracle.image").split(":");
-    private static final String ORACLE_NAME = ORACLE_IMAGE[0];
-    private static final String ORACLE_VERSION = ORACLE_IMAGE[1];
+    private static final String ORACLE_NAME = getImageName("oracle.image");
+    private static final String ORACLE_VERSION = getImageVersion("oracle.image");
 
     @DevModeQuarkusApplication
     static RestService app = new RestService()
             .withProperty("quarkus.datasource.db-kind", "oracle")
             .withProperty("quarkus.datasource.devservices.port", Integer.toString(SocketUtils.findAvailablePort()))
-            .withProperty("quarkus.datasource.devservices.image-name", ORACLE_NAME + ":" + ORACLE_VERSION)
+            .withProperty("quarkus.datasource.devservices.image-name", "${oracle.image}")
             .withProperty("quarkus.hibernate-orm.database.generation", "none")
             .onPreStart(s -> DockerUtils.removeImage(ORACLE_NAME, ORACLE_VERSION));
 

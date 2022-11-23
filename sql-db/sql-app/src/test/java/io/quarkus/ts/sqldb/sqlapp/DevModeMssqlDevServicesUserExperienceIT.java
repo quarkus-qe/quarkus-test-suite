@@ -16,22 +16,21 @@ import io.quarkus.test.utils.SocketUtils;
 @QuarkusScenario
 public class DevModeMssqlDevServicesUserExperienceIT {
 
-    private static final String MSSQL_VERSION = "2017-CU12";
-    private static final String MSSQL_NAME = "mcr.microsoft.com/mssql/server";
+    private static final String MSSQL_NAME = DbUtil.getImageName("mssql.image");
+    private static final String MSSQL_VERSION = DbUtil.getImageVersion("mssql.image");
 
     @DevModeQuarkusApplication
     static RestService app = new RestService()
             .withProperty("quarkus.datasource.db-kind", "mssql")
             .withProperty("quarkus.datasource.devservices.port", Integer.toString(SocketUtils.findAvailablePort()))
-            .withProperty("quarkus.datasource.devservices.image-name", MSSQL_NAME + ":" + MSSQL_VERSION)
-            .withProperty("quarkus.hibernate-orm.dialect", "org.hibernate.dialect.SQLServer2012Dialect")
+            .withProperty("quarkus.datasource.devservices.image-name", "${mssql.image}")
             .withProperty("quarkus.datasource.jdbc.driver", "com.microsoft.sqlserver.jdbc.SQLServerDriver")
             .withProperty("quarkus.hibernate-orm.database.generation", "none")
             .onPreStart(s -> DockerUtils.removeImage(MSSQL_NAME, MSSQL_VERSION));
 
     @Test
     public void verifyIfUserIsInformedAboutMssqlDevServicePulling() {
-        app.logs().assertContains("Pulling docker image: " + MSSQL_NAME + ":" + MSSQL_VERSION);
+        app.logs().assertContains(String.format("Pulling docker image: %s:%s", MSSQL_NAME, MSSQL_VERSION));
         app.logs().assertContains("Please be patient; this may take some time but only needs to be done once");
         app.logs().assertContains("Starting to pull image");
         app.logs().assertContains("Dev Services for Microsoft SQL Server started");
