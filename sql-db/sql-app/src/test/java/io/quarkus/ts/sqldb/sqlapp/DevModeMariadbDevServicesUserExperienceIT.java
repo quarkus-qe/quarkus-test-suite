@@ -16,21 +16,20 @@ import io.quarkus.test.utils.SocketUtils;
 @QuarkusScenario
 public class DevModeMariadbDevServicesUserExperienceIT {
 
-    private static final String MARIA_DB_VERSION = "5.5.49";
-    private static final String MARIA_DB_NAME = "mariadb";
+    private static final String MARIA_DB_NAME = DbUtil.getImageName("mariadb.10.image");
+    private static final String MARIA_DB_VERSION = DbUtil.getImageVersion("mariadb.10.image");
 
     @DevModeQuarkusApplication
     static RestService app = new RestService()
             .withProperty("quarkus.datasource.db-kind", "mariadb")
             .withProperty("quarkus.datasource.devservices.port", Integer.toString(SocketUtils.findAvailablePort()))
-            .withProperty("quarkus.datasource.devservices.image-name", MARIA_DB_NAME + ":" + MARIA_DB_VERSION)
-            .withProperty("quarkus.hibernate-orm.dialect", "org.hibernate.dialect.MariaDB102Dialect")
+            .withProperty("quarkus.datasource.devservices.image-name", "${mariadb.10.image}")
             .withProperty("quarkus.hibernate-orm.database.generation", "none")
             .onPreStart(s -> DockerUtils.removeImage(MARIA_DB_NAME, MARIA_DB_VERSION));
 
     @Test
     public void verifyIfUserIsInformedAboutMariadbDevServicePulling() {
-        app.logs().assertContains("Pulling docker image: mariadb");
+        app.logs().assertContains(String.format("Pulling docker image: %s:%s", MARIA_DB_NAME, MARIA_DB_VERSION));
         app.logs().assertContains("Please be patient; this may take some time but only needs to be done once");
         app.logs().assertContains("Starting to pull image");
         app.logs().assertContains("Dev Services for MariaDB started");

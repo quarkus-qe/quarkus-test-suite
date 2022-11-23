@@ -17,7 +17,7 @@ public class MultiplePersistenceIT extends AbstractMultiplePersistenceIT {
     @Container(image = "${mariadb.10.image}", port = MARIADB_PORT, expectedLog = MARIADB_START_LOG)
     static MariaDbService mariadb = new MariaDbService();
 
-    @Container(image = "${postgresql.13.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
+    @Container(image = "${postgresql.latest.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
     static PostgresqlService postgresql = new PostgresqlService()
             //fixme https://github.com/quarkus-qe/quarkus-test-framework/issues/455
             .withProperty("POSTGRES_USER", "user")

@@ -1,5 +1,8 @@
 package io.quarkus.ts.reactive.db.clients;
 
+import static io.quarkus.ts.reactive.db.clients.DbUtil.getImageName;
+import static io.quarkus.ts.reactive.db.clients.DbUtil.getImageVersion;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -14,17 +17,17 @@ import io.quarkus.test.utils.DockerUtils;
 @Tag("QUARKUS-1080")
 @QuarkusScenario
 public class DevModeReactivePostgresqlDevServiceUserExperienceIT {
-    private static final String POSTGRESQL_VERSION = "9.6.23";
-    private static final String POSTGRES_NAME = "postgres";
+    private static final String POSTGRESQL_VERSION = getImageVersion("postgresql.latest.image");
+    private static final String POSTGRES_NAME = getImageName("postgresql.latest.image");
 
     @DevModeQuarkusApplication
     static RestService app = new RestService()
-            .withProperty("quarkus.datasource.devservices.image-name", POSTGRES_NAME + ":" + POSTGRESQL_VERSION)
+            .withProperty("quarkus.datasource.devservices.image-name", "${postgresql.latest.image}")
             .onPreStart(s -> DockerUtils.removeImage(POSTGRES_NAME, POSTGRESQL_VERSION));
 
     @Test
     public void verifyIfUserIsInformedAboutReactivePostgresqlDevServicePulling() {
-        app.logs().assertContains("Pulling docker image: postgres");
+        app.logs().assertContains(String.format("Pulling docker image: %s:%s", POSTGRES_NAME, POSTGRESQL_VERSION));
         app.logs().assertContains("Please be patient; this may take some time but only needs to be done once");
         app.logs().assertContains("Starting to pull image");
         app.logs().assertContains("Dev Services for PostgreSQL started");

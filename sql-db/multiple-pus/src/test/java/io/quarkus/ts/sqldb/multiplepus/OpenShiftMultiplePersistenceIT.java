@@ -20,7 +20,7 @@ public class OpenShiftMultiplePersistenceIT extends AbstractMultiplePersistenceI
     @Container(image = "${mariadb.103.image}", port = MYSQL_PORT, expectedLog = "Only MySQL server logs after this point")
     static MariaDbService mariadb = new MariaDbService();
 
-    @Container(image = "${postgresql.13.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
+    @Container(image = "${postgresql.latest.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
     static PostgresqlService postgresql = new PostgresqlService()
             //fixme https://github.com/quarkus-qe/quarkus-test-framework/issues/455
             .withProperty("POSTGRES_USER", "user")

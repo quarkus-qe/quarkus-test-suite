@@ -1,5 +1,8 @@
 package io.quarkus.ts.reactive.db.clients;
 
+import static io.quarkus.ts.reactive.db.clients.DbUtil.getImageName;
+import static io.quarkus.ts.reactive.db.clients.DbUtil.getImageVersion;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -14,12 +17,12 @@ import io.quarkus.test.utils.DockerUtils;
 @Tag("QUARKUS-1408")
 @QuarkusScenario
 public class DevModeReactiveMssqlDevServiceUserExperienceIT {
-    private static final String MSSQL_VERSION = "2019-CU10-ubuntu-20.04";
-    private static final String MSSQL_NAME = "mcr.microsoft.com/mssql/server";
+    private static final String MSSQL_VERSION = getImageVersion("mssql.image");
+    private static final String MSSQL_NAME = getImageName("mssql.image");
 
     @DevModeQuarkusApplication
     static RestService app = new RestService()
-            .withProperty("quarkus.datasource.mssql.devservices.image-name", MSSQL_NAME + ":" + MSSQL_VERSION)
+            .withProperty("quarkus.datasource.mssql.devservices.image-name", "${mssql.image}")
             .onPreStart(s -> DockerUtils.removeImage(MSSQL_NAME, MSSQL_VERSION));
 
     @Test

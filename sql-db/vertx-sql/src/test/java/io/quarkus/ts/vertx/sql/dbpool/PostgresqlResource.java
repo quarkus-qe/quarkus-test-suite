@@ -12,10 +12,11 @@ import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 public class PostgresqlResource implements QuarkusTestResourceLifecycleManager {
 
     private GenericContainer<?> postgresContainer;
+    private static final String POSTGRESQL_IMAGE_NAME = System.getProperty("postgresql.latest.image");
 
     @Override
     public Map<String, String> start() {
-        postgresContainer = new GenericContainer<>(DockerImageName.parse("postgres:13.6"))
+        postgresContainer = new GenericContainer<>(DockerImageName.parse(POSTGRESQL_IMAGE_NAME))
                 .withEnv("POSTGRES_USER", "test")
                 .withEnv("POSTGRES_PASSWORD", "test")
                 .withEnv("POSTGRES_DB", "amadeus")
