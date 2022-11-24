@@ -25,7 +25,7 @@
         <apache-httpclient-fluent.version>4.5.13</apache-httpclient-fluent.version>
         <confluent.kafka-avro-serializer.version>7.3.0</confluent.kafka-avro-serializer.version>
         <formatter-maven-plugin.version>2.21.0</formatter-maven-plugin.version>
-        <impsort-maven-plugin.version>1.7.0</impsort-maven-plugin.version>
+        <impsort-maven-plugin.version>1.8.0</impsort-maven-plugin.version>
         <xml-format-maven-plugin.version>3.2.1</xml-format-maven-plugin.version>
         <checkstyle.version>10.4</checkstyle.version>
         <jjwt.version>0.11.5</jjwt.version>
