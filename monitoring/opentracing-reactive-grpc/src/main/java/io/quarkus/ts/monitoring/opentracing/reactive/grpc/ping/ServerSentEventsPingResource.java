@@ -23,6 +23,6 @@ public class ServerSentEventsPingResource extends TraceableResource {
     @Produces(MediaType.SERVER_SENT_EVENTS)
     public Multi<String> getPing() {
         recordTraceId();
-        return Multi.createFrom().publisher(pongClient.getPong()).map(response -> "ping " + response);
+        return pongClient.getPong().map(response -> "ping " + response);
     }
 }
