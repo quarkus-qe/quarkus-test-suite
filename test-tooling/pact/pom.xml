@@ -11,7 +11,7 @@
     <packaging>jar</packaging>
     <name>Quarkus QE TS: Test Tooling: Pact</name>
     <properties>
-        <pact.version>4.1.39</pact.version>
+        <pact.version>4.1.40</pact.version>
     </properties>
     <dependencies>
         <dependency>
