@@ -24,7 +24,7 @@ public class AgroalTestProfile implements QuarkusTestProfile {
     @Override
     public Map<String, String> getConfigOverrides() {
         Map<String, String> config = new HashMap<>();
-        config.put("quarkus.datasource.devservices", "false");
+        config.put("quarkus.datasource.devservices.enabled", "false");
         config.put("quarkus.datasource.with-xa.devservices", "false");
         return config;
     }

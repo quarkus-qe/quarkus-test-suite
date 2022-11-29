@@ -2,6 +2,9 @@ package io.quarkus.ts.http.graphql;
 
 import static io.restassured.RestAssured.given;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 import javax.json.Json;
 
 import io.restassured.response.Response;
@@ -12,6 +15,12 @@ public class Utils {
                 .contentType("application/json")
                 .body(query)
                 .post();
+    }
+
+    public static Response sendGetQuery(String query) {
+        return given()
+                .contentType("application/json")
+                .get("/graphql?query=" + URLEncoder.encode("{" + query + "}", StandardCharsets.UTF_8));
     }
 
     public static String createQuery(String query) {

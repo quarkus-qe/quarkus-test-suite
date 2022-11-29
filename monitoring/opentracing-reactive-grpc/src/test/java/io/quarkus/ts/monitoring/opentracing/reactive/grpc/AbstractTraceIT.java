@@ -21,9 +21,6 @@ public abstract class AbstractTraceIT {
     private static final String PING_ENDPOINT = "/%s-ping";
     private static final String PONG_ENDPOINT = "/%s-pong";
 
-    private static final String PING_RESOURCE = "PingResource";
-    private static final String PONG_RESOURCE = "PongResource";
-
     @JaegerContainer
     static final JaegerService jaeger = new JaegerService();
 
@@ -50,7 +47,7 @@ public abstract class AbstractTraceIT {
         await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> given()
                 .when().get(jaeger.getTraceUrl() + "?traceID=" + pingTraceId)
                 .then().statusCode(HttpStatus.SC_OK)
-                .and().body(allOf(containsString(PING_RESOURCE), containsString(PONG_RESOURCE))));
+                .and().body(allOf(containsString(pingEndpoint()), containsString(pongEndpoint()))));
     }
 
     protected abstract String endpointPrefix();

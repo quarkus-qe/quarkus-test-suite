@@ -29,15 +29,17 @@ public class GraphQLTracingIT {
     @QuarkusApplication
     static RestService app = new RestService()
             .withProperty("quarkus.jaeger.service-name", SERVICE_NAME)
-            .withProperty("quarkus.jaeger.endpoint", jaeger::getCollectorUrl);
+            .withProperty("quarkus.jaeger.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.jaeger.sampler-type", "const")
+            .withProperty("quarkus.jaeger.sampler-param", "1");
 
     @Test
     void verifyTracesInJaegerTest() {
         Response classic = sendQuery(createQuery("friend(name:\"Aristotle\"){name}"));
-        Response reactive = sendQuery(createQuery("friend_r(name:\"Aristotle\"){name}"));
+        Response reactive = sendQuery(createQuery("friend_reactive(name:\"Aristotle\"){name}"));
 
         Assertions.assertEquals("Plato", classic.jsonPath().getString("data.friend.name"));
-        Assertions.assertEquals("Plato", reactive.jsonPath().getString("data.friend_r.name"));
+        Assertions.assertEquals("Plato", reactive.jsonPath().getString("data.friend_reactive.name"));
 
         // the tracer inside the application doesn't send traces to the Jaeger server immediately,
         // they are batched, so we need to wait a bit
@@ -50,7 +52,7 @@ public class GraphQLTracingIT {
             Assertions.assertEquals(2, jsonPath.getList("data[0].spans").size());
             Assertions.assertEquals(2, jsonPath.getList("data[1].spans").size());
             Assertions.assertTrue(jsonPath.getList("data[0].spans.operationName").contains("GraphQL:Query.friend"));
-            Assertions.assertTrue(jsonPath.getList("data[1].spans.operationName").contains("GraphQL:Query.friend_r"));
+            Assertions.assertTrue(jsonPath.getList("data[1].spans.operationName").contains("GraphQL:Query.friend_reactive"));
         });
     }
 }
