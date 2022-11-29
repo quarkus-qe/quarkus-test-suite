@@ -32,10 +32,10 @@ public class InfinispanKafkaIT {
     private static final String BOOK_TITLE = "testBook";
     private static final Book BOOK = new Book(BOOK_TITLE, "description", 2011);
 
-    @Container(image = "${infinispan.image}", expectedLog = "${infinispan.expected-log}", port = 11222)
+    @Container(image = "${infinispan.image}", expectedLog = "${infinispan.expected-log}", port = 11222, command = "-c /infinispan-config.xml")
     static final InfinispanService infinispan = new InfinispanService()
-            .withConfigFile("infinispan-config.yaml")
-            .withSecretFiles("server.jks");
+            .withConfigFile("infinispan-config.xml")
+            .withSecretFiles("keystore.jks");
 
     @KafkaContainer(vendor = KafkaVendor.CONFLUENT)
     static final KafkaService kafka = new KafkaService();
@@ -45,8 +45,8 @@ public class InfinispanKafkaIT {
             .withProperty("quarkus.infinispan-client.server-list", infinispan::getInfinispanServerAddress)
             .withProperty("quarkus.infinispan-client.auth-username", infinispan.getUsername())
             .withProperty("quarkus.infinispan-client.auth-password", infinispan.getPassword())
-            .withProperty("quarkus.infinispan-client.trust-store", "secret::/server.jks")
-            .withProperty("quarkus.infinispan-client.trust-store-password", "changeit")
+            .withProperty("quarkus.infinispan-client.trust-store", "secret::/truststore.jks")
+            .withProperty("quarkus.infinispan-client.trust-store-password", "password")
             .withProperty("quarkus.infinispan-client.trust-store-type", "jks")
             .withProperty("kafka.bootstrap.servers", kafka::getBootstrapUrl);
 
