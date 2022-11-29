@@ -16,11 +16,28 @@ and consume events and check topics through `AdminClient` and `KafkaConsumer`.
 
 ## Quarkus Infinispan scenario 
 
-##hotrod-client.properties
-Test that hotrod-client.properties file is picked up at the build time (should be placed under src/main/resources/META-INF).    
-Infinispan Server mimicked by Testcontainers.
-
 ##Infinispan server SSL/TLS
-Test SSL/TLS secure connection between Infinispan client and Infinispan server.  
-Client and server are using the same `server.jks` file for authentication (client truststore / server keystore)  
-Information about Infinispan server configuration can be found at [this Github page](https://github.com/infinispan/infinispan-images)
+TrustStore is used to store certificates from Certified Authorities (CA) that verify the certificate presented by the server 
+in an SSL connection. While Keystore is used to store private key and identity certificates that a specific program should present to 
+both parties (server or client) for verification.
+
+Security infinispan documentation:
+- https://infinispan.org/docs/stable/titles/server/server.html#authentication-mechanisms
+- https://infinispan.org/docs/stable/titles/server/server.html#security-realms
+
+We have used the following commands in order to generate the required certificates.
+
+Create the Keystore certificate
+```shell
+keytool -v -genkeypair -keyalg RSA -dname "cn=Quarkus, ou=Quarkus, o=Redhat, L=San Francisco, st=CA, c=US" -ext SAN="DNS:localhost,IP:127.0.0.1" -validity 3825 -alias 1 -keystore keystore.jks -keypass password -storepass password
+```
+
+Export the Certificate to add it into Truststore
+```shell
+keytool -export -alias 1 -file localhost.cer -keystore keystore.jks -storepass password
+```
+
+Create a Trustore certificate
+```shell
+keytool -import -v -trustcacerts -alias 1 -file localhost.cer -keystore truststore.jks -storepass password
+```
