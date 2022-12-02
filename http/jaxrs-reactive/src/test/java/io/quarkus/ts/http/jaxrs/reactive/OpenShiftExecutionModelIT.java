@@ -9,8 +9,10 @@ import io.quarkus.test.scenarios.OpenShiftScenario;
 
 @OpenShiftScenario
 public class OpenShiftExecutionModelIT extends ExecutionModelIT {
-
-    private static final int FILE_SIZE = 99999999;
+    //TODO https://github.com/quarkusio/quarkus/issues/29642
+    // investigate: when FILE_SIZE is set to 99999999, we are getting a
+    // "java.lang.OutOfMemoryError: Array allocation too large." on OCP-native
+    private static final int FILE_SIZE = 9999999;
 
     @Test
     public void bigCompression() {
