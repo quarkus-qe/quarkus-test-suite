@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.util.Objects;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.gargoylesoftware.htmlunit.SilentCssErrorHandler;
@@ -41,6 +42,7 @@ public class LogoutSinglePageAppFlowIT {
             .withProperty("keycloak.url", () -> keycloak.getURI(Protocol.HTTP).toString())
             .withProperties("logout.properties");
 
+    @Tag("QUARKUS-2491")
     @Test
     public void singlePageAppLogoutFlow() throws IOException {
         try (final WebClient webClient = createWebClient()) {
