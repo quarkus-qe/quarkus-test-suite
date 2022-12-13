@@ -654,6 +654,12 @@ Variants:
 Verifies special cases of using reactive OIDC client:
 - Proper handling of `Authorization` request header by `OidcClientRequestReactiveFilter`: the filter should always add a single`Authorization` header, not duplicate it in multiple request attempts.
 
+### `security/keycloak-oidc-client-reactive-extended`
+
+Reactive twin of the `security/keycloak-oidc-client-extended`, extends `security/keycloak-oidc-client-reactive-basic` and also covers some special cases that are common for both classic and reactive modules:
+
+- Verifies Proof Of Key for Code Exchange support for a Keycloak and Red Hat Single Sign-On together with OIDC Single Page Application logout flow
+
 ### `securty/oidc-client-mutual-tls`
 
 Verifies OIDC client can be authenticated as part of the `Mutual TLS` (`mTLS`) authentication process 
