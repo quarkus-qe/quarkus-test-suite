@@ -18,8 +18,11 @@ import io.quarkus.test.bootstrap.Service;
 import io.quarkus.test.bootstrap.inject.OpenShiftClient;
 import io.quarkus.test.scenarios.OpenShiftDeploymentStrategy;
 import io.quarkus.test.scenarios.OpenShiftScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusSnapshot;
 
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
+// TODO https://github.com/quarkusio/quarkus/issues/29921
+@DisabledOnQuarkusSnapshot(reason = "OpenShift extension issue on docker image pushing")
 public abstract class OpenShiftBaseConfigIT {
 
     static final int ASSERT_TIMEOUT_MINUTES = 5;

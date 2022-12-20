@@ -19,6 +19,7 @@ import io.quarkus.test.bootstrap.Service;
 import io.quarkus.test.bootstrap.inject.OpenShiftClient;
 import io.quarkus.test.scenarios.OpenShiftDeploymentStrategy;
 import io.quarkus.test.scenarios.OpenShiftScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusSnapshot;
 import io.quarkus.test.services.QuarkusApplication;
 
 /**
@@ -27,6 +28,8 @@ import io.quarkus.test.services.QuarkusApplication;
  * - `prime_number_test_{uniqueId}`: with information about the calculation of the prime number.
  */
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
+// TODO https://github.com/quarkusio/quarkus/issues/29921
+@DisabledOnQuarkusSnapshot(reason = "OpenShift extension issue on docker image pushing")
 public class OpenShiftCustomMetricsIT {
 
     private static final Logger LOG = Logger.getLogger(OpenShiftCustomMetricsIT.class);

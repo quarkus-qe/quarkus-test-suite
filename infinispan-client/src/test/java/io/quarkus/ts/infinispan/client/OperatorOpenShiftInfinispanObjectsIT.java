@@ -22,12 +22,15 @@ import org.junit.jupiter.api.TestMethodOrder;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftDeploymentStrategy;
 import io.quarkus.test.scenarios.OpenShiftScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusSnapshot;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.infinispan.client.serialized.ShopItem;
 import io.restassured.response.Response;
 
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+// TODO https://github.com/quarkusio/quarkus/issues/29921
+@DisabledOnQuarkusSnapshot(reason = "OpenShift extension issue on docker image pushing")
 public class OperatorOpenShiftInfinispanObjectsIT extends BaseOpenShiftInfinispanIT {
 
     private static final int CACHE_ENTRY_MAX = 5;

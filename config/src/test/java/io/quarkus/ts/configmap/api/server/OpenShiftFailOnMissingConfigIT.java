@@ -7,9 +7,12 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftDeploymentStrategy;
 import io.quarkus.test.scenarios.OpenShiftScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusSnapshot;
 import io.quarkus.test.services.QuarkusApplication;
 
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
+// TODO https://github.com/quarkusio/quarkus/issues/29921
+@DisabledOnQuarkusSnapshot(reason = "OpenShift extension issue on docker image pushing")
 public class OpenShiftFailOnMissingConfigIT {
 
     @QuarkusApplication

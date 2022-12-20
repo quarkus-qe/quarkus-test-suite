@@ -29,6 +29,7 @@ import io.quarkus.test.bootstrap.Service;
 import io.quarkus.test.bootstrap.inject.OpenShiftClient;
 import io.quarkus.test.scenarios.OpenShiftDeploymentStrategy;
 import io.quarkus.test.scenarios.OpenShiftScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusSnapshot;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.services.knative.eventing.FunqyKnativeEventsService;
 import io.quarkus.test.services.knative.eventing.OpenShiftExtensionFunqyKnativeEventsService;
@@ -38,6 +39,8 @@ import io.restassured.common.mapper.TypeRef;
 @Tag("use-quarkus-openshift-extension")
 @Tag("serverless")
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
+// TODO https://github.com/quarkusio/quarkus/issues/29921
+@DisabledOnQuarkusSnapshot(reason = "OpenShift extension issue on docker image pushing")
 public class ServerlessExtensionOpenShiftFunqyKnEventsIT {
 
     private static final String IN_AS_BASE_64 = Base64.getEncoder().encodeToString(new byte[] { 0x12, 0x34, 0x56, 0x78 });

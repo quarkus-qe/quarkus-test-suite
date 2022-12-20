@@ -17,10 +17,13 @@ import io.quarkus.test.bootstrap.Service;
 import io.quarkus.test.bootstrap.inject.OpenShiftClient;
 import io.quarkus.test.scenarios.OpenShiftDeploymentStrategy;
 import io.quarkus.test.scenarios.OpenShiftScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusSnapshot;
 import io.quarkus.test.services.QuarkusApplication;
 import io.restassured.response.Response;
 
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
+// TODO https://github.com/quarkusio/quarkus/issues/29921
+@DisabledOnQuarkusSnapshot(reason = "OpenShift extension issue on docker image pushing")
 public class OpenShiftConfigSourcePriorityIT {
 
     private static final String CONFIGMAP_YAML = CONFIGMAP + "-yaml";
