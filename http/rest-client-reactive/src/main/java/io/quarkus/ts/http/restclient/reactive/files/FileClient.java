@@ -11,7 +11,6 @@ import javax.ws.rs.core.MediaType;
 
 import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
-import org.jboss.resteasy.reactive.MultipartForm;
 
 import io.smallrye.mutiny.Uni;
 
@@ -50,6 +49,6 @@ public interface FileClient {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/upload-multipart")
-    String sendMultipart(@MultipartForm FileWrapper data);
+    String sendMultipart(FileWrapper data);
 
 }
