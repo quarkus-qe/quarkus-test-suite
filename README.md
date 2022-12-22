@@ -332,6 +332,7 @@ Additional coverage:
 - Advanced JSON serialization.
 - Gzip compression
 - REST Client reactive - support for POJO JSON serialization in multipart forms.
+- Request matching - selecting from multiple media types
 
 ### `http/rest-client`
 Verifies Rest Client configuration using `quarkus-rest-client-jaxb` (XML support) and `quarkus-rest-client-jsonb` (JSON support).
