@@ -1,6 +1,9 @@
 package io.quarkus.ts.http.jaxrs.reactive;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -9,7 +12,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.io.IOUtils;
-import org.jboss.resteasy.reactive.MultipartForm;
+import org.jboss.resteasy.reactive.multipart.FilePart;
 
 @Path("/multipart")
 public class MultipartResource {
@@ -17,7 +20,7 @@ public class MultipartResource {
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.MULTIPART_FORM_DATA)
-    public MultipartBody postForm(@MultipartForm MultipartBody multipartBody) {
+    public MultipartBody postForm(MultipartBody multipartBody) {
         return multipartBody;
     }
 
@@ -25,7 +28,7 @@ public class MultipartResource {
     @Path("/text")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.TEXT_PLAIN)
-    public String postFormReturnText(@MultipartForm MultipartBody multipartBody) {
+    public String postFormReturnText(MultipartBody multipartBody) {
         return multipartBody.text;
     }
 
@@ -33,7 +36,7 @@ public class MultipartResource {
     @Path("/image")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public byte[] postFormReturnFile(@MultipartForm MultipartBody multipartBody) throws IOException {
+    public byte[] postFormReturnFile(MultipartBody multipartBody) throws IOException {
         return IOUtils.toByteArray(multipartBody.image.toURI());
     }
 
@@ -41,8 +44,24 @@ public class MultipartResource {
     @Path("/data")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public byte[] postFormReturnData(@MultipartForm MultipartBody multipartBody) throws IOException {
+    public byte[] postFormReturnData(MultipartBody multipartBody) throws IOException {
         return IOUtils.toByteArray(multipartBody.data.toURI());
+    }
+
+    @POST
+    @Path("/plain-text-file")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.TEXT_PLAIN)
+    public String postFormReturnPlainTextFile(MultipartBody multipartBody) throws IOException {
+        return Files.readString(multipartBody.plainTextFile.toPath());
+    }
+
+    @POST
+    @Path("/all-file-control-names")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Collection<String> postFormReturnAllFileControlNames(MultipartBody multipartBody) {
+        return multipartBody.allFiles.stream().map(FilePart::name).collect(Collectors.toList());
     }
 
     @POST
