@@ -72,13 +72,13 @@ jobs:
 
           for module in $MODULES
           do
-              if [[ "${{ steps.changed-files.outputs.all_changed_and_modified_files }}" =~ ("$module") ]] ; then
+              if [[ "${{ steps.files.outputs.all_changed_and_modified_files }}" =~ ("$module") ]] ; then
                   CHANGED=$(echo $CHANGED" "$module)
               fi
           done
 
           MODULES_ARG="${CHANGED// /,}"
-          echo "{MODULES_ARG}=${MODULES_ARG}" >> $GITHUB_OUTPUT
+          echo "MODULES_ARG=$MODULES_ARG" >> $GITHUB_OUTPUT
     outputs:
       MODULES_ARG: ${{ steps.detect-changes.outputs.MODULES_ARG }}
   linux-build-jvm-latest:
