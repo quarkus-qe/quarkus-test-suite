@@ -27,7 +27,7 @@
         <formatter-maven-plugin.version>2.21.0</formatter-maven-plugin.version>
         <impsort-maven-plugin.version>1.8.0</impsort-maven-plugin.version>
         <xml-format-maven-plugin.version>3.2.2</xml-format-maven-plugin.version>
-        <checkstyle.version>10.5.0</checkstyle.version>
+        <checkstyle.version>10.6.0</checkstyle.version>
         <jjwt.version>0.11.5</jjwt.version>
         <jsoup.version>1.15.3</jsoup.version>
         <camel-quarkus-bom.version>2.15.0</camel-quarkus-bom.version>
