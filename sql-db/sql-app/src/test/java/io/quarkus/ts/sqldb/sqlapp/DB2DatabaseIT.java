@@ -5,11 +5,14 @@ import org.junit.jupiter.api.Tag;
 import io.quarkus.test.bootstrap.Db2Service;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
 @Tag("fips-incompatible") // Reported in https://github.com/IBM/Db2/issues/43
+//TODO https://github.com/quarkusio/quarkus/issues/30176
+@DisabledOnNative(reason = "conflict between Oracle and DB2 driver")
 public class DB2DatabaseIT extends AbstractSqlDatabaseIT {
 
     @Container(image = "${db2.image}", port = 50000, expectedLog = "Setup has completed")
