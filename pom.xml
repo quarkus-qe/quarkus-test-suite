@@ -389,8 +389,7 @@
                 <module>infinispan-client</module>
                 <module>super-size/many-extensions</module>
                 <module>quarkus-cli</module>
-                <!-- TODO: https://github.com/quarkusio/quarkus/issues/28007 -->
-                <!-- <module>kamelet</module>-->
+                <module>kamelet</module>
                 <module>logging/jboss</module>
                 <module>cache/caffeine</module>
                 <module>qute/multimodule</module>
@@ -416,8 +415,7 @@
                 <module>infinispan-client</module>
                 <module>super-size/many-extensions</module>
                 <module>quarkus-cli</module>
-                <!-- TODO: https://github.com/quarkusio/quarkus/issues/28007 -->
-                <!-- <module>kamelet</module>-->
+                <module>kamelet</module>
                 <module>logging/jboss</module>
                 <module>cache/caffeine</module>
             </modules>
