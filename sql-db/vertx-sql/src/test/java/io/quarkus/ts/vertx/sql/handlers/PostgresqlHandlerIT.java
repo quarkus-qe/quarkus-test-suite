@@ -15,7 +15,7 @@ public class PostgresqlHandlerIT extends CommonTestCases {
             .with("test", "test", POSTGRESQL_DATABASE)
             .withProperty("POSTGRES_USER", "test") //fixme https://github.com/quarkus-qe/quarkus-test-framework/issues/455
             .withProperty("POSTGRES_PASSWORD", "test")
-            .withProperty("POSTGRES_DB", POSTGRESQL_DATABASE);;
+            .withProperty("POSTGRES_DB", POSTGRESQL_DATABASE);
 
     @QuarkusApplication
     static final RestService app = new RestService()

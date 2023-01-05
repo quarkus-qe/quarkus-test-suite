@@ -24,7 +24,7 @@ public class OpenShiftMysqlMultitenantHibernateSearchIT extends AbstractMultiten
     static MySqlService company1 = new MySqlService().withDatabase("company1");
 
     @Container(image = "${mysql.80.image}", port = MYSQL_PORT, expectedLog = "Only MySQL server logs after this point", command = " --max-allowed-packet=5526600")
-    static MySqlService company2 = new MySqlService().withDatabase("company2");;
+    static MySqlService company2 = new MySqlService().withDatabase("company2");
 
     @Container(image = "${elastic.71.image}", port = ELASTIC_PORT, expectedLog = "started")
     static DefaultService elastic = new DefaultService().withProperty("discovery.type", "single-node");
