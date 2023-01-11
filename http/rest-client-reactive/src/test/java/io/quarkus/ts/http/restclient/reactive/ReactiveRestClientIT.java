@@ -197,4 +197,27 @@ public class ReactiveRestClientIT {
         assertEquals(HttpStatus.SC_OK, suffix.statusCode());
         assertEquals("Heller_text", suffix.getBody().asString());
     }
+
+    @Tag("QUARKUS-2741")
+    @Test
+    public void checkProcessPathBeforeSubResources() {
+        // should result in sending GET root/method/sub/sub/subsub
+        String result = app.given().get("/plain-root/root/method/sub/subsub").then()
+                .statusCode(HttpStatus.SC_OK)
+                .extract().asString();
+
+        assertEquals("root/method/sub/sub/subsub", result);
+    }
+
+    @Tag("QUARKUS-2741")
+    @Test
+    public void checkProcessPathBeforeSubResourcesManualRestClientBuild() {
+        String baseUri = String.format("http://%s:%s", app.getURI().getHost(), "" + app.getURI().getPort());
+        // should result in sending GET root/method/sub/sub/subsub
+        String result = app.given().get("/plain-root/root/manualClient/method/sub/subsub?baseUri=" + baseUri).then()
+                .statusCode(HttpStatus.SC_OK)
+                .extract().asString();
+
+        assertEquals("root/method/sub/sub/subsub", result);
+    }
 }
