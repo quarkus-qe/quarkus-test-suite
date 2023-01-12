@@ -571,6 +571,7 @@
                 <module>env-info</module>
                 <module>nosql-db/mongodb</module>
                 <module>nosql-db/mongodb-reactive</module>
+                <module>nosql-db/infinispan</module>
             </modules>
         </profile>
         <profile>
