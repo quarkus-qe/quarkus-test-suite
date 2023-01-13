@@ -10,18 +10,20 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 
 @QuarkusScenario
+@DisabledOnQuarkusVersion(version = "(2\\.[2-9]\\..*)|(2\\.1[0-5]\\..*)", reason = "Fixed in Quarkus 2.16")
 public class MicroProfileApiIT {
 
     private static final String PING_PONG = "ping pong";
     private static final String PING_PONG_ENDPOINT = "/using-microprofile-pingpong";
-    private static final String COUNTER_FORMAT = "simple_counter_mp_total{scope=\"application\",} %s.0";
-    private static final String FIRST_GAUGE_FORMAT = "first_gauge_mp{scope=\"application\",} %s";
-    private static final String SECOND_GAUGE_FORMAT = "second_gauge_mp{scope=\"application\",} %s";
-    private static final String THIRD_GAUGE_FORMAT = "getThirdGauge{scope=\"application\",} %s";
+    private static final String COUNTER_FORMAT = "simple_counter_mp_total{scope=\"application\"} %s.0";
+    private static final String FIRST_GAUGE_FORMAT = "first_gauge_mp{scope=\"application\"} %s";
+    private static final String SECOND_GAUGE_FORMAT = "second_gauge_mp{scope=\"application\"} %s";
+    private static final String THIRD_GAUGE_FORMAT = "getThirdGauge{scope=\"application\"} %s";
     private static final long DEFAULT_GAUGE_VALUE = 100;
     private static final long GAUGE_INCREMENT = 1;
 

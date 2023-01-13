@@ -13,8 +13,10 @@ import org.keycloak.authorization.client.AuthzClient;
 
 import io.quarkus.test.bootstrap.KeycloakService;
 import io.quarkus.test.bootstrap.RestService;
+import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 import io.quarkus.test.services.KeycloakContainer;
 
+@DisabledOnQuarkusVersion(version = "(2\\.[2-9]\\..*)|(2\\.1[0-5]\\..*)", reason = "Fixed in Quarkus 2.16")
 public abstract class BaseMicrometerOidcSecurityIT {
 
     static final String NORMAL_USER = "test-normal-user";
@@ -24,8 +26,8 @@ public abstract class BaseMicrometerOidcSecurityIT {
     static final int ASSERT_SERVICE_TIMEOUT_MINUTES = 1;
     static final String USER_PATH = "/user";
     static final String HTTP_METRIC = "http_server_requests_seconds_count{method=\"GET\",";
-    static final String OK_HTTP_CALL_METRIC = HTTP_METRIC + "outcome=\"SUCCESS\",status=\"200\",uri=\"%s\",}";
-    static final String UNAUTHORIZED_HTTP_CALL_METRIC = HTTP_METRIC + "outcome=\"CLIENT_ERROR\",status=\"401\",uri=\"%s\",}";
+    static final String OK_HTTP_CALL_METRIC = HTTP_METRIC + "outcome=\"SUCCESS\",status=\"200\",uri=\"%s\"}";
+    static final String UNAUTHORIZED_HTTP_CALL_METRIC = HTTP_METRIC + "outcome=\"CLIENT_ERROR\",status=\"401\",uri=\"%s\"}";
 
     //TODO Remove workaround after Keycloak is fixed https://github.com/keycloak/keycloak/issues/9916
     @KeycloakContainer(command = { "start-dev --import-realm" })
