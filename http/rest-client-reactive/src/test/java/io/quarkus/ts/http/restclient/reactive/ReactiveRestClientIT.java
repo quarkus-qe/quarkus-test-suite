@@ -1,8 +1,10 @@
 package io.quarkus.ts.http.restclient.reactive;
 
-import static io.quarkus.ts.http.restclient.reactive.PlainBookResource.SEARCH_TERM_VAL;
+import static io.quarkus.ts.http.restclient.reactive.resources.PlainBookResource.SEARCH_TERM_VAL;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.UUID;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Tag;
@@ -10,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
 
+import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
@@ -197,4 +200,29 @@ public class ReactiveRestClientIT {
         assertEquals(HttpStatus.SC_OK, suffix.statusCode());
         assertEquals("Heller_text", suffix.getBody().asString());
     }
+
+    @Tag("QUARKUS-2741")
+    @Test
+    public void checkProcessPathBeforeSubResources() {
+        final String randomId = UUID.randomUUID().toString();
+        String result = app.given().get("clients/myRealm/clientResource/" + randomId).then()
+                .statusCode(HttpStatus.SC_OK)
+                .extract().asString();
+
+        assertEquals("/clients/myRealm/resource-server/" + randomId, result);
+    }
+
+    @Tag("QUARKUS-2741")
+    @Test
+    public void checkProcessPathBeforeSubResourcesManualRestClientBuild() {
+        final String randomId = UUID.randomUUID().toString();
+        String result = app.given()
+                .get("clients/myRealm/clientResource/" + randomId + "/?baseUri=" + app.getURI(Protocol.HTTP).toString())
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .extract().asString();
+
+        assertEquals("/clients/myRealm/resource-server/" + randomId, result);
+    }
+
 }

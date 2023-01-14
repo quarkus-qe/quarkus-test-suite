@@ -1,4 +1,4 @@
-package io.quarkus.ts.http.restclient.reactive;
+package io.quarkus.ts.http.restclient.reactive.resources;
 
 import java.util.ArrayList;
 import java.util.List;
