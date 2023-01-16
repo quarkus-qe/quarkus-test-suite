@@ -1,5 +1,6 @@
 package io.quarkus.ts.http.advanced;
 
+import static io.quarkus.ts.http.advanced.HelloResource.EVENT_PROPAGATION_WAIT_MS;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -212,16 +213,33 @@ public abstract class BaseHttpAdvancedIT {
     @Tag("QUARKUS-2004")
     public void constraintsExist() throws JsonProcessingException {
         io.restassured.response.Response response = getApp().given().get("/q/openapi");
-        Assertions.assertEquals(HttpStatus.SC_OK, response.statusCode());
+        assertEquals(HttpStatus.SC_OK, response.statusCode());
 
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         JsonNode body = mapper.readTree(response.body().asString());
 
         JsonNode validation = body.get("components").get("schemas").get("Hello").get("properties").get("content");
 
-        Assertions.assertEquals(4, validation.get("maxLength").asInt());
-        Assertions.assertEquals(1, validation.get("minLength").asInt());
-        Assertions.assertEquals("^[A-Za-z]+$", validation.get("pattern").asText());
+        assertEquals(4, validation.get("maxLength").asInt());
+        assertEquals(1, validation.get("minLength").asInt());
+        assertEquals("^[A-Za-z]+$", validation.get("pattern").asText());
+    }
+
+    @Test
+    @Tag("QUARKUS-2785")
+    public void keepRequestScopeValuesAfterEventPropagation() {
+        final String requestScopeValue = "myValue";
+        getApp().given().when().put("/api/hello/local-context/" + requestScopeValue).then().statusCode(204);
+        // Please be sure that awaitTime is greater than 'helloResource.EVENT_PROPAGATION_WAIT_MS'
+        int awaitTime = EVENT_PROPAGATION_WAIT_MS + EVENT_PROPAGATION_WAIT_MS;
+        wait(Duration.ofMillis(awaitTime));
+        io.restassured.response.Response resp = getApp().given().when()
+                .get("/api/hello/local-context/" + requestScopeValue)
+                .then().extract().response();
+
+        assertEquals(200, resp.statusCode(), "RequestScope custom context has been removed with the event propagation");
+        Assertions.assertTrue(resp.asString().equalsIgnoreCase(requestScopeValue),
+                "Unexpected requestScope custom context value");
     }
 
     protected Protocol getProtocol() {
@@ -246,5 +264,12 @@ public abstract class BaseHttpAdvancedIT {
     private String defaultTruststore() throws URISyntaxException {
         URL res = getClass().getClassLoader().getResource(KEY_STORE_PATH);
         return Paths.get(res.toURI()).toFile().getAbsolutePath();
+    }
+
+    private void wait(Duration timeout) {
+        try {
+            Thread.sleep(timeout.toMillis());
+        } catch (Exception e) {
+        }
     }
 }
