@@ -1,4 +1,4 @@
-package io.quarkus.ts.http.restclient.reactive;
+package io.quarkus.ts.http.restclient.reactive.resources;
 
 import java.util.List;
 import java.util.Map;
@@ -14,6 +14,7 @@ import javax.ws.rs.core.MultivaluedHashMap;
 
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+import io.quarkus.ts.http.restclient.reactive.BookClient;
 import io.quarkus.ts.http.restclient.reactive.json.Book;
 import io.quarkus.ts.http.restclient.reactive.json.BookIdWrapper;
 import io.quarkus.ts.http.restclient.reactive.json.IdBeanParam;
