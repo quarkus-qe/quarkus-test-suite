@@ -16,11 +16,13 @@ import io.quarkus.test.bootstrap.DevModeQuarkusService;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 import io.quarkus.test.services.DevModeQuarkusApplication;
 import io.quarkus.test.services.URILike;
 import io.quarkus.test.utils.AwaitilityUtils;
 
 @QuarkusScenario
+@DisabledOnQuarkusVersion(version = "2\\.13\\.[0-6].*", reason = "Fixed in Quarkus 2.13.7")
 public class DevModeHttpsIT {
     private static final String PROPERTY = "quarkus.qe.test.value";
 
