@@ -1067,6 +1067,10 @@ a collection using a filter and a projection. All tests are performed using:
 
 Reactive equivalent of `nosql-db/mongodb`. Uses reactive ReactiveMongoClient (without codecs)
 
+### `nosql-db/infinispan`
+
+Provides some coverage similar to `infinispan-client` module, but with focus on connecting to local cluster and Dev mode and not on working with OpenShift
+
 ### `websockets/quarkus-websockets`
 Coverage for sending messages over websockets
 

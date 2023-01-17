@@ -11,12 +11,28 @@ import io.quarkus.test.services.GitRepositoryQuarkusApplication;
 @DisabledOnNative(reason = "This scenario is using uber-jar, so it's incompatible with Native")
 @QuarkusScenario
 public class TodoDemoIT {
-    @GitRepositoryQuarkusApplication(repo = "https://github.com/quarkusio/todo-demo-app.git", mavenArgs = "-Dquarkus.package.type=uber-jar -DskipTests=true -Dquarkus.platform.group-id=${QUARKUS_PLATFORM_GROUP-ID} -Dquarkus.platform.version=${QUARKUS_VERSION} ")
+    private static final String TODO_REPO = "https://github.com/quarkusio/todo-demo-app.git";
+    private static final String VERSIONS = "-Dquarkus.platform.group-id=${QUARKUS_PLATFORM_GROUP-ID} -Dquarkus.platform.version=${QUARKUS_VERSION} ";
+    private static final String DEFAULT_OPTIONS = "-DskipTests=true " + VERSIONS;
+
+    @GitRepositoryQuarkusApplication(repo = TODO_REPO, mavenArgs = "-Dquarkus.package.type=uber-jar " + DEFAULT_OPTIONS)
     static final RestService app = new RestService();
 
+    @GitRepositoryQuarkusApplication(repo = TODO_REPO, artifact = "todo-backend-1.0-SNAPSHOT.jar", mavenArgs = "-Dquarkus.package.type=uber-jar -Dquarkus.package.add-runner-suffix=false"
+            + DEFAULT_OPTIONS)
+    static final RestService replaced = new RestService();
+
     @Test
-    public void verify() {
+    public void startsSuccessfully() {
         app.given()
+                .get()
+                .then()
+                .statusCode(HttpStatus.SC_OK);
+    }
+
+    @Test
+    public void replacedStartsSuccessfully() {
+        replaced.given()
                 .get()
                 .then()
                 .statusCode(HttpStatus.SC_OK);

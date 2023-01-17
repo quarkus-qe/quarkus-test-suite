@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<infinispan>
+    <!-->Very basic cache configuration</-->
+    <cache-container name="clustered">
+        <distributed-cache name="cache" mode="SYNC">
+            <locking isolation="REPEATABLE_READ"/>
+            <transaction locking="PESSIMISTIC" mode="NON_DURABLE_XA"/>
+            <encoding media-type="application/x-protostream"/>
+        </distributed-cache>
+    </cache-container>
+</infinispan>
