@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 import io.restassured.RestAssured;
 import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.http.ContentType;
@@ -84,6 +85,8 @@ public class RESTEasyReactiveMultipartIT {
 
     @Tag("QUARKUS-2744")
     @Test
+    //TODO requires Quarkus 2.13.7.Final
+    @DisabledOnQuarkusVersion(version = "2.13.6.Final", reason = "requires Quarkus 2.13.7.Final")
     public void testPlainTextFilePartFromMultipart() {
         // verifies that every multipart form data field regardless of media type can be used as file
         // as long as Java data type of DTO field is java.io.File
@@ -106,6 +109,8 @@ public class RESTEasyReactiveMultipartIT {
 
     @Tag("QUARKUS-2744")
     @Test
+    //TODO requires Quarkus 2.13.7.Final
+    @DisabledOnQuarkusVersion(version = "2.13.6.Final", reason = "requires Quarkus 2.13.7.Final")
     public void testAllFilesPartFromMultipart() {
         // test all file uploads from a multipart form are accessible
         String otherImage = "otherImage";
