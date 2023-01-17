@@ -26,7 +26,7 @@ public class MultipartBody {
     @RestForm
     public File plainTextFile;
 
-    @RestForm(FileUpload.ALL)
+    @RestForm("*")
     public List<FileUpload> allFiles;
 
 }
