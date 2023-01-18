@@ -2,11 +2,13 @@ package io.quarkus.ts.infinispan.client;
 
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import io.quarkus.test.utils.AwaitilityUtils;
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.MethodOrderer;
@@ -101,12 +103,16 @@ public class OperatorOpenShiftInfinispanCountersIT extends BaseOpenShiftInfinisp
         incrementCountersOnValue(one, "/first-counter/increment-counters", 10);
 
         // kill the app = fail of the client
-        one.stop();
+        AwaitilityUtils.untilAsserted(() -> {
+            one.stop();
+            assertFalse(one.isRunning());
+        });
 
         // try to invoke the cache
         one.given()
                 .put("/first-counter/increment-counters")
                 .then()
+                .log().all()
                 .statusCode(Matchers.allOf(Matchers.greaterThanOrEqualTo(500), Matchers.lessThan(600)));
 
         // turn-on the app
