@@ -2,6 +2,11 @@ package io.quarkus.ts.security.vertx;
 
 import static org.hamcrest.Matchers.is;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -46,5 +51,17 @@ public class BladeRunnerHandlerIT extends AbstractCommonIT {
                 .get("/bladeRunner/" + bladeRunner.getId())
                 .then()
                 .statusCode(404);
+    }
+
+    @Tag("QUARKUS-2746 ")
+    @Test
+    public void verifyConsumeEventAnnotation() {
+        List<String> actualLogs = app.getLogs();
+        List<String> helloEvents = actualLogs.stream()
+                .filter(l -> l.contains("Consuming generated HelloEvent at starting point"))
+                .collect(Collectors.toList());
+
+        Assertions.assertTrue(new HashSet<>(helloEvents).size() == helloEvents.size(),
+                "@ConsumeEvent annotation should be invoked once per event");
     }
 }

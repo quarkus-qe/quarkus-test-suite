@@ -3,6 +3,9 @@ package io.quarkus.ts.security.vertx;
 import static io.quarkus.ts.security.vertx.Application.AUTH.NO_SECURE;
 import static io.quarkus.ts.security.vertx.Application.AUTH.SECURE;
 
+import java.time.Duration;
+import java.util.UUID;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -17,7 +20,11 @@ import io.quarkus.ts.security.vertx.exceptions.FailureHandler;
 import io.quarkus.ts.security.vertx.handlers.BladeRunnerHandler;
 import io.quarkus.ts.security.vertx.handlers.JWTHandler;
 import io.quarkus.ts.security.vertx.handlers.ReplicantHandler;
+import io.quarkus.ts.security.vertx.model.HelloEvent;
+import io.quarkus.vertx.ConsumeEvent;
+import io.smallrye.mutiny.Multi;
 import io.vertx.core.Handler;
+import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.ext.auth.jwt.JWTAuth;
 import io.vertx.ext.web.Route;
@@ -29,9 +36,12 @@ import io.vertx.ext.web.handler.JWTAuthHandler;
 import io.vertx.ext.web.handler.LoggerHandler;
 
 @ApplicationScoped
-public class Application {
+public class Application extends CommonApplication<HelloEvent> {
 
     private static final Logger LOG = Logger.getLogger(Application.class);
+
+    @Inject
+    EventBus eventBus;
 
     @ConfigProperty(name = "app.name")
     public String serviceName;
@@ -66,7 +76,11 @@ public class Application {
     }
 
     void onStart(@Observes StartupEvent ev) {
+
         LOG.info(String.format("Application %s starting...", serviceName));
+
+        Multi.createFrom().ticks().every(Duration.ofMillis(2000))
+                .subscribe().with((Long tick) -> eventBus.publish(ADDRESS, new HelloEvent(UUID.randomUUID().toString())));
 
         addRoute(HttpMethod.POST, "/bladeRunner", SECURE, rc -> bladeRunner.upsertBladeRunner(rc));
         addRoute(HttpMethod.GET, "/bladeRunner/:id", SECURE, rc -> bladeRunner.getBladeRunnerById(rc));
@@ -97,5 +111,11 @@ public class Application {
             route.handler(JWTAuthHandler.create(authN)).handler(authZ::authorize);
 
         route.handler(handler).failureHandler(rc -> failureHandler.handler(rc));
+    }
+
+    @Override
+    @ConsumeEvent(ADDRESS)
+    public void consumeEventBusEvent(HelloEvent event) {
+        LOG.infof("Consuming generated HelloEvent at starting point. Msg value: %s", event.getMessage());
     }
 }
