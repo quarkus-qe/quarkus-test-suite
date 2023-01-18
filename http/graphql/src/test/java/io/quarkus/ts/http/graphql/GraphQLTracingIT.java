@@ -23,7 +23,7 @@ import io.restassured.response.Response;
 public class GraphQLTracingIT {
     private static final String SERVICE_NAME = "graphql-service";
 
-    @JaegerContainer
+    @JaegerContainer(useOtlpCollector = false)
     static JaegerService jaeger = new JaegerService();
 
     @QuarkusApplication

@@ -21,7 +21,7 @@ public abstract class AbstractTraceIT {
     private static final String PING_ENDPOINT = "/%s-ping";
     private static final String PONG_ENDPOINT = "/%s-pong";
 
-    @JaegerContainer
+    @JaegerContainer(useOtlpCollector = false)
     static final JaegerService jaeger = new JaegerService();
 
     @QuarkusApplication

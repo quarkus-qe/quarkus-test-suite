@@ -37,7 +37,7 @@ public class MicroProfileIT {
     private static final int TIMEOUT_SEC = 59;
     private static final int POLL_DELAY_SEC = 10;
 
-    @JaegerContainer
+    @JaegerContainer(useOtlpCollector = false)
     static JaegerService jaeger = new JaegerService();
 
     @QuarkusApplication
