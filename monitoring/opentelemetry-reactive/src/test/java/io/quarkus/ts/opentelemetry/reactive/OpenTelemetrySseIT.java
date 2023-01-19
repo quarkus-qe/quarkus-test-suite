@@ -8,7 +8,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.ws.rs.core.MediaType;
+
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.JaegerService;
@@ -53,6 +56,19 @@ public class OpenTelemetrySseIT {
                 .and().body(allOf(containsString(PING_ENDPOINT), containsString(PONG_ENDPOINT))));
     }
 
+    @Tag("QUARKUS-2745")
+    @Test
+    public void verifySeeRawSerialization() {
+        final int amount = 3;
+        given()
+                .when().get(PING_ENDPOINT + "/raw?amount=" + amount)
+                .then().statusCode(HttpStatus.SC_OK)
+                .contentType(MediaType.SERVER_SENT_EVENTS)
+                .body(containsString("data:data_0"))
+                .body(containsString("id:id_1"))
+                .body(containsString("event:name_2"));
+    }
+
     protected void assertTraceIdWithPongService(String expected) {
         String pongTraceId = given()
                 .when().get(PONG_ENDPOINT + "/lastTraceId")
@@ -60,5 +76,4 @@ public class OpenTelemetrySseIT {
 
         assertEquals(expected, pongTraceId);
     }
-
 }
