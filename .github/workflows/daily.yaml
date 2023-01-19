@@ -87,7 +87,7 @@ jobs:
     strategy:
       matrix:
         java: [ 11 ]
-        image: [ "ubi-quarkus-native-image:22.3-java17", "ubi-quarkus-mandrel:22.3-java17" ]
+        image: [ "ubi-quarkus-graalvmce-builder-image:22.3-java17", "ubi-quarkus-mandrel-builder-image:22.3-java17" ]
         profiles: [ "root-modules,monitoring-modules,spring-modules,test-tooling-modules",
                    "http-modules",
                    "security-modules",

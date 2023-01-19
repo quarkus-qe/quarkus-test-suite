@@ -124,7 +124,7 @@ More info about how to generate native images could be found in Quarkus [buildin
 User: `Deploy in OpenShift the module http-minimum compiled with a custom GraalVM Docker image and 5GB of memory`
 
 ```shell
-mvn clean verify -Dall-modules -Dnative -Dquarkus.native.builder-image=quay.io/quarkus/ubi-quarkus-native-image:22.2-java17 -Dquarkus.native.native-image-xmx=5g -Dopenshift -pl http/http-minimum 
+mvn clean verify -Dall-modules -Dnative -Dquarkus.native.builder-image=quay.io/quarkus/ubi-quarkus-mandrel-builder-image:22.3-java17 -Dquarkus.native.native-image-xmx=5g -Dopenshift -pl http/http-minimum
 ```
 
 #### OpenShift & Native via local GraalVM
