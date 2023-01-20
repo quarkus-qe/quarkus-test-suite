@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -22,7 +23,8 @@ import io.quarkus.test.services.URILike;
 import io.quarkus.test.utils.AwaitilityUtils;
 
 @QuarkusScenario
-@DisabledOnQuarkusVersion(version = "2\\.13\\.[0-6].*", reason = "Fixed in Quarkus 2.13.7")
+//TODO https://github.com/quarkusio/quarkus/issues/30503
+@DisabledOnQuarkusVersion(version = "2\\.13\\.[0-7].*", reason = "Missing patch from upstream")
 public class DevModeHttpsIT {
     private static final String PROPERTY = "quarkus.qe.test.value";
 
@@ -61,6 +63,7 @@ public class DevModeHttpsIT {
         webClient.close();
     }
 
+    @Tag("QUARKUS-2748")
     @Test
     public void uiChange() throws IOException {
         URILike uri = app.getURI(Protocol.HTTPS);
