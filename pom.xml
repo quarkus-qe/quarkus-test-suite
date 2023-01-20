@@ -665,8 +665,7 @@
                 <quarkus.package.type>native</quarkus.package.type>
                 <quarkus.native.container-build>true</quarkus.native.container-build>
                 <quarkus.native.native-image-xmx>4g</quarkus.native.native-image-xmx>
-                <!-- please keep in mind that lifecycle-application module also defines quarkus.native.builder-image property -->
-                <quarkus.native.builder-image>quay.io/quarkus/ubi-quarkus-mandrel:22.3-java17</quarkus.native.builder-image>
+                <quarkus.native.builder-image>quay.io/quarkus/ubi-quarkus-mandrel-builder-image:22.3-java17</quarkus.native.builder-image>
                 <exclude.quarkus.devmode.tests>**/*DevMode*IT.java</exclude.quarkus.devmode.tests>
             </properties>
         </profile>
