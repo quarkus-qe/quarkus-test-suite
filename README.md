@@ -538,6 +538,13 @@ Base application is reduced to two REST resources:
 Tests cover the supported functionality of `rest-data-panache`: CRUD operations, `json` and `hal+json` data types,
 invalid input, filtering, sorting, pagination.
 
+### `sql-db/narayana-transactions`
+
+Verifies Quarkus transaction programmatic API.
+Base application contains REST resource `TransferResource` and three main services: `TransferTransactionService`, `TransferWithdrawalService`
+and `TransferTopUpService` which implement various bank transactions. The main scenario is implemented in `TransactionGeneralUsageIT` 
+and checks whether transactions and rollbacks always done in full.
+
 ### `security/basic`
 
 Verifies the simplest way of doing authn/authz.
