@@ -557,6 +557,7 @@
                 <module>sql-db/hibernate-reactive</module>
                 <module>sql-db/reactive-vanilla</module>
                 <module>sql-db/hibernate-fulltext-search</module>
+                <module>sql-db/narayana-transactions</module>
             </modules>
         </profile>
         <profile>
