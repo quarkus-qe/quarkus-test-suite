@@ -6,7 +6,9 @@ import static io.quarkus.test.bootstrap.QuarkusCliClient.CreateApplicationReques
 import static io.quarkus.test.utils.AwaitilityUtils.untilAsserted;
 import static io.quarkus.ts.quarkus.cli.QuarkusCliUtils.defaultWithFixedStream;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -14,7 +16,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -27,6 +31,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.awaitility.core.ConditionTimeoutException;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
@@ -264,6 +269,27 @@ public class QuarkusCliCreateJvmApplicationIT {
         assertBuildError(buildResult, "io.quarkus:quarkus-resteasy");
     }
 
+    @Test
+    public void devModeIgnoresPomPackaging() throws IOException {
+        QuarkusCliRestService app = cliClient.createApplication("pomApp", defaultWithFixedStream());
+        {//set packaging to POM
+            Path pom = getFileFromApplication(app, ROOT_FOLDER, "pom.xml").toPath();
+            List<String> content = Files.readAllLines(pom);
+            for (int i = 0; i < content.size(); i++) {
+                String line = content.get(i);
+                if (line.endsWith("<artifactId>pomApp</artifactId>")) {
+                    content.set(i, line + "<packaging>pom</packaging>");
+                    break;
+                }
+            }
+            Files.write(pom, content);
+        }
+        // Start using DEV mode
+        assertEquals(Duration.ofSeconds(2), app.getConfiguration().getAsDuration("startup.timeout", null));
+        assertThrows(ConditionTimeoutException.class, app::start, "That application shouldn't start!");
+        app.logs().assertContains("Type of the artifact is POM, skipping dev goal");
+    }
+
     private void assertBuildError(Result result, String expectedError) {
         assertTrue(result.getOutput().contains(expectedError), "Unexpected build error message");
     }
@@ -300,7 +326,6 @@ public class QuarkusCliCreateJvmApplicationIT {
 
             Assertions.assertTrue(line.contains("openjdk-" + expectedVersion),
                     DOCKERFILE_JVM + " doesn't contains expected version " + expectedVersion);
-
         } catch (FileNotFoundException e) {
             fail(e.getMessage());
         }
