@@ -45,7 +45,7 @@ public class QuarkusCliSpecialCharsIT {
     private QuarkusCliClient.Result result;
 
     @Test
-    @Disabled("https://github.com/quarkus-qe/quarkus-test-suite/issues/1012")
+    @Disabled("https://github.com/quarkusio/quarkus/issues/30642")
     public void shouldCreateApplicationOnJvmWithSpaces() {
         assertCreateJavaApplicationAtFolder(FOLDER_WITH_SPACES);
     }
