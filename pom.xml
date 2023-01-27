@@ -456,6 +456,7 @@
                 <module>http/hibernate-validator</module>
                 <module>http/graphql</module>
                 <module>http/graphql-telemetry</module>
+                <module>http/vertx</module>
             </modules>
         </profile>
         <profile>
