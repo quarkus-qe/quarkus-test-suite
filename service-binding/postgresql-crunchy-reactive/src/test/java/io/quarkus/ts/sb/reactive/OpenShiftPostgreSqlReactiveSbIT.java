@@ -12,6 +12,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -22,6 +23,7 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.utils.Command;
 
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtensionAndDockerBuildStrategy)
+@Disabled("https://github.com/quarkusio/quarkus/issues/30682")
 public class OpenShiftPostgreSqlReactiveSbIT {
 
     private static final String PG_CLUSTER_YML = "pg-cluster.yml";
