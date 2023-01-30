@@ -11,7 +11,7 @@ public class XAPostgresIT extends AbstractSqlDatabaseIT {
 
     static final int POSTGRESQL_PORT = 5432;
 
-    @Container(image = "${postgresql.also.latest.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
+    @Container(image = "${postgresql.latest.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
     static PostgresqlService database = new PostgresqlService()
             .withUser("user")
             .withPassword("user")
