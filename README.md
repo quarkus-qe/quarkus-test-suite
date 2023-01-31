@@ -349,6 +349,13 @@ Exclusions: XML test. Reason: https://quarkus.io/blog/resteasy-reactive/#what-ja
 Verifies HTTP endpoints validation using `quarkus-hibernate-validator` works correctly in Resteasy Classic and Resteasy Reactive.
 This module will setup a simple endpoint and will validate the right message format is set when there are validation errors.
 
+### `http/vertx`
+Verifies that you can deploy a simple Vert.X-based HTTP endpoint to OpenShift, access it and retrieve metrics for it.
+It also verifies multiple deployment strategies like:
+- Serverless
+- Using OpenShift quarkus extension
+- Using OpenShift quarkus extension and Docker Build strategy
+
 #### Additions
 * *@Deprecated* annotation has been added for test regression purposes to ensure `java.lang` annotations are allowed for resources
 * Resource with multipart body support, provided parts are text, image and binary data, charset checked with `us-ascii` and `utf-8`
