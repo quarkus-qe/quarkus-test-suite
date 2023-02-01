@@ -12,7 +12,7 @@ import io.quarkus.test.services.GitRepositoryQuarkusApplication;
 @QuarkusScenario
 public class TodoDemoIT {
     private static final String TODO_REPO = "https://github.com/quarkusio/todo-demo-app.git";
-    private static final String VERSIONS = "-Dquarkus.platform.group-id=${QUARKUS_PLATFORM_GROUP-ID} -Dquarkus.platform.version=${QUARKUS_VERSION} ";
+    private static final String VERSIONS = "-Dquarkus.platform.group-id=${QUARKUS_PLATFORM_GROUP-ID} -Dquarkus.platform.version=${QUARKUS_PLATFORM_VERSION} ";
     private static final String DEFAULT_OPTIONS = "-DskipTests=true " + VERSIONS;
 
     @GitRepositoryQuarkusApplication(repo = TODO_REPO, mavenArgs = "-Dquarkus.package.type=uber-jar " + DEFAULT_OPTIONS)
