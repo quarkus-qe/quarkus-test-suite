@@ -3,6 +3,7 @@ package io.quarkus.ts.http.jaxrs.reactive.client;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -10,6 +11,7 @@ import io.quarkus.test.scenarios.QuarkusScenario;
 
 @Tag("QUARKUS-1225")
 @QuarkusScenario
+@Disabled("https://github.com/quarkusio/quarkus/issues/30814")
 public class MultipartClientIT {
 
     @Test
