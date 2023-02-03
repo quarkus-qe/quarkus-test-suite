@@ -16,4 +16,8 @@ public interface RolesAllowedRepository extends CrudRepository<Library, Long> {
     @Override
     @PermitAll
     Optional<Library> findById(Long aLong);
+
+    @Override
+    @RolesAllowed("user")
+    void deleteById(Long aLong);
 }
