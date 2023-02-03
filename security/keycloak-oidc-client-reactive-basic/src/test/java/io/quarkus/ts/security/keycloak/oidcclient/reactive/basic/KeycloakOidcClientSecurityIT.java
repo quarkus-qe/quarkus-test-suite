@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.KeycloakService;
@@ -41,7 +40,6 @@ public class KeycloakOidcClientSecurityIT extends BaseOidcClientSecurityIT {
     }
 
     @Test
-    @Disabled("https://github.com/quarkusio/quarkus/issues/30814")
     public void authorizationHeaderDoesNotRepeat() {
         final Response response = given()
                 .when()
