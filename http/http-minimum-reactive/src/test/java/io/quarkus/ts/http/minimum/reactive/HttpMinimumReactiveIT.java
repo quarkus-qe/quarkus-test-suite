@@ -23,6 +23,15 @@ public class HttpMinimumReactiveIT {
     }
 
     @Test
+    @Tag("QUARKUS-2893")
+    public void pathParamNameWithDash() {
+        givenSpec().get("/api/hello/foo/AAAA").then().statusCode(HttpStatus.SC_NO_CONTENT);
+        givenSpec().get("/api/hello/foo/AXY9").then().statusCode(HttpStatus.SC_NO_CONTENT);
+        givenSpec().get("/api/hello/foo/ABCDFG").then().statusCode(HttpStatus.SC_NOT_FOUND);
+        givenSpec().get("/api/hello/foo/abcd").then().statusCode(HttpStatus.SC_NOT_FOUND);
+    }
+
+    @Test
     @Tag("QUARKUS-1543")
     public void nativeListSerialization() {
         String teamId = (String) givenSpec().get("/api/cluster/default").then()
