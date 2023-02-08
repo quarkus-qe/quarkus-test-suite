@@ -2,6 +2,8 @@ package io.quarkus.ts.http.minimum.reactive;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.http.HttpStatus;
@@ -42,6 +44,20 @@ public class HttpMinimumReactiveIT {
                 .get("team_id");
 
         assertEquals("qe", teamId);
+    }
+
+    @Test
+    @Tag("QUARKUS-2754")
+    public void transferEncodingAndContentLengthHeadersAreNotAllowedTogether() {
+        givenSpec().get("/api/hello/no-content-length").then()
+                .statusCode(HttpStatus.SC_OK)
+                .headers("Transfer-Encoding", "chunked")
+                .headers("Content-Length", is(nullValue()));
+
+        givenSpec().get("/api/hello/json").then()
+                .statusCode(HttpStatus.SC_OK)
+                .headers("Transfer-Encoding", is(nullValue()))
+                .headers("Content-Length", is(notNullValue()));
     }
 
     protected RequestSpecification givenSpec() {

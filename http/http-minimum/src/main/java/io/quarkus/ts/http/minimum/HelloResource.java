@@ -33,4 +33,10 @@ public class HelloResource {
     public Response doSomething(@PathParam("something-with-dash") String param) {
         return Response.noContent().build();
     }
+
+    @GET
+    @Path("/no-content-length")
+    public Response hello() {
+        return Response.ok("hello").header("Transfer-Encoding", "chunked").build();
+    }
 }
