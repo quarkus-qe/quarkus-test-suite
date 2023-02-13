@@ -1,11 +1,14 @@
 package io.quarkus.ts.hibernate.reactive;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasItem;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
@@ -285,6 +288,16 @@ public abstract class AbstractDatabaseHibernateReactiveIT {
                 .contentType(ContentType.JSON)
                 .post("hibernate/books/pablo/suntzu")
                 .then().statusCode(HttpStatus.SC_CREATED);
+    }
+
+    @Test
+    @Disabled("https://github.com/quarkusio/quarkus/issues/31117")
+    public void newLineInQuery() {
+        Response author = getApp().given()
+                .get("/library/by-author/Dlugi");
+        System.out.println(author.body().asString());
+        assertEquals(HttpStatus.SC_OK, author.statusCode());
+        assertThat(author.body().asString(), containsString("Slovník"));
     }
 
     protected abstract RestService getApp();
