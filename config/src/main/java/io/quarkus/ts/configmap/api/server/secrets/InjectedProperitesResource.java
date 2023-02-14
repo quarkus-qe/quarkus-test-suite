@@ -1,6 +1,6 @@
 package io.quarkus.ts.configmap.api.server.secrets;
 
-import javax.ws.rs.Path;
+import jakarta.ws.rs.Path;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 

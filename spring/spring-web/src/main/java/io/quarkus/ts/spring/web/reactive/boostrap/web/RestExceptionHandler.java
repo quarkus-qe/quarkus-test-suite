@@ -1,6 +1,6 @@
 package io.quarkus.ts.spring.web.reactive.boostrap.web;
 
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpStatus;

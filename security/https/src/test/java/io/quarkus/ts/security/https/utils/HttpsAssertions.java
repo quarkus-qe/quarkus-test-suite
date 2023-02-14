@@ -5,12 +5,12 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.net.SocketException;
 import java.security.NoSuchAlgorithmException;
 
+import org.junit.jupiter.api.function.Executable;
+import org.opentest4j.AssertionFailedError;
+
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLHandshakeException;
-
-import org.junit.jupiter.api.function.Executable;
-import org.opentest4j.AssertionFailedError;
 
 public final class HttpsAssertions {
     private HttpsAssertions() {

@@ -1,6 +1,6 @@
 package io.quarkus.ts.spring.data.primitivetypes;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

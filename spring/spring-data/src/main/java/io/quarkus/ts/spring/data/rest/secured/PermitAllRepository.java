@@ -1,7 +1,7 @@
 package io.quarkus.ts.spring.data.rest.secured;
 
-import javax.annotation.security.DenyAll;
-import javax.annotation.security.PermitAll;
+import jakarta.annotation.security.DenyAll;
+import jakarta.annotation.security.PermitAll;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

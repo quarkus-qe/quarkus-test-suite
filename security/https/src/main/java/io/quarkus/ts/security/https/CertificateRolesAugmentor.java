@@ -4,7 +4,7 @@ import java.security.cert.X509Certificate;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 import io.quarkus.security.credential.CertificateCredential;
 import io.quarkus.security.identity.AuthenticationRequestContext;

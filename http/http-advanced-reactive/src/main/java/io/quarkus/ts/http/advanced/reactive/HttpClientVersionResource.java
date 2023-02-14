@@ -1,7 +1,7 @@
 package io.quarkus.ts.http.advanced.reactive;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.ws.rs.core.Response;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.ws.rs.core.Response;
 
 import io.quarkus.vertx.web.Route;
 import io.vertx.ext.web.RoutingContext;

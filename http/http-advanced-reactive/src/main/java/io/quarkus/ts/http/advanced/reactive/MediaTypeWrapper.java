@@ -1,6 +1,6 @@
 package io.quarkus.ts.http.advanced.reactive;
 
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MediaType;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 

@@ -1,6 +1,6 @@
 package io.quarkus.ts.security.vertx.exceptions;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.quarkus.security.UnauthorizedException;

@@ -1,15 +1,15 @@
 package io.quarkus.ts.hibernate.reactive.database;
 
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 import io.smallrye.mutiny.Multi;
@@ -44,7 +44,7 @@ public class Book extends PanacheEntityBase {
     }
 
     public static Multi<Book> all() {
-        return streamAll();
+        return Book.<Book> listAll().toMulti().flatMap(l -> Multi.createFrom().items(l.stream()));
     }
 
     public static Uni<Book> byId(Integer id) {

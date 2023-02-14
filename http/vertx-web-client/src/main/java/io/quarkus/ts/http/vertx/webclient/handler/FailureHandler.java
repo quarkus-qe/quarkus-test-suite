@@ -2,7 +2,7 @@ package io.quarkus.ts.http.vertx.webclient.handler;
 
 import java.net.HttpURLConnection;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import io.quarkus.vertx.web.Route;
 import io.smallrye.mutiny.TimeoutException;

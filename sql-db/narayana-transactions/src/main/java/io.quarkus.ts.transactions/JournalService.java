@@ -2,7 +2,7 @@ package io.quarkus.ts.transactions;
 
 import static io.quarkus.ts.transactions.JournalEntity.getLatestJournalRecord;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class JournalService {

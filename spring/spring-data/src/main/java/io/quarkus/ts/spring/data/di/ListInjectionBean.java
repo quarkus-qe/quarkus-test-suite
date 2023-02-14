@@ -2,7 +2,7 @@ package io.quarkus.ts.spring.data.di;
 
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import org.springframework.beans.factory.annotation.Autowired;
 

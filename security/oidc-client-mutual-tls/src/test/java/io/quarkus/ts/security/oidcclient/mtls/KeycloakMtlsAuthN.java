@@ -4,11 +4,11 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import javax.net.ssl.SSLHandshakeException;
-
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
+
+import javax.net.ssl.SSLHandshakeException;
 
 public abstract class KeycloakMtlsAuthN extends BaseOidcMtlsIT {
 

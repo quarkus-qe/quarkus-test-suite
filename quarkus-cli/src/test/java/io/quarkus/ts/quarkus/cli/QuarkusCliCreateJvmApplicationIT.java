@@ -25,7 +25,7 @@ import java.util.Objects;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
@@ -34,6 +34,7 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.awaitility.core.ConditionTimeoutException;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
@@ -147,6 +148,8 @@ public class QuarkusCliCreateJvmApplicationIT {
         //app.given().get().then().statusCode(HttpStatus.SC_OK);
     }
 
+    // TODO: enable when Kogito for Quarkus 3 is available; currently there is no kogito-quarks-rules extension available for Quarkus 3 judging by the code.quarkus.io
+    @Disabled("Disabled until Kogito extensions for Quarkus 3 are published in code.quarkus.io")
     @Tag("QUARKUS-1073")
     @Tag("QUARKUS-1070")
     @Test
@@ -219,7 +222,7 @@ public class QuarkusCliCreateJvmApplicationIT {
     public void shouldKeepUsingTheSameQuarkusVersionAfterReload() {
         // Generate application using old community version
         QuarkusCliRestService app = cliClient.createApplication("app", defaults()
-                .withPlatformBom("io.quarkus:quarkus-bom:2.7.0.Final")
+                .withPlatformBom("io.quarkus:quarkus-bom:3.0.0.Alpha4")
                 .withExtensions(SMALLRYE_HEALTH_EXTENSION, RESTEASY_REACTIVE_EXTENSION));
 
         // Make sure version and groupId from the TS run is used

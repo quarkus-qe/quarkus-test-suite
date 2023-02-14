@@ -3,7 +3,7 @@ package io.quarkus.ts.spring.data.primitivetypes.configuration;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.enterprise.inject.spi.CDI;
+import jakarta.enterprise.inject.spi.CDI;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

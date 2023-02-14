@@ -2,7 +2,7 @@ package io.quarkus.ts.reactive.db.clients;
 
 import java.net.URI;
 
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.UriInfo;
 
 import org.jboss.logging.Logger;
 

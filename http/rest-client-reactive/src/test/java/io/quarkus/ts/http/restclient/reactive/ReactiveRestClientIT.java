@@ -151,7 +151,7 @@ public class ReactiveRestClientIT {
     }
 
     /**
-     * Test class annotated with {@link javax.ws.rs.Path} and registered as client via
+     * Test class annotated with {@link jakarta.ws.rs.Path} and registered as client via
      * {@link org.eclipse.microprofile.rest.client.inject.RegisterRestClient} must not be included in OpenAPI Document.
      */
     @DisabledOnQuarkusVersion(version = "(2\\.[0-6]\\..*)|(2\\.7\\.[0-5]\\..*)", reason = "Fixed in Quarkus 2.7.6.")

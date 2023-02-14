@@ -2,7 +2,7 @@ package io.quarkus.ts.spring.web.reactive.boostrap.web;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

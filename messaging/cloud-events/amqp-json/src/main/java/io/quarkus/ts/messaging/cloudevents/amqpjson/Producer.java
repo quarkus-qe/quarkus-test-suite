@@ -3,7 +3,7 @@ package io.quarkus.ts.messaging.cloudevents.amqpjson;
 import java.net.URI;
 import java.time.Duration;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.eclipse.microprofile.reactive.messaging.Outgoing;

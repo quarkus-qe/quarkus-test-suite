@@ -1,6 +1,6 @@
 package io.quarkus.ts.security.vertx.services;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import io.quarkus.ts.security.vertx.model.BladeRunner;
 

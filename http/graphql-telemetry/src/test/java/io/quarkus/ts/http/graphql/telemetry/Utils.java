@@ -2,7 +2,7 @@ package io.quarkus.ts.http.graphql.telemetry;
 
 import static io.restassured.RestAssured.given;
 
-import javax.json.Json;
+import jakarta.json.Json;
 
 import io.restassured.response.Response;
 

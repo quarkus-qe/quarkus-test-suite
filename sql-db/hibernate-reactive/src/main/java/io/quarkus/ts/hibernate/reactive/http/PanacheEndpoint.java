@@ -1,21 +1,25 @@
 package io.quarkus.ts.hibernate.reactive.http;
 
-import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import jakarta.inject.Inject;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 import io.quarkus.hibernate.reactive.panache.Panache;
+import io.quarkus.hibernate.reactive.panache.common.WithSession;
 import io.quarkus.ts.hibernate.reactive.database.Author;
 import io.quarkus.ts.hibernate.reactive.database.AuthorRepository;
 import io.quarkus.ts.hibernate.reactive.database.Book;
-import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 
 @Path("/library")
@@ -26,11 +30,14 @@ public class PanacheEndpoint {
     @Inject
     AuthorRepository authors;
 
+    @WithSession
     @GET
     @Path("books")
-    public Multi<String> all() {
+    public Uni<List<String>> all() {
         return Book.all()
-                .map(Book::getTitle);
+                .map(Book::getTitle)
+                .collect()
+                .asList();
     }
 
     @GET
@@ -82,19 +89,24 @@ public class PanacheEndpoint {
                 .map(Response.ResponseBuilder::build);
     }
 
+    @WithSession
     @GET
     @Path("books/author/{name}")
-    public Multi<String> search(String name) {
+    public Uni<List<String>> search(String name) {
         return authors.findByName(name)
-                .map(Author::getBooks)
-                .flatMap(Multi.createFrom()::iterable)
-                .map(Book::getTitle);
+                .map(Collection::stream)
+                .map(authorStream -> authorStream
+                        .map(Author::getBooks)
+                        .flatMap(Collection::stream)
+                        .map(Book::getTitle)
+                        .collect(Collectors.toList()));
     }
 
+    @WithSession
     @GET
     @Path("authors")
-    public Multi<Author> authors() {
-        return authors.streamAll();
+    public Uni<List<Author>> authors() {
+        return authors.listAll();
     }
 
     @GET

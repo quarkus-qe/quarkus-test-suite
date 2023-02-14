@@ -1,6 +1,6 @@
 package io.quarkus.ts.security.vertx.auth;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import org.jboss.logging.Logger;
 

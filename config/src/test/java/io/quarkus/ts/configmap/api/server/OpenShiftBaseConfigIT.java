@@ -8,7 +8,7 @@ import java.io.File;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;

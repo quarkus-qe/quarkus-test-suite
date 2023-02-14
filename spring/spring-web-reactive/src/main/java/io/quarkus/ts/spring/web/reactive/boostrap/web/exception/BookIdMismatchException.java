@@ -1,6 +1,6 @@
 package io.quarkus.ts.spring.web.reactive.boostrap.web.exception;
 
-import javax.ws.rs.WebApplicationException;
+import jakarta.ws.rs.WebApplicationException;
 
 public class BookIdMismatchException extends WebApplicationException {
 

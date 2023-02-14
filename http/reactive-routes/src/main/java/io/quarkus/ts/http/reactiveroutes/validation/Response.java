@@ -1,6 +1,6 @@
 package io.quarkus.ts.http.reactiveroutes.validation;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 import io.quarkus.ts.http.reactiveroutes.validation.annotations.Uppercase;
 

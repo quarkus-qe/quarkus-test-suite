@@ -107,17 +107,17 @@ public abstract class BaseAuthzSecurityReactiveIT {
     }
 
     private void thenBodyIs(String expectedBody) {
-        String bodyAsString = response.await().assertCompleted().getItem().bodyAsString();
+        String bodyAsString = response.awaitItem().assertCompleted().getItem().bodyAsString();
         assertThat(expectedBody, equalTo(bodyAsString));
     }
 
     private void thenBodyStartWith(String expectedBody) {
-        String bodyAsString = response.await().assertCompleted().getItem().bodyAsString();
+        String bodyAsString = response.awaitItem().assertCompleted().getItem().bodyAsString();
         assertThat(bodyAsString, startsWith(expectedBody));
     }
 
     private void thenStatusCodeIs(int expectedCode) {
-        int statusCode = response.await().assertCompleted().getItem().statusCode();
+        int statusCode = response.awaitItem().assertCompleted().getItem().statusCode();
         assertThat(expectedCode, equalTo(statusCode));
     }
 

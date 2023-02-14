@@ -1,8 +1,8 @@
 package io.quarkus.ts.security.jwt;
 
-import javax.annotation.security.DenyAll;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
+import jakarta.annotation.security.DenyAll;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
 
 @DenyAll
 @Path("/denied")
