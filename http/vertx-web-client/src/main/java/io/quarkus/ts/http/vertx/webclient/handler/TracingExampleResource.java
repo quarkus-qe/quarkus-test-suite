@@ -1,6 +1,6 @@
 package io.quarkus.ts.http.vertx.webclient.handler;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.quarkus.ts.http.vertx.webclient.service.PongService;
 import io.quarkus.vertx.web.Route;

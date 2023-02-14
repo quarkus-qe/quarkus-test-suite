@@ -27,7 +27,8 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-spring-di</artifactId>
-            <version>2.7.6.Final-redhat-00006</version>
+            <!-- TODO  switch to 3.something-redhat-0000X based version once available in maven.repository.redhat.com -->
+            <version>3.0.0.Alpha3</version>
         </dependency>
     </dependencies>
     <profiles>
@@ -40,7 +41,8 @@
             </activation>
             <properties>
                 <!-- please keep Mandrel and RHBQ version compatible -->
-                <quarkus.platform.version>2.13.6.Final</quarkus.platform.version>
+                <!-- TODO  switch to 3.something-redhat-0000X based version once available in maven.repository.redhat.com -->
+                <quarkus.platform.version>3.0.0.Alpha3</quarkus.platform.version>
             </properties>
             <repositories>
                 <repository>

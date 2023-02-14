@@ -1,6 +1,6 @@
 package io.quarkus.ts.http.reactiveroutes;
 
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MediaType;
 
 import org.jboss.logging.Logger;
 

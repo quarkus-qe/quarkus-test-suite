@@ -10,7 +10,7 @@ import java.security.DigestOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import javax.xml.bind.DatatypeConverter;
+import jakarta.xml.bind.DatatypeConverter;
 
 public abstract class OsUtils {
     public static final long SIZE_2049MiB = 2148532224L;

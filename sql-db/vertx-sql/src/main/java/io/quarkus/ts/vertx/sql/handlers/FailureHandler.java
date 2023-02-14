@@ -2,8 +2,8 @@ package io.quarkus.ts.vertx.sql.handlers;
 
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.validation.ConstraintViolationException;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.validation.ConstraintViolationException;
 
 import io.quarkus.vertx.web.Route;
 import io.vertx.core.http.HttpServerResponse;

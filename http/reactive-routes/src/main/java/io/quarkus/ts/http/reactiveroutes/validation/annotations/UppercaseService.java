@@ -1,6 +1,6 @@
 package io.quarkus.ts.http.reactiveroutes.validation.annotations;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class UppercaseService {

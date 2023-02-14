@@ -3,7 +3,7 @@ package io.quarkus.ts.funqy.knativeevents;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 @Singleton
 public class ValidationResultRepository {

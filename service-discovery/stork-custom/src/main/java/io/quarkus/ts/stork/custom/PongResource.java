@@ -1,6 +1,6 @@
 package io.quarkus.ts.stork.custom;
 
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MediaType;
 
 import io.quarkus.vertx.web.Route;
 import io.quarkus.vertx.web.RouteBase;

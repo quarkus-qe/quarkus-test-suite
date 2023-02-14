@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.quarkus.redis.client.reactive.ReactiveRedisClient;
 import io.quarkus.ts.security.vertx.exceptions.NotFoundException;

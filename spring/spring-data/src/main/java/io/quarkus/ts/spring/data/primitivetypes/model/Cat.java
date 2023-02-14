@@ -1,6 +1,6 @@
 package io.quarkus.ts.spring.data.primitivetypes.model;
 
-import javax.persistence.Entity;
+import jakarta.persistence.Entity;
 
 @Entity
 public class Cat extends Mammal {

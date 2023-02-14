@@ -72,9 +72,11 @@ jobs:
 
           for module in $MODULES
           do
+            if [[ "$module" != "messaging/qpid/" && "$module" != "helm/helm-minimum/" && "$module" != "kamelet/" ]] ; then
               if [[ "${{ steps.files.outputs.all_changed_and_modified_files }}" =~ ("$module") ]] ; then
                   CHANGED=$(echo $CHANGED" "$module)
               fi
+            fi
           done
 
           MODULES_ARG="${CHANGED// /,}"

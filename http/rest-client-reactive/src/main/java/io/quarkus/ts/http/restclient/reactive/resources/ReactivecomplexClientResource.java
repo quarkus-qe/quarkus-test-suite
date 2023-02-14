@@ -1,8 +1,8 @@
 package io.quarkus.ts.http.restclient.reactive.resources;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 
 @Path("/clients/{rootPath}/resource-server")
 public class ReactivecomplexClientResource {

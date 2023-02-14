@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.stream.Stream;
 
-import javax.enterprise.inject.spi.CDI;
+import jakarta.enterprise.inject.spi.CDI;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ import io.quarkus.arc.Arc;
 import io.quarkus.arc.InjectableBean;
 import io.quarkus.test.junit.QuarkusTest;
 
-// Not converted into @QuarkusScenario, because invoking javax.enterprise.inject.spi.CDI / io.quarkus.arc.Arc is not supported.
+// Not converted into @QuarkusScenario, because invoking jakarta.enterprise.inject.spi.CDI / io.quarkus.arc.Arc is not supported.
 // TODO: Workaround by implementing REST endpoints which expose all necessary information.
 @Tag("fips-incompatible") // native-mode
 @QuarkusTest

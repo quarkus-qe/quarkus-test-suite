@@ -3,8 +3,8 @@ package io.quarkus.ts.http.jaxrs.reactive;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
 
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;

@@ -6,8 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
-import javax.net.ssl.SSLContext;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.fluent.Executor;
@@ -22,6 +20,8 @@ import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.ts.security.https.utils.Certificates;
 import io.quarkus.ts.security.https.utils.HttpsAssertions;
+
+import javax.net.ssl.SSLContext;
 
 public abstract class BaseRedirectHttpsSecurityIT {
     // not using RestAssured because we want 100% control over certificate & hostname verification

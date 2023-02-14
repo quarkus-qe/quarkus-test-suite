@@ -1,6 +1,6 @@
 package io.quarkus.ts.security.keycloak.oidcclient.extended.restclient.tokens;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import io.quarkus.oidc.TenantResolver;
 import io.vertx.ext.web.RoutingContext;

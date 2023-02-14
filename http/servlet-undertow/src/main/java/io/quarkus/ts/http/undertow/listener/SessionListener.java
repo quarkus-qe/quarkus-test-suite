@@ -2,10 +2,10 @@ package io.quarkus.ts.http.undertow.listener;
 
 import java.util.LinkedList;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSessionEvent;
+import jakarta.servlet.http.HttpSessionListener;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tags;

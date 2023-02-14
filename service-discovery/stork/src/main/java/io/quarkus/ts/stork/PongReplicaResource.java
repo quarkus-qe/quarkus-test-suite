@@ -2,8 +2,8 @@ package io.quarkus.ts.stork;
 
 import static io.quarkus.ts.stork.PongResource.PONG_SERVICE_NAME;
 
-import javax.enterprise.event.Observes;
-import javax.ws.rs.core.MediaType;
+import jakarta.enterprise.event.Observes;
+import jakarta.ws.rs.core.MediaType;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 

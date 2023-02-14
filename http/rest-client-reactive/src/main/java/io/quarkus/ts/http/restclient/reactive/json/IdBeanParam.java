@@ -1,6 +1,6 @@
 package io.quarkus.ts.http.restclient.reactive.json;
 
-import javax.ws.rs.PathParam;
+import jakarta.ws.rs.PathParam;
 
 public class IdBeanParam {
     private final String id;

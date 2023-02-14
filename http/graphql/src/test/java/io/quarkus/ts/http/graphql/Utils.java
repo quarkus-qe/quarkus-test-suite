@@ -5,7 +5,7 @@ import static io.restassured.RestAssured.given;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-import javax.json.Json;
+import jakarta.json.Json;
 
 import io.restassured.response.Response;
 

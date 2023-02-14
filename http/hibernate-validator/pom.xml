@@ -22,4 +22,28 @@
             <optional>true</optional>
         </dependency>
     </dependencies>
+    <profiles>
+        <!-- TODO: enable native profile when https://github.com/quarkusio/quarkus/issues/31105 is fixed -->
+        <profile>
+            <id>native</id>
+            <activation>
+                <property>
+                    <name>native</name>
+                </property>
+            </activation>
+            <properties>
+                <quarkus.build.skip>true</quarkus.build.skip>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

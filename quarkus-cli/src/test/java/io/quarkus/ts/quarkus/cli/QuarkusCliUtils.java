@@ -18,7 +18,9 @@ public class QuarkusCliUtils {
         String version = getCurrentStreamVersion();
         if (isUpstream(version)) {
             LOG.warn("fixed streams are not supported on upstream");
-            return defaults();
+            // FIXME: use 'defaults' once Quarkus 3 final is released
+            // set Quarkus 3 version to avoid javax vs jakarta conflicts (failures)
+            return defaults().withStream("3.0");
         }
 
         return defaults().withStream(version);
@@ -28,7 +30,9 @@ public class QuarkusCliUtils {
         String version = getCurrentStreamVersion();
         if (isUpstream(version)) {
             LOG.warn("fixed streams are not supported on upstream");
-            return QuarkusCliClient.CreateExtensionRequest.defaults();
+            // FIXME: use 'defaults' once Quarkus 3 final is released
+            // set Quarkus 3 version to avoid javax vs jakarta conflicts (failures)
+            return QuarkusCliClient.CreateExtensionRequest.defaults().withStream("3.0");
         }
 
         return QuarkusCliClient.CreateExtensionRequest.defaults().withStream(version);

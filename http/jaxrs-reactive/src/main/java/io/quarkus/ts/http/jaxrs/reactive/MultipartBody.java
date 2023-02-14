@@ -3,7 +3,7 @@ package io.quarkus.ts.http.jaxrs.reactive;
 import java.io.File;
 import java.util.List;
 
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MediaType;
 
 import org.jboss.resteasy.reactive.PartType;
 import org.jboss.resteasy.reactive.RestForm;

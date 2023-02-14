@@ -14,12 +14,12 @@ for name in `project-name-generator -w 59 -o spaced`; do
   echo "${name} - ${Name}"
   tee ${SRC_PATH}/Resource${Name}.java << EOF
 package io.quarkus.ts.many.extensions;
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.PathParam;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.PathParam;
 
 @Path("/resource/${name}")
 public class Resource${Name} {
@@ -36,7 +36,7 @@ public class Resource${Name} {
 EOF
   tee ${SRC_PATH}/Service${Name}.java << EOF
 package io.quarkus.ts.many.extensions;
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class Service${Name} {
     public String process(String name) {

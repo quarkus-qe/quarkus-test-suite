@@ -2,8 +2,8 @@ package io.quarkus.ts.security.vertx.handlers;
 
 import static io.netty.handler.codec.http.HttpResponseStatus.NO_CONTENT;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 import io.quarkus.ts.security.vertx.model.BladeRunner;
 import io.quarkus.ts.security.vertx.services.BladeRunnerService;

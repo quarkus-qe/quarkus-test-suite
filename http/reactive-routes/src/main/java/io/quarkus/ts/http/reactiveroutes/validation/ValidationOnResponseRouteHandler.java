@@ -1,6 +1,6 @@
 package io.quarkus.ts.http.reactiveroutes.validation;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import io.quarkus.vertx.web.Route;
 import io.quarkus.vertx.web.Route.HttpMethod;

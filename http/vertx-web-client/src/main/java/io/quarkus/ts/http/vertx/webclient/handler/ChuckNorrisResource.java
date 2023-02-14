@@ -8,8 +8,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
+import jakarta.annotation.PostConstruct;
+import jakarta.inject.Inject;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 

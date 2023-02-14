@@ -24,6 +24,8 @@ import io.quarkus.test.services.Container;
 import io.quarkus.test.services.GitRepositoryQuarkusApplication;
 import io.restassured.http.ContentType;
 
+// TODO: enable when Quarkus Workshops migrates to Quarkus 3
+@Disabled("Disabled until Quarkus Workshops migrates to Quarkus 3")
 @DisabledOnQuarkusSnapshot(reason = "999-SNAPSHOT is not available in the Maven repositories in OpenShift")
 @DisabledOnNative(reason = "Native + s2i not supported")
 @OpenShiftScenario
@@ -53,7 +55,7 @@ public class OpenShiftWorkshopVillainsIT {
             .withProperty("POSTGRES_DB", "mydb")
             .withProperty("PGDATA", "/tmp/psql");
 
-    @GitRepositoryQuarkusApplication(repo = "https://github.com/quarkusio/quarkus-workshops.git", contextDir = "quarkus-workshop-super-heroes/super-heroes/rest-villains", branch = "3d3425a15daacf1c774cb7f5bc24228c4a623256", mavenArgs = "-Dquarkus.package.type=uber-jar -DskipTests -Dquarkus.platform.group-id=${QUARKUS_PLATFORM_GROUP-ID} -Dquarkus.platform.version=${QUARKUS_VERSION}")
+    @GitRepositoryQuarkusApplication(repo = "https://github.com/quarkusio/quarkus-workshops.git", contextDir = "quarkus-workshop-super-heroes/super-heroes/rest-villains", branch = "3d3425a15daacf1c774cb7f5bc24228c4a623256", mavenArgs = "-Dquarkus.package.type=uber-jar -DskipTests -Dquarkus.platform.group-id=${QUARKUS_PLATFORM_GROUP-ID} -Dquarkus.platform.version=${QUARKUS_PLATFORM_VERSION}")
     static final RestService app = new RestService()
             .withProperty("quarkus.http.port", "8080")
             .withProperty("quarkus.datasource.username", database.getUser())

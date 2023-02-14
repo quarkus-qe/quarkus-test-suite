@@ -1,7 +1,7 @@
 package io.quarkus.ts.properties.config;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 
 import io.quarkus.ts.properties.config.interfaces.ProtagonistConfigurable;
 

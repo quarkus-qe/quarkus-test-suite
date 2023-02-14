@@ -1,7 +1,7 @@
 package io.quarkus.ts.configmap.api.server.secrets;
 
-import javax.inject.Inject;
-import javax.ws.rs.Path;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.Path;
 
 import io.smallrye.config.SmallRyeConfig;
 

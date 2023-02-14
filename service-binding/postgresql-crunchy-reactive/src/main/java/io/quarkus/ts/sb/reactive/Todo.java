@@ -1,7 +1,7 @@
 package io.quarkus.ts.sb.reactive;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 
 import io.quarkus.hibernate.reactive.panache.PanacheEntity;
 

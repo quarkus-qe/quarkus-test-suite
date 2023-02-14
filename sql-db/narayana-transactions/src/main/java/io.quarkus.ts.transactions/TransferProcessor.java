@@ -1,6 +1,6 @@
 package io.quarkus.ts.transactions;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 public abstract class TransferProcessor {
 

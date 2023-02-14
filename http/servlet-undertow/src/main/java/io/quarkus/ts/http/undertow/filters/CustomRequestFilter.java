@@ -2,12 +2,12 @@ package io.quarkus.ts.http.undertow.filters;
 
 import java.io.IOException;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 
 import org.jboss.logging.Logger;
 

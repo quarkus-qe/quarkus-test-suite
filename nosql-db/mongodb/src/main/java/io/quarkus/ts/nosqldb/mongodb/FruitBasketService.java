@@ -2,7 +2,7 @@ package io.quarkus.ts.nosqldb.mongodb;
 
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;

@@ -1,7 +1,7 @@
 package io.quarkus.ts.http.reactiveroutes.validation;
 
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 import io.quarkus.ts.http.reactiveroutes.validation.annotations.Uppercase;
 import io.quarkus.vertx.web.Param;

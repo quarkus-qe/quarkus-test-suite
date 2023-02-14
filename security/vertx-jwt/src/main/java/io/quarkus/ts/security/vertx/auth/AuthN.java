@@ -2,8 +2,8 @@ package io.quarkus.ts.security.vertx.auth;
 
 import java.util.Arrays;
 
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
 
 import io.quarkus.ts.security.vertx.config.AuthNConfig;
 import io.vertx.core.json.JsonObject;

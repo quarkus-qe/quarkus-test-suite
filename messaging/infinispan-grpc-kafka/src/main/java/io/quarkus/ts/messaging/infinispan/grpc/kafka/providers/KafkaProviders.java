@@ -2,7 +2,7 @@ package io.quarkus.ts.messaging.infinispan.grpc.kafka.providers;
 
 import java.util.Properties;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;

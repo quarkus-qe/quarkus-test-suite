@@ -3,8 +3,8 @@ package io.quarkus.ts.security.vertx.handlers;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.auth.jwt.JWTAuth;
