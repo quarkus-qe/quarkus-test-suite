@@ -145,7 +145,14 @@ public class QuarkusCliCreateJvmApplicationIT {
         QuarkusCliRestService app = cliClient.createApplication("app", defaultWithFixedStream().withExtraArgs("--jbang"));
 
         // Should build on Jvm
-        Result result = app.buildOnJvm("--verbose");
+        final String repository = System.getProperty("maven.repo.local");
+        final Result result;
+        if (repository == null) {
+            result = app.buildOnJvm("--verbose");
+        } else {
+            result = app.buildOnJvm("--verbose", "--", "--repos", "local=file://" + repository);
+        }
+
         assertTrue(result.isSuccessful(), "The application didn't build on JVM. Output: " + result.getOutput());
 
         // Start using DEV mode
