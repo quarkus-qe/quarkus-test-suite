@@ -153,4 +153,20 @@ public class PanacheEndpoint {
                 })
                 .map(Response.ResponseBuilder::build);
     }
+
+    @GET
+    @Path("by-author/{name}")
+    public Uni<Response> searchByAuthor(String name) {
+        return Book
+                .find("SELECT book.title \nFROM Book book \n JOIN Author author on author.id=book.author\n WHERE author.name=?1",
+                        name)
+                .project(BookDescription.class).list()
+                .map(books -> books.isEmpty()
+                        ? Response.status(Response.Status.NOT_FOUND)
+                        : Response.ok(books))
+                .onFailure().recoverWithItem(error -> {
+                    return Response.status(Response.Status.BAD_REQUEST).entity(error.getMessage());
+                })
+                .map(Response.ResponseBuilder::build);
+    }
 }
