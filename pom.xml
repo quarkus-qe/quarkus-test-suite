@@ -30,7 +30,8 @@
         <checkstyle.version>10.6.0</checkstyle.version>
         <jjwt.version>0.11.5</jjwt.version>
         <jsoup.version>1.15.3</jsoup.version>
-        <camel-quarkus-bom.version>2.16.0</camel-quarkus-bom.version>
+        <!-- TODO: uncomment Camel Quarkus BOM when Camel Quarkus 3 is released -->
+        <!-- <camel-quarkus-bom.version>2.16.0</camel-quarkus-bom.version> -->
         <!-- TODO: https://github.com/quarkiverse/quarkus-helm/issues/114-->
         <!-- <quarkus-helm.version>0.1.1</quarkus-helm.version> -->
         <quarkiverse.config.version>1.1.0</quarkiverse.config.version>
@@ -70,13 +71,15 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <dependency>
-                <groupId>org.apache.camel.quarkus</groupId>
-                <artifactId>camel-quarkus-bom</artifactId>
-                <version>${camel-quarkus-bom.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
+            <!-- TODO: uncomment Camel Quarkus BOM when 3.0 is released -->
+            <!-- Disabled due to https://github.com/quarkusio/quarkus/issues/31105#issuecomment-1431441875 -->
+            <!-- <dependency> -->
+            <!-- <groupId>org.apache.camel.quarkus</groupId> -->
+            <!-- <artifactId>camel-quarkus-bom</artifactId> -->
+            <!-- <version>${camel-quarkus-bom.version}</version> -->
+            <!-- <type>pom</type> -->
+            <!-- <scope>import</scope> -->
+            <!-- </dependency> -->
             <dependency>
                 <groupId>io.confluent</groupId>
                 <artifactId>kafka-avro-serializer</artifactId>
@@ -389,7 +392,9 @@
                 <module>infinispan-client</module>
                 <module>super-size/many-extensions</module>
                 <module>quarkus-cli</module>
-                <module>kamelet</module>
+                <!-- TODO: uncomment Kamelet module when 3.0 is released -->
+                <!-- module does not compile and Camel Quarkus BOM breaks native build of other modules -->
+                <!-- <module>kamelet</module> -->
                 <module>logging/jboss</module>
                 <module>cache/caffeine</module>
                 <module>qute/multimodule</module>
@@ -415,7 +420,9 @@
                 <module>infinispan-client</module>
                 <module>super-size/many-extensions</module>
                 <module>quarkus-cli</module>
-                <module>kamelet</module>
+                <!-- TODO: uncomment Kamelet module when 3.0 is released -->
+                <!-- module does not compile and Camel Quarkus BOM breaks native build of other modules -->
+                <!-- <module>kamelet</module> -->
                 <module>logging/jboss</module>
                 <module>cache/caffeine</module>
             </modules>
