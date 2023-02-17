@@ -27,7 +27,7 @@
         <!-- bouncycastle is required by stork-service-discovery-kubernetes in native mode-->
         <dependency>
             <groupId>org.bouncycastle</groupId>
-            <artifactId>bcpkix-jdk15on</artifactId>
+            <artifactId>bcpkix-jdk18on</artifactId>
         </dependency>
         <!-- https://github.com/quarkusio/quarkus/issues/27886 -->
         <!-- quarkus-kubernetes-client is required by stork-service-discovery-kubernetes in native mode-->
