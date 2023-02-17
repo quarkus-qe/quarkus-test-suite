@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,7 @@ import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.utils.Command;
 
+@Disabled("https://github.com/quarkusio/quarkus/issues/31228")
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class OperatorOpenShiftInfinispanCountersIT extends BaseOpenShiftInfinispanIT {

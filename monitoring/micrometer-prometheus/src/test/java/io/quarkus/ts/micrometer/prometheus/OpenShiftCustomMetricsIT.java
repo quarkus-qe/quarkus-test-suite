@@ -12,6 +12,7 @@ import jakarta.inject.Inject;
 import org.apache.http.HttpStatus;
 import org.jboss.logging.Logger;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -26,6 +27,7 @@ import io.quarkus.test.services.QuarkusApplication;
  * - `prime_number_max_{uniqueId}`: max prime number that is found.
  * - `prime_number_test_{uniqueId}`: with information about the calculation of the prime number.
  */
+@Disabled("https://github.com/quarkusio/quarkus/issues/31228")
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
 public class OpenShiftCustomMetricsIT {
 
