@@ -29,7 +29,7 @@
         <xml-format-maven-plugin.version>3.2.2</xml-format-maven-plugin.version>
         <checkstyle.version>10.6.0</checkstyle.version>
         <jjwt.version>0.11.5</jjwt.version>
-        <jsoup.version>1.15.3</jsoup.version>
+        <jsoup.version>1.15.4</jsoup.version>
         <!-- TODO: uncomment Camel Quarkus BOM when Camel Quarkus 3 is released -->
         <!-- <camel-quarkus-bom.version>2.16.0</camel-quarkus-bom.version> -->
         <!-- TODO: https://github.com/quarkiverse/quarkus-helm/issues/114-->
