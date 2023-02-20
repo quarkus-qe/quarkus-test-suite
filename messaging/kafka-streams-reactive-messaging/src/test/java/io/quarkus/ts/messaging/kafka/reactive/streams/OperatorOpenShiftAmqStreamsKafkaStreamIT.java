@@ -9,7 +9,7 @@ import io.quarkus.test.services.operator.KafkaInstance;
 @OpenShiftScenario
 public class OperatorOpenShiftAmqStreamsKafkaStreamIT extends BaseKafkaStreamTest {
     @Operator(name = "amq-streams", source = "redhat-operators")
-    static KafkaInstance kafka = new KafkaInstance();
+    static KafkaInstance kafka = new KafkaInstance("kafka-instance", "/strimzi-operator-kafka-updated.yaml");
 
     @QuarkusApplication
     static RestService app = new RestService()
