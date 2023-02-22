@@ -40,7 +40,7 @@ public class QuarkusCliHelpIT {
         DEV("dev", "Run the current project in dev (live coding) mode."),
         EXTENSION("extension", "List platforms and extensions."),
         COMPLETION("completion", "bash/zsh completion:  source <(quarkus completion)"),
-        VERSION("version", "Display version information");
+        VERSION("version", "Print Cli version information and exit.");
 
         private final String command;
         private final String expectedHelp;
