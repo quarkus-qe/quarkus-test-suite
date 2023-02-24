@@ -27,9 +27,9 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 @Entity(name = "application")
-@FilterDef(name = "useLikeByName", parameters = { @ParamDef(name = "name", type = "string") })
+@FilterDef(name = "useLikeByName", parameters = { @ParamDef(name = "name", type = String.class) })
 @Filter(name = "useLikeByName", condition = "name like :name")
-@FilterDef(name = "useServiceByName", parameters = { @ParamDef(name = "name", type = "string") })
+@FilterDef(name = "useServiceByName", parameters = { @ParamDef(name = "name", type = String.class) })
 public class ApplicationEntity extends PanacheEntityBase {
 
     @Id
