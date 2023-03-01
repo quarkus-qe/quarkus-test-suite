@@ -25,6 +25,10 @@ public class TransferResource {
     TransferProcessor regularTransaction;
 
     @Inject
+    @Named("LegacyTransferTopUpService")
+    TransferProcessor legacyTopUp;
+
+    @Inject
     @Named("TransferTopUpService")
     TransferProcessor topUp;
 
@@ -55,6 +59,15 @@ public class TransferResource {
      * TopUp represent a transfer funds transaction to your account, but the money doesn't come from another account.
      * On the journal will look like a transaction with the same from / to account and the annotation top-up.
      */
+    @Path("/legacy/top-up")
+    @POST
+    public Response legacyTopup(TransferDTO transferDTO) {
+        Long ID = legacyTopUp.makeTransaction(transferDTO.getAccountFrom(), transferDTO.getAccountTo(),
+                transferDTO.getAmount()).getId();
+
+        return Response.ok(ID).status(CREATED.getStatusCode()).build();
+    }
+
     @Path("/top-up")
     @POST
     public Response topup(TransferDTO transferDTO) {
