@@ -22,8 +22,9 @@ public class InfinispanIT {
 
     @QuarkusApplication()
     static RestService service = new RestService()
-            .withProperty("quarkus.infinispan-client.server-list",
-                    () -> infinispan.getURI().toString());
+            .withProperty("quarkus.infinispan-client.hosts",
+                    () -> infinispan.getURI().toString())
+            .withProperties("infinispan-it.properties");
 
     @Test
     void smoke() {

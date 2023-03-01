@@ -4,4 +4,4 @@ metadata:
   name: infinispan-config
 data:
   application.properties: |
-    quarkus.infinispan-client.server-list=totally-random-infinispan-cluster-name.datagrid-cluster.svc.cluster.local:11222
+    quarkus.infinispan-client.hosts=totally-random-infinispan-cluster-name.datagrid-cluster.svc.cluster.local:11222
