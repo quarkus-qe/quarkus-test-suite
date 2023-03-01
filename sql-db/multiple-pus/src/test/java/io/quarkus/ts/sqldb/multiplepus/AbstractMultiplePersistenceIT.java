@@ -50,7 +50,7 @@ public abstract class AbstractMultiplePersistenceIT {
     @Test
     public void getFruitById() {
         getApp().given()
-                .get("/fruit/7")
+                .get("/fruit/301")
                 .then()
                 .statusCode(HttpStatus.SC_OK)
                 .body("name", equalTo("Cranberry"));
@@ -229,7 +229,7 @@ public abstract class AbstractMultiplePersistenceIT {
     @Test
     public void getVegetableById() {
         getApp().given()
-                .get("/vegetable/7")
+                .get("/vegetable/301")
                 .then()
                 .statusCode(HttpStatus.SC_OK)
                 .body("name", equalTo("Garlic"));
