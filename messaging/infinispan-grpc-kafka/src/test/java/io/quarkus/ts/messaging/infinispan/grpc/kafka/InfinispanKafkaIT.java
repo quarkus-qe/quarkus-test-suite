@@ -42,9 +42,9 @@ public class InfinispanKafkaIT {
 
     @QuarkusApplication
     static final RestService app = new RestService()
-            .withProperty("quarkus.infinispan-client.server-list", infinispan::getInfinispanServerAddress)
-            .withProperty("quarkus.infinispan-client.auth-username", infinispan.getUsername())
-            .withProperty("quarkus.infinispan-client.auth-password", infinispan.getPassword())
+            .withProperty("quarkus.infinispan-client.hosts", infinispan::getInfinispanServerAddress)
+            .withProperty("quarkus.infinispan-client.username", infinispan.getUsername())
+            .withProperty("quarkus.infinispan-client.password", infinispan.getPassword())
             .withProperty("quarkus.infinispan-client.trust-store", "secret::/truststore.jks")
             .withProperty("quarkus.infinispan-client.trust-store-password", "password")
             .withProperty("quarkus.infinispan-client.trust-store-type", "jks")

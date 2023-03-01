@@ -1030,7 +1030,7 @@ This namespace must be created by "qe" user or this user must have access to it 
 
 Tests create an Infinispan cluster in the `datagrid-cluster` namespace. Cluster is created before tests by `infinispan_cluster_config.yaml`. 
 To allow parallel runs of tests this cluster is renamed for every test run - along with configmap `infinispan-config`. The configmap contains 
-configuration property `quarkus.infinispan-client.server-list`. Value of this property is a path to the infinispan cluster from test namespace, 
+configuration property `quarkus.infinispan-client.hosts`. Value of this property is a path to the infinispan cluster from test namespace, 
 its structure is `infinispan-cluster-name.datagrid-cluster-namespace.svc.cluster.local:11222`. It is because the testsuite uses dynamically generated 
 namespaces for tests. So this path is needed for the tests to find Infinispan cluster in another namespace.
 
