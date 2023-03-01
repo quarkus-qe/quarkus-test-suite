@@ -3,4 +3,4 @@ INSERT INTO account (id, name, lastName, accountNumber, amount, updatedAt, creat
 INSERT INTO account (id, name, lastName, accountNumber, amount, updatedAt, createdAt) VALUES (NEXT VALUE FOR Account_SEQ, 'Luis', 'de Góngora', 'ES8521006742088984966816', 100, null, CURRENT_TIMESTAMP);
 INSERT INTO account (id, name, lastName, accountNumber, amount, updatedAt, createdAt) VALUES (NEXT VALUE FOR Account_SEQ, 'Lope', 'de Vega', 'FR9317569000409377431694J37', 100, null, CURRENT_TIMESTAMP);
 INSERT INTO account (id, name, lastName, accountNumber, amount, updatedAt, createdAt) VALUES (NEXT VALUE FOR Account_SEQ, 'Francisco', 'Quevedo', 'ES8521006742088984966817', 100, null, CURRENT_TIMESTAMP);
-
+INSERT INTO account (id, name, lastName, accountNumber, amount, updatedAt, createdAt) VALUES (NEXT VALUE FOR account_SEQ, 'Eduardo', 'Mendoza', 'ES8521006742088984966899', 100, null, CURRENT_TIMESTAMP);

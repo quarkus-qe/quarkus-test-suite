@@ -25,6 +25,8 @@ public abstract class TransactionCommons {
     static final String ACCOUNT_NUMBER_LUIS = "ES8521006742088984966816";
     static final String ACCOUNT_NUMBER_LOPE = "CZ9250512252717368964232";
     static final String ACCOUNT_NUMBER_FRANCISCO = "ES8521006742088984966817";
+
+    static final String ACCOUNT_NUMBER_EDUARDO = "ES8521006742088984966899";
     static final int ASSERT_SERVICE_TIMEOUT_MINUTES = 1;
     private Response jaegerResponse;
 
@@ -56,7 +58,7 @@ public abstract class TransactionCommons {
 
     @Tag("QUARKUS-2492")
     @Test
-    public void verifyNarayanaLambdaApproachTransaction() {
+    public void verifyLegacyNarayanaLambdaApproachTransaction() {
         TransferDTO transferDTO = new TransferDTO();
         transferDTO.setAccountFrom(ACCOUNT_NUMBER_GARCILASO);
         transferDTO.setAccountTo(ACCOUNT_NUMBER_GARCILASO);
@@ -64,7 +66,7 @@ public abstract class TransactionCommons {
 
         given()
                 .contentType(ContentType.JSON)
-                .body(transferDTO).post("/transfer/top-up")
+                .body(transferDTO).post("/transfer/legacy/top-up")
                 .then().statusCode(HttpStatus.SC_CREATED);
 
         AccountEntity garcilasoAccount = getAccount(ACCOUNT_NUMBER_GARCILASO);
@@ -72,6 +74,27 @@ public abstract class TransactionCommons {
                 "Unexpected account amount. Expected 200 found " + garcilasoAccount.getAmount());
 
         JournalEntity garcilasoJournal = getLatestJournalRecord(ACCOUNT_NUMBER_GARCILASO);
+        Assertions.assertEquals(100, garcilasoJournal.getAmount(), "Unexpected journal amount.");
+    }
+
+    @Tag("QUARKUS-2492")
+    @Test
+    public void verifyNarayanaLambdaApproachTransaction() {
+        TransferDTO transferDTO = new TransferDTO();
+        transferDTO.setAccountFrom(ACCOUNT_NUMBER_EDUARDO);
+        transferDTO.setAccountTo(ACCOUNT_NUMBER_EDUARDO);
+        transferDTO.setAmount(100);
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(transferDTO).post("/transfer/top-up")
+                .then().statusCode(HttpStatus.SC_CREATED);
+
+        AccountEntity garcilasoAccount = getAccount(ACCOUNT_NUMBER_EDUARDO);
+        Assertions.assertEquals(200, garcilasoAccount.getAmount(),
+                "Unexpected account amount. Expected 200 found " + garcilasoAccount.getAmount());
+
+        JournalEntity garcilasoJournal = getLatestJournalRecord(ACCOUNT_NUMBER_EDUARDO);
         Assertions.assertEquals(100, garcilasoJournal.getAmount(), "Unexpected journal amount.");
     }
 
