@@ -20,6 +20,7 @@ import io.quarkus.test.bootstrap.inject.OpenShiftClient;
 import io.quarkus.test.scenarios.OpenShiftDeploymentStrategy;
 import io.quarkus.test.scenarios.OpenShiftScenario;
 
+// I just want to trigger a matrix build in Jenkins workflow.
 @Disabled("https://github.com/quarkusio/quarkus/issues/31228")
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
 public abstract class OpenShiftBaseConfigIT {

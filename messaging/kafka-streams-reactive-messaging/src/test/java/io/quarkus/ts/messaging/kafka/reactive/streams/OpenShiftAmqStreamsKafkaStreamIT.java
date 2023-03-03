@@ -9,6 +9,7 @@ import io.quarkus.test.services.KafkaContainer;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.services.containers.model.KafkaVendor;
 
+// I just want to trigger a matrix build in Jenkins workflow.
 @OpenShiftScenario
 @EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
 public class OpenShiftAmqStreamsKafkaStreamIT extends BaseKafkaStreamTest {
