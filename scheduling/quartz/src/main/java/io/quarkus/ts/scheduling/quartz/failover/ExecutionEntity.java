@@ -1,11 +1,19 @@
 package io.quarkus.ts.scheduling.quartz.failover;
 
-import jakarta.persistence.Entity;
+import static jakarta.persistence.GenerationType.IDENTITY;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 @Entity
-public class ExecutionEntity extends PanacheEntity {
+public class ExecutionEntity extends PanacheEntityBase {
+
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
+    public Long id;
     public Long seconds;
     public String owner;
 

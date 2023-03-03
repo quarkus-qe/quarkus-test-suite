@@ -16,7 +16,8 @@ public class BasicMySqlQuartzIT extends BaseMySqlQuartzIT {
 
     @QuarkusApplication
     static RestService app = new RestService().withProperties(MYSQL_PROPERTIES)
-            .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl);
+            .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl)
+            .withProperty("quarkus-qe.enable-manually-scheduled-counter", "true");
 
     @Test
     public void testAnnotationScheduledCounter() throws InterruptedException {
@@ -28,21 +29,25 @@ public class BasicMySqlQuartzIT extends BaseMySqlQuartzIT {
 
     @Test
     public void testManuallyScheduledCounter() throws InterruptedException {
+        // we want to take first count result and test that after a second
+        // count is higher; manually scheduled job starts way before this test
+        // unless it is started as only test, therefore we can't have fixed numbers
+        int firstCount = assertCounter("/scheduler/count/manual", 0);
         Thread.sleep(1000);
-        assertCounter("/scheduler/count/manual", 0);
-        Thread.sleep(1000);
-        assertCounter("/scheduler/count/manual", 1);
+        assertCounter("/scheduler/count/manual", firstCount);
     }
 
-    private void assertCounter(String counterPath, int expectedCount) {
+    private int assertCounter(String counterPath, int expectedCount) {
         String body = app.given()
                 .when().get(counterPath)
                 .then().statusCode(HttpStatus.SC_OK)
                 .extract().asString();
 
-        int actualCounter = Integer.valueOf(body);
+        int actualCounter = Integer.parseInt(body);
 
         assertTrue(actualCounter > expectedCount,
                 "Actual counter '" + actualCounter + "' must be greater than the expected '" + expectedCount + "'");
+
+        return actualCounter;
     }
 }
