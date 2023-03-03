@@ -16,7 +16,8 @@ public class CounterService {
     }
 
     public int get(String caller) {
-        return counters.get(caller).get();
+        var count = counters.get(caller);
+        return count == null ? -1 : count.get();
     }
 
     public void invoke(String caller) {

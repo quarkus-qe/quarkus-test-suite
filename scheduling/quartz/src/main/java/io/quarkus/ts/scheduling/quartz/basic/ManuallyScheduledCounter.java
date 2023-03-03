@@ -4,7 +4,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
-import jakarta.transaction.Transactional;
+import jakarta.inject.Singleton;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.quartz.Job;
@@ -25,8 +25,8 @@ import io.quarkus.ts.scheduling.quartz.basic.services.CounterService;
 @ApplicationScoped
 public class ManuallyScheduledCounter {
 
-    @ConfigProperty(name = "quarkus.scheduler.enabled")
-    boolean schedulerEnabled;
+    @ConfigProperty(name = "quarkus-qe.enable-manually-scheduled-counter")
+    boolean manualSchedulerEnabled;
 
     @Inject
     Provider<Scheduler> quartz;
@@ -38,10 +38,9 @@ public class ManuallyScheduledCounter {
         return service.get(caller());
     }
 
-    @Transactional
     @PostConstruct
     void init() throws SchedulerException {
-        if (schedulerEnabled) {
+        if (manualSchedulerEnabled) {
             JobDetail job = JobBuilder.newJob(CountingJob.class).build();
             Trigger trigger = TriggerBuilder
                     .newTrigger()
@@ -55,8 +54,10 @@ public class ManuallyScheduledCounter {
         }
     }
 
+    @Singleton
     @RegisterForReflection
     public static class CountingJob implements Job {
+
         @Inject
         CounterService service;
 
@@ -71,7 +72,7 @@ public class ManuallyScheduledCounter {
         }
     }
 
-    private static final String caller() {
+    private static String caller() {
         return ManuallyScheduledCounter.class.getName();
     }
 }
