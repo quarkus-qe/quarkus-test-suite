@@ -122,7 +122,7 @@ public abstract class TransactionCommons {
     @Tag("QUARKUS-2492")
     @Test
     public void smokeTestNarayanaProgrammaticTransactionTrace() {
-        String operationName = "/transfer/accounts/{account_id}";
+        String operationName = "GET /transfer/accounts/{account_id}";
         given().get("/transfer/accounts/" + ACCOUNT_NUMBER_LUIS).then().statusCode(HttpStatus.SC_OK);
         verifyRestRequestTraces(operationName);
     }

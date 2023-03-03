@@ -47,8 +47,8 @@ public class OpentelemetryIT {
     @Test
     public void testContextPropagation() {
         int pageLimit = 10;
-        String operationName = "/ping/pong";
-        String[] operations = new String[] { "/ping/pong", "HTTP GET", "/hello" };
+        String operationName = "GET /ping/pong";
+        String[] operations = new String[] { "GET /ping/pong", "GET", "GET /hello" };
 
         await().atMost(1, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(1)).untilAsserted(() -> {
             whenDoPingPongRequest();
