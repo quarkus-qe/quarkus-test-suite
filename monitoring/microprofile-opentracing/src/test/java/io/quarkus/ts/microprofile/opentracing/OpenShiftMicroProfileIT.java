@@ -2,6 +2,7 @@ package io.quarkus.ts.microprofile.opentracing;
 
 import io.quarkus.test.scenarios.OpenShiftScenario;
 
+// I just want to trigger a matrix build in Jenkins workflow.
 @OpenShiftScenario
 public class OpenShiftMicroProfileIT extends MicroProfileIT {
 

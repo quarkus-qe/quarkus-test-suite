@@ -27,6 +27,7 @@ import io.quarkus.test.services.QuarkusApplication;
  * - `prime_number_max_{uniqueId}`: max prime number that is found.
  * - `prime_number_test_{uniqueId}`: with information about the calculation of the prime number.
  */
+// I just want to trigger a matrix build in Jenkins workflow.
 @Disabled("https://github.com/quarkusio/quarkus/issues/31228")
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
 public class OpenShiftCustomMetricsIT {

@@ -8,6 +8,7 @@ import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.services.KafkaContainer;
 import io.quarkus.test.services.QuarkusApplication;
 
+// I just want to trigger a matrix build in Jenkins workflow.
 @OpenShiftScenario
 @EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
 public class OpenShiftAmqStreamsAlertEventsReactiveIT extends BaseOpenShiftAlertEventsReactiveIT {
