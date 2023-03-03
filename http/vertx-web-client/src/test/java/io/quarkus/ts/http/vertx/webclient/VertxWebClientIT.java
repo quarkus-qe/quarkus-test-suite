@@ -49,6 +49,7 @@ public class VertxWebClientIT {
     static final String EXPECTED_VALUE = "Chuck Norris has already been to mars; that why there's no signs of life";
     static final int DELAY = 3500; // must be greater than vertx.webclient.timeout-sec
     private static final String TRACE_PING_PATH = "/trace/ping";
+    private static final String TRACE_PING_OPERATION_NAME = "GET " + TRACE_PING_PATH;
 
     private Response resp;
 
@@ -106,13 +107,13 @@ public class VertxWebClientIT {
         final int pageLimit = 50;
         await().atMost(1, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(1)).untilAsserted(() -> {
             whenIMakePingRequest();
-            thenRetrieveTraces(pageLimit, "1h", getServiceName(), TRACE_PING_PATH);
+            thenRetrieveTraces(pageLimit, "1h", getServiceName(), TRACE_PING_OPERATION_NAME);
             thenStatusCodeMustBe(HttpStatus.SC_OK);
             thenTraceDataSizeMustBe(greaterThan(0));
             thenTraceSpanSizeMustBe(greaterThan(0));
             thenTraceSpanTagsSizeMustBe(greaterThan(0));
             thenTraceSpansOperationNameMustBe(not(empty()));
-            thenCheckOperationNamesIsEqualTo(TRACE_PING_PATH);
+            thenCheckOperationNamesIsEqualTo(TRACE_PING_OPERATION_NAME);
         });
     }
 
@@ -121,13 +122,13 @@ public class VertxWebClientIT {
         final int pageLimit = 50;
         await().atMost(1, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(1)).untilAsserted(() -> {
             whenIMakePingRequest();
-            thenRetrieveTraces(pageLimit, "1h", getServiceName(), TRACE_PING_PATH);
+            thenRetrieveTraces(pageLimit, "1h", getServiceName(), TRACE_PING_OPERATION_NAME);
             thenStatusCodeMustBe(HttpStatus.SC_OK);
             thenTraceDataSizeMustBe(greaterThan(0));
             thenTraceSpanSizeMustBe(greaterThan(1));
             thenTraceSpanTagsSizeMustBe(greaterThan(0));
             thenTraceSpansOperationNameMustBe(not(empty()));
-            thenCheckOperationNamesIsEqualTo(TRACE_PING_PATH);
+            thenCheckOperationNamesIsEqualTo(TRACE_PING_OPERATION_NAME);
         });
     }
 
