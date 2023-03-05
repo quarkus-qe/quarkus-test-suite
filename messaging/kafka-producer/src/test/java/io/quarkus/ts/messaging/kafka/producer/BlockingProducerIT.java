@@ -16,6 +16,7 @@ import io.quarkus.test.services.containers.model.KafkaVendor;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.helpers.test.UniAssertSubscriber;
 
+// This change should not trigger any tests in GHPRB workflow.
 @Tag("QUARKUS-1090")
 @QuarkusScenario
 public class BlockingProducerIT {
