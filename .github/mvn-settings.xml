@@ -7,8 +7,8 @@
             <repositories>
                 <repository>
                     <id>google-maven-central</id>
-                    <name>GCS Maven Central mirror EU</name>
-                    <url>https://maven-central-eu.storage-download.googleapis.com/repos/central/data/</url>
+                    <name>GCS Maven Central mirror</name>
+                    <url>https://maven-central.storage-download.googleapis.com/maven2/</url>
                     <snapshots>
                         <enabled>false</enabled>
                     </snapshots>
@@ -33,8 +33,8 @@
             <pluginRepositories>
                 <pluginRepository>
                     <id>google-maven-central</id>
-                    <name>GCS Maven Central mirror EU</name>
-                    <url>https://maven-central-eu.storage-download.googleapis.com/repos/central/data/</url>
+                    <name>GCS Maven Central mirror</name>
+                    <url>https://maven-central.storage-download.googleapis.com/maven2/</url>
                 </pluginRepository>
                 <pluginRepository>
                     <id>jboss-maven-central-proxy</id>
