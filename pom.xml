@@ -547,6 +547,7 @@
                 <module>env-info</module>
                 <module>sql-db/hibernate</module>
                 <module>sql-db/sql-app</module>
+                <module>sql-db/sql-app-compatibility</module>
                 <module>sql-db/multiple-pus</module>
                 <module>sql-db/panache-flyway</module>
                 <module>sql-db/reactive-rest-data-panache</module>
