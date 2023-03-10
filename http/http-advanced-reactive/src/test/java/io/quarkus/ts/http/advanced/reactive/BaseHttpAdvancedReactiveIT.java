@@ -34,6 +34,8 @@ import static org.hamcrest.Matchers.in;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -60,7 +62,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.google.protobuf.Descriptors;
+import com.google.protobuf.InvalidProtocolBufferException;
 
+import io.grpc.reflection.v1.FileDescriptorResponse;
+import io.quarkus.example.GreeterGrpc;
+import io.quarkus.example.HelloWorldProto;
+import io.quarkus.example.StreamingGrpc;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
@@ -105,6 +113,105 @@ public abstract class BaseHttpAdvancedReactiveIT {
     @DisplayName("GRPC Server test")
     public void testGrpc() {
         getApp().given().when().get("/api/grpc/trinity").then().statusCode(SC_OK).body(is("Hello trinity"));
+    }
+
+    @Test
+    @DisplayName("GRPC reflection test - service count")
+    public void testReflection_serviceCount() {
+        GrpcReflectionResponse response = getApp().given().when().get("/api/grpc/reflection/service/info")
+                .then().statusCode(SC_OK).extract().response()
+                .jsonPath().getObject(".", GrpcReflectionResponse.class);
+
+        assertEquals(3, response.getServiceCount());
+    }
+
+    @Test
+    @DisplayName("GRPC reflection test - check list of services")
+    public void testReflection_serviceList() {
+        GrpcReflectionResponse response = getApp().given().when().get("/api/grpc/reflection/service/info")
+                .then().statusCode(SC_OK).extract().response()
+                .jsonPath().getObject(".", GrpcReflectionResponse.class);
+
+        List<String> serviceList = response.getServiceList();
+
+        assertEquals(3, serviceList.size());
+        assertTrue(serviceList.stream().anyMatch(GreeterGrpc.SERVICE_NAME::equals));
+        assertTrue(serviceList.stream().anyMatch(StreamingGrpc.SERVICE_NAME::equals));
+        assertTrue(serviceList.stream().anyMatch("grpc.health.v1.Health"::equals));
+    }
+
+    @Test
+    @DisplayName("GRPC reflection test - check streaming service methods")
+    public void testReflection_streamingServiceMethods() throws InvalidProtocolBufferException {
+        byte[] responseByteArray = getApp().given().when().get("/api/grpc/reflection/descriptor/helloworld")
+                .then().statusCode(SC_OK).extract().body().asByteArray();
+
+        String fileDescriptor = FileDescriptorResponse.parseFrom(responseByteArray).toString();
+
+        List<Descriptors.MethodDescriptor> serviceMethods = null;
+        var serviceList = HelloWorldProto.getDescriptor().getServices();
+
+        for (var service : serviceList) {
+            String serviceName = service.getName();
+            if (serviceName.compareTo("Streaming") == 0) {
+                serviceMethods = HelloWorldProto.getDescriptor().getServices()
+                        .get(service.getIndex()).getMethods();
+                break;
+            }
+        }
+
+        // Check if exists service "Streaming"
+        assertNotNull(serviceMethods);
+
+        for (var method : serviceMethods) {
+            String methodName = method.getName();
+            assertTrue(fileDescriptor.contains(methodName));
+        }
+    }
+
+    @Test
+    @DisplayName("GRPC reflection test - check service messages types")
+    public void testReflection_serviceMessages() throws InvalidProtocolBufferException {
+        byte[] responseByteArray = getApp().given().when().get("/api/grpc/reflection/descriptor/helloworld")
+                .then().statusCode(SC_OK).extract().body().asByteArray();
+        String fileDescriptor = FileDescriptorResponse.parseFrom(responseByteArray).toString();
+
+        var messageTypes = HelloWorldProto.getDescriptor().getMessageTypes();
+
+        for (var messageType : messageTypes) {
+            String methodName = messageType.getName();
+            assertTrue(fileDescriptor.contains(methodName));
+        }
+    }
+
+    @Test
+    @DisplayName("GRPC reflection test - check method SayHello of Greeter service exists and then call it")
+    public void testReflection_callSayHelloMethod() throws InvalidProtocolBufferException {
+        byte[] responseByteArray = getApp().given().when().get("/api/grpc/reflection/descriptor/helloworld")
+                .then().statusCode(SC_OK).extract().body().asByteArray();
+
+        String fileDescriptor = FileDescriptorResponse.parseFrom(responseByteArray).toString();
+
+        List<Descriptors.MethodDescriptor> serviceMethods = null;
+        var serviceList = HelloWorldProto.getDescriptor().getServices();
+
+        for (var service : serviceList) {
+            String serviceName = service.getName();
+            if (serviceName.compareTo("Greeter") == 0) {
+                serviceMethods = HelloWorldProto.getDescriptor().getServices()
+                        .get(service.getIndex()).getMethods();
+                break;
+            }
+        }
+
+        // Check if exists service "Greeter"
+        assertNotNull(serviceMethods);
+
+        // Check if exists sayHello method
+        assertTrue(fileDescriptor.contains("SayHello"));
+
+        // Call sayHello method and compare context
+        getApp().given().when().get("/api/grpc/tester").then().statusCode(SC_OK).body(is("Hello tester"));
     }
 
     @Test
