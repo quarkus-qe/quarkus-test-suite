@@ -8,7 +8,6 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
-import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.sse.OutboundSseEvent;
 import jakarta.ws.rs.sse.Sse;
@@ -35,7 +34,7 @@ public class ServerSentEventsPingResource extends TraceableResource {
     @Path("/raw")
     @GET
     @Produces(MediaType.SERVER_SENT_EVENTS)
-    public Multi<OutboundSseEvent> sseRaw(@Context Sse sse, @QueryParam("amount") int amount) {
+    public Multi<OutboundSseEvent> sseRaw(Sse sse, @QueryParam("amount") int amount) {
         List<OutboundSseEvent> events = new ArrayList<>(amount);
         for (int i = 0; i < amount; i++) {
             events.add(sse.newEventBuilder().id("id_" + i).data("data_" + i).name("name_" + i).build());

@@ -3,6 +3,7 @@ package io.quarkus.ts.http.advanced;
 import java.util.Objects;
 
 import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.core.Context;
@@ -25,7 +26,7 @@ public class PremierLeagueContainerRequestFilter implements ContainerRequestFilt
     @Context
     HttpRequest httpRequest;
 
-    @Context
+    @Inject
     UriInfo uriInfo;
 
     @Override

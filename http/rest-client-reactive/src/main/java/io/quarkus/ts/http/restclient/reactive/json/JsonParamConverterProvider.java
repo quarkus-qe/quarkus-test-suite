@@ -5,12 +5,10 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 
 import jakarta.ws.rs.QueryParam;
-import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.ext.ParamConverter;
 import jakarta.ws.rs.ext.ParamConverterProvider;
 import jakarta.ws.rs.ext.Provider;
-import jakarta.ws.rs.ext.Providers;
 
 import org.apache.commons.lang3.ClassUtils;
 
@@ -23,8 +21,6 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 // This code is taken from https://github.com/pravussum/quarkus-query-param-repro
 public class JsonParamConverterProvider implements ParamConverterProvider {
 
-    @Context
-    private Providers providers;
     final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
