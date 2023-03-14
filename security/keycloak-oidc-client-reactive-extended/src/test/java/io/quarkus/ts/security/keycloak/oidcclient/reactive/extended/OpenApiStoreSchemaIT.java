@@ -2,6 +2,8 @@ package io.quarkus.ts.security.keycloak.oidcclient.reactive.extended;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileReader;
@@ -77,5 +79,38 @@ public class OpenApiStoreSchemaIT extends BaseOidcIT {
                 "Expected component.schema.Score object.");
         assertTrue(content.getJsonObject("paths").containsKey("/rest-ping"), "Missing expected path: /rest-ping");
         assertTrue(content.getJsonObject("paths").containsKey("/rest-pong"), "Missing expected path: /rest-pong");
+
+        // verify that path /secured/admin is only accessible by user with role 'admin'
+        var expectedRole = getRequiredRoleForPath(content, "/secured/admin");
+        assertEquals("admin", expectedRole);
+
+        // verify that path /secured/getClaimsFromBeans is accessible by any authenticated user
+        expectedRole = getRequiredRoleForPath(content, "/secured/getClaimsFromBeans");
+        // note: '**' is equivalent of @Authenticated and @RolesAllowed("**")
+        assertEquals("**", expectedRole);
+
+        // verify 'oidc' security schema
+        var securitySchema = content
+                .getJsonObject("components")
+                .getJsonObject("securitySchemes")
+                .getJsonObject("SecurityScheme");
+        var actual = securitySchema.getString("type");
+        assertEquals("openIdConnect", actual);
+        actual = securitySchema.getString("description");
+        assertEquals("Authentication", actual);
+        actual = securitySchema.getString("openIdConnectUrl");
+        assertNotNull(actual);
+        assertTrue(actual.endsWith("/auth/realms/test-realm/.well-known/openid-configuration"));
+    }
+
+    private static String getRequiredRoleForPath(JsonObject content, String path) {
+        return content
+                .getJsonObject("paths")
+                .getJsonObject(path)
+                .getJsonObject("get")
+                .getJsonArray("security")
+                .getJsonObject(0)
+                .getJsonArray("SecurityScheme")
+                .getString(0);
     }
 }
