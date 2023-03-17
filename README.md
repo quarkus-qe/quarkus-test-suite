@@ -308,7 +308,7 @@ It also verifies multiple deployment strategies like:
 Reactive equivalent of the http/http-minimum module
 
 ### `http/http-advanced`
-Verifies Server/Client http_2/1.1, Grpc and http redirections and JAX-RS provider field injection.
+Verifies Server/Client http_2/1.1, Grpc and http redirections and Jakarta REST provider field injection.
 
 ### `http/http-advanced-reactive`
 Reactive equivalent of the http/http-advanced module
@@ -321,11 +321,11 @@ This module covers basic scenarios about HTTP servlets under `quarkus-undertow` 
 - Http session eviction
 - Undertow web.xml configuration
 
-### `http/jaxrs`
+### `http/jakarta-rest`
 Simple bootstrap project created by *quarkus-maven-plugin*  
 
-### `http/jaxrs-reactive`
-RESTEasy Reactive equivalent of `http/jaxrs`. Tests simple and multipart endpoints.
+### `http/jakarta-rest-reactive`
+RESTEasy Reactive equivalent of `http/jakarta-rest`. Tests simple and multipart endpoints.
 Additional coverage:
 - Execution model (blocking vs. non-blocking) of endpoints based on method signature.
 - HTTP Caching features.
@@ -525,8 +525,8 @@ Base application:
 
 Additional tests:
 - Rest Data with Panache test according to https://github.com/quarkus-qe/quarkus-test-plans/blob/main/QUARKUS-976.md  
-Additional UserEntity is a simple JPA entity that was created with aim to avoid inheritance of PanacheEntity methods
-and instead test the additional combination of JPA entity + PanacheRepository + PanacheRepositoryResource, where
+Additional UserEntity is a simple Jakarta Persistence entity that was created with aim to avoid inheritance of PanacheEntity methods
+and instead test the additional combination of Jakarta Persistence entity + PanacheRepository + PanacheRepositoryResource, where
 PanacheRepository is a facade class. Facade class can override certain methods to change the default behaviour of the
 PanacheRepositoryResource methods.
 
@@ -771,7 +771,7 @@ The RestClient interface uses Fault Tolerance to guard against the "hello" endpo
 It is possible to enable/disable the "hello" endpoint, which controls whether Fault Tolerance is used or not.
 
 All HTTP endpoints and internal processing is asynchronous, so Context Propagation is also required.
-JAX-RS endpoints and RestClient calls are automatically traced with OpenTracing, and some additional logging into the OpenTracing spans is also done.
+Jakarta REST endpoints and RestClient calls are automatically traced with OpenTracing, and some additional logging into the OpenTracing spans is also done.
 Jaeger is deployed in an "all-in-one" configuration, and the OpenShift test verifies the stored traces.
 
 ### `monitoring/opentelemetry`
@@ -1038,7 +1038,7 @@ The Infinispan cluster needs 2 special secrets - tls-secret with TLS certificate
 TLS certificate is a substitution of `secrets/signing-key` in openshift-service-ca namespace, which "qe" user cannot use (doesn't have rights on it). 
 Clientcert secret is generated for "qe" from the tls-secret mentioned above.
 
-Infinispan client tests use the cache directly with `@Inject` and `@RemoteCache`. Through the JAX-RS endpoint, we send data into the cache and retrieve it through another JAX-RS endpoint. 
+Infinispan client tests use the cache directly with `@Inject` and `@RemoteCache`. Through the Jakarta REST endpoint, we send data into the cache and retrieve it through another Jakarta REST endpoint. 
 The next tests are checking a simple fail-over - first client (application) fail, then Infinispan cluster (cache) fail. Tests kill first the Quarkus pod then Infinispan cluster pod and then check data.
 For the Quarkus application, pod killing is used the same approach as in configmap tests. For the Infinispan cluster, pod killing is updated its YAML snipped and uploaded with zero replicas.
 By default, when the Infinispan server is down and the application can't open a connection, it tries to connect again, up to 10 times (max_retries) and gives up after 60s (connect_timeout).
