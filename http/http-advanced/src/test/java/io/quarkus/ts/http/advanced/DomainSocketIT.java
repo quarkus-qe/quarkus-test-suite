@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
@@ -34,12 +35,13 @@ public class DomainSocketIT {
     @QuarkusApplication
     static RestService app = new RestService()
             .withProperty("quarkus.oidc.enabled", "false")
-            .withProperty("quarkus.http.host-enabled", "false")
+            //            .withProperty("quarkus.http.host-enabled", "false") todo https://github.com/quarkusio/quarkus/issues/31934
             .withProperty("quarkus.http.domain-socket", "/tmp/io.quarkus.app.socket")
             .withProperty("quarkus.http.domain-socket-enabled", "true")
             .withProperty("quarkus.vertx.prefer-native-transport", "true");
 
     @Test
+    @Disabled("https://github.com/quarkusio/quarkus/issues/31934")
     public void ensureApplicationStartsWithDomainSocketConfigured() {
         assertTrue(app.isRunning(), "Application should start with domain socket configured");
         app.logs().assertContains("Listening on: unix:/tmp/io.quarkus.app.socket");
