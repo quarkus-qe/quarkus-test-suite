@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.jboss.logging.Logger;
 import org.junit.jupiter.api.Test;
 import org.yaml.snakeyaml.Yaml;
 
@@ -26,7 +27,8 @@ import io.vertx.core.json.JsonObject;
 @QuarkusScenario
 public class OpenApiStoreSchemaIT extends BaseOidcIT {
 
-    private static String directory = "target/generated/jax-rs/";
+    private static final Logger LOGGER = Logger.getLogger(OpenApiStoreSchemaIT.class.getName());
+    private static final String directory = "target/generated/jax-rs/";
     private static final String OPEN_API_DOT = "openapi.";
 
     private static final String YAML = Format.YAML.toString().toLowerCase();
@@ -104,13 +106,19 @@ public class OpenApiStoreSchemaIT extends BaseOidcIT {
     }
 
     private static String getRequiredRoleForPath(JsonObject content, String path) {
-        return content
+        var securityScheme = content
                 .getJsonObject("paths")
                 .getJsonObject(path)
                 .getJsonObject("get")
                 .getJsonArray("security")
                 .getJsonObject(0)
-                .getJsonArray("SecurityScheme")
-                .getString(0);
+                .getJsonArray("SecurityScheme");
+
+        if (securityScheme.size() == 0) {
+            LOGGER.infof("There are no roles for path '%s': %s", path, content);
+            return null;
+        }
+
+        return securityScheme.getString(0);
     }
 }
