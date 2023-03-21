@@ -42,4 +42,4 @@ mvn -Dquarkus.profile=SpringCloudConfigIT quarkus:dev
 
 Note that I used the profile `SpringCloudConfigIT` to use the property file called `application-SpringCloudConfigIT.properties`.
 
-Now, go to `http://localhost:8080/jaxrs/hello` and you should get `Hello from Spring Cloud Server`.
+Now, go to `http://localhost:8080/jakarta-rest/hello` and you should get `Hello from Spring Cloud Server`.

@@ -312,7 +312,7 @@ public abstract class BaseHttpAdvancedReactiveIT {
      * @see NinetyNineBottlesOfBeerResource for more information
      */
     @DisabledIfSystemProperty(matches = QUARKUS_PLATFORM_VERSION_LESS_THAN_2_8_3_VAL, named = QUARKUS_PLATFORM_VERSION_LESS_THAN_2_8_3, disabledReason = "Fixed in Quarkus 2.8.3.Final")
-    @DisplayName("JAX-RS URI path template test")
+    @DisplayName("Jakarta REST URI path template test")
     @Test
     public void uriPathTemplate() {
         // test parameter name starting with an alphabetic character, containing dash and with literal value
@@ -341,7 +341,7 @@ public abstract class BaseHttpAdvancedReactiveIT {
     }
 
     @DisabledOnQuarkusVersion(version = "(2\\.[0-8]\\..*)|(2\\.9\\.[0-1]\\..*)", reason = "Fixed in Quarkus 2.9.2.Final")
-    @DisplayName("JAX-RS RouterFilter and Vert.x Web Routes integration")
+    @DisplayName("Jakarta REST RouterFilter and Vert.x Web Routes integration")
     @Test
     public void multipleResponseFilter() {
         // test headers from both filters are present, that is useful content negotiation
@@ -373,7 +373,7 @@ public abstract class BaseHttpAdvancedReactiveIT {
     }
 
     @DisabledOnQuarkusVersion(version = "(2\\.[0-6]\\..*)|(2\\.7\\.[0-5]\\..*)|(2\\.8\\.[0-2]\\..*)", reason = "Fixed in Quarkus 2.8.3.Final. and backported to 2.7.6.Final")
-    @DisplayName("JAX-RS MessageBodyWriter test")
+    @DisplayName("Jakarta REST MessageBodyWriter test")
     @Test
     public void messageBodyWriter() {
         // test MediaType is passed to MessageBodyWriter correctly
@@ -389,7 +389,7 @@ public abstract class BaseHttpAdvancedReactiveIT {
     }
 
     @DisabledOnQuarkusVersion(version = "(2\\.[0-8]\\..*)|(2\\.9\\.0\\..*)", reason = "Fixed in Quarkus 2.9.1.Final")
-    @DisplayName("JAX-RS Response Content type test")
+    @DisplayName("Jakarta REST Response Content type test")
     @Test
     public void responseContentType() {
         testResponseContentType(APPLICATION_JSON, APPLICATION_JSON + UTF_8_CHARSET);

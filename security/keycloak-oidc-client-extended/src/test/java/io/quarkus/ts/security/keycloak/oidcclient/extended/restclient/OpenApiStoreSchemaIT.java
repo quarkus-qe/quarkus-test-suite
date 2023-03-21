@@ -28,7 +28,7 @@ import io.vertx.core.json.JsonObject;
 public class OpenApiStoreSchemaIT extends BaseOidcIT {
 
     private static final Logger LOGGER = Logger.getLogger(OpenApiStoreSchemaIT.class.getName());
-    private static final String directory = "target/generated/jax-rs/";
+    private static final String directory = "target/generated/jakarta-rest/";
     private static final String OPEN_API_DOT = "openapi.";
 
     private static final String YAML = Format.YAML.toString().toLowerCase();

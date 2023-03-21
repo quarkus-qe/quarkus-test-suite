@@ -27,7 +27,7 @@ public class SpringCloudConfigIT {
 
     @Tag("QUARKUS-1218")
     @ParameterizedTest
-    @ValueSource(strings = { "/jaxrs", "/spring", "/custom-mapping" })
+    @ValueSource(strings = { "/jakarta-rest", "/spring", "/custom-mapping" })
     public void shouldGetExpectedHelloMessage(String rootPath) {
         app.given().get(rootPath + "/hello").then()
                 .statusCode(HttpStatus.SC_OK)

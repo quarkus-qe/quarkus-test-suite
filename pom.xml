@@ -440,8 +440,8 @@
                 <module>http/http-advanced</module>
                 <module>http/http-advanced-reactive</module>
                 <module>http/http-static</module>
-                <module>http/jaxrs</module>
-                <module>http/jaxrs-reactive</module>
+                <module>http/jakarta-rest</module>
+                <module>http/jakarta-rest-reactive</module>
                 <module>http/reactive-routes</module>
                 <module>http/rest-client</module>
                 <module>http/rest-client-reactive</module>

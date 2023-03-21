@@ -33,7 +33,7 @@ public abstract class BaseHibernateIT {
     }
 
     @Test
-    public void testJpaAndHibernateValidatorEndpoint() {
+    public void testJakartaPersistenceAndHibernateValidatorEndpoint() {
         given()
                 .when().get("/hello")
                 .then()
