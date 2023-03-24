@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import io.quarkus.test.bootstrap.RestService;
+import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
@@ -155,6 +156,7 @@ public abstract class AbstractDatabaseHibernateReactiveIT {
         assertTrue(result.contains("Thinking fast and slow"));
     }
 
+    @DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/32114")
     @Test
     public void searchWithLimit() {
         String result = getApp().given()
@@ -242,6 +244,7 @@ public abstract class AbstractDatabaseHibernateReactiveIT {
                 .body("$", hasItem("Ubik"));
     }
 
+    @DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/32114")
     @Test
     public void convertValue() {
         Response response = getApp().given().get("/library/isbn/2");
@@ -260,6 +263,7 @@ public abstract class AbstractDatabaseHibernateReactiveIT {
         assertEquals("0", response.body().asString());
     }
 
+    @DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/32114")
     @Test
     public void setConvertedValue() {
         Response change = getApp().given().put("/library/isbn/1/5170261586");

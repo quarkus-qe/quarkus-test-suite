@@ -552,8 +552,7 @@
                 <module>sql-db/panache-flyway</module>
                 <module>sql-db/reactive-rest-data-panache</module>
                 <module>sql-db/vertx-sql</module>
-                <!-- TODO: enable when https://github.com/quarkusio/quarkus/pull/31217 us reverted -->
-                <!-- <module>sql-db/hibernate-reactive</module> -->
+                <module>sql-db/hibernate-reactive</module>
                 <module>sql-db/reactive-vanilla</module>
                 <module>sql-db/hibernate-fulltext-search</module>
                 <module>sql-db/narayana-transactions</module>
@@ -585,8 +584,7 @@
             <modules>
                 <module>env-info</module>
                 <module>service-binding/postgresql-crunchy-classic</module>
-                <!-- TODO: enable when https://github.com/quarkusio/quarkus/pull/31217 us reverted -->
-                <!-- <module>service-binding/postgresql-crunchy-reactive</module> -->
+                <module>service-binding/postgresql-crunchy-reactive</module>
             </modules>
         </profile>
         <profile>
@@ -601,8 +599,7 @@
                 <module>env-info</module>
                 <module>spring/spring-data</module>
                 <module>spring/spring-web</module>
-                <!-- TODO: enable when https://github.com/quarkusio/quarkus/pull/31217 us reverted -->
-                <!-- <module>spring/spring-web-reactive</module> -->
+                <module>spring/spring-web-reactive</module>
                 <module>spring/spring-properties</module>
                 <module>spring/spring-cloud-config</module>
                 <module>cache/spring</module>
