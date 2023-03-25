@@ -10,6 +10,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -32,7 +33,8 @@ public class Author {
     @Size(max = MAX_NAME_LENGTH)
     private String name;
 
-    @OneToMany(mappedBy = "author", cascade = PERSIST, fetch = FetchType.EAGER)
+    @JoinColumn(name = "author")
+    @OneToMany(cascade = PERSIST, fetch = FetchType.EAGER)
     private List<Book> books = new ArrayList<>();
 
     public Author(String name) {

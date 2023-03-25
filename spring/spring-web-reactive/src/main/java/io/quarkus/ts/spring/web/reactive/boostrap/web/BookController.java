@@ -23,12 +23,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.quarkus.hibernate.reactive.panache.Panache;
+import io.quarkus.hibernate.reactive.panache.common.WithSession;
+import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.quarkus.hibernate.reactive.panache.common.runtime.ReactiveTransactional;
 import io.quarkus.ts.spring.web.reactive.boostrap.persistence.model.Book;
 import io.quarkus.ts.spring.web.reactive.boostrap.persistence.repo.BookRepository;
 import io.quarkus.ts.spring.web.reactive.boostrap.web.exception.BookIdMismatchException;
 import io.quarkus.ts.spring.web.reactive.boostrap.web.exception.BookNotFoundException;
-import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 
 @RestController
@@ -42,6 +43,7 @@ public class BookController {
     @Autowired
     BookRepository bookRepository;
 
+    @WithSession
     @GetMapping
     public Uni<List<Book>> findAll() {
         return bookRepository.listAll().onItem()
@@ -49,12 +51,17 @@ public class BookController {
                 .ifNoItem().after(Duration.ofSeconds(FAIL_AFTER_SECONDS)).failWith(BookNotFoundException::new);
     }
 
+    @WithSession
     @GetMapping("/title/{bookTitle}")
-    public Multi<Book> findByTitle(@PathVariable String bookTitle) {
+    public Uni<List<Book>> findByTitle(@PathVariable String bookTitle) {
         return bookRepository.findByTitle(bookTitle)
-                .ifNoItem().after(Duration.ofSeconds(FAIL_AFTER_SECONDS)).failWith(BookNotFoundException::new);
+                .collect()
+                .asList()
+                .ifNoItem()
+                .after(Duration.ofSeconds(FAIL_AFTER_SECONDS)).failWith(BookNotFoundException::new);
     }
 
+    @WithSession
     @GetMapping("/{id}")
     public Uni<Book> findOne(@PathVariable long id) {
         return bookRepository.findById(id)
@@ -62,6 +69,7 @@ public class BookController {
                 .ifNoItem().after(Duration.ofSeconds(FAIL_AFTER_SECONDS)).failWith(BookNotFoundException::new);
     }
 
+    @WithSession
     @PostMapping
     public Uni<Response> create(@RequestBody Book book) {
         return Panache.withTransaction(() -> bookRepository.persist(book))
@@ -69,7 +77,7 @@ public class BookController {
     }
 
     @DeleteMapping("/{id}")
-    @ReactiveTransactional
+    @WithTransaction
     public Uni<Response> delete(@PathVariable long id) {
         return bookRepository.deleteById(id)
                 .map(deleted -> deleted

@@ -1,11 +1,15 @@
 package io.quarkus.ts.hibernate.reactive;
 
+import org.junit.jupiter.api.Disabled;
+
 import io.quarkus.test.bootstrap.OracleService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
+// TODO: enable with next Hibernate Reactive bump in Quarkus main
+@Disabled("https://github.com/quarkusio/quarkus/issues/32102#issuecomment-1482501348")
 @QuarkusScenario
 public class OracleDatabaseIT extends AbstractDatabaseHibernateReactiveIT {
 
