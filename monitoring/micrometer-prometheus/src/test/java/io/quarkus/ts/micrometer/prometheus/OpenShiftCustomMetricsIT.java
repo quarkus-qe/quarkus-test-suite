@@ -12,7 +12,6 @@ import jakarta.inject.Inject;
 import org.apache.http.HttpStatus;
 import org.jboss.logging.Logger;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -27,7 +26,6 @@ import io.quarkus.test.services.QuarkusApplication;
  * - `prime_number_max_{uniqueId}`: max prime number that is found.
  * - `prime_number_test_{uniqueId}`: with information about the calculation of the prime number.
  */
-@Disabled("https://github.com/quarkusio/quarkus/issues/31228")
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
 public class OpenShiftCustomMetricsIT {
 
@@ -51,7 +49,16 @@ public class OpenShiftCustomMetricsIT {
     static final Integer ANY_VALUE = null;
 
     @QuarkusApplication
-    static RestService app = new RestService().onPostStart(OpenShiftCustomMetricsIT::loadServiceMonitor);
+    static RestService app = new RestService()
+            /*
+             * TODO fix deployment with OpenShiftDeploymentStrategies in the Framework
+             * see https://github.com/quarkusio/quarkus/issues/32135#issuecomment-1486740862 for details
+             * .withProperty("quarkus.management.ssl.certificate.key-store-file",
+             * "META-INF/resources/server.keystore")
+             * .withProperty("quarkus.management.ssl.certificate.key-store-password", "password")
+             * .withProperty("quarkus.management.enabled", "true")
+             */
+            .onPostStart(OpenShiftCustomMetricsIT::loadServiceMonitor);
 
     @Inject
     static OpenShiftClient client;
@@ -121,7 +128,7 @@ public class OpenShiftCustomMetricsIT {
                 shouldContain += " " + expected;
             }
 
-            app.given().get("/q/metrics").then()
+            app.management().get("/q/metrics").then()
                     .statusCode(HttpStatus.SC_OK)
                     .body(containsString(shouldContain));
         });

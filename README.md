@@ -356,6 +356,9 @@ It also verifies multiple deployment strategies like:
 - Using OpenShift quarkus extension
 - Using OpenShift quarkus extension and Docker Build strategy
 
+### `http/management`
+Verifies, that management interface (micrometer metrics and health endpoints) can be hosted on a separate port 
+
 #### Additions
 * *@Deprecated* annotation has been added for test regression purposes to ensure `java.lang` annotations are allowed for resources
 * Resource with multipart body support, provided parts are text, image and binary data, charset checked with `us-ascii` and `utf-8`
