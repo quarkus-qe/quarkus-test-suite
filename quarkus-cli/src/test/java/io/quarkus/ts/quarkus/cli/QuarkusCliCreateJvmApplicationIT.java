@@ -44,6 +44,7 @@ import io.quarkus.test.bootstrap.QuarkusCliRestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.quarkus.model.QuarkusProperties;
 
+@Disabled("https://github.com/quarkusio/quarkus/issues/32219")
 @Tag("QUARKUS-960")
 @Tag("quarkus-cli")
 @QuarkusScenario
