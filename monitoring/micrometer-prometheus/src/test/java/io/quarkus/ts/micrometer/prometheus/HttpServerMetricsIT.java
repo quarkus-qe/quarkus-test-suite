@@ -14,7 +14,9 @@ import java.util.concurrent.TimeUnit;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
 
+import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
 public class HttpServerMetricsIT {
@@ -30,6 +32,10 @@ public class HttpServerMetricsIT {
      */
     private static final String HTTP_SERVER_REQUESTS_METRICS_FORMAT = "http_server_requests_seconds_%s{method=\"GET\",outcome=\"SUCCESS\",status=\"200\",uri=\"%s\"";
     private static final String PING_PONG_ENDPOINT = "/without-metrics-pingpong";
+
+    @QuarkusApplication
+    static RestService app = new RestService()
+            .withProperty("quarkus.management.enabled", "true");
 
     @Test
     public void testHttpServerRequestsCountShouldBeRegistered() {
@@ -47,7 +53,7 @@ public class HttpServerMetricsIT {
     }
 
     private void thenHttpServerRequestsMetricsAreNotPresent() {
-        String metrics = when().get("/q/metrics").then()
+        String metrics = app.management().get("/q/metrics").then()
                 .statusCode(HttpStatus.SC_OK).extract().asString();
 
         for (String metricSuffix : HTTP_SERVER_REQUESTS_METRICS_SUFFIX) {
@@ -57,7 +63,7 @@ public class HttpServerMetricsIT {
     }
 
     private void thenHttpServerRequestsMetricsArePresent() {
-        String metrics = when().get("/q/metrics").then()
+        String metrics = app.management().get("/q/metrics").then()
                 .statusCode(HttpStatus.SC_OK).extract().asString();
 
         for (String metricSuffix : HTTP_SERVER_REQUESTS_METRICS_SUFFIX) {
