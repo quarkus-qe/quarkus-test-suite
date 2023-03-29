@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import jakarta.inject.Inject;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 
@@ -12,6 +13,7 @@ import io.quarkus.test.bootstrap.QuarkusCliClient;
 import io.quarkus.test.bootstrap.QuarkusCliDefaultService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 
+@Disabled("https://github.com/quarkusio/quarkus/issues/32219")
 @QuarkusScenario
 @DisabledIfSystemProperty(named = "profile.id", matches = "native", disabledReason = "Only for JVM mode")
 public class QuarkusCliCreateExtensionIT {

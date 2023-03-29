@@ -21,6 +21,7 @@ import io.quarkus.test.bootstrap.QuarkusCliClient;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.utils.FileUtils;
 
+@Disabled("https://github.com/quarkusio/quarkus/issues/32219")
 @Tag("QUARKUS-960")
 @Tag("quarkus-cli")
 @QuarkusScenario
