@@ -44,7 +44,6 @@ import io.quarkus.test.bootstrap.QuarkusCliRestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.quarkus.model.QuarkusProperties;
 
-@Disabled("https://github.com/quarkusio/quarkus/issues/32219")
 @Tag("QUARKUS-960")
 @Tag("quarkus-cli")
 @QuarkusScenario
@@ -202,6 +201,7 @@ public class QuarkusCliCreateJvmApplicationIT {
         untilAsserted(() -> app.given().get("/greeting").then().statusCode(HttpStatus.SC_OK).and().body(is("Hello Spring")));
     }
 
+    @Disabled("https://github.com/quarkusio/quarkus/issues/32266")
     @Tag("QUARKUS-1071")
     @Test
     public void shouldAddAndRemoveExtensions() {
