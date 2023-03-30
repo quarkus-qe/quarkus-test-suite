@@ -10,7 +10,6 @@ import java.util.List;
 
 import jakarta.inject.Inject;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
@@ -26,7 +25,6 @@ import io.quarkus.test.services.quarkus.model.QuarkusProperties;
  * Note that the extensions list enhancements have been already reported as part
  * of https://github.com/quarkusio/quarkus/issues/18062 and https://github.com/quarkusio/quarkus/issues/18064.
  */
-@Disabled("https://github.com/quarkusio/quarkus/issues/32219")
 @Tag("QUARKUS-960")
 @Tag("quarkus-cli")
 @QuarkusScenario
