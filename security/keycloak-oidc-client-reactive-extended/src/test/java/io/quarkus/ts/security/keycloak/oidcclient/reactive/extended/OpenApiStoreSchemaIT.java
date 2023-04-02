@@ -83,13 +83,15 @@ public class OpenApiStoreSchemaIT extends BaseOidcIT {
         assertTrue(content.getJsonObject("paths").containsKey("/rest-pong"), "Missing expected path: /rest-pong");
 
         // verify that path /secured/admin is only accessible by user with role 'admin'
-        var expectedRole = getRequiredRoleForPath(content, "/secured/admin");
-        assertEquals("admin", expectedRole);
+        // TODO: enable when https://github.com/quarkusio/quarkus/issues/32112 get fixed
+        // var expectedRole = getRequiredRoleForPath(content, "/secured/admin");
+        // assertEquals("admin", expectedRole);
 
         // verify that path /secured/getClaimsFromBeans is accessible by any authenticated user
-        expectedRole = getRequiredRoleForPath(content, "/secured/getClaimsFromBeans");
+        // TODO: enable when https://github.com/quarkusio/quarkus/issues/32112 get fixed
+        // expectedRole = getRequiredRoleForPath(content, "/secured/getClaimsFromBeans");
         // note: '**' is equivalent of @Authenticated and @RolesAllowed("**")
-        assertEquals("**", expectedRole);
+        // assertEquals("**", expectedRole);
 
         // verify 'oidc' security schema
         var securitySchema = content
