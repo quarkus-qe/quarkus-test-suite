@@ -713,6 +713,49 @@
             </build>
         </profile>
         <profile>
+            <!-- You need to be connected to an OpenShift instance to activate this
+                profile! -->
+            <id>openshift-arm</id>
+            <activation>
+                <property>
+                    <name>openshift-arm</name>
+                </property>
+            </activation>
+            <properties>
+                <include.tests>**/*OpenShift*IT.java</include.tests>
+                <exclude.openshift.tests>no</exclude.openshift.tests>
+            </properties>
+        </profile>
+        <profile>
+            <id>openshift-arm-containers</id>
+            <activation>
+                <property>
+                    <name>openshift-arm</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <ts.redhat.registry.enabled>true</ts.redhat.registry.enabled>
+                                <!-- Product Services -->
+                                <rhsso.image>registry.redhat.io/rh-sso-7/sso76-openshift-rhel8</rhsso.image>
+                                <postgresql.10.image>registry.redhat.io/rhel8/postgresql-10</postgresql.10.image>
+                                <postgresql.latest.image>registry.redhat.io/rhscl/postgresql-13-rhel7</postgresql.latest.image>
+                                <mariadb.103.image>registry.redhat.io/rhel8/mariadb-103</mariadb.103.image>
+                                <mariadb.105.image>registry.redhat.io/rhel8/mariadb-105</mariadb.105.image>
+                                <amq-streams.image>registry.redhat.io/amq7/amq-streams-kafka-27-rhel7</amq-streams.image>
+                                <amq-streams.version>1.7.0</amq-streams.version>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
             <id>serverless</id>
             <activation>
                 <property>
