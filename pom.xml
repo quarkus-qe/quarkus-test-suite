@@ -740,6 +740,7 @@
                         <artifactId>maven-failsafe-plugin</artifactId>
                         <configuration>
                             <systemPropertyVariables>
+                                <ts.arm.missing.services.excludes>true</ts.arm.missing.services.excludes>
                                 <ts.redhat.registry.enabled>true</ts.redhat.registry.enabled>
                                 <!-- Product Services -->
                                 <rhsso.image>registry.redhat.io/rh-sso-7/sso76-openshift-rhel8</rhsso.image>
