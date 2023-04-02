@@ -244,7 +244,7 @@
                                 <redis.image>docker.io/library/redis:6.0</redis.image>
                                 <wiremock.image>quay.io/ocpmetal/wiremock</wiremock.image>
                                 <!-- TODO use official image when/if this fixed https://github.com/hashicorp/docker-consul/issues/184 -->
-                                <consul.image>docker.io/bitnami/consul:1.13.1</consul.image>
+                                <consul.image>docker.io/bitnami/consul:1.15.2</consul.image>
                                 <infinispan.image>quay.io/infinispan/server:14.0</infinispan.image>
                                 <infinispan.expected-log>Infinispan Server.*started in</infinispan.expected-log>
                                 <spring.cloud.server.image>quay.io/quarkusqeteam/spring-cloud-config-server:3.0</spring.cloud.server.image>
