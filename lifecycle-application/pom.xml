@@ -20,11 +20,10 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-resteasy</artifactId>
         </dependency>
-        <!-- TODO "https://github.com/quarkusio/quarkus/issues/31228"
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-openshift</artifactId>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-spring-di</artifactId>
@@ -51,6 +50,36 @@
                     <url>https://maven.repository.redhat.com/ga/</url>
                 </repository>
             </repositories>
+        </profile>
+        <profile>
+            <id>windows</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <systemProperties>
+                                <!-- disable Dev Services for Kubernetes on Windows due to Docker limitations -->
+                                <quarkus.kubernetes-client.devservices.enabled>false</quarkus.kubernetes-client.devservices.enabled>
+                            </systemProperties>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <systemProperties>
+                                <!-- disable Dev Services for Kubernetes on Windows due to Docker limitations -->
+                                <quarkus.kubernetes-client.devservices.enabled>false</quarkus.kubernetes-client.devservices.enabled>
+                            </systemProperties>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 </project>

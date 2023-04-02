@@ -21,7 +21,8 @@ import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.utils.Command;
 
-@Disabled("https://github.com/quarkusio/quarkus/issues/31228")
+// TODO mvavrik: investigate and enable test!
+@Disabled("fails over incorrect response status, mvavrik will investigate in week 14")
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class OperatorOpenShiftInfinispanCountersIT extends BaseOpenShiftInfinispanIT {

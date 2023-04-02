@@ -36,7 +36,7 @@ import io.quarkus.test.services.knative.eventing.OpenShiftExtensionFunqyKnativeE
 import io.quarkus.test.services.knative.eventing.spi.ForwardResponseDTO;
 import io.restassured.common.mapper.TypeRef;
 
-@Disabled("https://github.com/quarkusio/quarkus/issues/31228")
+@Disabled("Disabled as flaky") // TODO mvavrik: investigate why the test is flaky
 @Tag("use-quarkus-openshift-extension")
 @Tag("serverless")
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
