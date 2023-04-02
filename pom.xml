@@ -235,7 +235,7 @@
                                 <mysql.57.image>docker.io/library/mysql:5.7.36</mysql.57.image>
                                 <!-- TODO https://github.com/quarkus-qe/quarkus-test-suite/issues/609 -->
                                 <mysql.upstream.80.image>docker.io/library/mysql:8.0</mysql.upstream.80.image>
-                                <mysql.80.image>registry.access.redhat.com/rhscl/mysql-80-rhel7</mysql.80.image>
+                                <mysql.80.image>registry.redhat.io/rhel8/mysql-80</mysql.80.image>
                                 <mariadb.10.image>docker.io/library/mariadb:10.10</mariadb.10.image>
                                 <mssql.image>mcr.microsoft.com/mssql/rhel/server:2022-latest</mssql.image>
                                 <oracle.image>docker.io/gvenzl/oracle-xe:21-slim-faststart</oracle.image>
