@@ -26,7 +26,6 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.infinispan.client.serialized.ShopItem;
 import io.restassured.response.Response;
 
-@Disabled("https://github.com/quarkusio/quarkus/issues/31228")
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class OperatorOpenShiftInfinispanObjectsIT extends BaseOpenShiftInfinispanIT {

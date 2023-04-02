@@ -1,5 +1,7 @@
 package io.quarkus.ts.websockets.producer;
 
+import static java.time.Duration.ofSeconds;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -15,6 +17,7 @@ import jakarta.websocket.OnMessage;
 import jakarta.websocket.OnOpen;
 import jakarta.websocket.Session;
 
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -33,7 +36,7 @@ public class WebSocketsProducerConsumerIT {
         Client client = new Client();
         try (Session session = connect(client, getUri("/chat/stu"))) {
             session.getAsyncRemote().sendText("hello world");
-            Assertions.assertEquals(">> stu: hello world", client.getMessage());
+            assertMessage(">> stu: hello world", client);
         }
     }
 
@@ -46,12 +49,10 @@ public class WebSocketsProducerConsumerIT {
             try (Session bob = connect(bobChat, getUri("/chat/bob"))) {
 
                 alice.getAsyncRemote().sendText("hello bob");
-                Assertions.assertEquals(">> alice: hello bob", aliceChat.getMessage());
-                Assertions.assertEquals(">> alice: hello bob", bobChat.getMessage());
+                assertMessage(">> alice: hello bob", aliceChat, bobChat);
 
                 bob.getAsyncRemote().sendText("hello alice");
-                Assertions.assertEquals(">> bob: hello alice", bobChat.getMessage());
-                Assertions.assertEquals(">> bob: hello alice", aliceChat.getMessage());
+                assertMessage(">> bob: hello alice", bobChat, aliceChat);
             }
         }
     }
@@ -65,19 +66,14 @@ public class WebSocketsProducerConsumerIT {
         try (Session porthos = connect(porthosChat, getUri("/chat/porthos"))) {
             try (Session aramis = connect(aramisChat, getUri("/chat/aramis"))) {
                 athos.getAsyncRemote().sendText("hello, friends");
-                Assertions.assertEquals(">> athos: hello, friends", athosChat.getMessage());
-                Assertions.assertEquals(">> athos: hello, friends", porthosChat.getMessage());
-                Assertions.assertEquals(">> athos: hello, friends", aramisChat.getMessage());
+                assertMessage(">> athos: hello, friends", athosChat, porthosChat, aramisChat);
 
                 aramis.getAsyncRemote().sendText("Adios, Athos!");
-                Assertions.assertEquals(">> aramis: Adios, Athos!", athosChat.getMessage());
-                Assertions.assertEquals(">> aramis: Adios, Athos!", porthosChat.getMessage());
-                Assertions.assertEquals(">> aramis: Adios, Athos!", aramisChat.getMessage());
+                assertMessage(">> aramis: Adios, Athos!", athosChat, porthosChat, aramisChat);
 
                 athos.close();
                 Assertions.assertNull(athosChat.getMessage());
-                Assertions.assertEquals("User athos left", porthosChat.getMessage());
-                Assertions.assertEquals("User athos left", aramisChat.getMessage());
+                assertMessage("User athos left", porthosChat, aramisChat);
             }
         }
     }
@@ -87,7 +83,7 @@ public class WebSocketsProducerConsumerIT {
         Client client = new Client();
         try (Session session = connect(client, getUri("/chat/traveler"))) {
             session.getAsyncRemote().sendText("今日は přátelé, как дела? \uD83E\uDED6 ?");
-            Assertions.assertEquals(">> traveler: 今日は přátelé, как дела? \uD83E\uDED6 ?", client.getMessage());
+            assertMessage(">> traveler: 今日は přátelé, как дела? \uD83E\uDED6 ?", client);
         }
     }
 
@@ -95,20 +91,30 @@ public class WebSocketsProducerConsumerIT {
     public void push() throws Exception {
         Client client = new Client();
         try (Session session = connect(client, getUri("/push"))) {
-            Assertions.assertEquals("One", client.getMessage());
-            Assertions.assertEquals("Two", client.getMessage());
-            Assertions.assertEquals("Three", client.getMessage());
-            Assertions.assertEquals("Four", client.getMessage());
+            assertMessage("One", client);
+            assertMessage("Two", client);
+            assertMessage("Three", client);
+            assertMessage("Four", client);
         }
     }
 
     // TODO change following code when this will be fixed https://github.com/quarkus-qe/quarkus-test-framework/issues/263
-    private URI getUri(String with) throws URISyntaxException {
+    private static URI getUri(String with) throws URISyntaxException {
         return new URI(server.getHost() + ":" + server.getPort()).resolve(with);
     }
 
-    private Session connect(Client client, URI uri) throws DeploymentException, IOException {
+    private static Session connect(Client client, URI uri) throws DeploymentException, IOException {
         return ContainerProvider.getWebSocketContainer().connectToServer(client, uri);
+    }
+
+    private static void assertMessage(String expectedMessage, Client... clients) {
+        for (Client client : clients) {
+            // message has been sent asynchronously, therefore we should wait a little
+            Awaitility
+                    .await()
+                    .atMost(ofSeconds(2))
+                    .untilAsserted(() -> Assertions.assertEquals(expectedMessage, client.getMessage()));
+        }
     }
 
     @ClientEndpoint
