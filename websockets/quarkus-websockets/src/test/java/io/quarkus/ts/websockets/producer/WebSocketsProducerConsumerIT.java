@@ -18,6 +18,7 @@ import jakarta.websocket.OnOpen;
 import jakarta.websocket.Session;
 
 import org.awaitility.Awaitility;
+import org.jboss.logging.Logger;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -27,6 +28,8 @@ import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
 public class WebSocketsProducerConsumerIT {
+
+    private static final Logger LOG = Logger.getLogger(WebSocketsProducerConsumerIT.class);
 
     @QuarkusApplication
     static final RestService server = new RestService();
@@ -48,10 +51,27 @@ public class WebSocketsProducerConsumerIT {
         try (Session alice = connect(aliceChat, getUri("/chat/alice"))) {
             try (Session bob = connect(bobChat, getUri("/chat/bob"))) {
 
-                alice.getAsyncRemote().sendText("hello bob");
+                broadcastPlainMsgAsync(alice, "hello bob");
                 assertMessage(">> alice: hello bob", aliceChat, bobChat);
 
-                bob.getAsyncRemote().sendText("hello alice");
+                broadcastPlainMsgAsync(bob, "hello alice");
+                assertMessage(">> bob: hello alice", bobChat, aliceChat);
+            }
+        }
+    }
+
+    @Test
+    public void chattingSync() throws Exception {
+        final var aliceChat = new Client();
+        final var bobChat = new Client();
+
+        try (Session alice = connect(aliceChat, getUri("/chat/alice"))) {
+            try (Session bob = connect(bobChat, getUri("/chat/bob"))) {
+
+                broadcastPlainMsg(alice, "hello bob");
+                assertMessage(">> alice: hello bob", aliceChat, bobChat);
+
+                broadcastPlainMsg(bob, "hello alice");
                 assertMessage(">> bob: hello alice", bobChat, aliceChat);
             }
         }
@@ -117,6 +137,24 @@ public class WebSocketsProducerConsumerIT {
         }
     }
 
+    private void broadcastPlainMsgAsync(Session session, String msg) {
+        session.getAsyncRemote().sendText(msg, result -> {
+            if (result.getException() != null) {
+                LOG.error("Unable to send message: " + msg);
+                Assertions.fail(result.getException());
+            }
+        });
+    }
+
+    private void broadcastPlainMsg(Session session, String msg) {
+        try {
+            session.getBasicRemote().sendText(msg);
+        } catch (IOException e) {
+            LOG.error("Unable to send message: " + msg);
+            Assertions.fail(e);
+        }
+    }
+
     @ClientEndpoint
     public static class Client {
         private final LinkedBlockingDeque<String> messages = new LinkedBlockingDeque<>();
@@ -126,7 +164,12 @@ public class WebSocketsProducerConsumerIT {
         public void open(Session session) {
             // Send a message to indicate that we are ready,
             // as the message handler may not be registered immediately after this callback.
-            session.getAsyncRemote().sendText("_ready_");
+            session.getAsyncRemote().sendText("_ready_", result -> {
+                if (result.getException() != null) {
+                    LOG.error("Connection not opened");
+                    Assertions.fail(result.getException());
+                }
+            });
         }
 
         @OnMessage
