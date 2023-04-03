@@ -201,7 +201,6 @@ public class QuarkusCliCreateJvmApplicationIT {
         untilAsserted(() -> app.given().get("/greeting").then().statusCode(HttpStatus.SC_OK).and().body(is("Hello Spring")));
     }
 
-    @Disabled("https://github.com/quarkusio/quarkus/issues/32266")
     @Tag("QUARKUS-1071")
     @Test
     public void shouldAddAndRemoveExtensions() {
