@@ -50,14 +50,10 @@ public class Chat {
     }
 
     private void broadcast(String message) {
-        sessions.values().forEach(s -> {
-            if (s.isOpen()) {
-                s.getAsyncRemote().sendObject(message, result -> {
-                    if (!result.isOK()) {
-                        LOG.error("Unable to send message: " + result.getException());
-                    }
-                });
+        sessions.values().forEach(s -> s.getAsyncRemote().sendObject(message, result -> {
+            if (result.getException() != null) {
+                LOG.error("Unable to send message: " + result.getException());
             }
-        });
+        }));
     }
 }
