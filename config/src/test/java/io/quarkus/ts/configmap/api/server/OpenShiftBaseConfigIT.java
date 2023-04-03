@@ -1,5 +1,9 @@
 package io.quarkus.ts.configmap.api.server;
 
+import static io.quarkus.ts.configmap.api.server.PropertiesSource.INJECTED_CONFIG;
+import static io.quarkus.ts.configmap.api.server.PropertiesSource.INJECTED_PROPERTIES;
+import static io.quarkus.ts.configmap.api.server.SecretKeysHandler.BASE64;
+import static io.quarkus.ts.configmap.api.server.SecretKeysHandler.CRYPTO_AES_GCM_NO_PADDING;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsString;
@@ -11,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 import jakarta.inject.Inject;
 
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -30,6 +34,24 @@ public abstract class OpenShiftBaseConfigIT {
     @Inject
     static OpenShiftClient openshift;
 
+    @Order(1)
+    @Test
+    public void testSecretKeysHandler() {
+        PropertiesSource.given = getApp()::given;
+        var configSource = "oc-" + getConfigType();
+
+        var secretKey = CRYPTO_AES_GCM_NO_PADDING.secretKey(configSource);
+        var secretVal = CRYPTO_AES_GCM_NO_PADDING.secret;
+        INJECTED_PROPERTIES.assertSecret(secretKey, secretVal);
+        INJECTED_CONFIG.assertSecret(secretKey, secretVal);
+
+        secretKey = BASE64.secretKey(configSource);
+        secretVal = BASE64.secret;
+        INJECTED_PROPERTIES.assertSecret(secretKey, secretVal);
+        INJECTED_CONFIG.assertSecret(secretKey, secretVal);
+    }
+
+    @Order(2)
     @Test
     public void configMapEndToEnd() {
         // Simple invocation

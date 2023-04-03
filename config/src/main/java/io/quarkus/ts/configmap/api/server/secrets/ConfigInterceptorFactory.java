@@ -10,6 +10,7 @@ import io.smallrye.config.SecretKeysConfigSourceInterceptor;
 public class ConfigInterceptorFactory implements ConfigSourceInterceptorFactory {
     @Override
     public ConfigSourceInterceptor getInterceptor(ConfigSourceInterceptorContext context) {
-        return new SecretKeysConfigSourceInterceptor(Set.of("secret.password"));
+        return new SecretKeysConfigSourceInterceptor(Set.of("secret.password", "secrets.custom-factory-crypto-handler",
+                "secrets.custom-factory-base64-handler", "secrets.custom-factory-sha256-handler"));
     }
 }
