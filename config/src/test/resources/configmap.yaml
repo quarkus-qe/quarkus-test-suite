@@ -5,3 +5,5 @@ metadata:
 data:
   application.properties: |
     hello.message=Hello %s from configmap
+    secrets.oc-configmap-crypto-handler=${aes-gcm-nopadding::DEaZok2mA76F-jak70kWav7Gx65QarcWbul-bvLgCHzy9eiHMkCWdadFISES2H7lewF61Ct-jqNaSQ}
+    secrets.oc-configmap-base64-handler=${custom-base64::cXVhcmt1cy1xZS1iYXNlNjQ=}
