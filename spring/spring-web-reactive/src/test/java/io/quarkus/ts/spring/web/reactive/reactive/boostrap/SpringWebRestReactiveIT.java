@@ -1,10 +1,8 @@
 package io.quarkus.ts.spring.web.reactive.reactive.boostrap;
 
-import static io.quarkus.ts.spring.web.reactive.reactive.MariaDBConstants.IMAGE_105;
+import static io.quarkus.ts.spring.web.reactive.reactive.MariaDBConstants.IMAGE_10;
 import static io.quarkus.ts.spring.web.reactive.reactive.MariaDBConstants.PORT;
-import static io.quarkus.ts.spring.web.reactive.reactive.MariaDBConstants.START_LOG;
-
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import static io.quarkus.ts.spring.web.reactive.reactive.MariaDBConstants.START_LOG_10;
 
 import io.quarkus.test.bootstrap.MariaDbService;
 import io.quarkus.test.bootstrap.RestService;
@@ -13,10 +11,9 @@ import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
-@EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
 public class SpringWebRestReactiveIT extends AbstractSpringWebRestReactiveIT {
 
-    @Container(image = IMAGE_105, port = PORT, expectedLog = START_LOG)
+    @Container(image = IMAGE_10, port = PORT, expectedLog = START_LOG_10)
     static final MariaDbService database = new MariaDbService();
 
     @QuarkusApplication
