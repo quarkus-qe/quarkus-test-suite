@@ -9,13 +9,14 @@ import com.github.dockerjava.api.model.Image;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.DevModeQuarkusApplication;
+import io.quarkus.test.services.containers.model.KafkaRegistry;
 import io.quarkus.test.utils.DockerUtils;
 
 @Tag("QUARKUS-959")
 @Tag("QUARKUS-1087")
 @QuarkusScenario
 public class DevModeApicurioDevServiceUserExperienceIT {
-    private static final String APICURIO_VERSION = "2.0.1.Final";
+    private static final String APICURIO_VERSION = KafkaRegistry.APICURIO.getDefaultVersion();
     private static final String APICURIO_IMAGE = "apicurio/apicurio-registry-mem";
 
     @DevModeQuarkusApplication
