@@ -9,7 +9,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -21,8 +20,6 @@ import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.utils.Command;
 
-// TODO mvavrik: investigate and enable test!
-@Disabled("fails over incorrect response status, mvavrik will investigate in week 14")
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class OperatorOpenShiftInfinispanCountersIT extends BaseOpenShiftInfinispanIT {
