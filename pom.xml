@@ -704,8 +704,8 @@
                                 <postgresql.latest.image>registry.redhat.io/rhscl/postgresql-13-rhel7</postgresql.latest.image>
                                 <mariadb.103.image>registry.redhat.io/rhscl/mariadb-103-rhel7</mariadb.103.image>
                                 <mariadb.105.image>registry.redhat.io/rhel8/mariadb-105</mariadb.105.image>
-                                <amq-streams.image>registry.redhat.io/amq7/amq-streams-kafka-27-rhel7</amq-streams.image>
-                                <amq-streams.version>1.7.0</amq-streams.version>
+                                <amq-streams.image>registry.redhat.io/amq7/amq-streams-kafka-33-rhel8</amq-streams.image>
+                                <amq-streams.version>2.3.0</amq-streams.version>
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>
