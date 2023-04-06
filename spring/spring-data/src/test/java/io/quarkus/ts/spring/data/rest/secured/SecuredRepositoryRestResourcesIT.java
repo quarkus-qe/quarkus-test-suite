@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 import io.quarkus.ts.spring.data.AbstractDbIT;
 import io.restassured.http.ContentType;
 
@@ -148,8 +147,6 @@ public class SecuredRepositoryRestResourcesIT extends AbstractDbIT {
                 .then().statusCode(HttpStatus.SC_OK);
     }
 
-    // Fix for https://github.com/quarkusio/quarkus/issues/30358 has been backported to Quarkus 2.13 and 2.16, but not to 2.14 and 2.15.
-    @DisabledOnQuarkusVersion(version = "(2\\.14\\..*)|(2\\.15\\..*)", reason = "https://github.com/quarkusio/quarkus/issues/30358")
     @Test
     void rolesAllowedResourcePermitAllMethodWithoutRestResourceAnnotation() {
         app.given()
