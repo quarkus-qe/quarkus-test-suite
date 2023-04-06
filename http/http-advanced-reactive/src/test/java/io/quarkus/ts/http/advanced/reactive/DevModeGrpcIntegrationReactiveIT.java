@@ -18,6 +18,7 @@ import org.apache.http.HttpStatus;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -41,6 +42,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.WebSocket;
 
+// TODO mvavrik: enable test and adjust it to new DEV UI
+@Disabled("Disabled as DEV UI is work in progress currenlty")
 @Tag("QUARKUS-1026")
 @Tag("QUARKUS-1094")
 @QuarkusScenario
