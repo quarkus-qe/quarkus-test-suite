@@ -12,14 +12,12 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.ts.spring.data.AbstractDbIT;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 
 @Tag("QUARKUS-2788")
-@DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/30919")
 @QuarkusScenario
 public class OpenAPIIT extends AbstractDbIT {
     @Test

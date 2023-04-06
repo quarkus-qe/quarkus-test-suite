@@ -44,6 +44,10 @@
             <artifactId>quarkus-test-service-database</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-smallrye-openapi</artifactId>
+        </dependency>
     </dependencies>
     <profiles>
         <!-- Skipped on Windows as does not support Linux Containers / Testcontainers -->
@@ -70,21 +74,6 @@
                     </plugin>
                 </plugins>
             </build>
-        </profile>
-        <profile>
-            <!-- This dependency fails during native build, TODO: https://github.com/quarkusio/quarkus/issues/30919 -->
-            <id>openapi</id>
-            <activation>
-                <property>
-                    <name>!native</name>
-                </property>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>io.quarkus</groupId>
-                    <artifactId>quarkus-smallrye-openapi</artifactId>
-                </dependency>
-            </dependencies>
         </profile>
     </profiles>
 </project>
