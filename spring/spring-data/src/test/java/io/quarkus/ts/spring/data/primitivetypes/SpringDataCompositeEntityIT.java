@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 import io.quarkus.ts.spring.data.AbstractDbIT;
 import io.quarkus.ts.spring.data.primitivetypes.model.Book;
 import io.restassured.http.ContentType;
@@ -26,7 +25,6 @@ import io.restassured.response.Response;
 @QuarkusScenario
 public class SpringDataCompositeEntityIT extends AbstractDbIT {
 
-    @DisabledOnQuarkusVersion(version = "(2\\.[0-6]\\..*)|(2\\.7\\.[0-5]\\..*)|(2\\.8\\.0\\..*)", reason = "Fixed in Quarkus 2.8.1 and backported to 2.7.6.")
     @Test
     void testInterfaceBasedProjection() {
         app

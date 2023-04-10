@@ -71,7 +71,6 @@ import io.quarkus.example.HelloWorldProto;
 import io.quarkus.example.StreamingGrpc;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
-import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 import io.quarkus.test.scenarios.annotations.EnabledOnQuarkusVersion;
 import io.quarkus.ts.http.advanced.reactive.clients.HttpVersionClientService;
 import io.quarkus.ts.http.advanced.reactive.clients.HttpVersionClientServiceAsync;
@@ -340,7 +339,6 @@ public abstract class BaseHttpAdvancedReactiveIT {
                 .body(TEXT, is(TEXT));
     }
 
-    @DisabledOnQuarkusVersion(version = "(2\\.[0-8]\\..*)|(2\\.9\\.[0-1]\\..*)", reason = "Fixed in Quarkus 2.9.2.Final")
     @DisplayName("Jakarta REST RouterFilter and Vert.x Web Routes integration")
     @Test
     public void multipleResponseFilter() {
@@ -372,7 +370,6 @@ public abstract class BaseHttpAdvancedReactiveIT {
                         .anyMatch(headerValue::equals));
     }
 
-    @DisabledOnQuarkusVersion(version = "(2\\.[0-6]\\..*)|(2\\.7\\.[0-5]\\..*)|(2\\.8\\.[0-2]\\..*)", reason = "Fixed in Quarkus 2.8.3.Final. and backported to 2.7.6.Final")
     @DisplayName("Jakarta REST MessageBodyWriter test")
     @Test
     public void messageBodyWriter() {
@@ -388,7 +385,6 @@ public abstract class BaseHttpAdvancedReactiveIT {
                 .body(mediaTypeProperty + ".subtype", is("json"));
     }
 
-    @DisabledOnQuarkusVersion(version = "(2\\.[0-8]\\..*)|(2\\.9\\.0\\..*)", reason = "Fixed in Quarkus 2.9.1.Final")
     @DisplayName("Jakarta REST Response Content type test")
     @Test
     public void responseContentType() {
@@ -405,7 +401,6 @@ public abstract class BaseHttpAdvancedReactiveIT {
         testResponseContentType(IMAGE_JPEG, IMAGE_JPEG);
     }
 
-    @DisabledOnQuarkusVersion(version = "(2\\.[0-6]\\..*)|(2\\.7\\.[0-5]\\..*)|(2\\.8\\.0\\..*)", reason = "Fixed in Quarkus 2.8.1 and backported to 2.7.6.")
     @Test
     public void testMediaTypePassedToMessageBodyWriter() {
         // Accepted Media Type must be passed to 'MessageBodyWriter'

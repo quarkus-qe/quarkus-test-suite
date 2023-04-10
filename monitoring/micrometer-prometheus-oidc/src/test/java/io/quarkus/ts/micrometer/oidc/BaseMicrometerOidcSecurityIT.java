@@ -13,10 +13,8 @@ import org.keycloak.authorization.client.AuthzClient;
 
 import io.quarkus.test.bootstrap.KeycloakService;
 import io.quarkus.test.bootstrap.RestService;
-import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 import io.quarkus.test.services.KeycloakContainer;
 
-@DisabledOnQuarkusVersion(version = "(2\\.[2-9]\\..*)|(2\\.1[0-5]\\..*)", reason = "Fixed in Quarkus 2.16")
 public abstract class BaseMicrometerOidcSecurityIT {
 
     static final String NORMAL_USER = "test-normal-user";

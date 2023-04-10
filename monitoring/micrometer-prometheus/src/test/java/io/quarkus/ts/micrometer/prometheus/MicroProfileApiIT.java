@@ -10,12 +10,10 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 
 @QuarkusScenario
-@DisabledOnQuarkusVersion(version = "(2\\.[2-9]\\..*)|(2\\.1[0-5]\\..*)", reason = "Fixed in Quarkus 2.16")
 public class MicroProfileApiIT {
 
     private static final String PING_PONG = "ping pong";
