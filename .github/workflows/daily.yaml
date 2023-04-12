@@ -2,7 +2,7 @@ name: "Daily Build"
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 23 * * *'
+    - cron: '30 0 * * *'
 jobs:
   build-dependencies:
     name: Build Dependencies
