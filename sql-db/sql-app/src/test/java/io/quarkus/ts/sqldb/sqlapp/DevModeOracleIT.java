@@ -13,7 +13,7 @@ public class DevModeOracleIT extends AbstractSqlDatabaseIT {
     static RestService app = new RestService().withProperties("oracle.properties");
 
     @Test
-    public void postgresqlContainerShouldBeStarted() {
-        app.logs().assertContains("Creating container for image: docker.io/gvenzl/oracle-xe");
+    public void oracleContainerShouldBeStarted() {
+        app.logs().assertContains("Creating container for image: docker.io/gvenzl/oracle-free");
     }
 }
