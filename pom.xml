@@ -38,6 +38,8 @@
         <smallrye-stork.version>2.1.0</smallrye-stork.version>
         <assertj.version>3.24.2</assertj.version>
         <profile.id>jvm</profile.id>
+        <!-- Faster build when using -DskipTests -->
+        <quarkus.build.skip>${skipTests}</quarkus.build.skip>
         <!-- S2i configuration -->
         <ts.global.s2i.quarkus.jvm.builder.image>registry.access.redhat.com/ubi8/openjdk-11:latest</ts.global.s2i.quarkus.jvm.builder.image>
         <ts.global.s2i.quarkus.native.builder.image>quay.io/quarkus/ubi-quarkus-graalvmce-s2i:22.3-java17</ts.global.s2i.quarkus.native.builder.image>
