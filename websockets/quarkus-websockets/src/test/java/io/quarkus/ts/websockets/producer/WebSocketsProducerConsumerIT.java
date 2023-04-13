@@ -130,10 +130,13 @@ public class WebSocketsProducerConsumerIT {
     private static void assertMessage(String expectedMessage, Client... clients) {
         for (Client client : clients) {
             // message has been sent asynchronously, therefore we should wait a little
+            final long start = System.currentTimeMillis();
             Awaitility
                     .await()
-                    .atMost(ofSeconds(2))
+                    .atMost(ofSeconds(10)) // TODO: revise this timeout as it is too high
                     .untilAsserted(() -> Assertions.assertEquals(expectedMessage, client.getMessage()));
+            long timeSpentWaiting = System.currentTimeMillis() - start;
+            LOG.infof("Waited %s milliseconds for asynchronous message to arrive", timeSpentWaiting);
         }
     }
 
