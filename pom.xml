@@ -34,7 +34,7 @@
         <!-- <camel-quarkus-bom.version>2.16.0</camel-quarkus-bom.version> -->
         <!-- TODO: https://github.com/quarkiverse/quarkus-helm/issues/114-->
         <!-- <quarkus-helm.version>0.1.1</quarkus-helm.version> -->
-        <quarkiverse.config.version>2.0.0</quarkiverse.config.version>
+        <quarkiverse.config.version>2.0.1</quarkiverse.config.version>
         <smallrye-stork.version>2.1.0</smallrye-stork.version>
         <assertj.version>3.24.2</assertj.version>
         <profile.id>jvm</profile.id>
