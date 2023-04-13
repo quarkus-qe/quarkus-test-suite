@@ -76,6 +76,10 @@
                     <name>native</name>
                 </property>
             </activation>
+            <properties>
+                <!-- Skipped Quarkus build in native as all tests use custom build -->
+                <quarkus.build.skip>true</quarkus.build.skip>
+            </properties>
         </profile>
         <!-- Skipped on Windows as does not support Linux Containers / Testcontainers -->
         <profile>
