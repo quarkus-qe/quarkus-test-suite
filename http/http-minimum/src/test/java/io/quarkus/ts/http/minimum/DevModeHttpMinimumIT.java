@@ -4,7 +4,6 @@ import static org.hamcrest.CoreMatchers.is;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
@@ -16,8 +15,6 @@ import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.DevModeQuarkusApplication;
 import io.quarkus.test.utils.AwaitilityUtils;
 
-// TODO: mvavrik enable and adapt to new continuous testing page
-@Disabled("Disabled as DEV UI continuous testing is currently re-worked")
 @Tag("QUARKUS-1026")
 @QuarkusScenario
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
