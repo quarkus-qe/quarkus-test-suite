@@ -1,14 +1,16 @@
-package io.quarkus.ts.sqldb.sqlapp;
+package io.quarkus.ts.sqldb.compatibility;
 
 import org.junit.jupiter.api.Tag;
 
 import io.quarkus.test.bootstrap.Db2Service;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
+@DisabledOnNative(reason = "Compatibility mode check in JVM mode is enough for this DB")
 @Tag("fips-incompatible") // Reported in https://github.com/IBM/Db2/issues/43
 public class DB2DatabaseIT extends AbstractSqlDatabaseIT {
 
