@@ -1,5 +1,6 @@
 package io.quarkus.ts.micrometer.prometheus.kafka.reactive;
 
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import io.quarkus.test.bootstrap.KafkaService;
@@ -9,6 +10,7 @@ import io.quarkus.test.services.KafkaContainer;
 import io.quarkus.test.services.QuarkusApplication;
 
 @OpenShiftScenario
+@DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/1144")
 @EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
 public class OpenShiftAmqStreamsAlertEventsReactiveIT extends BaseOpenShiftAlertEventsReactiveIT {
 

@@ -230,12 +230,12 @@
                                 <!-- Services used in test suite -->
                                 <postgresql.latest.image>${postgresql.latest.image}</postgresql.latest.image>
                                 <!-- TODO: investigate further in https://github.com/quarkus-qe/quarkus-test-suite/issues/627 -->
-                                <elastic.71.image>docker.io/bitnami/elasticsearch:7.17.6</elastic.71.image>
+                                <elastic.71.image>docker.io/bitnami/elasticsearch:7.17.9</elastic.71.image>
                                 <!--TODO change into 5.7 when this fixed https://github.com/docker-library/mysql/issues/844 -->
                                 <mysql.57.image>docker.io/library/mysql:5.7.36</mysql.57.image>
                                 <!-- TODO https://github.com/quarkus-qe/quarkus-test-suite/issues/609 -->
                                 <mysql.upstream.80.image>docker.io/library/mysql:8.0</mysql.upstream.80.image>
-                                <mysql.80.image>registry.access.redhat.com/rhscl/mysql-80-rhel7</mysql.80.image>
+                                <mysql.80.image>registry.redhat.io/rhel8/mysql-80</mysql.80.image>
                                 <mariadb.10.image>docker.io/library/mariadb:10.10</mariadb.10.image>
                                 <mssql.image>mcr.microsoft.com/mssql/rhel/server:2022-latest</mssql.image>
                                 <oracle.image>docker.io/gvenzl/oracle-xe:21-slim-faststart</oracle.image>
@@ -244,7 +244,7 @@
                                 <redis.image>docker.io/library/redis:6.0</redis.image>
                                 <wiremock.image>quay.io/ocpmetal/wiremock</wiremock.image>
                                 <!-- TODO use official image when/if this fixed https://github.com/hashicorp/docker-consul/issues/184 -->
-                                <consul.image>docker.io/bitnami/consul:1.13.1</consul.image>
+                                <consul.image>docker.io/bitnami/consul:1.15.2</consul.image>
                                 <infinispan.image>quay.io/infinispan/server:14.0</infinispan.image>
                                 <infinispan.expected-log>Infinispan Server.*started in</infinispan.expected-log>
                                 <spring.cloud.server.image>quay.io/quarkusqeteam/spring-cloud-config-server:3.0</spring.cloud.server.image>
@@ -706,6 +706,50 @@
                                 <mariadb.105.image>registry.redhat.io/rhel8/mariadb-105</mariadb.105.image>
                                 <amq-streams.image>registry.redhat.io/amq7/amq-streams-kafka-33-rhel8</amq-streams.image>
                                 <amq-streams.version>2.3.0</amq-streams.version>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <!-- You need to be connected to an OpenShift instance to activate this
+                profile! -->
+            <id>openshift-arm</id>
+            <activation>
+                <property>
+                    <name>openshift-arm</name>
+                </property>
+            </activation>
+            <properties>
+                <include.tests>**/*OpenShift*IT.java</include.tests>
+                <exclude.openshift.tests>no</exclude.openshift.tests>
+            </properties>
+        </profile>
+        <profile>
+            <id>openshift-arm-containers</id>
+            <activation>
+                <property>
+                    <name>openshift-arm</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <ts.arm.missing.services.excludes>true</ts.arm.missing.services.excludes>
+                                <ts.redhat.registry.enabled>true</ts.redhat.registry.enabled>
+                                <!-- Product Services -->
+                                <rhsso.image>registry.redhat.io/rh-sso-7/sso76-openshift-rhel8</rhsso.image>
+                                <postgresql.10.image>registry.redhat.io/rhel8/postgresql-10</postgresql.10.image>
+                                <postgresql.latest.image>registry.redhat.io/rhscl/postgresql-13-rhel7</postgresql.latest.image>
+                                <mariadb.103.image>registry.redhat.io/rhel8/mariadb-103</mariadb.103.image>
+                                <mariadb.105.image>registry.redhat.io/rhel8/mariadb-105</mariadb.105.image>
+                                <amq-streams.image>registry.redhat.io/amq7/amq-streams-kafka-27-rhel7</amq-streams.image>
+                                <amq-streams.version>1.7.0</amq-streams.version>
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>

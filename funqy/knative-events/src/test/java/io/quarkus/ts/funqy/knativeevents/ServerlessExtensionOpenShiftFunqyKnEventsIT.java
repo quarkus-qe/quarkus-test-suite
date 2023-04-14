@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 
 import io.fabric8.knative.sources.v1.PingSourceBuilder;
 import io.quarkus.test.bootstrap.Action;
@@ -37,6 +38,7 @@ import io.quarkus.test.services.knative.eventing.spi.ForwardResponseDTO;
 import io.restassured.common.mapper.TypeRef;
 
 @Disabled("Disabled as flaky") // TODO mvavrik: investigate why the test is flaky
+@DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/1142")
 @Tag("use-quarkus-openshift-extension")
 @Tag("serverless")
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
