@@ -1,16 +1,18 @@
-package io.quarkus.ts.sqldb.sqlapp;
+package io.quarkus.ts.sqldb.compatibility;
 
 import org.junit.jupiter.api.Tag;
 
 import io.quarkus.test.bootstrap.MySqlService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
 // TODO https://github.com/quarkus-qe/quarkus-test-suite/issues/756
 @Tag("fips-incompatible") // native-mode
 @QuarkusScenario
+@DisabledOnNative(reason = "Compatibility mode check in JVM mode is enough for this DB")
 public class MySqlDatabaseIT extends AbstractSqlDatabaseIT {
 
     static final int MYSQL_PORT = 3306;

@@ -1,12 +1,14 @@
-package io.quarkus.ts.sqldb.sqlapp;
+package io.quarkus.ts.sqldb.compatibility;
 
 import io.quarkus.test.bootstrap.OracleService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
+@DisabledOnNative(reason = "Compatibility mode check in JVM mode is enough for this DB")
 public class OracleDatabaseIT extends AbstractSqlDatabaseIT {
 
     static final int ORACLE_PORT = 1521;

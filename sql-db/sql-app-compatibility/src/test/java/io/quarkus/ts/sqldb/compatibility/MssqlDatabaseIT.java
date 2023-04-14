@@ -1,4 +1,4 @@
-package io.quarkus.ts.sqldb.sqlapp;
+package io.quarkus.ts.sqldb.compatibility;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.bootstrap.SqlServerService;

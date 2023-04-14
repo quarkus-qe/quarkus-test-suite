@@ -1,4 +1,4 @@
-package io.quarkus.ts.sqldb.sqlapp;
+package io.quarkus.ts.sqldb.compatibility;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
+import io.quarkus.ts.sqldb.sqlapp.Book;
 import io.restassured.http.ContentType;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
