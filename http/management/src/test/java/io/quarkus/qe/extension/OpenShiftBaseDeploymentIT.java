@@ -1,20 +1,15 @@
-package io.quarkus.qe;
+package io.quarkus.qe.extension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
-import io.quarkus.test.scenarios.OpenShiftDeploymentStrategy;
-import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.services.QuarkusApplication;
 import io.restassured.response.Response;
 
-@OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
-@Disabled("Requires fixing https://github.com/quarkusio/quarkus/issues/32135 and changes in the Framework")
-public class OpenShiftExtensionIT {
+public abstract class OpenShiftBaseDeploymentIT {
     @QuarkusApplication
     static final RestService app = new RestService();
 
