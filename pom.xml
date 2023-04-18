@@ -237,7 +237,7 @@
                                 <mysql.57.image>docker.io/library/mysql:5.7.36</mysql.57.image>
                                 <!-- TODO https://github.com/quarkus-qe/quarkus-test-suite/issues/609 -->
                                 <mysql.upstream.80.image>docker.io/library/mysql:8.0</mysql.upstream.80.image>
-                                <mysql.80.image>registry.redhat.io/rhel8/mysql-80</mysql.80.image>
+                                <mysql.80.image>registry.access.redhat.com/rhscl/mysql-80-rhel7</mysql.80.image>
                                 <mariadb.10.image>docker.io/library/mariadb:10.10</mariadb.10.image>
                                 <mssql.image>mcr.microsoft.com/mssql/rhel/server:2022-latest</mssql.image>
                                 <oracle.image>docker.io/gvenzl/oracle-xe:21-slim-faststart</oracle.image>
@@ -740,20 +740,28 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>
-                        <configuration>
-                            <systemPropertyVariables>
-                                <ts.arm.missing.services.excludes>true</ts.arm.missing.services.excludes>
-                                <ts.redhat.registry.enabled>true</ts.redhat.registry.enabled>
-                                <!-- Product Services -->
-                                <rhsso.image>registry.redhat.io/rh-sso-7/sso76-openshift-rhel8</rhsso.image>
-                                <postgresql.10.image>registry.redhat.io/rhel8/postgresql-10</postgresql.10.image>
-                                <postgresql.latest.image>registry.redhat.io/rhscl/postgresql-13-rhel7</postgresql.latest.image>
-                                <mariadb.103.image>registry.redhat.io/rhel8/mariadb-103</mariadb.103.image>
-                                <mariadb.105.image>registry.redhat.io/rhel8/mariadb-105</mariadb.105.image>
-                                <amq-streams.image>registry.redhat.io/amq7/amq-streams-kafka-27-rhel7</amq-streams.image>
-                                <amq-streams.version>1.7.0</amq-streams.version>
-                            </systemPropertyVariables>
-                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                                <configuration>
+                                    <systemPropertyVariables>
+                                        <ts.arm.missing.services.excludes>true</ts.arm.missing.services.excludes>
+                                        <ts.redhat.registry.enabled>true</ts.redhat.registry.enabled>
+                                        <!-- Product Services -->
+                                        <rhsso.image>registry.redhat.io/rh-sso-7/sso76-openshift-rhel8</rhsso.image>
+                                        <postgresql.10.image>registry.redhat.io/rhel8/postgresql-10</postgresql.10.image>
+                                        <mysql.80.image>registry.redhat.io/rhel8/mysql-80</mysql.80.image>
+                                        <mariadb.103.image>registry.redhat.io/rhel8/mariadb-103</mariadb.103.image>
+                                        <mariadb.105.image>registry.redhat.io/rhel8/mariadb-105</mariadb.105.image>
+                                        <amq-streams.image>registry.redhat.io/amq7/amq-streams-kafka-27-rhel7</amq-streams.image>
+                                        <amq-streams.version>1.7.0</amq-streams.version>
+                                    </systemPropertyVariables>
+                                </configuration>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>
