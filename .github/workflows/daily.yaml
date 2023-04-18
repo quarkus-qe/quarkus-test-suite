@@ -31,6 +31,7 @@ jobs:
         with:
           name: maven-repo
           path: maven-repo.tgz
+          retention-days: 1
   linux-build-jvm-latest:
     name: Daily - Linux - JVM build - Latest Version
     runs-on: ubuntu-latest
