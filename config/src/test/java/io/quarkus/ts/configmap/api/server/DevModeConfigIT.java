@@ -6,6 +6,7 @@ import static io.quarkus.ts.configmap.api.server.SecretKeysHandler.BASE64;
 import static io.quarkus.ts.configmap.api.server.SecretKeysHandler.CRYPTO_AES_GCM_NO_PADDING;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.time.Duration.ofSeconds;
+import static org.junit.jupiter.api.condition.OS.WINDOWS;
 import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
 import java.util.Base64;
@@ -13,11 +14,13 @@ import java.util.Base64;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
 
 import io.quarkus.test.bootstrap.DevModeQuarkusService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.DevModeQuarkusApplication;
 
+@DisabledOnOs(value = WINDOWS, disabledReason = "Needs Docker support") // Windows containers are not supported by TestContainers
 @QuarkusScenario
 public class DevModeConfigIT {
 
