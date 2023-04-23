@@ -1,7 +1,6 @@
 package io.quarkus.ts.funqy.knativeevents;
 
 import static io.quarkus.ts.funqy.knativeevents.Constants.ENV_VAR_VALUE;
-import static io.quarkus.ts.funqy.knativeevents.Constants.FALLBACK_EXPECTED_VALUE;
 import static io.quarkus.ts.funqy.knativeevents.Constants.PENG_EXPECTED_VALUE;
 import static io.quarkus.ts.funqy.knativeevents.Constants.PONG_EXPECTED_VALUE;
 import static io.quarkus.ts.funqy.knativeevents.Constants.PUNG_EXPECTED_VALUE;
@@ -33,7 +32,7 @@ public class ValidationResult {
     }
 
     public enum Functions {
-        FALLBACK(FALLBACK_EXPECTED_VALUE),
+        FALLBACK(true),
         PING(true),
         PUNG(PUNG_EXPECTED_VALUE),
         PENG(PENG_EXPECTED_VALUE),
