@@ -51,13 +51,11 @@ public class OpenShiftCustomMetricsIT {
     @QuarkusApplication
     static RestService app = new RestService()
             /*
-             * TODO fix deployment with OpenShiftDeploymentStrategies in the Framework
-             * see https://github.com/quarkusio/quarkus/issues/32135#issuecomment-1486740862 for details
-             * .withProperty("quarkus.management.ssl.certificate.key-store-file",
-             * "META-INF/resources/server.keystore")
+             * TODO use https when https://github.com/quarkusio/quarkus/issues/32225 is fixed
+             * .withProperty("quarkus.management.ssl.certificate.key-store-file", "META-INF/resources/server.keystore")
              * .withProperty("quarkus.management.ssl.certificate.key-store-password", "password")
-             * .withProperty("quarkus.management.enabled", "true")
              */
+            .withProperty("quarkus.management.enabled", "true")
             .onPostStart(OpenShiftCustomMetricsIT::loadServiceMonitor);
 
     @Inject
