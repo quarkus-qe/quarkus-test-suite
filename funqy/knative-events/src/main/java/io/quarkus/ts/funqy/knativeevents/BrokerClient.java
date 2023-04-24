@@ -22,18 +22,26 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 /**
  * BrokerClient enables sending of events to the broker.
  */
-@Consumes("application/json")
-@Produces("application/json")
 @Path("/")
 @RegisterRestClient(configKey = "broker")
 @RegisterClientHeaders(BrokerClient.RequestUUIDHeaderFactory.class)
 public interface BrokerClient {
 
     @POST
+    @Produces("application/json")
+    @Consumes("application/json")
     @ClientHeaderParam(name = "ce-specversion", value = "1.0")
     @ClientHeaderParam(name = "ce-source", value = "test")
     @ClientHeaderParam(name = "ce-" + CUSTOM_EVENT_ATTR_NAME, value = CUSTOM_EVENT_ATTR_VALUE)
     void forwardEventToBroker(@HeaderParam("ce-type") String ceType, String data);
+
+    @POST
+    @Produces("application/octet-stream")
+    @Consumes("application/octet-stream")
+    @ClientHeaderParam(name = "ce-specversion", value = "1.0")
+    @ClientHeaderParam(name = "ce-source", value = "test")
+    @ClientHeaderParam(name = "ce-" + CUSTOM_EVENT_ATTR_NAME, value = CUSTOM_EVENT_ATTR_VALUE)
+    void forwardEventToBroker(@HeaderParam("ce-type") String ceType, byte[] data);
 
     /**
      * Adds a unique id of the event as 'ce-id' header parameter.

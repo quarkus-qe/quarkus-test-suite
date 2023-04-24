@@ -17,8 +17,7 @@ import static io.quarkus.ts.funqy.knativeevents.ValidationResult.Functions.PONG;
 import static io.quarkus.ts.funqy.knativeevents.ValidationResult.Functions.PUNG;
 import static java.lang.String.format;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
@@ -42,6 +41,7 @@ import io.smallrye.mutiny.Uni;
 public class FunctionValidationChain {
     private static final Logger LOG = Logger.getLogger(FunctionValidationChain.class);
     private final CompoundValidationResult compoundResponse;
+    private volatile boolean sentEventToUnknownTrigger = false;
 
     public FunctionValidationChain(ValidationResultRepository repository, @RestClient BrokerClient brokerClient,
             @ConfigProperty(name = ENV_VAR_NAME) String envVar) {
@@ -123,12 +123,8 @@ public class FunctionValidationChain {
         if (!compoundResponse.isProcessingFinished()) {
             LOG.info("*** fallback ***");
 
-            // decode response and add validation result
-            int i = ByteBuffer.wrap(data).order(ByteOrder.BIG_ENDIAN).getInt();
-            byte[] result = new byte[4];
-            ByteBuffer.wrap(result).order(ByteOrder.BIG_ENDIAN).putInt(i * 2);
-
             // record response and send broker cloud event for ping trigger
+            boolean result = Arrays.equals(Constants.FALLBACK_EXPECTED_VALUE, data);
             compoundResponse.recordResponse(new ValidationResult(FALLBACK, result));
             compoundResponse.triggerPingFunction();
         }
@@ -141,7 +137,14 @@ public class FunctionValidationChain {
     @Funq
     public Uni<ForwardResponseDTO<Set<ValidationResult>>> clusterEntrypoint() {
         LOG.info("*** clusterEntrypoint ***");
-        return Uni.createFrom().item(compoundResponse.getAllOrNothing());
+
+        var result = compoundResponse.getAllOrNothing(); // record now to avoid concurrency issue
+        if (!sentEventToUnknownTrigger) {
+            sentEventToUnknownTrigger = true;
+            compoundResponse.triggerUnknownFunction();
+        }
+
+        return Uni.createFrom().item(result);
     }
 
     /**
@@ -192,6 +195,11 @@ public class FunctionValidationChain {
 
         private void triggerPingFunction() {
             brokerClient.forwardEventToBroker(PING_TRIGGER, Boolean.TRUE.toString());
+        }
+
+        private void triggerUnknownFunction() {
+            // Funqy service is unaware of 'unknown' event type, therefore the fallback function will be invoked
+            brokerClient.forwardEventToBroker("unknown", Constants.FALLBACK_EXPECTED_VALUE);
         }
 
     }

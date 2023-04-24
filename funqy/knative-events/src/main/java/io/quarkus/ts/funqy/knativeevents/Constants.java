@@ -1,7 +1,5 @@
 package io.quarkus.ts.funqy.knativeevents;
 
-import java.util.Base64;
-
 public interface Constants {
 
     String CUSTOM_EVENT_ATTR_VALUE = "customEventAttrValue";
@@ -10,7 +8,7 @@ public interface Constants {
     String PING_RESPONSE_SOURCE = "ping-response-source";
     String PING_RESPONSE_TYPE = "ping-response-type";
     String PONG_EXPECTED_VALUE = PING_RESPONSE_SOURCE + "," + PING_RESPONSE_TYPE;
-    String FALLBACK_EXPECTED_VALUE = Base64.getEncoder().encodeToString(new byte[] { 0x24, 0x68, (byte) 0xAC, (byte) 0xf0 });
+    byte[] FALLBACK_EXPECTED_VALUE = new byte[] { 0x24, 0x68, (byte) 0xAC, (byte) 0xf0 };
     String ENV_VAR_NAME = "env-var-name";
     String ENV_VAR_VALUE = "env-var-value";
     String PUNG_EXPECTED_VALUE = "Answer to the Ultimate Question of Life, the Universe and Everything is 42.";
