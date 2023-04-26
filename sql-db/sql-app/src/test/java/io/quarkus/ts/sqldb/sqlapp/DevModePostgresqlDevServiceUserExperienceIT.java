@@ -28,7 +28,18 @@ public class DevModePostgresqlDevServiceUserExperienceIT {
             .withProperty("quarkus.datasource.devservices.port", Integer.toString(SocketUtils.findAvailablePort()))
             .withProperty("quarkus.datasource.devservices.image-name", "${postgresql.latest.image}")
             .withProperty("quarkus.hibernate-orm.database.generation", "none")
-            .onPreStart(s -> DockerUtils.removeImage(POSTGRES_NAME, POSTGRESQL_VERSION));
+            .onPreStart(s -> {
+                var img = DockerUtils.getImage(POSTGRES_NAME, POSTGRESQL_VERSION);
+                if (img != null) {
+                    System.out.println("DOCKER IMAGEEEEEEE id " + img.getId());
+                    img.getRawValues().forEach((k, val) -> System.out.println("DOCKER IMAGEEEEEEE  " + val + " j " + k));
+                    System.out.println("DOC IMMMMMMMMMMMMG " + img);
+                    var isVer = DockerUtils.isVersion(img, POSTGRESQL_VERSION);
+                    System.out.println("IS VEEEEEEEEEERSION " + isVer);
+                }
+                boolean removed = DockerUtils.removeImage(POSTGRES_NAME, POSTGRESQL_VERSION);
+                System.out.println("removeddddddddddddddddddddddddd " + removed);
+            });
 
     @Test
     public void verifyIfUserIsInformedAboutPostgresqlDevServicePulling() {
