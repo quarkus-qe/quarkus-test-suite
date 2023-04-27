@@ -12,6 +12,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.QuarkusApplication;
 
 @Tag("QUARKUS-1075")
@@ -38,6 +39,7 @@ public class ExecutionModelIT {
         app.logs().assertDoesNotContain(THREAD_BLOCKED);
     }
 
+    @DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/32886")
     @ParameterizedTest
     @ValueSource(strings = { "uni", "multi", "completion-stage" })
     public void shouldBlockIOThread(String path) {
