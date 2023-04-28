@@ -7,13 +7,12 @@ import java.util.concurrent.TimeUnit;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.JMSContext;
+import jakarta.jms.Session;
 
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
-
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSContext;
-import javax.jms.Session;
 
 /**
  * https://quarkus.io/guides/jms#qpid-jms-amqp.
