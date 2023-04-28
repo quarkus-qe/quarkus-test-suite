@@ -233,6 +233,13 @@ rules:
 
 These requirements are necessary to verify the tests using Operators.
 
+### Groups overview
+The suite uses `org.junit.jupiter.api.Tag` annotation to group similar tests together. They can be enabled/disabled with standard Maven options `groups` and `excludedGroups` (see https://maven.apache.org/surefire/maven-surefire-plugin/test-mojo.html). Aside from specific use-cases (eg `@Tag("QUARKUS-1547")`), there are several common groups used through the test suite:
+- `fips-incompatible`: tests, which broke when running on FIPS 140-2 compliant hosts
+- `use-quarkus-openshift-extension`: tests use `quarkus-openshift` extension to deploy the app
+- `serverless`: use Openshift Serverless to deploy the app
+- `quarkus-cli`: tests use Quarkus CLI, which needs to be installed ( see https://quarkus.io/guides/cli-tooling for details)
+
 ## Running against Red Hat build of Quarkus
 
 When running against released Red Hat build of Quarkus make sure https://maven.repository.redhat.com/ga/ repository is defined in settings.xml.
@@ -260,6 +267,8 @@ mvn -fae clean verify \
 The `main` branch is always meant for latest upstream/downstream development. For each downstream major.minor version, there's a corresponding maintenance branch:
 
   - `1.11` for Red Hat build of Quarkus 1.11.z (corresponding upstream version: `1.11.0.Final+`)
+  - `2.7` for Red Hat build of Quarkus 2.7.z (corresponding upstream version: `2.7.7.Final`)
+  - `2.13` for Red Hat build of Quarkus 2.13.z (corresponding upstream version: `2.13.7.Final`)
 
 ## Test Framework
 
