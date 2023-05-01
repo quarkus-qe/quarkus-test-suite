@@ -27,7 +27,7 @@
         <impsort-maven-plugin.version>1.8.0</impsort-maven-plugin.version>
         <xml-format-maven-plugin.version>3.2.2</xml-format-maven-plugin.version>
         <checkstyle.version>10.10.0</checkstyle.version>
-        <jsoup.version>1.15.4</jsoup.version>
+        <jsoup.version>1.16.1</jsoup.version>
         <!-- TODO: uncomment Camel Quarkus BOM when Camel Quarkus 3 is released -->
         <!-- <camel-quarkus-bom.version>2.16.0</camel-quarkus-bom.version> -->
         <!-- TODO: https://github.com/quarkiverse/quarkus-helm/issues/114-->
