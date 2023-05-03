@@ -41,6 +41,7 @@ import io.smallrye.mutiny.tuples.Tuple2;
 public class AgroalPoolTest {
 
     private final int CONCURRENCY_LEVEL = 20;
+    private final int SAFETY_INTERVAL = 200;
 
     @Inject
     EntityManager em;
@@ -66,7 +67,7 @@ public class AgroalPoolTest {
     @Test
     public void idleTimeoutTest() throws InterruptedException {
         makeApplicationQuery();
-        Thread.sleep(getIdleMs() + getIdleBackgroundValidationMs());
+        Thread.sleep(getIdleMs() + getIdleBackgroundValidationMs() + SAFETY_INTERVAL);
         assertEquals(1, activeConnections(), "agroalCheckIdleTimeout: Expected " + datasourceMinSize + " active connections");
     }
 
