@@ -18,7 +18,7 @@ import io.quarkus.test.services.JaegerContainer;
 import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
-public class OpenTelemetryGrpcIT {
+public class GrpcIT {
 
     @JaegerContainer(useOtlpCollector = true)
     static final JaegerService jaeger = new JaegerService();
@@ -61,5 +61,4 @@ public class OpenTelemetryGrpcIT {
 
         assertEquals(expected, pongTraceId);
     }
-
 }
