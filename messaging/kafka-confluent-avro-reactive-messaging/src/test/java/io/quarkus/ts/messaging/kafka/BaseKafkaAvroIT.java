@@ -2,7 +2,6 @@ package io.quarkus.ts.messaging.kafka;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -52,8 +51,6 @@ public abstract class BaseKafkaAvroIT {
 
         SseEventSource source = SseEventSource.target(target).build();
         source.register(inboundSseEvent -> {
-            // FIXME: remove logging once flaky tests are fixed
-            System.out.printf("Received 'inboundSseEvent' '%s'.%n%n%n", inboundSseEvent);
             if (expectedItemsPerEvent == SINGLE) {
                 latch.countDown();
             } else {
@@ -61,10 +58,7 @@ public abstract class BaseKafkaAvroIT {
                 if (items.length >= expectedItemsPerEvent) {
                     latch.countDown();
                 }
-                System.out.printf("Received items '%s' %n countDown is '%b' %n%n%n", Arrays.toString(items),
-                        items.length >= expectedItemsPerEvent);
             }
-            System.out.printf("Latch count is '%d'.%n%n%n", latch.getCount());
         });
 
         source.open();
