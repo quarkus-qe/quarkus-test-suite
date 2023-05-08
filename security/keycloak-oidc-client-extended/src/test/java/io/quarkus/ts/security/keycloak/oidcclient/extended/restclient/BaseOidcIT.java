@@ -23,7 +23,8 @@ public abstract class BaseOidcIT {
 
     @QuarkusApplication
     static RestService app = new RestService()
-            .withProperty("quarkus.oidc.auth-server-url", keycloak::getRealmUrl);
+            .withProperty("quarkus.oidc.auth-server-url", keycloak::getRealmUrl)
+            .withProperty("quarkus.http.auth.basic", "false");
 
     private AuthzClient authzClient;
 
