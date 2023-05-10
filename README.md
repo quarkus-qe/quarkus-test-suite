@@ -565,6 +565,9 @@ Base application contains REST resource `TransferResource` and three main servic
 and `TransferTopUpService` which implement various bank transactions. The main scenario is implemented in `TransactionGeneralUsageIT` 
 and checks whether transactions and rollbacks always done in full.
 
+OpenTelemetry JDBC instrumentation test coverage is also placed here. JDBC tracing is tested for all supported 
+databases in JVM mode, native mode and OpenShift. Smoke tests for DEV mode are using PostgreSQL.
+
 ### `security/basic`
 
 Verifies the simplest way of doing authn/authz.
