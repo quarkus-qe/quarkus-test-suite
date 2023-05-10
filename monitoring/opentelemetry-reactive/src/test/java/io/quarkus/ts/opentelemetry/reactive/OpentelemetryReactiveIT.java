@@ -3,6 +3,7 @@ package io.quarkus.ts.opentelemetry.reactive;
 import static io.restassured.RestAssured.given;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
 
@@ -11,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matcher;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
@@ -31,7 +33,8 @@ public class OpentelemetryReactiveIT {
     @JaegerContainer(useOtlpCollector = true, expectedLog = "\"Health Check state change\",\"status\":\"ready\"")
     static final JaegerService jaeger = new JaegerService();
 
-    @QuarkusApplication(classes = PongResource.class, properties = "pong.properties")
+    @QuarkusApplication(classes = { PongResource.class, SchedulerResource.class,
+            SchedulerService.class }, properties = "pong.properties")
     static final RestService pongservice = new RestService()
             .withProperty("quarkus.application.name", "pongservice")
             .withProperty("quarkus.opentelemetry.tracer.exporter.otlp.endpoint", jaeger::getCollectorUrl);
@@ -55,6 +58,29 @@ public class OpentelemetryReactiveIT {
             thenTriggeredOperationsMustBe(containsInAnyOrder(operations));
             thenTraceSpanSizeMustBe(is(3)); // 2 endpoint's + rest client call
         });
+    }
+
+    @Test
+    public void testSchedulerTracing() {
+        String operationName = "SchedulerService.increment";
+        String[] operations = new String[] { operationName };
+
+        // asserts scheduled method was traced
+        await().atMost(1, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(1)).untilAsserted(() -> {
+            thenRetrieveTraces(10, "1h", pongservice.getName(), operationName);
+            thenTriggeredOperationsMustBe(containsInAnyOrder(operations));
+            thenTraceSpanSizeMustBe(greaterThanOrEqualTo(1));
+        });
+
+        // asserts scheduled method was invoked
+        int invocations = Integer.parseInt(given().when()
+                .get(pongservice.getHost() + ":" + pongservice.getPort() + "/scheduler/count")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .extract()
+                .body()
+                .asString());
+        Assertions.assertTrue(invocations >= 2);
     }
 
     public void whenDoPingPongRequest() {

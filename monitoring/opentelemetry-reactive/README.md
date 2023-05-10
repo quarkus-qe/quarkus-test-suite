@@ -4,7 +4,7 @@
 [Quarkus OpenTelemetry guide](https://quarkus.io/guides/opentelemetry)
 
 ## Scope of the test
-1. Testing OpenTelemetry with Jaeger components and RESTEasy Reactive
+1. Testing OpenTelemetry with Jaeger components, RESTEasy Reactive and Quarkus Scheduler
  - Extension `quarkus-opentelemetry` - responsible for traces generation in OpenTelemetry format and export into OpenTelemetry components (opentelemetry-agent, opentelemetry-collector)
  
 Scenarios that test proper traces export to Jaeger components and context propagation. 
