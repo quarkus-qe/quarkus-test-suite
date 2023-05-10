@@ -566,7 +566,8 @@ and `TransferTopUpService` which implement various bank transactions. The main s
 and checks whether transactions and rollbacks always done in full.
 
 OpenTelemetry JDBC instrumentation test coverage is also placed here. JDBC tracing is tested for all supported 
-databases in JVM mode, native mode and OpenShift. Smoke tests for DEV mode are using PostgreSQL.
+databases in JVM mode, native mode and OpenShift. Smoke tests for DEV mode are using PostgreSQL. Smallrye Context Propagation
+cooperation with OpenTelemetry in DEV mode is also placed in this module.
 
 ### `security/basic`
 

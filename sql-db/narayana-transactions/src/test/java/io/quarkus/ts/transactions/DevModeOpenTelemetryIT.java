@@ -1,10 +1,18 @@
 package io.quarkus.ts.transactions;
 
 import static io.quarkus.test.utils.AwaitilityUtils.untilAsserted;
+import static io.quarkus.test.utils.AwaitilityUtils.untilIsNotNull;
+import static io.quarkus.test.utils.AwaitilityUtils.AwaitilitySettings.using;
 import static io.quarkus.ts.transactions.TransactionCommons.getTracedOperationsForName;
+import static io.quarkus.ts.transactions.TransactionCommons.retrieveTraces;
 import static io.quarkus.ts.transactions.TransactionCommons.verifyRequestTraces;
 import static io.restassured.RestAssured.given;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.time.Duration;
+import java.util.Arrays;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
@@ -56,13 +64,39 @@ public class DevModeOpenTelemetryIT {
         verifyRequestTraces(UPDATE_OPERATION_NAME, jaeger);
     }
 
+    @Test
+    void testSpanContextPropagation() {
+        // verifies context propagation with OpenTelemetry
+        // please see https://github.com/quarkusio/quarkus/issues/30362 for more details
+
+        var body = given().get("/span/").then().statusCode(HttpStatus.SC_OK).extract().asString();
+        assertNotNull(body);
+        assertTrue(body.startsWith("Hello "));
+        var traceIds = body.substring(6).split("-");
+        assertEquals(3, traceIds.length);
+        // assert trace ids from all contexts are same
+        assertEquals(1, Arrays.stream(traceIds).distinct().count());
+        // assert operation is stored in Jaeger under same trace id
+        assertEquals(traceIds[0], getTraceIdForSpanOperation());
+    }
+
     private static void verifyNoTracesForOperation(String operationName) {
         var operations = getTracedOperationsForName(operationName, jaeger);
         assertTrue(operations.stream().noneMatch(operationName::equals));
     }
 
+    private static String getTraceIdForSpanOperation() {
+        return untilIsNotNull(
+                DevModeOpenTelemetryIT::retrieveTraceIdForSpanOperation,
+                using(Duration.ofSeconds(2), Duration.ofMinutes(1)));
+    }
+
+    private static String retrieveTraceIdForSpanOperation() {
+        return retrieveTraces(20, "1h", "narayanaTransactions", "GET /span", jaeger).jsonPath().getString("data[0].traceID");
+    }
+
     private static String getOtelEnabledProperty(boolean enabled) {
-        return "quarkus.datasource.jdbc.telemetry.enabled=" + Boolean.toString(enabled);
+        return "quarkus.datasource.jdbc.telemetry.enabled=" + enabled;
     }
 
 }

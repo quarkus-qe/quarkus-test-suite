@@ -212,7 +212,7 @@ public abstract class TransactionCommons {
                 .body().as(JournalEntity.class);
     }
 
-    private static Response retrieveTraces(int pageLimit, String lookBack, String serviceName, String operationName,
+    static Response retrieveTraces(int pageLimit, String lookBack, String serviceName, String operationName,
             JaegerService jaeger) {
         return given().when()
                 .log().uri()
