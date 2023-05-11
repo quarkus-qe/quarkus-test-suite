@@ -1,11 +1,14 @@
 package io.quarkus.ts.opentelemetry;
 
 import static io.quarkus.test.bootstrap.Protocol.HTTP;
+import static io.quarkus.ts.opentelemetry.MicroProfileTelemetryDIResource.LONG_ATTRIBUTE_NAME;
 import static io.restassured.RestAssured.given;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
@@ -16,7 +19,10 @@ import java.util.stream.Stream;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matcher;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
 
@@ -27,6 +33,7 @@ import io.quarkus.test.services.JaegerContainer;
 import io.quarkus.test.services.QuarkusApplication;
 import io.restassured.response.Response;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class) // order methods as SDK autoconfigure test expects previous traces
 @QuarkusScenario
 @DisabledOnOs(value = OS.WINDOWS, disabledReason = "Windows does not support Linux Containers / Testcontainers")
 public class OpenTelemetryIT {
@@ -49,6 +56,7 @@ public class OpenTelemetryIT {
             .withProperty("pongservice_port", () -> String.valueOf(pongservice.getPort()))
             .withProperty("quarkus.opentelemetry.tracer.exporter.otlp.endpoint", jaeger::getCollectorUrl);
 
+    @Order(1)
     @Test
     public void testContextPropagation() {
         int pageLimit = 10;
@@ -64,6 +72,7 @@ public class OpenTelemetryIT {
         });
     }
 
+    @Order(2)
     @Test
     void testInjectionOfMicroProfileTelemetryBeans() {
         // first create traces
@@ -81,6 +90,19 @@ public class OpenTelemetryIT {
         pathToSpanId.forEach(this::assureTraceIdPropagatedToJaeger);
     }
 
+    @Order(3)
+    @Test
+    void testSdkAutoconfiguration() {
+        // test setting quarkus.otel.attribute.value.length.limit (set to 51) has effect and
+        // attribute of length 54 is cut down to 51
+
+        String operationName = "GET /mp-telemetry-di/span";
+        await().atMost(1, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(1)).untilAsserted(() -> {
+            thenRetrieveTraces(10, "1h", pongservice.getName(), operationName);
+            verifyAttributeLength(operationName, LONG_ATTRIBUTE_NAME);
+        });
+    }
+
     private void verifyStandardSourceCodeAttributesArePresent(String operationName) {
         verifyAttributeValue(operationName, "code.namespace", PingResource.class.getName());
         verifyAttributeValue(operationName, "code.function", "callPong");
@@ -88,6 +110,12 @@ public class OpenTelemetryIT {
 
     private void verifyAttributeValue(String operationName, String attributeName, String attributeValue) {
         resp.then().body(getGPathForOperationAndAttribute(operationName, attributeName), is(attributeValue));
+    }
+
+    private void verifyAttributeLength(String operationName, String attributeName) {
+        var attrVal = resp.body().jsonPath().getString(getGPathForOperationAndAttribute(operationName, attributeName));
+        assertNotNull(attrVal);
+        assertEquals(51, attrVal.length());
     }
 
     private static String getGPathForOperationAndAttribute(String operationName, String attribute) {

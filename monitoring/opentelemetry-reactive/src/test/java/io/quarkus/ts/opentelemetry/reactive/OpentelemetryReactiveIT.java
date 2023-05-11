@@ -28,6 +28,8 @@ import io.restassured.response.Response;
 @DisabledOnOs(value = OS.WINDOWS, disabledReason = "Windows does not support Linux Containers / Testcontainers")
 public class OpentelemetryReactiveIT {
 
+    private static final String OTEL_PING_SERVICE_NAME = "pingservice";
+
     private Response resp;
 
     @JaegerContainer(useOtlpCollector = true, expectedLog = "\"Health Check state change\",\"status\":\"ready\"")
@@ -41,10 +43,13 @@ public class OpentelemetryReactiveIT {
 
     @QuarkusApplication(classes = { PingResource.class, PingPongService.class })
     static final RestService pingservice = new RestService()
-            .withProperty("quarkus.application.name", "pingservice")
             .withProperty("pongservice_url", pongservice::getHost)
             .withProperty("pongservice_port", () -> String.valueOf(pongservice.getPort()))
-            .withProperty("quarkus.opentelemetry.tracer.exporter.otlp.endpoint", jaeger::getCollectorUrl);
+            .withProperty("quarkus.opentelemetry.tracer.exporter.otlp.endpoint", jaeger::getCollectorUrl)
+            // verify OTEL service name has priority over default Quarkus application name
+            .withProperty("quarkus.otel.service.name", OTEL_PING_SERVICE_NAME)
+            // FIXME: change Quarkus app name when https://github.com/quarkusio/quarkus/issues/33317 is fixed
+            .withProperty("quarkus.application.name", OTEL_PING_SERVICE_NAME);
 
     @Test
     public void testContextPropagation() {
@@ -54,7 +59,7 @@ public class OpentelemetryReactiveIT {
 
         await().atMost(1, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(1)).untilAsserted(() -> {
             whenDoPingPongRequest();
-            thenRetrieveTraces(pageLimit, "1h", pingservice.getName(), operationName);
+            thenRetrieveTraces(pageLimit, "1h", OTEL_PING_SERVICE_NAME, operationName);
             thenTriggeredOperationsMustBe(containsInAnyOrder(operations));
             thenTraceSpanSizeMustBe(is(3)); // 2 endpoint's + rest client call
             verifyStandardSourceCodeAttributesArePresent(operationName);

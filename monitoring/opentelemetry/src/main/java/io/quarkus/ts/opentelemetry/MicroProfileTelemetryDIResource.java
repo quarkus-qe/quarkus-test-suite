@@ -20,6 +20,9 @@ import io.opentelemetry.api.trace.Tracer;
 @Path("/mp-telemetry-di")
 public class MicroProfileTelemetryDIResource {
 
+    public static final int LONG_ATTRIBUTE_LENGTH = 54;
+    public static final String LONG_ATTRIBUTE_NAME = "QuarkusQELongAttribute";
+
     @Inject
     Span span;
 
@@ -35,6 +38,7 @@ public class MicroProfileTelemetryDIResource {
     @GET
     @Path("/span")
     public String getSpanId() {
+        span.setAttribute(LONG_ATTRIBUTE_NAME, "a".repeat(LONG_ATTRIBUTE_LENGTH));
         return span.getSpanContext().getSpanId();
     }
 
