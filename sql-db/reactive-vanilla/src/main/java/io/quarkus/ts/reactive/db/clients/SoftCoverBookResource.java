@@ -2,7 +2,6 @@ package io.quarkus.ts.reactive.db.clients;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
-import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -12,9 +11,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
-import org.jboss.logging.Logger;
-
-import io.quarkus.runtime.StartupEvent;
 import io.quarkus.ts.reactive.db.clients.model.Book;
 import io.quarkus.ts.reactive.db.clients.model.SoftCoverBook;
 import io.smallrye.mutiny.Uni;
@@ -23,15 +19,8 @@ import io.vertx.mutiny.pgclient.PgPool;
 @Path("/book/postgresql")
 public class SoftCoverBookResource extends CommonResource {
 
-    private static final Logger LOG = Logger.getLogger(SoftCoverBookResource.class);
-
     @Inject
     PgPool postgresql;
-
-    // TODO remove this onStart once this issue is resolved: https://github.com/quarkusio/quarkus/issues/19766
-    void onStart(@Observes StartupEvent ev) {
-        setUpDB(postgresql, SoftCoverBook.TABLE_NAME);
-    }
 
     @GET
     @Produces(APPLICATION_JSON)

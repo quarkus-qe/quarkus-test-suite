@@ -26,7 +26,10 @@ import io.vertx.core.json.JsonObject;
 public class DevModeMultipleReactiveSqlClientsIT {
 
     @DevModeQuarkusApplication
-    static RestService app = new RestService();
+    static RestService app = new RestService()
+            .withProperty("quarkus.datasource.devservices.init-script-path", "postgresql-init-script.sql")
+            .withProperty("quarkus.datasource.mysql.devservices.init-script-path", "mysql-init-script.sql")
+            .withProperty("quarkus.datasource.mssql.devservices.init-script-path", "mssql-init-script.sql");
 
     @Test
     public void verifyReactivePostgresqlRetrieveEntities() {
