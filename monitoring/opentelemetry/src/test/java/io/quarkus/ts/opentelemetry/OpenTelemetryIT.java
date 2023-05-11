@@ -60,6 +60,7 @@ public class OpenTelemetryIT {
             thenRetrieveTraces(pageLimit, "1h", pingservice.getName(), operationName);
             thenTriggeredOperationsMustBe(containsInAnyOrder(operations));
             thenTraceSpanSizeMustBe(is(3)); // 2 endpoint's + rest client call
+            verifyStandardSourceCodeAttributesArePresent(operationName);
         });
     }
 
@@ -78,6 +79,20 @@ public class OpenTelemetryIT {
 
         // now assure all spans were propagated to Jaeger
         pathToSpanId.forEach(this::assureTraceIdPropagatedToJaeger);
+    }
+
+    private void verifyStandardSourceCodeAttributesArePresent(String operationName) {
+        verifyAttributeValue(operationName, "code.namespace", PingResource.class.getName());
+        verifyAttributeValue(operationName, "code.function", "callPong");
+    }
+
+    private void verifyAttributeValue(String operationName, String attributeName, String attributeValue) {
+        resp.then().body(getGPathForOperationAndAttribute(operationName, attributeName), is(attributeValue));
+    }
+
+    private static String getGPathForOperationAndAttribute(String operationName, String attribute) {
+        return String.format("data[0].spans.find { it.operationName == '%s' }.tags.find { it.key == '%s' }.value",
+                operationName, attribute);
     }
 
     private void assureTraceIdPropagatedToJaeger(String path, String spanId) {
