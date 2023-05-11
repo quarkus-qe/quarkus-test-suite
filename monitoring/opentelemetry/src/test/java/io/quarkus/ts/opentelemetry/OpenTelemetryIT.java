@@ -1,13 +1,18 @@
 package io.quarkus.ts.opentelemetry;
 
+import static io.quarkus.test.bootstrap.Protocol.HTTP;
 import static io.restassured.RestAssured.given;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matcher;
@@ -24,15 +29,15 @@ import io.restassured.response.Response;
 
 @QuarkusScenario
 @DisabledOnOs(value = OS.WINDOWS, disabledReason = "Windows does not support Linux Containers / Testcontainers")
-public class OpentelemetryIT {
-    private static final int GRPC_COLLECTOR_PORT = 14250;
+public class OpenTelemetryIT {
 
     private Response resp;
 
-    @JaegerContainer(useOtlpCollector = true, expectedLog = "\"Health Check state change\",\"status\":\"ready\"")
+    @JaegerContainer(expectedLog = "\"Health Check state change\",\"status\":\"ready\"")
     static final JaegerService jaeger = new JaegerService();
 
-    @QuarkusApplication(classes = PongResource.class, properties = "pong.properties")
+    @QuarkusApplication(classes = { MicroProfileTelemetryDIResource.class,
+            PongResource.class }, properties = "pong.properties")
     static final RestService pongservice = new RestService()
             .withProperty("quarkus.application.name", "pongservice")
             .withProperty("quarkus.opentelemetry.tracer.exporter.otlp.endpoint", jaeger::getCollectorUrl);
@@ -58,6 +63,30 @@ public class OpentelemetryIT {
         });
     }
 
+    @Test
+    void testInjectionOfMicroProfileTelemetryBeans() {
+        // first create traces
+        var pathToSpanId = Stream.of(
+                getSpanIdFromPath("span"), // get Span id from injected Span
+                getSpanIdFromPath("tracer"), // build Span id from injected Tracer and return Span id
+                getSpanIdFromPath("otel") // build Span id from injected OpenTelemetry and return Span id
+        ).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        // give some time to propagate traces to by checking Baggage now
+        // assure Baggage is injected
+        given().get(getBaseUri() + "baggage").then().statusCode(200).body(is("true"));
+
+        // now assure all spans were propagated to Jaeger
+        pathToSpanId.forEach(this::assureTraceIdPropagatedToJaeger);
+    }
+
+    private void assureTraceIdPropagatedToJaeger(String path, String spanId) {
+        await().atMost(1, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(1)).untilAsserted(() -> {
+            thenRetrieveTraces(200, "1h", pongservice.getName(), "GET /mp-telemetry-di/" + path);
+            assertTrue(resp.body().asString().contains(spanId));
+        });
+    }
+
     public void whenDoPingPongRequest() {
         given().when()
                 .get(pingservice.getHost() + ":" + pingservice.getPort() + "/ping/pong")
@@ -80,5 +109,13 @@ public class OpentelemetryIT {
 
     private void thenTriggeredOperationsMustBe(Matcher<?> matcher) {
         resp.then().body("data[0].spans.operationName", matcher);
+    }
+
+    private static Map.Entry<String, String> getSpanIdFromPath(String path) {
+        return Map.entry(path, given().get(getBaseUri() + path).then().statusCode(200).extract().body().asString());
+    }
+
+    private static String getBaseUri() {
+        return pongservice.getURI(HTTP).toString() + "/mp-telemetry-di/";
     }
 }
