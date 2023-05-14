@@ -19,14 +19,19 @@ import io.quarkus.test.utils.SocketUtils;
 @QuarkusScenario
 public class DevModePostgresqlDevServiceUserExperienceIT {
 
-    private static final String POSTGRESQL_VERSION = getImageVersion("postgresql.latest.image");
+    // we use '-alpine' version as no other test is using it, which reduce changes that image will be already pulled
+    // we verified removing of Docker image in Github CI works, but either (extremely unlikely) Docker is shared between
+    // instances, or this test is started when previous PostgreSQL container is being terminated and operation sometimes
+    // fails; for whatever reason, using Alpine version makes CI less flaky
+    // TODO: we should revise above-mentioned comments in order to determine if we still need this workaround
+    private static final String POSTGRESQL_VERSION = getImageVersion("postgresql.latest.image") + "-alpine";
     private static final String POSTGRES_NAME = getImageName("postgresql.latest.image");
 
     @DevModeQuarkusApplication
     static RestService app = new RestService()
             .withProperty("quarkus.datasource.db-kind", "postgresql")
             .withProperty("quarkus.datasource.devservices.port", Integer.toString(SocketUtils.findAvailablePort()))
-            .withProperty("quarkus.datasource.devservices.image-name", "${postgresql.latest.image}")
+            .withProperty("quarkus.datasource.devservices.image-name", "${postgresql.latest.image}-alpine")
             .withProperty("quarkus.hibernate-orm.database.generation", "none")
             .onPreStart(s -> DockerUtils.removeImage(POSTGRES_NAME, POSTGRESQL_VERSION));
 
