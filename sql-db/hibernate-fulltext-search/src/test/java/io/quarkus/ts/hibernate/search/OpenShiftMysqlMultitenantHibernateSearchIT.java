@@ -1,6 +1,5 @@
 package io.quarkus.ts.hibernate.search;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import io.quarkus.test.bootstrap.DefaultService;
@@ -12,19 +11,27 @@ import io.quarkus.test.services.QuarkusApplication;
 
 @OpenShiftScenario
 @EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
-@Disabled("https://github.com/quarkus-qe/quarkus-test-framework/issues/427")
 public class OpenShiftMysqlMultitenantHibernateSearchIT extends AbstractMultitenantHibernateSearchIT {
-    static final int ELASTIC_PORT = 9200;
-    static final int MYSQL_PORT = 3306;
+    private static final int ELASTIC_PORT = 9200;
+    private static final int MYSQL_PORT = 3306;
+    private static final String MAX_ALLOWED_PACKET_VALUE = "5526600";
+    private static final String MAX_ALLOWED_PACKET_KEY = "MYSQL_MAX_ALLOWED_PACKET";
+    private static final String EXPECTED_LOG = "Only MySQL server logs after this point";
 
-    @Container(image = "${mysql.80.image}", port = MYSQL_PORT, expectedLog = "Only MySQL server logs after this point", command = " --max-allowed-packet=5526600")
-    static MySqlService base = new MySqlService().withDatabase("base");
+    @Container(image = "${mysql.80.image}", port = MYSQL_PORT, expectedLog = EXPECTED_LOG)
+    static MySqlService base = new MySqlService()
+            .withDatabase("base")
+            .withProperty(MAX_ALLOWED_PACKET_KEY, MAX_ALLOWED_PACKET_VALUE);
 
-    @Container(image = "${mysql.80.image}", port = MYSQL_PORT, expectedLog = "Only MySQL server logs after this point", command = " --max-allowed-packet=5526600")
-    static MySqlService company1 = new MySqlService().withDatabase("company1");
+    @Container(image = "${mysql.80.image}", port = MYSQL_PORT, expectedLog = EXPECTED_LOG)
+    static MySqlService company1 = new MySqlService()
+            .withDatabase("company1")
+            .withProperty(MAX_ALLOWED_PACKET_KEY, MAX_ALLOWED_PACKET_VALUE);
 
-    @Container(image = "${mysql.80.image}", port = MYSQL_PORT, expectedLog = "Only MySQL server logs after this point", command = " --max-allowed-packet=5526600")
-    static MySqlService company2 = new MySqlService().withDatabase("company2");;
+    @Container(image = "${mysql.80.image}", port = MYSQL_PORT, expectedLog = EXPECTED_LOG)
+    static MySqlService company2 = new MySqlService()
+            .withDatabase("company2")
+            .withProperty(MAX_ALLOWED_PACKET_KEY, MAX_ALLOWED_PACKET_VALUE);
 
     @Container(image = "${elastic.71.image}", port = ELASTIC_PORT, expectedLog = "started")
     static DefaultService elastic = new DefaultService().withProperty("discovery.type", "single-node");
