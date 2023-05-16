@@ -37,17 +37,17 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 
 import io.quarkus.test.bootstrap.QuarkusCliClient;
 import io.quarkus.test.bootstrap.QuarkusCliRestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.quarkus.model.QuarkusProperties;
 
 @Tag("QUARKUS-960")
 @Tag("quarkus-cli")
 @QuarkusScenario
-@DisabledIfSystemProperty(named = "profile.id", matches = "native", disabledReason = "Only for JVM verification")
+@DisabledOnNative // Only for JVM verification
 public class QuarkusCliCreateJvmApplicationIT {
 
     static final String RESTEASY_REACTIVE_EXTENSION = "quarkus-resteasy-reactive";

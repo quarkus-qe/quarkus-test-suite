@@ -19,7 +19,6 @@ import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
@@ -30,7 +29,6 @@ import io.vertx.mutiny.sqlclient.RowSet;
 @QuarkusTest
 @TestProfile(PostgresqlTestProfile.class)
 @TestMethodOrder(OrderAnnotation.class)
-@DisabledIfSystemProperty(named = "openshift", matches = "true", disabledReason = "Only for JVM verification")
 public class PostgresPoolTest {
 
     private static final int EVENTS = 25000;

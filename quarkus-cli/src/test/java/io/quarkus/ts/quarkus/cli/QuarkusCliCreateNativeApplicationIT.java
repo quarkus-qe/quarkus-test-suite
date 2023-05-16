@@ -7,16 +7,16 @@ import jakarta.inject.Inject;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import io.quarkus.test.bootstrap.QuarkusCliClient;
 import io.quarkus.test.bootstrap.QuarkusCliRestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 
 @Tag("QUARKUS-960")
 @Tag("quarkus-cli")
 @QuarkusScenario
-@EnabledIfSystemProperty(named = "profile.id", matches = "native", disabledReason = "Only for Native verification")
+@DisabledOnNative // Only for JVM verification
 public class QuarkusCliCreateNativeApplicationIT {
 
     @Inject
