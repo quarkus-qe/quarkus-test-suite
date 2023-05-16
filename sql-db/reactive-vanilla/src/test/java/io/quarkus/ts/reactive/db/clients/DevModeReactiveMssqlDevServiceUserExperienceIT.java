@@ -23,6 +23,8 @@ public class DevModeReactiveMssqlDevServiceUserExperienceIT {
     @DevModeQuarkusApplication
     static RestService app = new RestService()
             .withProperty("quarkus.datasource.mssql.devservices.image-name", "${mssql.image}")
+            .withProperty("quarkus.datasource.mysql.devservices.enabled", "false")
+            .withProperty("quarkus.datasource.devservices.enabled", "false")
             .onPreStart(s -> DockerUtils.removeImage(MSSQL_NAME, MSSQL_VERSION));
 
     @Test
