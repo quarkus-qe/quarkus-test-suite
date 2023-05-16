@@ -3,6 +3,7 @@ package io.quarkus.ts.opentelemetry.reactive;
 import static io.restassured.RestAssured.given;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
 
@@ -11,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matcher;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
@@ -26,22 +28,28 @@ import io.restassured.response.Response;
 @DisabledOnOs(value = OS.WINDOWS, disabledReason = "Windows does not support Linux Containers / Testcontainers")
 public class OpentelemetryReactiveIT {
 
+    private static final String OTEL_PING_SERVICE_NAME = "pingservice";
+
     private Response resp;
 
     @JaegerContainer(useOtlpCollector = true, expectedLog = "\"Health Check state change\",\"status\":\"ready\"")
     static final JaegerService jaeger = new JaegerService();
 
-    @QuarkusApplication(classes = PongResource.class, properties = "pong.properties")
+    @QuarkusApplication(classes = { PongResource.class, SchedulerResource.class,
+            SchedulerService.class }, properties = "pong.properties")
     static final RestService pongservice = new RestService()
             .withProperty("quarkus.application.name", "pongservice")
             .withProperty("quarkus.opentelemetry.tracer.exporter.otlp.endpoint", jaeger::getCollectorUrl);
 
     @QuarkusApplication(classes = { PingResource.class, PingPongService.class })
     static final RestService pingservice = new RestService()
-            .withProperty("quarkus.application.name", "pingservice")
             .withProperty("pongservice_url", pongservice::getHost)
             .withProperty("pongservice_port", () -> String.valueOf(pongservice.getPort()))
-            .withProperty("quarkus.opentelemetry.tracer.exporter.otlp.endpoint", jaeger::getCollectorUrl);
+            .withProperty("quarkus.opentelemetry.tracer.exporter.otlp.endpoint", jaeger::getCollectorUrl)
+            // verify OTEL service name has priority over default Quarkus application name
+            .withProperty("quarkus.otel.service.name", OTEL_PING_SERVICE_NAME)
+            // FIXME: change Quarkus app name when https://github.com/quarkusio/quarkus/issues/33317 is fixed
+            .withProperty("quarkus.application.name", OTEL_PING_SERVICE_NAME);
 
     @Test
     public void testContextPropagation() {
@@ -51,10 +59,34 @@ public class OpentelemetryReactiveIT {
 
         await().atMost(1, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(1)).untilAsserted(() -> {
             whenDoPingPongRequest();
-            thenRetrieveTraces(pageLimit, "1h", pingservice.getName(), operationName);
+            thenRetrieveTraces(pageLimit, "1h", OTEL_PING_SERVICE_NAME, operationName);
             thenTriggeredOperationsMustBe(containsInAnyOrder(operations));
             thenTraceSpanSizeMustBe(is(3)); // 2 endpoint's + rest client call
+            verifyStandardSourceCodeAttributesArePresent(operationName);
         });
+    }
+
+    @Test
+    public void testSchedulerTracing() {
+        String operationName = "SchedulerService.increment";
+        String[] operations = new String[] { operationName };
+
+        // asserts scheduled method was traced
+        await().atMost(1, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(1)).untilAsserted(() -> {
+            thenRetrieveTraces(10, "1h", pongservice.getName(), operationName);
+            thenTriggeredOperationsMustBe(containsInAnyOrder(operations));
+            thenTraceSpanSizeMustBe(greaterThanOrEqualTo(1));
+        });
+
+        // asserts scheduled method was invoked
+        int invocations = Integer.parseInt(given().when()
+                .get(pongservice.getHost() + ":" + pongservice.getPort() + "/scheduler/count")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .extract()
+                .body()
+                .asString());
+        Assertions.assertTrue(invocations >= 2);
     }
 
     public void whenDoPingPongRequest() {
@@ -79,5 +111,19 @@ public class OpentelemetryReactiveIT {
 
     private void thenTriggeredOperationsMustBe(Matcher<?> matcher) {
         resp.then().body("data[0].spans.operationName", matcher);
+    }
+
+    private void verifyStandardSourceCodeAttributesArePresent(String operationName) {
+        verifyAttributeValue(operationName, "code.namespace", PingResource.class.getName());
+        verifyAttributeValue(operationName, "code.function", "callPong");
+    }
+
+    private void verifyAttributeValue(String operationName, String attributeName, String attributeValue) {
+        resp.then().body(getGPathForOperationAndAttribute(operationName, attributeName), is(attributeValue));
+    }
+
+    private static String getGPathForOperationAndAttribute(String operationName, String attribute) {
+        return String.format("data[0].spans.find { it.operationName == '%s' }.tags.find { it.key == '%s' }.value",
+                operationName, attribute);
     }
 }

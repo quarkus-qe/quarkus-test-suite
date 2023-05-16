@@ -2,22 +2,26 @@ package io.quarkus.ts.transactions;
 
 import static io.restassured.RestAssured.given;
 import static org.awaitility.Awaitility.await;
-import static org.hamcrest.Matchers.containsInAnyOrder;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import io.quarkus.test.bootstrap.JaegerService;
 import io.quarkus.test.services.JaegerContainer;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class) // we keep order to ensure JDBC traces are ready
 public abstract class TransactionCommons {
 
     static final String ACCOUNT_NUMBER_MIGUEL = "SK0389852379529966291984";
@@ -28,11 +32,11 @@ public abstract class TransactionCommons {
 
     static final String ACCOUNT_NUMBER_EDUARDO = "ES8521006742088984966899";
     static final int ASSERT_SERVICE_TIMEOUT_MINUTES = 1;
-    private Response jaegerResponse;
 
-    @JaegerContainer(useOtlpCollector = true, expectedLog = "\"Health Check state change\",\"status\":\"ready\"")
+    @JaegerContainer(expectedLog = "\"Health Check state change\",\"status\":\"ready\"")
     static final JaegerService jaeger = new JaegerService();
 
+    @Order(1)
     @Tag("QUARKUS-2492")
     @Test
     public void verifyNarayanaProgrammaticApproachTransaction() {
@@ -56,6 +60,7 @@ public abstract class TransactionCommons {
         Assertions.assertEquals(100, miguelJournal.getAmount(), "Unexpected journal amount.");
     }
 
+    @Order(2)
     @Tag("QUARKUS-2492")
     @Test
     public void verifyLegacyNarayanaLambdaApproachTransaction() {
@@ -77,18 +82,11 @@ public abstract class TransactionCommons {
         Assertions.assertEquals(100, garcilasoJournal.getAmount(), "Unexpected journal amount.");
     }
 
+    @Order(3)
     @Tag("QUARKUS-2492")
     @Test
     public void verifyNarayanaLambdaApproachTransaction() {
-        TransferDTO transferDTO = new TransferDTO();
-        transferDTO.setAccountFrom(ACCOUNT_NUMBER_EDUARDO);
-        transferDTO.setAccountTo(ACCOUNT_NUMBER_EDUARDO);
-        transferDTO.setAmount(100);
-
-        given()
-                .contentType(ContentType.JSON)
-                .body(transferDTO).post("/transfer/top-up")
-                .then().statusCode(HttpStatus.SC_CREATED);
+        makeTopUpTransfer();
 
         AccountEntity garcilasoAccount = getAccount(ACCOUNT_NUMBER_EDUARDO);
         Assertions.assertEquals(200, garcilasoAccount.getAmount(),
@@ -98,6 +96,19 @@ public abstract class TransactionCommons {
         Assertions.assertEquals(100, garcilasoJournal.getAmount(), "Unexpected journal amount.");
     }
 
+    static void makeTopUpTransfer() {
+        TransferDTO transferDTO = new TransferDTO();
+        transferDTO.setAccountFrom(ACCOUNT_NUMBER_EDUARDO);
+        transferDTO.setAccountTo(ACCOUNT_NUMBER_EDUARDO);
+        transferDTO.setAmount(100);
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(transferDTO).post("/transfer/top-up")
+                .then().statusCode(HttpStatus.SC_CREATED);
+    }
+
+    @Order(4)
     @Tag("QUARKUS-2492")
     @Test
     public void verifyRollbackForNarayanaProgrammaticApproach() {
@@ -119,14 +130,28 @@ public abstract class TransactionCommons {
                 .statusCode(HttpStatus.SC_NO_CONTENT);
     }
 
+    @Order(5)
     @Tag("QUARKUS-2492")
     @Test
     public void smokeTestNarayanaProgrammaticTransactionTrace() {
         String operationName = "GET /transfer/accounts/{account_id}";
         given().get("/transfer/accounts/" + ACCOUNT_NUMBER_LUIS).then().statusCode(HttpStatus.SC_OK);
-        verifyRestRequestTraces(operationName);
+        verifyRequestTraces(operationName);
     }
 
+    @Order(6)
+    @Test
+    public void verifyJdbcTraces() {
+        for (String operationName : getExpectedJdbcOperationNames()) {
+            verifyRequestTraces(operationName);
+        }
+    }
+
+    protected String[] getExpectedJdbcOperationNames() {
+        return new String[] { "SELECT mydb.account", "INSERT mydb.journal", "UPDATE mydb.account" };
+    }
+
+    @Order(7)
     @Tag("QUARKUS-2492")
     @Test
     public void smokeTestMetricsNarayanaProgrammaticTransaction() {
@@ -162,12 +187,21 @@ public abstract class TransactionCommons {
                 .body().as(AccountEntity.class);
     }
 
-    private void verifyRestRequestTraces(String operationName) {
-        String[] operations = new String[] { operationName };
+    private void verifyRequestTraces(String operationName) {
+        verifyRequestTraces(operationName, jaeger);
+    }
+
+    static void verifyRequestTraces(String operationName, JaegerService jaeger) {
         await().atMost(1, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(5)).untilAsserted(() -> {
-            retrieveTraces(20, "1h", "narayanaTransactions", operationName);
-            jaegerResponse.then().body("data[0].spans.operationName", containsInAnyOrder(operations));
+            var operations = getTracedOperationsForName(operationName, jaeger);
+            Assertions.assertNotNull(operations);
+            Assertions.assertTrue(operations.stream().anyMatch(operationName::equals));
         });
+    }
+
+    static List<String> getTracedOperationsForName(String operationName, JaegerService jaeger) {
+        var jaegerResponse = retrieveTraces(20, "1h", "narayanaTransactions", operationName, jaeger);
+        return jaegerResponse.jsonPath().getList("data[0].spans.operationName", String.class);
     }
 
     private JournalEntity getLatestJournalRecord(String accountNumber) {
@@ -178,8 +212,9 @@ public abstract class TransactionCommons {
                 .body().as(JournalEntity.class);
     }
 
-    private void retrieveTraces(int pageLimit, String lookBack, String serviceName, String operationName) {
-        jaegerResponse = given().when()
+    static Response retrieveTraces(int pageLimit, String lookBack, String serviceName, String operationName,
+            JaegerService jaeger) {
+        return given().when()
                 .log().uri()
                 .queryParam("operation", operationName)
                 .queryParam("lookback", lookBack)

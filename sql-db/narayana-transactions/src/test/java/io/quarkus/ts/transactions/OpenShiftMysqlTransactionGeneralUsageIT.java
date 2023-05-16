@@ -10,7 +10,7 @@ import io.quarkus.test.services.QuarkusApplication;
 
 @OpenShiftScenario
 @EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
-public class OpenShiftMsqlTransactionGeneralUsageIT extends TransactionCommons {
+public class OpenShiftMysqlTransactionGeneralUsageIT extends TransactionCommons {
     static final int MYSQL_PORT = 3306;
 
     @Container(image = "${mysql.80.image}", port = MYSQL_PORT, expectedLog = "Only MySQL server logs after this point")

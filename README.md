@@ -565,6 +565,10 @@ Base application contains REST resource `TransferResource` and three main servic
 and `TransferTopUpService` which implement various bank transactions. The main scenario is implemented in `TransactionGeneralUsageIT` 
 and checks whether transactions and rollbacks always done in full.
 
+OpenTelemetry JDBC instrumentation test coverage is also placed here. JDBC tracing is tested for all supported 
+databases in JVM mode, native mode and OpenShift. Smoke tests for DEV mode are using PostgreSQL. Smallrye Context Propagation
+cooperation with OpenTelemetry in DEV mode is also placed in this module.
+
 ### `security/basic`
 
 Verifies the simplest way of doing authn/authz.
@@ -792,7 +796,7 @@ Jaeger is deployed in an "all-in-one" configuration, and the OpenShift test veri
 Testing OpenTelemetry with Jaeger components
  - Extension `quarkus-opentelemetry` - responsible for traces generation in OpenTelemetry format and export into OpenTelemetry components (opentelemetry-agent, opentelemetry-collector)
  
-Scenarios that test proper traces export to Jaeger components and context propagation.  
+Scenarios that test proper traces export to Jaeger components, context propagation, OpenTelemetry SDK Autoconfiguration and CDI injection of OpenTelemetry beans.
 See also `monitoring/opentelemetry/README.md`
 
 ### `micrometer/prometheus`
