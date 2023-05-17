@@ -12,11 +12,11 @@ import jakarta.inject.Inject;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 
 import io.quarkus.builder.Version;
 import io.quarkus.test.bootstrap.QuarkusCliClient;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusSnapshot;
 import io.quarkus.test.services.quarkus.model.QuarkusProperties;
 
@@ -27,7 +27,7 @@ import io.quarkus.test.services.quarkus.model.QuarkusProperties;
 @Tag("QUARKUS-960")
 @Tag("quarkus-cli")
 @QuarkusScenario
-@DisabledIfSystemProperty(named = "profile.id", matches = "native", disabledReason = "Only for JVM verification")
+@DisabledOnNative // Only for JVM verification
 public class QuarkusCliExtensionsIT {
 
     static final String AGROAL_EXTENSION_NAME = "Agroal - Database connection pool";

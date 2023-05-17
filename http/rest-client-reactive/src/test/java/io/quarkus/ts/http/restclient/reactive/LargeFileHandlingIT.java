@@ -23,7 +23,6 @@ import org.junit.jupiter.api.condition.OS;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusSnapshot;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.http.restclient.reactive.files.OsUtils;
 import io.restassured.http.ContentType;
@@ -99,8 +98,6 @@ public class LargeFileHandlingIT {
 
     @Test
     @DisabledOnOs(value = OS.WINDOWS, disabledReason = "https://github.com/quarkus-qe/quarkus-test-framework/issues/584")
-    //TODO https://github.com/quarkusio/quarkus/issues/28920
-    @DisabledOnQuarkusSnapshot(reason = "OutOfMemoryError on upstream")
     public void downloadMultipart() {
         Response hashSum = app.given().get("/file/hash");
         assertEquals(HttpStatus.SC_OK, hashSum.statusCode());

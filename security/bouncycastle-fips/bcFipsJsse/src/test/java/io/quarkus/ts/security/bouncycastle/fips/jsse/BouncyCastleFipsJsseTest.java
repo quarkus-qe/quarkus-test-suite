@@ -27,7 +27,7 @@ import io.vertx.mutiny.ext.web.client.WebClient;
 
 @Tag("fips-incompatible") // native-mode
 @QuarkusTest
-public class BouncyCastleFipsJsseIT {
+public class BouncyCastleFipsJsseTest {
 
     private static final String PASSWORD = "password";
     private static final String BCFIPS = BouncyCastleFipsProvider.PROVIDER_NAME;
