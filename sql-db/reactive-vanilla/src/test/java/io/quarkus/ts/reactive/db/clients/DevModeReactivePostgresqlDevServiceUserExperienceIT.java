@@ -17,12 +17,18 @@ import io.quarkus.test.utils.DockerUtils;
 @Tag("QUARKUS-1080")
 @QuarkusScenario
 public class DevModeReactivePostgresqlDevServiceUserExperienceIT {
-    private static final String POSTGRESQL_VERSION = getImageVersion("postgresql.latest.image");
+
+    // we use '-bullseye' version as no other test is using it, which mitigates the fact that sometimes
+    // io.quarkus.test.utils.DockerUtils.removeImage doesn't work as expected
+    // TODO: drop suffix when https://github.com/quarkus-qe/quarkus-test-suite/issues/1227 is fixed
+    private static final String POSTGRESQL_VERSION = getImageVersion("postgresql.latest.image") + "-bullseye";
     private static final String POSTGRES_NAME = getImageName("postgresql.latest.image");
 
     @DevModeQuarkusApplication
     static RestService app = new RestService()
-            .withProperty("quarkus.datasource.devservices.image-name", "${postgresql.latest.image}")
+            .withProperty("quarkus.datasource.devservices.image-name", "${postgresql.latest.image}-bullseye")
+            .withProperty("quarkus.datasource.mysql.devservices.enabled", "false")
+            .withProperty("quarkus.datasource.mssql.devservices.enabled", "false")
             .onPreStart(s -> DockerUtils.removeImage(POSTGRES_NAME, POSTGRESQL_VERSION));
 
     @Test

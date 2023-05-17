@@ -19,11 +19,9 @@ import io.quarkus.test.utils.SocketUtils;
 @QuarkusScenario
 public class DevModePostgresqlDevServiceUserExperienceIT {
 
-    // we use '-alpine' version as no other test is using it, which reduce changes that image will be already pulled
-    // we verified removing of Docker image in Github CI works, but either (extremely unlikely) Docker is shared between
-    // instances, or this test is started when previous PostgreSQL container is being terminated and operation sometimes
-    // fails; for whatever reason, using Alpine version makes CI less flaky
-    // TODO: we should revise above-mentioned comments in order to determine if we still need this workaround
+    // we use '-alpine' version as no other test is using it, which mitigates the fact that sometimes
+    // io.quarkus.test.utils.DockerUtils.removeImage doesn't work as expected
+    // TODO: drop suffix when https://github.com/quarkus-qe/quarkus-test-suite/issues/1227 is fixed
     private static final String POSTGRESQL_VERSION = getImageVersion("postgresql.latest.image") + "-alpine";
     private static final String POSTGRES_NAME = getImageName("postgresql.latest.image");
 

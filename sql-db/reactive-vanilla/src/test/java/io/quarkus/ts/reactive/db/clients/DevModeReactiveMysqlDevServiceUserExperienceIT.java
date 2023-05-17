@@ -23,6 +23,8 @@ public class DevModeReactiveMysqlDevServiceUserExperienceIT {
     @DevModeQuarkusApplication
     static RestService app = new RestService()
             .withProperty("quarkus.datasource.mysql.devservices.image-name", "${mysql.upstream.80.image}")
+            .withProperty("quarkus.datasource.mssql.devservices.enabled", "false")
+            .withProperty("quarkus.datasource.devservices.enabled", "false")
             .onPreStart(s -> DockerUtils.removeImage(MYSQL_NAME, MYSQL_VERSION));
 
     @Test
