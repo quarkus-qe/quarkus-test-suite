@@ -33,6 +33,7 @@
         <!-- TODO: https://github.com/quarkiverse/quarkus-helm/issues/114-->
         <!-- <quarkus-helm.version>0.1.1</quarkus-helm.version> -->
         <quarkiverse.config.version>2.0.1</quarkiverse.config.version>
+        <quarkiverse.pact.version>1.0.0.Final</quarkiverse.pact.version>
         <smallrye-stork.version>2.2.0</smallrye-stork.version>
         <assertj.version>3.24.2</assertj.version>
         <profile.id>jvm</profile.id>
@@ -118,6 +119,16 @@
                 <artifactId>htmlunit</artifactId>
                 <version>${htmlunit.version}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkiverse.pact</groupId>
+                <artifactId>quarkus-pact-provider</artifactId>
+                <version>${quarkiverse.pact.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkiverse.pact</groupId>
+                <artifactId>quarkus-pact-consumer</artifactId>
+                <version>${quarkiverse.pact.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

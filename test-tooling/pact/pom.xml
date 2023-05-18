@@ -10,34 +10,30 @@
     <artifactId>pact</artifactId>
     <packaging>jar</packaging>
     <name>Quarkus QE TS: Test Tooling: Pact</name>
-    <properties>
-        <pact.version>4.1.41</pact.version>
-    </properties>
     <dependencies>
         <dependency>
-            <groupId>au.com.dius.pact.consumer</groupId>
-            <artifactId>junit5</artifactId>
-            <version>${pact.version}</version>
+            <groupId>io.quarkiverse.pact</groupId>
+            <artifactId>quarkus-pact-provider</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>au.com.dius.pact.consumer</groupId>
-            <artifactId>java8</artifactId>
-            <version>${pact.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>au.com.dius.pact.provider</groupId>
-            <artifactId>junit5</artifactId>
-            <version>${pact.version}</version>
-        </dependency>
-        <!-- Required for native compilation -->
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-resteasy-reactive</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-arc</artifactId>
+            <groupId>io.quarkiverse.pact</groupId>
+            <artifactId>quarkus-pact-consumer</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <profiles>
+        <profile>
+            <id>native</id>
+            <activation>
+                <property>
+                    <name>native</name>
+                </property>
+            </activation>
+            <properties>
+                <!-- Skipped Quarkus build in native as there is nothing to compile or test -->
+                <quarkus.build.skip>true</quarkus.build.skip>
+            </properties>
+        </profile>
+    </profiles>
 </project>
