@@ -15,50 +15,5 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-smallrye-graphql</artifactId>
         </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-smallrye-opentracing</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkus.qe</groupId>
-            <artifactId>quarkus-test-service-jaeger</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
-    <profiles>
-        <profile>
-            <id>deploy-to-openshift-using-extension</id>
-            <dependencies>
-                <dependency>
-                    <groupId>io.quarkus</groupId>
-                    <artifactId>quarkus-openshift</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
-        <!-- Skipped on Windows as does not support Linux Containers / Testcontainers -->
-        <profile>
-            <id>skip-tests-on-windows</id>
-            <activation>
-                <os>
-                    <family>windows</family>
-                </os>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <skip>true</skip>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-failsafe-plugin</artifactId>
-                        <configuration>
-                            <skip>true</skip>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>
