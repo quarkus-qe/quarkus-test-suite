@@ -3,7 +3,9 @@ package io.quarkus.ts.sqldb.sqlapp;
 import static io.quarkus.ts.sqldb.sqlapp.DbUtil.getImageName;
 import static io.quarkus.ts.sqldb.sqlapp.DbUtil.getImageVersion;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.github.dockerjava.api.model.Image;
@@ -15,6 +17,7 @@ import io.quarkus.test.utils.DockerUtils;
 import io.quarkus.test.utils.SocketUtils;
 
 @QuarkusScenario
+@Tag("podman-incompatible") //todo https://github.com/quarkusio/quarkus/issues/33985
 public class DevModeOracleDevServiceUserExperienceIT {
 
     private static final String ORACLE_NAME = getImageName("oracle.image");
@@ -42,5 +45,11 @@ public class DevModeOracleDevServiceUserExperienceIT {
         Assertions.assertFalse(oracleImg.getId().isEmpty(), String.format("%s:%s not found. " +
                 "Notice that user set his own custom image by 'quarkus.datasource.devservices.image-name' property",
                 ORACLE_NAME, ORACLE_VERSION));
+    }
+
+    @AfterAll
+    //TODO workaround for podman 4.4.1 on rhel. Without it, *next* test (eg MariaDBDatabaseIT) fails with "broken pipe"
+    public static void clear() {
+        DockerUtils.removeImage(ORACLE_NAME, ORACLE_VERSION);
     }
 }

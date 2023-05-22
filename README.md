@@ -247,6 +247,7 @@ The suite uses `org.junit.jupiter.api.Tag` annotation to group similar tests tog
 - `use-quarkus-openshift-extension`: tests use `quarkus-openshift` extension to deploy the app
 - `serverless`: use Openshift Serverless to deploy the app
 - `quarkus-cli`: tests use Quarkus CLI, which needs to be installed ( see https://quarkus.io/guides/cli-tooling for details)
+- `podman-incompatible`: tests, which require Docker as a container engine and are not compatible with Podman.
 
 ## Running against Red Hat build of Quarkus
 

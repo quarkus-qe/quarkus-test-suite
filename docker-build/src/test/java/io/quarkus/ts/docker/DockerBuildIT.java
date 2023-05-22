@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Objects;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.github.dockerjava.api.model.Image;
@@ -13,6 +14,7 @@ import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.utils.DockerUtils;
 
 @QuarkusScenario
+@Tag("podman-incompatible") //TODO: https://github.com/quarkusio/quarkus/issues/28721
 public class DockerBuildIT {
 
     private static final String DOCKER_IMG_NAME = "hello-world-app";
