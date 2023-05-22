@@ -5,6 +5,7 @@ import static io.quarkus.ts.http.graphql.telemetry.Utils.sendQuery;
 import static io.restassured.RestAssured.given;
 import static org.awaitility.Awaitility.await;
 
+import java.net.HttpURLConnection;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
@@ -45,12 +46,16 @@ public class GraphQLTelemetryIT {
                     .queryParam("limit", 10)
                     .queryParam("service", "graphql-telemetry")
                     .get(jaeger.getTraceUrl());
+            Assertions.assertEquals(HttpURLConnection.HTTP_OK, traces.statusCode());
             JsonPath body = traces.body().jsonPath();
             Assertions.assertEquals(2, body.getList("data").size());
-            Assertions.assertEquals(1, body.getList("data[0].spans").size());
-            Assertions.assertEquals(1, body.getList("data[1].spans").size());
-            Assertions.assertEquals(operation, body.getString("data[0].spans[0].operationName"));
-            Assertions.assertEquals(operation, body.getString("data[1].spans[0].operationName"));
+            Assertions.assertEquals(2, body.getList("data[0].spans").size());
+            Assertions.assertEquals(2, body.getList("data[1].spans").size());
+            // Span with "operationName": "GraphQL" is child of the span with "operationName": "POST /graphql"
+            Assertions.assertTrue(body.getString("data[0].spans[0].operationName").equals(operation) ||
+                    body.getString("data[0].spans[0].operationName").equals("GraphQL"));
+            Assertions.assertTrue(body.getString("data[1].spans[0].operationName").equals(operation) ||
+                    body.getString("data[1].spans[0].operationName").equals("GraphQL"));
         });
     }
 }
