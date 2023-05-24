@@ -94,8 +94,6 @@ public class QuarkusCliExtensionsIT {
     }
 
     @DisabledOnQuarkusSnapshot(reason = "999-SNAPSHOT is not pushed into the platform site")
-    //TODO Currently code.quarkus and quarkusCli are pointing to the same set of defined streams.
-    // ZULIP ref: https://quarkusio.zulipchat.com/#narrow/stream/191168-core-team/topic/streams.20on.20registry.20.2F.20code.2Equarkus/near/280456392
     @Test
     public void shouldListExtensionsUsingStream() {
         String streamVersion = getCurrentStreamVersion();
