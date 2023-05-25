@@ -124,6 +124,6 @@ public class PostgresPoolTest {
     }
 
     private boolean checkDbActiveConnections(long active) {
-        return active <= datasourceMaxSize + (7); // TODO: double check this condition ... this magical number is scary!.
+        return active <= datasourceMaxSize;
     }
 }
