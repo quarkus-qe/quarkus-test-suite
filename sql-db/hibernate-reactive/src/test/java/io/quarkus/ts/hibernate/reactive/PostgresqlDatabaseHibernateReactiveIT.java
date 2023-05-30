@@ -16,10 +16,6 @@ public class PostgresqlDatabaseHibernateReactiveIT extends AbstractDatabaseHiber
 
     @Container(image = "${postgresql.latest.image}", port = POSTGRES_PORT, expectedLog = "listening on IPv4 address")
     static PostgresqlService database = new PostgresqlService()
-            //fixme https://github.com/quarkus-qe/quarkus-test-framework/issues/455
-            .withProperty("POSTGRES_USER", POSTGRES_USER)
-            .withProperty("POSTGRES_PASSWORD", POSTGRES_PASSWORD)
-            .withProperty("POSTGRES_DB", POSTGRES_DATABASE)
             .withUser(POSTGRES_USER)
             .withPassword(POSTGRES_PASSWORD)
             .withDatabase(POSTGRES_DATABASE)
