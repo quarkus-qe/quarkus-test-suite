@@ -31,6 +31,14 @@ cd http/http-advanced
 mvn clean verify -Pnative -Dit.test=HttpAdvancedIT
 ```
 
+It is also possible to keep application up and running after the test execution, you can do that with `-Dts.debug -Dts.debug.run-tests` like this:
+
+```shell
+mvn clean verify -Pnative -Dit.test=HttpAdvancedIT -Dts.debug -Dts.debug.run-tests
+```
+
+You can find more information on debugging options in the [Quarkus Test Framework Wiki](https://github.com/quarkus-qe/quarkus-test-framework/wiki/1.-Getting-Started#debugging).
+
 The following subsections will introduce how to deploy and run the test suite in OpenShift, how to filter modules, overwrite global properties or customize your native compilation
 
 ### Profiles overview

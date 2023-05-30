@@ -829,5 +829,35 @@
                 <xml.format.goal>xml-check</xml.format.goal>
             </properties>
         </profile>
+        <profile>
+            <!-- makes it possible to start and keep alive app, containers, OCP namespace as long as you need -->
+            <id>ts.debug</id>
+            <activation>
+                <property>
+                    <!-- 'debug' property is used by Quarkus DEV mode, so we don't want to propagate it -->
+                    <name>ts.debug</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <groupId>io.quarkus.qe</groupId>
+                                <artifactId>quarkus-test-core</artifactId>
+                                <version>${quarkus.qe.framework.version}</version>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <!--don't time out, wait for termination signal from user that debugging is over -->
+                            <forkedProcessTimeoutInSeconds>0</forkedProcessTimeoutInSeconds>
+                            <!--our ForkNode factory helps us to propagate termination signal down to JUnit provider -->
+                            <forkNode implementation="io.quarkus.test.debug.SureFireDebugForkNodeFactory"/>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>
