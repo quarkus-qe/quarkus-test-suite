@@ -17,11 +17,7 @@ public class PostgresqlMultitenantHibernateSearchIT extends AbstractMultitenantH
     static DefaultService elastic = new DefaultService().withProperty("discovery.type", "single-node");
 
     @Container(image = "${postgresql.latest.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
-    static PostgresqlService database = new PostgresqlService()
-            //fixme https://github.com/quarkus-qe/quarkus-test-framework/issues/455
-            .withProperty("POSTGRES_USER", "user")
-            .withProperty("POSTGRES_PASSWORD", "user")
-            .withProperty("POSTGRES_DB", "mydb");
+    static PostgresqlService database = new PostgresqlService();
 
     @QuarkusApplication
     static RestService app = new RestService()
