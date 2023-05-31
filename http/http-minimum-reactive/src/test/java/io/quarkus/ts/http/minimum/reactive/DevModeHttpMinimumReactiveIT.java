@@ -49,7 +49,7 @@ public class DevModeHttpMinimumReactiveIT {
         // Modify Hello to Hola
         app.modifyFile(HELLO_RESOURCE_JAVA, content -> content.replace(HELLO_IN_ENGLISH, HELLO_IN_SPANISH));
         // Then the NoFunctionalTest should not have been executed as it's not affected, only HelloResourceTest
-        app.logs().assertContains("Running 1/1. Running: io.quarkus.ts.http.minimum.HelloResourceTest#HelloResourceTest");
+        app.logs().assertContains("Running 1/1. Running: #HelloResourceTest");
     }
 
     @Test
