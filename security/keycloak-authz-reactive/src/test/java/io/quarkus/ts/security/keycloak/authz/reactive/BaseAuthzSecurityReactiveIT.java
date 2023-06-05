@@ -12,6 +12,7 @@ import org.junit.platform.commons.util.StringUtils;
 import org.keycloak.authorization.client.AuthzClient;
 
 import io.quarkus.test.bootstrap.KeycloakService;
+import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.smallrye.mutiny.helpers.test.UniAssertSubscriber;
 import io.vertx.core.http.HttpMethod;
@@ -64,7 +65,7 @@ public abstract class BaseAuthzSecurityReactiveIT {
     public void normalUserUserResourceIssuer() {
         whenMakeRequestTo(HttpMethod.GET, "/user/issuer", getToken(NORMAL_USER, NORMAL_USER));
         thenStatusCodeIs(HttpStatus.SC_OK);
-        thenBodyStartWith("user token issued by " + getKeycloak().getHost());
+        thenBodyStartWith("user token issued by " + getKeycloak().getURI(Protocol.HTTP).getRestAssuredStyleUri());
     }
 
     @Test
@@ -91,7 +92,7 @@ public abstract class BaseAuthzSecurityReactiveIT {
     public void adminUserAdminResourceIssuer() {
         whenMakeRequestTo(HttpMethod.GET, "/admin/issuer", getToken(ADMIN_USER, ADMIN_USER));
         thenStatusCodeIs(HttpStatus.SC_OK);
-        thenBodyStartWith("admin token issued by " + getKeycloak().getHost());
+        thenBodyStartWith("admin token issued by " + getKeycloak().getURI(Protocol.HTTP).getRestAssuredStyleUri());
     }
 
     @Test

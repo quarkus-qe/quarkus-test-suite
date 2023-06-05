@@ -2,6 +2,7 @@ package io.quarkus.ts.messaging.kafka.reactive.streams;
 
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 
+import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.services.Operator;
@@ -21,6 +22,6 @@ public class OperatorOpenShiftAmqStreamsKafkaStreamIT extends BaseKafkaStreamTes
 
     @Override
     protected String getAppUrl() {
-        return app.getHost() + ":" + app.getPort();
+        return app.getURI(Protocol.HTTP).toString();
     }
 }

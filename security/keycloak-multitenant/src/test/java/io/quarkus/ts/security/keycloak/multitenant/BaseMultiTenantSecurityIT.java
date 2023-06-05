@@ -22,6 +22,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 import io.quarkus.test.bootstrap.KeycloakService;
+import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 
 public abstract class BaseMultiTenantSecurityIT {
@@ -51,9 +52,8 @@ public abstract class BaseMultiTenantSecurityIT {
         webClient.getOptions().setRedirectEnabled(false);
         String loc = webClient.loadWebResponse(new WebRequest(URI.create(getEndpointByTenant(webAppTenant)).toURL()))
                 .getResponseHeaderValue("location");
-
-        assertTrue(loc.startsWith(getKeycloak().getHost()),
-                "Unexpected location for " + getKeycloak().getHost() + ". Got: " + loc);
+        assertTrue(loc.startsWith(getKeycloak().getURI(Protocol.HTTP).getRestAssuredStyleUri()),
+                "Unexpected location for " + getKeycloak().getURI(Protocol.HTTP).getRestAssuredStyleUri() + ". Got: " + loc);
         assertTrue(loc.contains("scope=openid"), "Unexpected scope. Got: " + loc);
         assertTrue(loc.contains("response_type=code"), "Unexpected response type. Got: " + loc);
         assertTrue(loc.contains("client_id=" + webAppTenant.getClientId()),
@@ -126,7 +126,7 @@ public abstract class BaseMultiTenantSecurityIT {
     protected abstract RestService getApp();
 
     private String appUrl(String path) {
-        return getApp().getHost() + ":" + getApp().getPort() + path;
+        return getApp().getURI(Protocol.HTTP).withPath(path).toString();
     }
 
     private String getEndpointByTenant(Tenant tenant) {

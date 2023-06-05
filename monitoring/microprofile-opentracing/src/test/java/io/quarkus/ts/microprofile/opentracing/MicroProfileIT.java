@@ -135,6 +135,6 @@ public class MicroProfileIT {
     }
 
     protected int getAppPort() {
-        return app.getPort();
+        return app.getURI().getPort();
     }
 }

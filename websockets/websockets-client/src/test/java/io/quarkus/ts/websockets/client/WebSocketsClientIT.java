@@ -5,6 +5,7 @@ import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Dependency;
@@ -22,7 +23,7 @@ public class WebSocketsClientIT {
     // Using `quarkus-websockets-client` extension by default
     @QuarkusApplication
     static final RestService client = new RestService()
-            .withProperty("app.chat.uri", () -> server.getHost() + ":" + server.getPort());
+            .withProperty("app.chat.uri", () -> server.getURI(Protocol.HTTP).toString());
 
     @Test
     public void smoke() {

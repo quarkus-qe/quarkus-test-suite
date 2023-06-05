@@ -189,7 +189,7 @@ public class DevModeGrpcIntegrationReactiveIT {
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
-                .url("ws://localhost:" + app.getPort() + "/q/dev/io.quarkus.quarkus-grpc/grpc-test")
+                .url(app.getURI().withScheme("ws").withPath("/q/dev/io.quarkus.quarkus-grpc/grpc-test").toString())
                 .build();
         webSocket = client.newWebSocket(request, webSocketListener);
     }

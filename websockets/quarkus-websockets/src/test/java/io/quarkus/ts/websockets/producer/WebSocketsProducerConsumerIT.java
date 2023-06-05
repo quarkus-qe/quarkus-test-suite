@@ -22,6 +22,7 @@ import org.jboss.logging.Logger;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.QuarkusApplication;
@@ -118,9 +119,8 @@ public class WebSocketsProducerConsumerIT {
         }
     }
 
-    // TODO change following code when this will be fixed https://github.com/quarkus-qe/quarkus-test-framework/issues/263
     private static URI getUri(String with) throws URISyntaxException {
-        return new URI(server.getHost() + ":" + server.getPort()).resolve(with);
+        return new URI(server.getURI(Protocol.HTTP).toString()).resolve(with);
     }
 
     private static Session connect(Client client, URI uri) throws DeploymentException, IOException {

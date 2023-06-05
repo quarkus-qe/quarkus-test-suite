@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.KeycloakService;
+import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 
 public abstract class BaseOidcClientSecurityIT {
@@ -56,7 +57,7 @@ public abstract class BaseOidcClientSecurityIT {
                 .get("/user/issuer")
                 .then()
                 .statusCode(HttpStatus.SC_OK)
-                .body(startsWith("user token issued by " + getKeycloak().getHost()));
+                .body(startsWith("user token issued by " + getKeycloak().getURI(Protocol.HTTP).getRestAssuredStyleUri()));
     }
 
     @Test

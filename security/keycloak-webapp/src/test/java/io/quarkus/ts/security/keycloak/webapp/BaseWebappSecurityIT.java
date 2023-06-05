@@ -24,6 +24,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 import io.quarkus.test.bootstrap.KeycloakService;
+import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 
 public abstract class BaseWebappSecurityIT {
@@ -54,8 +55,8 @@ public abstract class BaseWebappSecurityIT {
         String loc = webClient.loadWebResponse(new WebRequest(URI.create(appUrl("/user")).toURL()))
                 .getResponseHeaderValue("location");
 
-        assertTrue(loc.startsWith(getKeycloak().getHost()),
-                "Unexpected location for " + getKeycloak().getHost() + ". Got: " + loc);
+        assertTrue(loc.startsWith(getKeycloak().getURI(Protocol.HTTP).getRestAssuredStyleUri()),
+                "Unexpected location for " + getKeycloak().getURI(Protocol.HTTP).getRestAssuredStyleUri() + ". Got: " + loc);
         assertTrue(loc.contains("scope=openid"), "Unexpected scope. Got: " + loc);
         assertTrue(loc.contains("response_type=code"), "Unexpected response type. Got: " + loc);
         assertTrue(loc.contains("client_id=test-application-client"), "Unexpected client id. Got: " + loc);
@@ -76,7 +77,7 @@ public abstract class BaseWebappSecurityIT {
         thenRedirectToLoginPage();
 
         whenLoginAs("test-user");
-        thenPageReturns("user token issued by " + getKeycloak().getHost());
+        thenPageReturns("user token issued by " + getKeycloak().getURI(Protocol.HTTP).toString());
     }
 
     @Test
@@ -111,7 +112,7 @@ public abstract class BaseWebappSecurityIT {
         thenRedirectToLoginPage();
 
         whenLoginAs("test-admin");
-        thenPageReturns("admin token issued by " + getKeycloak().getHost());
+        thenPageReturns("admin token issued by " + getKeycloak().getURI(Protocol.HTTP).toString());
     }
 
     @Test
@@ -176,6 +177,6 @@ public abstract class BaseWebappSecurityIT {
     protected abstract RestService getApp();
 
     private String appUrl(String path) {
-        return getApp().getHost() + ":" + getApp().getPort() + path;
+        return getApp().getURI(Protocol.HTTP).withScheme(path).toString();
     }
 }

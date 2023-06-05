@@ -10,7 +10,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
 import io.quarkus.test.bootstrap.DefaultService;
-import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
@@ -40,8 +39,8 @@ public abstract class AbstractCommonIT {
     static RestService app = new RestService()
             .withProperty("quarkus.redis.hosts",
                     () -> {
-                        String redisHost = redis.getHost().replaceAll(Protocol.HTTP.getValue(), "redis");
-                        return String.format("%s:%d", redisHost, redis.getPort());
+                        String redisHost = redis.getURI().withScheme("redis").getRestAssuredStyleUri();
+                        return String.format("%s:%d", redisHost, redis.getURI().getPort());
                     });
 
     @BeforeEach

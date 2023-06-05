@@ -22,6 +22,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.jboss.logging.Logger;
 import org.junit.jupiter.api.Test;
 
+import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.bootstrap.Service;
 import io.quarkus.test.bootstrap.inject.OpenShiftClient;
@@ -62,7 +63,7 @@ public abstract class BaseOpenShiftAlertEventsReactiveIT {
     private void whenWaitUntilReceiveSomeAlerts() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(WAIT_FOR_ALERTS_COUNT);
 
-        WebTarget target = ClientBuilder.newClient().target(getApp().getHost() + ":" + getApp().getPort() + PATH);
+        WebTarget target = ClientBuilder.newClient().target(getApp().getURI(Protocol.HTTP).withPath(PATH).toString());
         SseEventSource source = SseEventSource.target(target).build();
         source.register(inboundSseEvent -> {
             receive.add(inboundSseEvent.readData(String.class, MediaType.APPLICATION_JSON_TYPE));

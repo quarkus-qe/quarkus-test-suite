@@ -20,6 +20,7 @@ import jakarta.ws.rs.sse.SseEventSource;
 
 import org.junit.jupiter.api.Test;
 
+import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.restassured.http.ContentType;
 
@@ -93,7 +94,7 @@ abstract class BaseKafkaAvroGroupIdIT {
     }
 
     private String getEndpoint(RestService app) {
-        return app.getHost() + ":" + app.getPort();
+        return app.getURI(Protocol.HTTP).toString();
     }
 
     private StockPriceDto randomStockPrice() {

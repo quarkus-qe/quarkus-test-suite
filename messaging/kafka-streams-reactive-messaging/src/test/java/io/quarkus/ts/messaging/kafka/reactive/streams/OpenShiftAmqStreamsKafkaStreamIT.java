@@ -4,6 +4,7 @@ import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import io.quarkus.test.bootstrap.KafkaService;
+import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.services.KafkaContainer;
@@ -25,6 +26,6 @@ public class OpenShiftAmqStreamsKafkaStreamIT extends BaseKafkaStreamTest {
 
     @Override
     protected String getAppUrl() {
-        return app.getHost() + ":" + app.getPort();
+        return app.getURI(Protocol.HTTP).toString();
     }
 }
