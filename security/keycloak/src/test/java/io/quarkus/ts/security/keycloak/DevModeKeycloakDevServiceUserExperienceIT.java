@@ -17,6 +17,7 @@ public class DevModeKeycloakDevServiceUserExperienceIT {
 
     private static final String KEYCLOAK_VERSION = "19.0.0";
     private static final String KEYCLOAK_IMAGE = "quay.io/keycloak/keycloak";
+    private static final String SECRET_KEYS_MISSING = "Secret key for encrypting tokens in a session cookie is missing, auto-generating it";
 
     /**
      * Keycloak must be started using DEV services when running in DEV mode
@@ -24,6 +25,7 @@ public class DevModeKeycloakDevServiceUserExperienceIT {
     @DevModeQuarkusApplication
     static RestService app = new RestService()
             .withProperty("quarkus.keycloak.devservices.image-name", String.format("%s:%s", KEYCLOAK_IMAGE, KEYCLOAK_VERSION))
+            .withProperty("quarkus.oidc.credentials.secret", "") // we don't want to use client secret for encryption secret
             .onPreStart(s -> DockerUtils.removeImage(KEYCLOAK_IMAGE, KEYCLOAK_VERSION));
 
     @Test
@@ -40,5 +42,13 @@ public class DevModeKeycloakDevServiceUserExperienceIT {
         Assertions.assertFalse(postgresImg.getId().isEmpty(), String.format("%s:%s not found. " +
                 "Notice that user set his own custom image by 'quarkus.keycloak.devservices.image-name' property",
                 KEYCLOAK_IMAGE, KEYCLOAK_VERSION));
+    }
+
+    @Tag("QUARKUS-3158")
+    @Test
+    public void verifyNoPkceAndTokenEncSecretKeyForServiceApp() {
+        // service application doesn't use session cookie and PKCE verifier encryption keys, therefore they don't
+        // need to be generated and no warning message should be logged
+        app.logs().assertDoesNotContain(SECRET_KEYS_MISSING);
     }
 }
