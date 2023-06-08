@@ -1,6 +1,7 @@
 package io.quarkus.ts.http.restclient.reactive;
 
 import static io.quarkus.ts.http.restclient.reactive.resources.PlainBookResource.SEARCH_TERM_VAL;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -132,7 +133,6 @@ public class ReactiveRestClientIT {
         assertEquals("USD", response.getBody().asString());
     }
 
-    @DisabledOnQuarkusVersion(version = DISABLE_IF_NOT_QUARKUS_2_7_6_OR_2_8_3_OR_HIGHER, reason = FIXED_IN_2_7_6_AND_2_8_3)
     @Test
     public void decodedRequestPath() {
         Response response = app.given().given().queryParam("searchTerm", SEARCH_TERM_VAL)
@@ -225,4 +225,14 @@ public class ReactiveRestClientIT {
         assertEquals("/clients/myRealm/resource-server/" + randomId, result);
     }
 
+    @Tag("QUARKUS-3170")
+    @Test
+    public void programmaticRestClient() {
+        app
+                .given()
+                .get("/books/programmatic-way")
+                .then()
+                .statusCode(200)
+                .body(is("The Hobbit: An Unexpected Journey"));
+    }
 }
