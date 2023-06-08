@@ -5,11 +5,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.MongoDbService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.EnabledOnNative;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 import io.restassured.RestAssured;
@@ -64,6 +66,19 @@ public class MongoClientIT {
     @Test
     public void insertAndGetCompositeEntityWithBsonCodec() {
         insertAndGetCompositeEntity("/codec_fruit_baskets");
+    }
+
+    @EnabledOnNative
+    @Tag("QUARKUS-3194")
+    @Test
+    public void verifyNoCouldNotRegisterForReflectionWarningLogged() {
+        // mainly we want to verify there are no warning messages like this:
+        // 'Warning: Could not register io.netty.handler.codec.compression.Lz4FrameDecoder: queryAllPublicMethods
+        // for reflection. Reason: java.lang.NoClassDefFoundError: net/jpountz/lz4/LZ4Exception.'
+        // however this test intentionally don't check for 'io.netty.handler.codec' package in order to catch all
+        // similar issues
+        app.logs().assertDoesNotContain("Warning: Could not register");
+        app.logs().assertDoesNotContain("for reflection. Reason: java.lang.NoClassDefFoundError");
     }
 
     public void insertAndGetCompositeEntity(String path) {
