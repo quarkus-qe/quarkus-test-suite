@@ -1,5 +1,11 @@
 package io.quarkus.ts.http.restclient.reactive.resources;
 
+import java.io.IOException;
+import java.net.URI;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -11,8 +17,11 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.jboss.resteasy.reactive.RestQuery;
 
+import io.quarkus.ts.http.restclient.reactive.BookClient;
 import io.quarkus.ts.http.restclient.reactive.json.Book;
 import io.quarkus.ts.http.restclient.reactive.json.BookIdWrapper;
 import io.quarkus.ts.http.restclient.reactive.json.BookRepository;
@@ -23,6 +32,11 @@ import io.smallrye.mutiny.Uni;
 public class PlainBookResource {
 
     public static final String SEARCH_TERM_VAL = "Ernest Hemingway";
+    private final URI baseUri;
+
+    public PlainBookResource(@ConfigProperty(name = "quarkus.http.port") int httpPort) {
+        this.baseUri = URI.create("http://localhost:" + httpPort);
+    }
 
     @GET
     @Path("/map")
@@ -134,6 +148,27 @@ public class PlainBookResource {
     @Produces("application/json")
     public Uni<String> getPriorityWithSuffix(@QueryParam("content") String text) {
         return Uni.createFrom().item(text + "_json");
+    }
+
+    @GET
+    @Path("/programmatic-way")
+    public Uni<String> programmaticRestClient()
+            throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException {
+        return RestClientBuilder
+                .newBuilder()
+                .baseUri(baseUri)
+                .trustStore(trustStore()) // keep truststore in place to verify QUARKUS-3170
+                .build(BookClient.class)
+                .getBook("The Hobbit: An Unexpected Journey", "J. R. R. Tolkien")
+                .map(Book::getTitle);
+    }
+
+    private KeyStore trustStore() throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
+        KeyStore ks = KeyStore.getInstance("JKS");
+        try (var is = getClass().getResourceAsStream("META-INF/keystore.jks")) {
+            ks.load(is, "password".toCharArray());
+        }
+        return ks;
     }
 
 }
