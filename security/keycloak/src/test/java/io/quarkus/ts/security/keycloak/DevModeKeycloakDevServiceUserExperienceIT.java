@@ -17,7 +17,7 @@ public class DevModeKeycloakDevServiceUserExperienceIT {
 
     private static final String KEYCLOAK_VERSION = "19.0.0";
     private static final String KEYCLOAK_IMAGE = "quay.io/keycloak/keycloak";
-    private static final String SECRET_KEYS_MISSING = "Secret key for encrypting tokens in a session cookie is missing, auto-generating it";
+    private static final String SECRET_KEYS_MISSING = "Secret key for encrypting tokens is missing, auto-generating it";
 
     /**
      * Keycloak must be started using DEV services when running in DEV mode
