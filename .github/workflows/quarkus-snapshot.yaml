@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.actor == 'quarkusbot' || github.actor == 'Sgitario' || github.actor == 'rsvoboda'
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         profiles: [ "root-modules-no-qute,monitoring-modules,spring-modules,test-tooling-modules",
                     "http-modules",
