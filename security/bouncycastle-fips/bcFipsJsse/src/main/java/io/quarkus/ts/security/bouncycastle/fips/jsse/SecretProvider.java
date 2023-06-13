@@ -3,8 +3,8 @@ package io.quarkus.ts.security.bouncycastle.fips.jsse;
 import java.util.HashMap;
 import java.util.Map;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Named;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 
 import io.quarkus.arc.Unremovable;
 import io.quarkus.credentials.CredentialsProvider;

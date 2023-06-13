@@ -1,4 +1,4 @@
-package io.quarkus.ts.spring.web.reactive.boostrap.web;
+package io.quarkus.ts.spring.web.reactive.bootstrap.web;
 
 import static javax.ws.rs.core.Response.Status.CREATED;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
@@ -28,6 +28,7 @@ import io.quarkus.ts.spring.web.reactive.bootstrap.persistence.model.Book;
 import io.quarkus.ts.spring.web.reactive.bootstrap.persistence.repo.BookRepository;
 import io.quarkus.ts.spring.web.reactive.bootstrap.web.exception.BookIdMismatchException;
 import io.quarkus.ts.spring.web.reactive.bootstrap.web.exception.BookNotFoundException;
+import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 
 @RestController
