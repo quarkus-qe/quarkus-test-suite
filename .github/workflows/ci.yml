@@ -119,6 +119,7 @@ jobs:
           java -jar ~/.m2/repository/io/quarkus/quarkus-cli/999-SNAPSHOT/quarkus-cli-999-SNAPSHOT-runner.jar "\$@"
           EOF
           chmod +x ./quarkus-dev-cli
+          ./quarkus-dev-cli version
       - name: Build with Maven
         run: |
           MODULES_MAVEN_PARAM=""
@@ -173,6 +174,7 @@ jobs:
           java -jar ~/.m2/repository/io/quarkus/quarkus-cli/999-SNAPSHOT/quarkus-cli-999-SNAPSHOT-runner.jar "\$@"
           EOF
           chmod +x ./quarkus-dev-cli
+          ./quarkus-dev-cli version
       - name: Build with Maven
         run: |
           if [[ -n ${MODULES_ARG} ]]; then

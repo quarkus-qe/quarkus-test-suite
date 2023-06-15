@@ -68,6 +68,7 @@ jobs:
           java -jar ~/.m2/repository/io/quarkus/quarkus-cli/999-SNAPSHOT/quarkus-cli-999-SNAPSHOT-runner.jar "\$@"
           EOF
           chmod +x ./quarkus-dev-cli
+          ./quarkus-dev-cli version
       - name: Test in JVM mode
         run: |
           mvn -fae -V -B -s .github/mvn-settings.xml -fae clean verify -P ${{ matrix.profiles }} -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli"
@@ -120,6 +121,7 @@ jobs:
           java -jar ~/.m2/repository/io/quarkus/quarkus-cli/999-SNAPSHOT/quarkus-cli-999-SNAPSHOT-runner.jar "\$@"
           EOF
           chmod +x ./quarkus-dev-cli
+          ./quarkus-dev-cli version
       - name: Test in Native mode
         run: |
           mvn -fae -V -B -s .github/mvn-settings.xml -P ${{ matrix.profiles }} -fae clean verify -Dnative \
