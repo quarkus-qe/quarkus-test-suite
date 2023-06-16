@@ -13,6 +13,7 @@ import jakarta.ws.rs.sse.SseEventSource;
 
 import org.junit.jupiter.api.Test;
 
+import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 
 public abstract class BaseKafkaAvroIT {
@@ -71,6 +72,6 @@ public abstract class BaseKafkaAvroIT {
     }
 
     private String getEndpoint() {
-        return getApp().getHost() + ":" + getApp().getPort();
+        return getApp().getURI(Protocol.HTTP).toString();
     }
 }

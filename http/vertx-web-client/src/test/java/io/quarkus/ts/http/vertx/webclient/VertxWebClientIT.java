@@ -35,6 +35,7 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 
 import io.quarkus.test.bootstrap.DefaultService;
 import io.quarkus.test.bootstrap.JaegerService;
+import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.EnabledOnNative;
@@ -61,7 +62,7 @@ public class VertxWebClientIT {
 
     @QuarkusApplication
     static RestService vertx = new RestService()
-            .withProperty("chucknorris.api.domain", () -> wiremock.getHost() + ":" + wiremock.getPort())
+            .withProperty("chucknorris.api.domain", () -> wiremock.getURI(Protocol.HTTP).toString())
             .withProperty("quarkus.opentelemetry.tracer.exporter.otlp.endpoint", jaeger::getCollectorUrl);
 
     @Test
@@ -212,7 +213,7 @@ public class VertxWebClientIT {
     }
 
     private WireMock wireMockClient() {
-        return new WireMock(wiremock.getHost().substring("http://".length()), wiremock.getPort());
+        return new WireMock(wiremock.getURI(Protocol.HTTP).getHost(), wiremock.getURI(Protocol.HTTP).getPort());
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)

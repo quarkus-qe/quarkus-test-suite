@@ -1,5 +1,6 @@
 package io.quarkus.ts.opentelemetry.reactive;
 
+import static io.quarkus.test.bootstrap.Protocol.HTTP;
 import static io.restassured.RestAssured.given;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -43,8 +44,8 @@ public class OpentelemetryReactiveIT {
 
     @QuarkusApplication(classes = { PingResource.class, PingPongService.class })
     static final RestService pingservice = new RestService()
-            .withProperty("pongservice_url", pongservice::getHost)
-            .withProperty("pongservice_port", () -> String.valueOf(pongservice.getPort()))
+            .withProperty("pongservice_url", () -> pongservice.getURI(HTTP).getRestAssuredStyleUri())
+            .withProperty("pongservice_port", () -> Integer.toString(pongservice.getURI(HTTP).getPort()))
             .withProperty("quarkus.opentelemetry.tracer.exporter.otlp.endpoint", jaeger::getCollectorUrl)
             // verify OTEL service name has priority over default Quarkus application name
             .withProperty("quarkus.otel.service.name", OTEL_PING_SERVICE_NAME)
@@ -80,7 +81,7 @@ public class OpentelemetryReactiveIT {
 
         // asserts scheduled method was invoked
         int invocations = Integer.parseInt(given().when()
-                .get(pongservice.getHost() + ":" + pongservice.getPort() + "/scheduler/count")
+                .get(pongservice.getURI(HTTP).withPath("/scheduler/count").toString())
                 .then()
                 .statusCode(HttpStatus.SC_OK)
                 .extract()
@@ -91,7 +92,7 @@ public class OpentelemetryReactiveIT {
 
     public void whenDoPingPongRequest() {
         given().when()
-                .get(pingservice.getHost() + ":" + pingservice.getPort() + "/ping/pong")
+                .get(pingservice.getURI(HTTP).withPath("/ping/pong").toString())
                 .then()
                 .statusCode(HttpStatus.SC_OK).body(equalToIgnoringCase("ping pong"));
     }

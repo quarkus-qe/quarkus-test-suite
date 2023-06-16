@@ -14,6 +14,7 @@ import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
+import io.quarkus.test.services.URILike;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 
@@ -118,8 +119,8 @@ public abstract class AbstractMultitenantHibernateSearchIT {
         return EMPTY_LIST;
     }
 
-    protected static String getElasticSearchConnectionChain(String host, int port) {
-        return (host + ":" + port).replaceAll("http://", "");
+    protected static String getElasticSearchConnectionChain(URILike uri) {
+        return uri.toString().replaceAll("http://", "");
     }
 
     protected abstract RestService getApp();

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.keycloak.authorization.client.AuthzClient;
 
 import io.quarkus.test.bootstrap.KeycloakService;
+import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 
 public abstract class BaseAuthzSecurityIT {
@@ -45,7 +46,8 @@ public abstract class BaseAuthzSecurityIT {
                 .get("/user/issuer")
                 .then()
                 .statusCode(HttpStatus.SC_OK)
-                .body(startsWith("user token issued by " + getKeycloak().getHost()));
+                .body(startsWith("user token issued by " +
+                        getKeycloak().getURI(Protocol.HTTP).getRestAssuredStyleUri()));
     }
 
     @Test
@@ -88,7 +90,8 @@ public abstract class BaseAuthzSecurityIT {
                 .get("/admin/issuer")
                 .then()
                 .statusCode(HttpStatus.SC_OK)
-                .body(startsWith("admin token issued by " + getKeycloak().getHost()));
+                .body(startsWith("admin token issued by " +
+                        getKeycloak().getURI(Protocol.HTTP).getRestAssuredStyleUri()));
     }
 
     @Test

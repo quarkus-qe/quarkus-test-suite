@@ -37,7 +37,8 @@ public class StorkLoadBalancerIT extends AbstractCommonTestCases {
             .withProperty("pong-service-host", "localhost")
             .withProperty("quarkus.stork.pong.service-discovery.refresh-period", "1")
             .withProperty("quarkus.stork.pong.service-discovery.type", "consul")
-            .withProperty("quarkus.stork.pong.service-discovery.consul-port", () -> String.valueOf(consul.getPort()))
+            .withProperty("quarkus.stork.pong.service-discovery.consul-port",
+                    () -> Integer.toString(consul.getURI().getPort()))
             .withProperty("quarkus.stork.pong.service-discovery.consul-host",
                     () -> getConsultEndpoint(consul.getConsulEndpoint()));
 
@@ -48,7 +49,8 @@ public class StorkLoadBalancerIT extends AbstractCommonTestCases {
             .withProperty("pong-replica-service-host", "localhost")
             .withProperty("quarkus.stork.pong-replica.service-discovery.refresh-period", "1")
             .withProperty("quarkus.stork.pong-replica.service-discovery.type", "consul")
-            .withProperty("quarkus.stork.pong-replica.service-discovery.consul-port", () -> String.valueOf(consul.getPort()))
+            .withProperty("quarkus.stork.pong-replica.service-discovery.consul-port",
+                    () -> Integer.toString(consul.getURI().getPort()))
             .withProperty("quarkus.stork.pong-replica.service-discovery.consul-host",
                     () -> getConsultEndpoint(consul.getConsulEndpoint()));
 
@@ -57,13 +59,15 @@ public class StorkLoadBalancerIT extends AbstractCommonTestCases {
             .withProperty("quarkus.stork.pong-replica.service-discovery.type", "consul")
             .withProperty("quarkus.stork.pong-replica.service-discovery.refresh-period", "1")
             .withProperty("quarkus.stork.pong-replica.load-balancer", "round-robin")
-            .withProperty("quarkus.stork.pong-replica.service-discovery.consul-port", () -> String.valueOf(consul.getPort()))
+            .withProperty("quarkus.stork.pong-replica.service-discovery.consul-port",
+                    () -> Integer.toString(consul.getURI().getPort()))
             .withProperty("quarkus.stork.pong-replica.service-discovery.consul-host",
                     () -> getConsultEndpoint(consul.getConsulEndpoint()))
             .withProperty("quarkus.stork.pong.service-discovery.type", "consul")
             .withProperty("quarkus.stork.pong.service-discovery.refresh-period", "1")
             .withProperty("quarkus.stork.pong.load-balancer", "round-robin")
-            .withProperty("quarkus.stork.pong.service-discovery.consul-port", () -> String.valueOf(consul.getPort()))
+            .withProperty("quarkus.stork.pong.service-discovery.consul-port",
+                    () -> Integer.toString(consul.getURI().getPort()))
             .withProperty("quarkus.stork.pong.service-discovery.consul-host",
                     () -> getConsultEndpoint(consul.getConsulEndpoint()));
 

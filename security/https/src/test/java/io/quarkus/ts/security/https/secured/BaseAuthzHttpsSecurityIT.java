@@ -138,10 +138,10 @@ public abstract class BaseAuthzHttpsSecurityIT {
     }
 
     private String url(Protocol protocol) {
-        return getApp().getHost(protocol) + ":" + getApp().getPort(protocol) + "/hello/full";
+        return getApp().getURI(protocol).withPath("/hello/full").toString();
     }
 
     private String urlWithAuthz() {
-        return getApp().getHost(Protocol.HTTPS) + ":" + getApp().getPort(Protocol.HTTPS) + "/secured";
+        return getApp().getURI(Protocol.HTTPS).withPath("/secured").toString();
     }
 }

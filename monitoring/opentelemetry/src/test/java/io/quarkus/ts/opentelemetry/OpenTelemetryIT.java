@@ -52,8 +52,8 @@ public class OpenTelemetryIT {
     @QuarkusApplication(classes = { PingResource.class, PingPongService.class })
     static final RestService pingservice = new RestService()
             .withProperty("quarkus.application.name", "pingservice")
-            .withProperty("pongservice_url", pongservice::getHost)
-            .withProperty("pongservice_port", () -> String.valueOf(pongservice.getPort()))
+            .withProperty("pongservice_url", () -> pongservice.getURI(HTTP).getRestAssuredStyleUri())
+            .withProperty("pongservice_port", () -> Integer.toString(pongservice.getURI(HTTP).getPort()))
             .withProperty("quarkus.opentelemetry.tracer.exporter.otlp.endpoint", jaeger::getCollectorUrl);
 
     @Order(1)
@@ -132,7 +132,7 @@ public class OpenTelemetryIT {
 
     public void whenDoPingPongRequest() {
         given().when()
-                .get(pingservice.getHost() + ":" + pingservice.getPort() + "/ping/pong")
+                .get(pingservice.getURI(HTTP).withPath("/ping/pong").toString())
                 .then()
                 .statusCode(HttpStatus.SC_OK).body(equalToIgnoringCase("ping pong"));
     }

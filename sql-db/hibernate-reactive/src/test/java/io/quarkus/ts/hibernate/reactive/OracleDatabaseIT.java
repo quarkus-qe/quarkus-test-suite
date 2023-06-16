@@ -19,7 +19,7 @@ public class OracleDatabaseIT extends AbstractDatabaseHibernateReactiveIT {
     private static final int ORACLE_PORT = 1521;
 
     @Container(image = "${oracle.image}", port = ORACLE_PORT, expectedLog = "DATABASE IS READY TO USE!")
-    static OracleService database = new ProvisionalOracleService()
+    static OracleService database = new OracleService()
             .with(ORACLE_USER, ORACLE_PASSWORD, ORACLE_DATABASE);
 
     @QuarkusApplication
@@ -31,14 +31,5 @@ public class OracleDatabaseIT extends AbstractDatabaseHibernateReactiveIT {
     @Override
     protected RestService getApp() {
         return app;
-    }
-
-    // TODO: Remove after https://github.com/quarkus-qe/quarkus-test-framework/issues/503 is resolved
-    private static class ProvisionalOracleService extends OracleService {
-        @Override
-        public String getReactiveUrl() {
-            return getHost().replace("http://", getJdbcName() + ":thin:@") + ":" + getPort() + "/"
-                    + getDatabase();
-        }
     }
 }

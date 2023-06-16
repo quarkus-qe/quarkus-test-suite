@@ -4,6 +4,7 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import io.quarkus.test.bootstrap.DefaultService;
 import io.quarkus.test.bootstrap.MySqlService;
+import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.services.Container;
@@ -52,7 +53,7 @@ public class OpenShiftMysqlMultitenantHibernateSearchIT extends AbstractMultiten
             .withProperty("quarkus.datasource.company2.password", company2.getPassword())
             .withProperty("quarkus.datasource.company2.jdbc.url", company2::getJdbcUrl)
             .withProperty("quarkus.hibernate-search-orm.elasticsearch.hosts",
-                    () -> getElasticSearchConnectionChain(elastic.getHost(), elastic.getPort()));
+                    () -> getElasticSearchConnectionChain(elastic.getURI(Protocol.HTTP)));
 
     @Override
     protected RestService getApp() {

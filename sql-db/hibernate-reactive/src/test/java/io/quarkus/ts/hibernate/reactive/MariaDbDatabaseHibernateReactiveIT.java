@@ -29,8 +29,7 @@ public class MariaDbDatabaseHibernateReactiveIT extends AbstractDatabaseHibernat
     static RestService app = new RestService().withProperties("mysql.properties")
             .withProperty("quarkus.datasource.username", MYSQL_USER)
             .withProperty("quarkus.datasource.password", MYSQL_PASSWORD)
-            .withProperty("quarkus.datasource.reactive.url",
-                    () -> database.getReactiveUrl().replace("mariadb", "mysql"));
+            .withProperty("quarkus.datasource.reactive.url", database::getReactiveUrl);
 
     @Override
     protected RestService getApp() {

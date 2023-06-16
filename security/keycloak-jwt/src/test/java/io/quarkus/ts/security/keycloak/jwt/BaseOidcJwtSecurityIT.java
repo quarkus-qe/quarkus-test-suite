@@ -18,6 +18,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 import io.quarkus.test.bootstrap.KeycloakService;
+import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 
 public abstract class BaseOidcJwtSecurityIT {
@@ -48,7 +49,8 @@ public abstract class BaseOidcJwtSecurityIT {
         thenRedirectToLoginPage();
 
         whenLoginAs("test-admin");
-        thenPageReturns("Hello, test-admin, your token was issued by " + getKeycloak().getHost());
+        thenPageReturns(
+                "Hello, test-admin, your token was issued by " + getKeycloak().getURI(Protocol.HTTP).getRestAssuredStyleUri());
     }
 
     @Test
@@ -66,7 +68,8 @@ public abstract class BaseOidcJwtSecurityIT {
         thenRedirectToLoginPage();
 
         whenLoginAs("test-user");
-        thenPageReturns("Hello, test-user, your token was issued by " + getKeycloak().getHost());
+        thenPageReturns(
+                "Hello, test-user, your token was issued by " + getKeycloak().getURI(Protocol.HTTP).getRestAssuredStyleUri());
     }
 
     @Test
@@ -87,7 +90,7 @@ public abstract class BaseOidcJwtSecurityIT {
     }
 
     private void whenGoTo(String path) throws Exception {
-        page = webClient.getPage(getApp().getHost() + ":" + getApp().getPort() + path);
+        page = webClient.getPage(getApp().getURI(Protocol.HTTP).withPath(path).toString());
     }
 
     private void thenRedirectToLoginPage() {

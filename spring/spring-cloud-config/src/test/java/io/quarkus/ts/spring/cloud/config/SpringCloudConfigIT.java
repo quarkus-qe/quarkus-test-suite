@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
@@ -23,7 +24,7 @@ public class SpringCloudConfigIT {
     @QuarkusApplication
     static RestService app = new RestService()
             .withProperty("quarkus.profile", "SpringCloudConfigIT")
-            .withProperty("quarkus.spring-cloud-config.url", () -> spring.getHost() + ":" + spring.getPort());
+            .withProperty("quarkus.spring-cloud-config.url", () -> spring.getURI(Protocol.HTTP).toString());
 
     @Tag("QUARKUS-1218")
     @ParameterizedTest

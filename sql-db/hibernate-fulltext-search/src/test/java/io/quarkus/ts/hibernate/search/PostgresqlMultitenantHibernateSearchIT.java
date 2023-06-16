@@ -2,6 +2,7 @@ package io.quarkus.ts.hibernate.search;
 
 import io.quarkus.test.bootstrap.DefaultService;
 import io.quarkus.test.bootstrap.PostgresqlService;
+import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
@@ -26,7 +27,7 @@ public class PostgresqlMultitenantHibernateSearchIT extends AbstractMultitenantH
             .withProperty("quarkus.datasource.password", database.getPassword())
             .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl)
             .withProperty("quarkus.hibernate-search-orm.elasticsearch.hosts",
-                    () -> getElasticSearchConnectionChain(elastic.getHost(), elastic.getPort()));
+                    () -> getElasticSearchConnectionChain(elastic.getURI(Protocol.HTTP)));
 
     @Override
     protected RestService getApp() {

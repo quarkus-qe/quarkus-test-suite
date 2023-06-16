@@ -108,6 +108,6 @@ public abstract class BaseEnabledHttpsSecurityIT {
     protected abstract RestService getApp();
 
     private String url(Protocol protocol) {
-        return getApp().getHost(protocol) + ":" + getApp().getPort(protocol) + "/hello/simple";
+        return getApp().getURI(protocol).withPath("/hello/simple").toString();
     }
 }

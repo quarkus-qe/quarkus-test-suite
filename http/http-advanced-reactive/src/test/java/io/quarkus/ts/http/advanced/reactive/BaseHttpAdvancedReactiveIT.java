@@ -455,7 +455,7 @@ public abstract class BaseHttpAdvancedReactiveIT {
     }
 
     private String getAppEndpoint() {
-        return getApp().getHost(getProtocol()) + ":" + getApp().getPort(getProtocol()) + ROOT_PATH;
+        return getApp().getURI(getProtocol()).withPath(ROOT_PATH).toString();
     }
 
     private ResponsePredicateResult isHttp2x(HttpResponse<Void> resp) {

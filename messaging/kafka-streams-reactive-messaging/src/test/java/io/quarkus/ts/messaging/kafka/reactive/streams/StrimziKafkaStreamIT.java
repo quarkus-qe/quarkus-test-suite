@@ -1,6 +1,7 @@
 package io.quarkus.ts.messaging.kafka.reactive.streams;
 
 import io.quarkus.test.bootstrap.KafkaService;
+import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.KafkaContainer;
@@ -20,6 +21,6 @@ public class StrimziKafkaStreamIT extends BaseKafkaStreamTest {
 
     @Override
     protected String getAppUrl() {
-        return app.getHost() + ":" + app.getPort();
+        return app.getURI(Protocol.HTTP).toString();
     }
 }
