@@ -10,6 +10,7 @@ import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
 @Tag("fips-incompatible") // Reported in https://github.com/IBM/Db2/issues/43
+@Tag("podman-incompatible") //TODO: https://github.com/containers/podman/issues/16432
 public class DB2DatabaseIT extends AbstractSqlDatabaseIT {
 
     @Container(image = "${db2.image}", port = 50000, expectedLog = "Setup has completed")

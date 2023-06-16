@@ -9,6 +9,7 @@ import io.quarkus.test.services.DevModeQuarkusApplication;
 
 @Tag("QUARKUS-959")
 @QuarkusScenario
+@Tag("podman-incompatible") //todo https://github.com/quarkusio/quarkus/issues/33985
 public class DevModeMysqlIT extends AbstractSqlDatabaseIT {
 
     @DevModeQuarkusApplication

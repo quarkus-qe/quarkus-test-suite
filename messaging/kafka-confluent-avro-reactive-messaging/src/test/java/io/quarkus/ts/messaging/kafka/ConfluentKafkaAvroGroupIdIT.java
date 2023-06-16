@@ -11,6 +11,7 @@ import io.quarkus.test.services.containers.model.KafkaVendor;
 
 @Tag("QUARKUS-1089")
 @QuarkusScenario
+@Tag("podman-incompatible") //todo fails on podman 4.4.1, works on 4.5.0 and above
 public class ConfluentKafkaAvroGroupIdIT extends BaseKafkaAvroGroupIdIT {
 
     @KafkaContainer(vendor = KafkaVendor.CONFLUENT, withRegistry = true)

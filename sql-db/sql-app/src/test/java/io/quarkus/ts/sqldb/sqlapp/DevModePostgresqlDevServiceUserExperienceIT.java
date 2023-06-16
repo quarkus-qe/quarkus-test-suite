@@ -3,6 +3,7 @@ package io.quarkus.ts.sqldb.sqlapp;
 import static io.quarkus.ts.sqldb.sqlapp.DbUtil.getImageName;
 import static io.quarkus.ts.sqldb.sqlapp.DbUtil.getImageVersion;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import io.quarkus.test.utils.SocketUtils;
 
 @Tag("QUARKUS-959")
 @QuarkusScenario
+@Tag("podman-incompatible") //todo https://github.com/quarkusio/quarkus/issues/33985
 public class DevModePostgresqlDevServiceUserExperienceIT {
 
     // we use '-alpine' version as no other test is using it, which mitigates the fact that sometimes
@@ -47,5 +49,11 @@ public class DevModePostgresqlDevServiceUserExperienceIT {
         Assertions.assertFalse(postgresImg.getId().isEmpty(), String.format("%s:%s not found. " +
                 "Notice that user set his own custom image by 'quarkus.datasource.devservices.image-name' property",
                 POSTGRES_NAME, POSTGRESQL_VERSION));
+    }
+
+    @AfterAll
+    //TODO workaround for podman 4.4.1 on rhel. Without it, *next* test (eg MariaDBDatabaseIT) fails with "broken pipe"
+    public static void clear() {
+        DockerUtils.removeImage(POSTGRES_NAME, POSTGRESQL_VERSION);
     }
 }
