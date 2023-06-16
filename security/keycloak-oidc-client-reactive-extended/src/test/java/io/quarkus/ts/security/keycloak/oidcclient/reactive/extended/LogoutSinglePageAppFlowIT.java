@@ -25,6 +25,7 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.KeycloakContainer;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.test.utils.TestExecutionProperties;
 import io.quarkus.ts.security.keycloak.oidcclient.reactive.extended.tokens.LogoutFlow;
 
 @QuarkusScenario
@@ -40,6 +41,15 @@ public class LogoutSinglePageAppFlowIT {
     @QuarkusApplication(classes = { LogoutFlow.class })
     static RestService app = new RestService()
             .withProperty("keycloak.url", () -> keycloak.getURI(Protocol.HTTP).toString())
+            .withProperty("keycloak.origin", () -> {
+                if (TestExecutionProperties.isOpenshiftPlatform()) {
+                    // in OpenShift we need scheme + host
+                    return keycloak.getURI(Protocol.HTTP).getRestAssuredStyleUri();
+                } else {
+                    // on Bare Metal we need scheme + host + port
+                    return "${keycloak.url}";
+                }
+            })
             .withProperties("logout.properties");
 
     @Tag("QUARKUS-2491")
