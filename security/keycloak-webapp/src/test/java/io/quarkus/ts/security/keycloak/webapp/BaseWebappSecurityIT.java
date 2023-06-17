@@ -177,6 +177,6 @@ public abstract class BaseWebappSecurityIT {
     protected abstract RestService getApp();
 
     private String appUrl(String path) {
-        return getApp().getURI(Protocol.HTTP).withScheme(path).toString();
+        return getApp().getURI(Protocol.HTTP).withPath(path).toString();
     }
 }
