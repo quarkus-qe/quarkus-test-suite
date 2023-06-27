@@ -77,7 +77,7 @@ public abstract class BaseWebappSecurityIT {
         thenRedirectToLoginPage();
 
         whenLoginAs("test-user");
-        thenPageReturns("user token issued by " + getKeycloak().getURI(Protocol.HTTP).toString());
+        thenPageReturns("user token issued by " + getKeycloak().getURI(Protocol.HTTP).getRestAssuredStyleUri());
     }
 
     @Test
@@ -112,7 +112,7 @@ public abstract class BaseWebappSecurityIT {
         thenRedirectToLoginPage();
 
         whenLoginAs("test-admin");
-        thenPageReturns("admin token issued by " + getKeycloak().getURI(Protocol.HTTP).toString());
+        thenPageReturns("admin token issued by " + getKeycloak().getURI(Protocol.HTTP).getRestAssuredStyleUri());
     }
 
     @Test
@@ -162,8 +162,9 @@ public abstract class BaseWebappSecurityIT {
 
     private void thenPageReturns(String expectedMessage) {
         assertTrue(page instanceof TextPage, "Should be in a text content page");
-        assertTrue(((TextPage) page).getContent().startsWith(expectedMessage),
-                "Page content should match with expected content");
+        String content = ((TextPage) page).getContent();
+        assertTrue(content.startsWith(expectedMessage),
+                "Page content should match with " + expectedMessage + " but was: " + content);
     }
 
     private void thenReturnsForbiddenWhenLoginAs(String user) {
