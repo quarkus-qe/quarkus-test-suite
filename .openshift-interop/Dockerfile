@@ -37,5 +37,8 @@ ADD --chmod=755 oc_login.sh /tmp/tests/
 # to debug on local
 # ADD --chmod=755 oc_login_local.sh /tmp/tests/oc_login.sh
 
+# Without this we got "read-only file system" bug during CI test runs
+RUN chgrp -R 0 /var && chmod -R g=u /var
+
 # test results are in $PROJECT/target/failsafe-reports/*.xml for every PROJECT in $PROJECTS.
 CMD ./oc_login.sh && source "/root/.sdkman/bin/sdkman-init.sh" && ./run.sh
