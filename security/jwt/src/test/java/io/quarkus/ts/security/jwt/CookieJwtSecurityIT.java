@@ -1,14 +1,11 @@
 package io.quarkus.ts.security.jwt;
 
-import org.junit.jupiter.api.Tag;
-
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.QuarkusApplication;
 import io.restassured.specification.RequestSpecification;
 
 @QuarkusScenario
-@Tag("fips-incompatible")
 public class CookieJwtSecurityIT extends BaseJwtSecurityIT {
 
     static final String COOKIE_NAME = "MY_COOKIE_NAME";
