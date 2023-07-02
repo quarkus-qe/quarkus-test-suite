@@ -1,11 +1,15 @@
 package io.quarkus.qe.hibernate;
 
+import static io.quarkus.qe.hibernate.analyze.AnalyzeResource.AUTHOR;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.apache.http.HttpStatus;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 public abstract class BaseHibernateIT {
@@ -47,6 +51,25 @@ public abstract class BaseHibernateIT {
                 .body(containsString("hello"))
                 .body(not(containsString("HV000041")))
                 .body(not(containsString("HV000")));
+    }
+
+    @Test
+    public void useReservedWordAsTableName() {
+        // verifies https://github.com/quarkusio/quarkus/issues/28593
+        var id = given()
+                .post("/analyze")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body(notNullValue())
+                .extract()
+                .asString();
+
+        given()
+                .pathParam("id", id)
+                .get("/analyze/{id}/author")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body(Matchers.is(AUTHOR));
     }
 
     private void givenPostConstructAndPreDestroyAreNotInvoked() {
