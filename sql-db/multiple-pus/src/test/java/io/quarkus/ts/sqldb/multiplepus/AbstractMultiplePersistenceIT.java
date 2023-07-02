@@ -1,11 +1,15 @@
 package io.quarkus.ts.sqldb.multiplepus;
 
+import static io.quarkus.ts.sqldb.multiplepus.FungiTenantResolver.TENANT_HEADER;
 import static jakarta.ws.rs.core.Response.Status.NOT_FOUND;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 
+import java.util.Map;
+
 import org.apache.http.HttpStatus;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,6 +21,8 @@ import io.restassured.http.ContentType;
 public abstract class AbstractMultiplePersistenceIT {
 
     static final int EXPECTED_FRUITS_SIZE = 7;
+    static final String EXPECTED_FUNGUS_NON_DEFAULT_TENANT_SIZE = "3";
+    static final String EXPECTED_FUNGUS_DEFAULT_TENANT_SIZE = "4";
     static final int EXPECTED_VEGETABLES_SIZE = 7;
     static final long INVALID_ID = 999L;
 
@@ -393,5 +399,20 @@ public abstract class AbstractMultiplePersistenceIT {
                 .statusCode(HttpStatus.SC_NOT_FOUND)
                 .body("code", equalTo(HttpStatus.SC_NOT_FOUND))
                 .body("error", equalTo("vegetable '999' not found"));
+    }
+
+    @Test
+    public void testMultiTenantDiscriminator() {
+        assertTenantRows(EXPECTED_FUNGUS_DEFAULT_TENANT_SIZE, Map.of());
+        assertTenantRows(EXPECTED_FUNGUS_NON_DEFAULT_TENANT_SIZE, Map.of(TENANT_HEADER, "Wynnea"));
+    }
+
+    private void assertTenantRows(String expectedNumOfRows, Map<String, String> headers) {
+        getApp().given()
+                .headers(headers)
+                .get("/fungus")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body(Matchers.is(expectedNumOfRows));
     }
 }
