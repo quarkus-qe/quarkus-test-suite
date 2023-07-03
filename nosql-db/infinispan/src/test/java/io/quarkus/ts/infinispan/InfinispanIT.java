@@ -8,12 +8,10 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.bootstrap.InfinispanService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
-@DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/30304")
 public class InfinispanIT {
     @Container(image = "${infinispan.image}", port = 11222)
     static InfinispanService infinispan = new InfinispanService()
