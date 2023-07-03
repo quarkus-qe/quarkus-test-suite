@@ -63,7 +63,7 @@ public class VertxWebClientIT {
     @QuarkusApplication
     static RestService vertx = new RestService()
             .withProperty("chucknorris.api.domain", () -> wiremock.getURI(Protocol.HTTP).toString())
-            .withProperty("quarkus.opentelemetry.tracer.exporter.otlp.endpoint", jaeger::getCollectorUrl);
+            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl);
 
     @Test
     @DisplayName("Vert.x WebClient [flavor: mutiny] -> Map json response body to POJO")
