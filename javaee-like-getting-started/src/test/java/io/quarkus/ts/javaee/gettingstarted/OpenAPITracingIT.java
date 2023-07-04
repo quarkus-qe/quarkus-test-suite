@@ -7,7 +7,6 @@ import static org.hamcrest.Matchers.is;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
@@ -64,7 +63,6 @@ public class OpenAPITracingIT {
     }
 
     @Test
-    @Disabled("https://github.com/quarkusio/quarkus/issues/34376")
     public void swaggerUiUntraced() {
         testUntraced(SWAGGER_UI_PATH, SWAGGER_UI_OPERATION);
     }
