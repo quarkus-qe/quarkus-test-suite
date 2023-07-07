@@ -31,7 +31,7 @@ public class OpenTelemetrySseIT {
     @QuarkusApplication()
     static RestService app = new RestService()
             .withProperty("quarkus.application.name", "pingpong")
-            .withProperty("quarkus.opentelemetry.tracer.exporter.otlp.endpoint", jaeger::getCollectorUrl);
+            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl);
 
     private static final String PING_ENDPOINT = "/server-sent-events-ping";
     private static final String PONG_ENDPOINT = "/server-sent-events-pong";

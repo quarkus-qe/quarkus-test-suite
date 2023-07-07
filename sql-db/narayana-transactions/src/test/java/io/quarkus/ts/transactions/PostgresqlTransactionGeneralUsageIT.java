@@ -20,8 +20,8 @@ public class PostgresqlTransactionGeneralUsageIT extends TransactionCommons {
 
     @QuarkusApplication
     public static final RestService app = new RestService()
-            .withProperty("quarkus.opentelemetry.tracer.exporter.otlp.endpoint", jaeger::getCollectorUrl)
-            .withProperty("quarkus.opentelemetry.enabled", "true")
+            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.enabled", "true")
             .withProperty("quarkus.datasource.jdbc.telemetry", "true")
             .withProperty("quarkus.datasource.username", database.getUser())
             .withProperty("quarkus.datasource.password", database.getPassword())
