@@ -19,10 +19,8 @@ public class PostgresqlTransactionGeneralUsageIT extends TransactionCommons {
     static final PostgresqlService database = new PostgresqlService().withProperty("PGDATA", "/tmp/psql");
 
     @QuarkusApplication
-    public static final RestService app = new RestService()
+    public static final RestService app = new RestService().withProperties("mssql.properties")
             .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl)
-            .withProperty("quarkus.otel.enabled", "true")
-            .withProperty("quarkus.datasource.jdbc.telemetry", "true")
             .withProperty("quarkus.datasource.username", database.getUser())
             .withProperty("quarkus.datasource.password", database.getPassword())
             .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl);
