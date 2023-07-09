@@ -19,14 +19,11 @@ import io.quarkus.test.bootstrap.PostgresqlService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnNative;
-import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusSnapshot;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.GitRepositoryQuarkusApplication;
 import io.restassured.http.ContentType;
 
-// TODO: enable when Quarkus Workshops migrates to Quarkus 3
-@Disabled("Disabled until Quarkus Workshops migrates to Quarkus 3")
-@DisabledOnQuarkusSnapshot(reason = "999-SNAPSHOT is not available in the Maven repositories in OpenShift")
+@Disabled("Disabled until https://github.com/quarkus-qe/quarkus-test-framework/issues/432 is fixed")
 @DisabledOnNative(reason = "Native + s2i not supported")
 @OpenShiftScenario
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -51,7 +48,7 @@ public class OpenShiftWorkshopVillainsIT {
     static PostgresqlService database = new PostgresqlService()
             .withProperty("PGDATA", "/tmp/psql");
 
-    @GitRepositoryQuarkusApplication(repo = "https://github.com/quarkusio/quarkus-workshops.git", contextDir = "quarkus-workshop-super-heroes/super-heroes/rest-villains", branch = "3d3425a15daacf1c774cb7f5bc24228c4a623256", mavenArgs = "-Dquarkus.package.type=uber-jar -DskipTests -Dquarkus.platform.group-id=${QUARKUS_PLATFORM_GROUP-ID} -Dquarkus.platform.version=${QUARKUS_PLATFORM_VERSION}")
+    @GitRepositoryQuarkusApplication(repo = "https://github.com/quarkusio/quarkus-workshops.git", contextDir = "quarkus-workshop-super-heroes/super-heroes/rest-villains", mavenArgs = "-Dquarkus.package.type=uber-jar -DskipTests -Dquarkus.platform.group-id=${QUARKUS_PLATFORM_GROUP-ID} -Dquarkus.platform.version=${QUARKUS_PLATFORM_VERSION}")
     static final RestService app = new RestService()
             .withProperty("quarkus.http.port", "8080")
             .withProperty("quarkus.datasource.username", database.getUser())
@@ -90,16 +87,6 @@ public class OpenShiftWorkshopVillainsIT {
         app.given()
                 .accept(ContentType.JSON)
                 .when().get("/q/health/ready")
-                .then()
-                .statusCode(HttpStatus.SC_OK);
-    }
-
-    @Test
-    @Disabled("Metrics is not available on this service at this point: 3d3425a15daacf1c774cb7f5bc24228c4a623256")
-    public void testMetrics() {
-        app.given()
-                .accept(ContentType.JSON)
-                .when().get("/q/metrics/application")
                 .then()
                 .statusCode(HttpStatus.SC_OK);
     }
@@ -177,20 +164,6 @@ public class OpenShiftWorkshopVillainsIT {
                 .when().delete("/api/villains/{id}")
                 .then()
                 .statusCode(HttpStatus.SC_NO_CONTENT);
-    }
-
-    @Test
-    @Order(4)
-    @Disabled("Metrics is not available on this service at this point: 3d3425a15daacf1c774cb7f5bc24228c4a623256")
-    public void testCalledOperationMetrics() {
-        app.given()
-                .accept(ContentType.JSON)
-                .when().get("/q/metrics/application")
-                .then()
-                .statusCode(HttpStatus.SC_OK)
-                .body("'io.quarkus.workshop.superheroes.villain.VillainResource.countCreateVillain'", is(1))
-                .body("'io.quarkus.workshop.superheroes.villain.VillainResource.countUpdateVillain'", is(1))
-                .body("'io.quarkus.workshop.superheroes.villain.VillainResource.countDeleteVillain'", is(1));
     }
 
     static class Villain {

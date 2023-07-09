@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.testcontainers.shaded.org.hamcrest.Matchers.empty;
 
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -18,12 +17,10 @@ import io.quarkus.test.bootstrap.PostgresqlService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnNative;
-import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusSnapshot;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.GitRepositoryQuarkusApplication;
 import io.restassured.http.ContentType;
 
-@DisabledOnQuarkusSnapshot(reason = "999-SNAPSHOT is not available in the Maven repositories in OpenShift")
 @DisabledOnNative(reason = "Native + s2i not supported")
 @OpenShiftScenario
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -48,7 +45,7 @@ public class OpenShiftWorkshopHeroesIT {
     static PostgresqlService database = new PostgresqlService()
             .withProperty("PGDATA", "/tmp/psql");
 
-    @GitRepositoryQuarkusApplication(repo = "https://github.com/quarkusio/quarkus-workshops.git", branch = "5bb433fb7a2c8d80dda88dac9dcabc50f7494dc3", contextDir = "quarkus-workshop-super-heroes/super-heroes/rest-heroes", mavenArgs = "-Dquarkus.package.type=uber-jar -DskipTests -Dquarkus.platform.group-id=${QUARKUS_PLATFORM_GROUP-ID} -Dquarkus.platform.version=${QUARKUS_PLATFORM_VERSION}")
+    @GitRepositoryQuarkusApplication(repo = "https://github.com/quarkusio/quarkus-workshops.git", contextDir = "quarkus-workshop-super-heroes/super-heroes/rest-heroes", mavenArgs = "-Dquarkus.package.type=uber-jar -DskipTests -Dquarkus.platform.group-id=${QUARKUS_PLATFORM_GROUP-ID} -Dquarkus.platform.version=${QUARKUS_PLATFORM_VERSION}")
     static final RestService app = new RestService()
             .withProperty("quarkus.http.port", "8080")
             .withProperty("quarkus.datasource.reactive.url", () -> database.getReactiveUrl())
@@ -88,16 +85,6 @@ public class OpenShiftWorkshopHeroesIT {
         app.given()
                 .accept(ContentType.JSON)
                 .when().get("/q/health/ready")
-                .then()
-                .statusCode(HttpStatus.SC_OK);
-    }
-
-    @Test
-    @Disabled("Metrics is not available on this service at this point: 5bb433fb7a2c8d80dda88dac9dcabc50f7494dc3")
-    public void testMetrics() {
-        app.given()
-                .accept(ContentType.JSON)
-                .when().get("/q/metrics/application")
                 .then()
                 .statusCode(HttpStatus.SC_OK);
     }
@@ -175,20 +162,6 @@ public class OpenShiftWorkshopHeroesIT {
                 .when().delete("/api/heroes/{id}")
                 .then()
                 .statusCode(HttpStatus.SC_NO_CONTENT);
-    }
-
-    @Test
-    @Order(4)
-    @Disabled("Metrics is not available on this service at this point: 5bb433fb7a2c8d80dda88dac9dcabc50f7494dc3")
-    public void testCalledOperationMetrics() {
-        app.given()
-                .accept(ContentType.JSON)
-                .when().get("/q/metrics/application")
-                .then()
-                .statusCode(HttpStatus.SC_OK)
-                .body("'io.quarkus.workshop.superheroes.hero.HeroResource.countCreateHero'", is(1))
-                .body("'io.quarkus.workshop.superheroes.hero.HeroResource.countUpdateHero'", is(1))
-                .body("'io.quarkus.workshop.superheroes.hero.HeroResource.countDeleteHero'", is(1));
     }
 
     static class Hero {
