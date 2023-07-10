@@ -20,7 +20,7 @@ public class OracleTransactionGeneralUsageIT extends TransactionCommons {
 
     @QuarkusApplication
     static RestService app = new RestService().withProperties("oracle.properties")
-            .withProperty("quarkus.opentelemetry.tracer.exporter.otlp.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl)
             .withProperty("quarkus.datasource.username", database.getUser())
             .withProperty("quarkus.datasource.password", database.getPassword())
             .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl);
