@@ -238,8 +238,7 @@
                                 <postgresql.latest.image>${postgresql.latest.image}</postgresql.latest.image>
                                 <!-- TODO: investigate further in https://github.com/quarkus-qe/quarkus-test-suite/issues/627 -->
                                 <elastic.71.image>docker.io/bitnami/elasticsearch:7.17.9</elastic.71.image>
-                                <!--TODO change into 5.7 when this fixed https://github.com/docker-library/mysql/issues/844 -->
-                                <mysql.57.image>docker.io/library/mysql:5.7.36</mysql.57.image>
+                                <mysql.57.image>docker.io/library/mysql:5.7.42</mysql.57.image>
                                 <mysql.upstream.80.image>docker.io/library/mysql:8.0</mysql.upstream.80.image>
                                 <mysql.80.image>registry.access.redhat.com/rhscl/mysql-80-rhel7</mysql.80.image>
                                 <mariadb.10.image>docker.io/library/mariadb:10.10</mariadb.10.image>
