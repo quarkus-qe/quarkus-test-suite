@@ -40,13 +40,13 @@ public class OpentelemetryReactiveIT {
             SchedulerService.class }, properties = "pong.properties")
     static final RestService pongservice = new RestService()
             .withProperty("quarkus.application.name", "pongservice")
-            .withProperty("quarkus.opentelemetry.tracer.exporter.otlp.endpoint", jaeger::getCollectorUrl);
+            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl);
 
     @QuarkusApplication(classes = { PingResource.class, PingPongService.class })
     static final RestService pingservice = new RestService()
             .withProperty("pongservice_url", () -> pongservice.getURI(HTTP).getRestAssuredStyleUri())
             .withProperty("pongservice_port", () -> Integer.toString(pongservice.getURI(HTTP).getPort()))
-            .withProperty("quarkus.opentelemetry.tracer.exporter.otlp.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl)
             // verify OTEL service name has priority over default Quarkus application name
             .withProperty("quarkus.otel.service.name", OTEL_PING_SERVICE_NAME)
             // FIXME: change Quarkus app name when https://github.com/quarkusio/quarkus/issues/33317 is fixed

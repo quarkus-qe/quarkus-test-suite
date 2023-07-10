@@ -47,14 +47,14 @@ public class OpenTelemetryIT {
             PongResource.class }, properties = "pong.properties")
     static final RestService pongservice = new RestService()
             .withProperty("quarkus.application.name", "pongservice")
-            .withProperty("quarkus.opentelemetry.tracer.exporter.otlp.endpoint", jaeger::getCollectorUrl);
+            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl);
 
     @QuarkusApplication(classes = { PingResource.class, PingPongService.class })
     static final RestService pingservice = new RestService()
             .withProperty("quarkus.application.name", "pingservice")
             .withProperty("pongservice_url", () -> pongservice.getURI(HTTP).getRestAssuredStyleUri())
             .withProperty("pongservice_port", () -> Integer.toString(pongservice.getURI(HTTP).getPort()))
-            .withProperty("quarkus.opentelemetry.tracer.exporter.otlp.endpoint", jaeger::getCollectorUrl);
+            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl);
 
     @Order(1)
     @Test
