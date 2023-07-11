@@ -17,7 +17,10 @@ public class OpenShiftPostgresqlMultitenantHibernateSearchIT extends AbstractMul
     static final int POSTGRESQL_PORT = 5432;
 
     @Container(image = "${elastic.71.image}", port = ELASTIC_PORT, expectedLog = "started")
-    static DefaultService elastic = new DefaultService().withProperty("discovery.type", "single-node");
+    static DefaultService elastic = new DefaultService()
+            .withProperty("discovery.type", "single-node")
+            // Limit resources as Elasticsearch official docker image use half of available RAM
+            .withProperty("ES_JAVA_OPTS", "-Xms1g -Xmx1g");
 
     @Container(image = "${postgresql.10.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
     static PostgresqlService database = new PostgresqlService();

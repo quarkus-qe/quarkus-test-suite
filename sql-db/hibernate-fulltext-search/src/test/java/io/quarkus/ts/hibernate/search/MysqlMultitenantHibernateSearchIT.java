@@ -27,7 +27,10 @@ public class MysqlMultitenantHibernateSearchIT extends AbstractMultitenantHibern
     static MySqlService company2 = new MySqlService().withDatabase("company2");;
 
     @Container(image = "${elastic.71.image}", port = ELASTIC_PORT, expectedLog = "started")
-    static DefaultService elastic = new DefaultService().withProperty("discovery.type", "single-node");
+    static DefaultService elastic = new DefaultService()
+            .withProperty("discovery.type", "single-node")
+            // Limit resources as Elasticsearch official docker image use half of available RAM
+            .withProperty("ES_JAVA_OPTS", "-Xms1g -Xmx1g");
 
     @QuarkusApplication
     static RestService app = new RestService()
