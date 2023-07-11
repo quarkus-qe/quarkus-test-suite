@@ -12,6 +12,7 @@ import jakarta.inject.Inject;
 import org.apache.http.HttpStatus;
 import org.jboss.logging.Logger;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -27,6 +28,7 @@ import io.quarkus.test.services.QuarkusApplication;
  * - `prime_number_test_{uniqueId}`: with information about the calculation of the prime number.
  */
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
+@Disabled("https://github.com/quarkusio/quarkus/issues/34645")
 public class OpenShiftCustomMetricsIT {
 
     private static final Logger LOG = Logger.getLogger(OpenShiftCustomMetricsIT.class);
