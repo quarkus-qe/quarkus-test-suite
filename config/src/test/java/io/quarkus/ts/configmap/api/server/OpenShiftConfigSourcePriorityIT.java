@@ -5,7 +5,17 @@ import static io.quarkus.ts.configmap.api.server.OpenShiftBaseConfigIT.SECRET;
 import static io.quarkus.ts.configmap.api.server.OpenShiftBaseConfigIT.applyConfig;
 import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import jakarta.inject.Inject;
 
@@ -54,6 +64,35 @@ public class OpenShiftConfigSourcePriorityIT {
 
         // Environment variable has the highest priority.
         assertEquals("side note environment variable", configProperties.sideNote);
+    }
+
+    @Test
+    void configIsIdempotent() throws IOException {
+        Predicate<String> containsCommit = line -> line.contains("app.quarkus.io/commit-id");
+        Predicate<String> containsTimestamp = line -> line.contains("app.quarkus.io/build-timestamp");
+
+        // todo change to custom path when https://github.com/quarkusio/quarkus/issues/34673 will be fixed
+        Path folder = app.getServiceFolder().resolve("target/kubernetes").toAbsolutePath();
+        assertTrue(Files.exists(folder), "Folder " + folder + " should exist!");
+
+        // we do not use idempotent mode for kubernetes, so it should stay as before
+        Path kubernetesYaml = folder.resolve("kubernetes.yml");
+        List<String> kubernetes = Files.readAllLines(kubernetesYaml);
+        assertNotEquals(0, kubernetes.size(), "File " + kubernetesYaml + " should exist and have content!");
+        assertTrue(kubernetes.stream().anyMatch(containsTimestamp), "File " + kubernetesYaml + " should contain timestamps!");
+        //todo https://github.com/quarkusio/quarkus/issues/34749
+        //assertTrue(kubernetes.stream().anyMatch(containsCommit), "File " + kubernetesYaml + " should contain commit ids!");
+
+        Path openshiftYaml = folder.resolve("openshift.yml");
+        List<String> openshift = Files.readAllLines(openshiftYaml);
+        assertNotEquals(0, openshift.size(), "File " + openshiftYaml + " should exist and have content!");
+
+        // openshift uses idempotent mode
+        List<String> offendingLines = openshift.stream()
+                .filter(containsTimestamp.or(containsCommit))
+                .collect(Collectors.toList());
+        assertEquals(Collections.emptyList(), offendingLines, "Non-idempotent lines found!");
+
     }
 
     private static void loadConfigSource(Service service) {
