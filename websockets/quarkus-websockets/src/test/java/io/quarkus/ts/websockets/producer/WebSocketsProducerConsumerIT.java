@@ -177,7 +177,6 @@ public class WebSocketsProducerConsumerIT {
 
         @OnMessage
         void message(String msg) {
-            // TODO sometimes sessions are reopened several times without closing, need to check, if this is right
             if (!msg.endsWith("joined")) {
                 messages.add(msg);
             }
