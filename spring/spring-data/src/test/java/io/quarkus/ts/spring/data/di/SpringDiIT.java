@@ -1,4 +1,4 @@
-package io.quarkus.ts.spring.data.rest;
+package io.quarkus.ts.spring.data.di;
 
 import static org.hamcrest.core.Is.is;
 
@@ -13,7 +13,8 @@ public class SpringDiIT {
 
     @QuarkusApplication
     public static final RestService app = new RestService()
-            .withProperty("quarkus.hibernate-orm.active", "false");
+            .withProperty("quarkus.hibernate-orm.active", "false")
+            .withProperty("quarkus.hibernate-orm.named.active", "false");
 
     @Test
     public void testBeanExists() {
