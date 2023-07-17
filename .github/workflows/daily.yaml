@@ -93,7 +93,8 @@ jobs:
         profiles: [ "root-modules,monitoring-modules,spring-modules,test-tooling-modules",
                    "http-modules",
                    "security-modules",
-                   "sql-db-modules",
+                    "sql-db-modules -pl env-info,sql-db/hibernate,sql-db/sql-app,sql-db/sql-app-compatibility,sql-db/multiple-pus,sql-db/panache-flyway,sql-db/hibernate-reactive",
+                    "sql-db-modules -pl env-info,sql-db/reactive-rest-data-panache,sql-db/vertx-sql,sql-db/reactive-vanilla,sql-db/hibernate-fulltext-search,sql-db/narayana-transactions",
                    "messaging-modules,websockets-modules"]
     steps:
       - uses: actions/checkout@v3
