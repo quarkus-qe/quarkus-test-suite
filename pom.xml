@@ -405,6 +405,7 @@
                 <!-- TODO: https://github.com/quarkiverse/quarkus-helm/issues/114-->
                 <!-- <module>helm/helm-minimum</module> -->
                 <module>funqy/knative-events</module>
+                <module>build-time-analytics</module>
             </modules>
         </profile>
         <profile>
@@ -427,6 +428,7 @@
                 <!-- <module>kamelet</module> -->
                 <module>logging/jboss</module>
                 <module>cache/caffeine</module>
+                <module>build-time-analytics</module>
             </modules>
         </profile>
         <profile>

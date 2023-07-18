@@ -1,0 +1,8 @@
+{
+  "active": true,
+  "deny_anonymous_ids": [
+    "fake-anonymous-id"
+  ],
+  "deny_quarkus_versions": [],
+  "refresh_interval": 0
+}

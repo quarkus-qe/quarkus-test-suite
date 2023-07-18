@@ -1152,3 +1152,9 @@ Test coverage includes:
   - Cloud Event Binary mode
   - Structured Mode
 - Multiple functions declared in one application
+
+### `build-time-analytics`
+
+Verifies the Quarkus build-time analytics feature: https://quarkus.io/guides/build-analytics.
+
+For details, see the module-specific README.md.
