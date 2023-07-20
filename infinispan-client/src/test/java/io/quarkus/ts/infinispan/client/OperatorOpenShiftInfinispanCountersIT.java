@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import io.quarkus.test.scenarios.OpenShiftDeploymentStrategy;
 import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.utils.Command;
+import io.restassured.response.Response;
 
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -42,6 +44,7 @@ public class OperatorOpenShiftInfinispanCountersIT extends BaseOpenShiftInfinisp
         String firstEndpointCache = getCounterValue(one, "/first-counter/get-cache");
         String secondEndpointCache = getCounterValue(one, "/second-counter/get-cache");
 
+        assertEquals("0", secondEndpointCache);
         assertEquals(firstEndpointCache, secondEndpointCache);
     }
 
@@ -360,12 +363,10 @@ public class OperatorOpenShiftInfinispanCountersIT extends BaseOpenShiftInfinisp
      * Tested is only the right returned status code.
      */
     private String getCounterValue(RestService node, String url) {
-        String actualResponse = node.given()
-                .get(url)
-                .then().statusCode(HttpStatus.SC_OK)
-                .extract().asString();
-
-        return actualResponse;
+        Response response = node.given().get(url);
+        String body = response.body().asString();
+        Assertions.assertEquals(HttpStatus.SC_OK, response.statusCode(), body);
+        return body;
     }
 
     /**
