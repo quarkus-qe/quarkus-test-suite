@@ -15,10 +15,18 @@ import java.util.Objects;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
 
+import io.quarkus.test.bootstrap.RestService;
+import io.quarkus.test.services.QuarkusApplication;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpClient;
+import io.vertx.core.http.HttpMethod;
 
 public abstract class AbstractVertxIT {
+
+    @QuarkusApplication
+    static final RestService service = new RestService();
 
     @Test
     public void httpServerAndMetrics() {
@@ -39,6 +47,20 @@ public abstract class AbstractVertxIT {
     @Test
     public void httpServerParsing() {
         requests().get("/hello?name=you").then().statusCode(HttpStatus.SC_OK).body("content", is("Hello, you!"));
+    }
+
+    @Test
+    public void vertxHttpClient() {
+        HttpClient httpClient = Vertx.vertx().createHttpClient();
+        httpClient.request(HttpMethod.GET, service.getPort(), service.getHost(), "/hello")
+                .compose(request -> request.send()
+                        .compose(httpClientResponse -> {
+                            assertEquals(HttpStatus.SC_OK, httpClientResponse.statusCode());
+                            return httpClientResponse.body();
+                        }))
+                .onSuccess(body -> {
+                    assertThat("Body response", body.toString().contains("Hello, World!"));
+                }).onFailure(Throwable::getCause);
     }
 
     public abstract RequestSpecification requests();
