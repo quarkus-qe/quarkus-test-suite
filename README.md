@@ -1,3 +1,4 @@
+
 # Quarkus Test Suite
 
 Test Suite for Quarkus integration scenarios. Among the standard Quarkus test features, scenarios hardly rely on [Quarkus-test-framework](https://github.com/quarkus-qe/quarkus-test-framework) features
@@ -936,8 +937,8 @@ This test could be extended with some metric gathering.
 ### `external-applications`
 
 External applications need a base image which is used by OpenShift to build the app on. So, one base image needs to be supplied forJVM and Native:
-- For JVM: `ts.global.s2i.quarkus.jvm.builder.image`
-- For Native: `ts.global.s2i.quarkus.native.builder.image`
+- For JVM: `quarkus.s2i.base-jvm-image`
+- For Native: `quarkus.s2i.base-native-image`
 
 These properties have default values set in the pom.xml file.
 
