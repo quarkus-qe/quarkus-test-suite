@@ -126,7 +126,9 @@ public class DevModeIT extends AbstractAnalyticsIT {
 
     private void startDevMode(RestService app) {
         // Always provide fake analytics URI to avoid sending data.
-        app.withProperty(QUARKUS_ANALYTICS_URI_BASE_PROPERTY, QUARKUS_ANALYTICS_FAKE_URI_BASE).start();
+        app.withProperty(QUARKUS_ANALYTICS_URI_BASE_PROPERTY, QUARKUS_ANALYTICS_FAKE_URI_BASE)
+                // save execution time by disabling all dev services
+                .withProperty("quarkus.devservices.enabled", "false").start();
     }
 
     private void verifyPromptPresent(RestService app) {
