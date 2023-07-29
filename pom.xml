@@ -37,6 +37,7 @@
         <smallrye-stork.version>2.2.1</smallrye-stork.version>
         <assertj.version>3.24.2</assertj.version>
         <profile.id>jvm</profile.id>
+        <!-- I just want to run CI -->
         <htmlunit.version>2.70.0</htmlunit.version>
         <!-- Faster build when using -DskipTests -->
         <quarkus.build.skip>${skipTests}</quarkus.build.skip>
