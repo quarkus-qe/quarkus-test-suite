@@ -34,7 +34,7 @@
         <!-- <quarkus-helm.version>0.1.1</quarkus-helm.version> -->
         <quarkiverse.config.version>2.0.1</quarkiverse.config.version>
         <quarkiverse.pact.version>1.0.1.Final</quarkiverse.pact.version>
-        <smallrye-stork.version>2.3.0</smallrye-stork.version>
+        <smallrye-stork.version>2.2.0</smallrye-stork.version>
         <assertj.version>3.24.2</assertj.version>
         <profile.id>jvm</profile.id>
         <htmlunit.version>2.70.0</htmlunit.version>
