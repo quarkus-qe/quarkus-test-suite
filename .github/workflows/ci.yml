@@ -136,7 +136,7 @@ jobs:
           name: ci-artifacts
           path: artifacts-latest-linux-native${{ matrix.java }}.zip
   windows-build-jvm-latest:
-    name: PR - Windows - JVM build - Latest Version
+    name: PR - Windows - JVM build - 3.2
     runs-on: windows-latest
     needs: detect-test-suite-modules
     env:
