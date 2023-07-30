@@ -15,6 +15,7 @@ import jakarta.inject.Inject;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -28,6 +29,7 @@ import io.quarkus.test.utils.FileUtils;
 @OpenShiftScenario
 @DisabledOnQuarkusVersion(version = "2\\..*", reason = "QE OCP user need more privilege in order to be able to create the required ClusterRole")
 @DisabledOnQuarkusSnapshot(reason = "QE OCP user need more privilege in order to be able to create the required ClusterRole")
+@Disabled // TODO: OCP user needs more privilege in order to be able to create the required ClusterRole
 public class OpenShiftStorkServiceDiscoveryIT extends AbstractCommonTestCases {
 
     private static final String CLUSTER_ROLE_FILE_NAME = "cluster-role.yaml";
