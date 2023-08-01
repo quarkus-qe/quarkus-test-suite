@@ -22,7 +22,6 @@ public class Pusher {
     @OnOpen
     public void onOpen(Session session) {
         this.session = session;
-        //todo messages are not sent on opening of session. Need to investigate and create reproducer
     }
 
     @OnMessage
