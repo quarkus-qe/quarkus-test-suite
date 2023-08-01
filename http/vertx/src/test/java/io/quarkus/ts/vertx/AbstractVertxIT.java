@@ -15,13 +15,18 @@ import java.util.Objects;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
 
+import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.services.QuarkusApplication;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
+import io.vertx.core.http.HttpClientOptions;
+import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.http.HttpMethod;
+import io.vertx.core.http.HttpVersion;
+import io.vertx.core.json.JsonObject;
 
 public abstract class AbstractVertxIT {
 
@@ -52,7 +57,7 @@ public abstract class AbstractVertxIT {
     @Test
     public void vertxHttpClient() {
         HttpClient httpClient = Vertx.vertx().createHttpClient();
-        httpClient.request(HttpMethod.GET, service.getPort(), service.getHost(), "/hello")
+        httpClient.request(HttpMethod.GET, service.getPort(), service.getURI(Protocol.NONE).getHost(), "/hello")
                 .compose(request -> request.send()
                         .compose(httpClientResponse -> {
                             assertEquals(HttpStatus.SC_OK, httpClientResponse.statusCode());
@@ -60,7 +65,36 @@ public abstract class AbstractVertxIT {
                         }))
                 .onSuccess(body -> {
                     assertThat("Body response", body.toString().contains("Hello, World!"));
-                }).onFailure(Throwable::getCause);
+                }).onFailure(Throwable::printStackTrace);
+    }
+
+    @Test
+    public void vertxHttpClientProtocolHttp2() {
+        HttpClientOptions httpClientOptions = new HttpClientOptions().setProtocolVersion(HttpVersion.HTTP_2);
+        HttpClient httpClient = Vertx.vertx().createHttpClient(httpClientOptions);
+        httpClient.request(HttpMethod.GET, service.getPort(), service.getURI(Protocol.NONE).getHost(), "/hello")
+                .compose(httpClientRequest -> httpClientRequest.send()
+                        .compose(httpClientResponse -> {
+                            assertEquals(HttpVersion.HTTP_2, httpClientResponse.version());
+                            return httpClientResponse.body();
+                        }))
+                .onSuccess(body -> {
+                    assertThat("Body response", body.toString().contains("Hello, World!"));
+                }).onFailure(Throwable::printStackTrace);
+    }
+
+    @Test
+    public void vertxHttpClientWithNameParameter() {
+        JsonObject jsonObject = new JsonObject().put("name", "Bender");
+        HttpClient httpClient = Vertx.vertx().createHttpClient();
+        httpClient.request(HttpMethod.GET, service.getPort(), service.getURI(Protocol.NONE).getHost(),
+                        "/hello?name=" + jsonObject.getString("name"))
+                .compose(request -> request.send())
+                .compose(HttpClientResponse::body)
+                .onSuccess(body -> {
+                    assertThat("Body response", body.toString().contains("Hello, Bender!"));
+                })
+                .onFailure(Throwable::printStackTrace);
     }
 
     public abstract RequestSpecification requests();
