@@ -27,7 +27,7 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-spring-di</artifactId>
-            <version>2.7.6.Final-redhat-00006</version>
+            <version>2.13.8.Final-redhat-00004</version>
         </dependency>
     </dependencies>
     <profiles>
@@ -40,7 +40,7 @@
             </activation>
             <properties>
                 <!-- please keep Mandrel and RHBQ version compatible -->
-                <quarkus.platform.version>2.13.7.Final</quarkus.platform.version>
+                <quarkus.platform.version>2.13.8.Final-redhat-00004</quarkus.platform.version>
             </properties>
             <repositories>
                 <repository>
@@ -48,6 +48,12 @@
                     <url>https://maven.repository.redhat.com/ga/</url>
                 </repository>
             </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>red-hat-enterprise-repository</id>
+                    <url>https://maven.repository.redhat.com/ga/</url>
+                </pluginRepository>
+            </pluginRepositories>
         </profile>
     </profiles>
 </project>
