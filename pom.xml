@@ -242,7 +242,8 @@
                                 <mysql.80.image>registry.access.redhat.com/rhscl/mysql-80-rhel7</mysql.80.image>
                                 <mariadb.10.image>docker.io/library/mariadb:10.10</mariadb.10.image>
                                 <mssql.image>mcr.microsoft.com/mssql/rhel/server:2022-latest</mssql.image>
-                                <oracle.image>docker.io/gvenzl/oracle-xe:21-slim-faststart</oracle.image>
+                                <!-- Oracle image - we aim to use same version as Dev Services for Oracle so that we only download one image -->
+                                <oracle.image>docker.io/gvenzl/oracle-free:23-slim-faststart</oracle.image>
                                 <db2.image>quay.io/quarkusqeteam/db2:11.5.7.0</db2.image>
                                 <mongodb.image>docker.io/bitnami/mongodb:5.0</mongodb.image>
                                 <redis.image>docker.io/library/redis:6.0</redis.image>
