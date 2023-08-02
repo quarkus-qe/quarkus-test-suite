@@ -9,7 +9,7 @@ sudo rm -rf /usr/share/dotnet
 sudo rm -rf /usr/share/swift
 sudo rm -rf /usr/share/gradle-*
 
-du -cskh /opt/az /opt/google /opt/hhvm /opt/hostedtoolcache/CodeQL /opt/microsoft /usr/local/graalvm /usr/local/julia*
+du -cskh /opt/az /opt/google /opt/hhvm /opt/hostedtoolcache/CodeQL /opt/microsoft /usr/local/graalvm /usr/local/julia* /usr/local/lib/android /opt/ghc /opt/pipx
 sudo rm -rf /opt/az
 sudo rm -rf /opt/google
 sudo rm -rf /opt/hhvm
@@ -17,7 +17,12 @@ sudo rm -rf /opt/hostedtoolcache/CodeQL
 sudo rm -rf /opt/microsoft
 sudo rm -rf /usr/local/graalvm
 sudo rm -rf /usr/local/julia*
+sudo rm -rf /usr/local/lib/android
+sudo rm -rf /opt/ghc
+sudo rm -rf /opt/pipx
 
 echo "Reclaim disk space end."
 df -h /
 docker images
+
+du -cskh /* 2>/dev/null
