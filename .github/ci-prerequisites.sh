@@ -24,7 +24,6 @@ echo "Reclaim disk space end."
 df -h /
 docker images
 
-du -cskh /home/*
-du -cskh /imagegeneration/*
-du -cskh /mnt/*
-du -cskh /opt/*
+du -cskh /home/runner/*
+du -cskh /imagegeneration/installers/*
+du -cskh /opt/hostedtoolcache/*
