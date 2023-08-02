@@ -20,10 +20,14 @@ du -cskh /usr/local/lib/android /opt/pipx
 sudo rm -rf /usr/local/lib/android
 sudo rm -rf /opt/pipx
 
+du -cskh /imagegeneration/installers/*.tar.gz /opt/hostedtoolcache/PyPy /opt/hostedtoolcache/Python /opt/hostedtoolcache/Ruby /opt/hostedtoolcache/go /opt/hostedtoolcache/node
+sudo rm -rf /imagegeneration/installers/*.tar.gz
+sudo rm -rf /opt/hostedtoolcache/PyPy
+sudo rm -rf /opt/hostedtoolcache/Python
+sudo rm -rf /opt/hostedtoolcache/Ruby
+sudo rm -rf /opt/hostedtoolcache/go
+sudo rm -rf /opt/hostedtoolcache/node
+
 echo "Reclaim disk space end."
 df -h /
 docker images
-
-du -cskh /home/runner/*
-du -cskh /imagegeneration/installers/*
-du -cskh /opt/hostedtoolcache/*
