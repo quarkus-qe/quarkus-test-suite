@@ -142,6 +142,7 @@ jobs:
           if [[ -n ${MODULES_ARG} ]]; then
             echo "Running modules: ${MODULES_ARG}"
             mvn -fae -V -B -s .github/mvn-settings.xml -fae -Dall-modules \
+                        -Dquarkus.native.native-image-xmx=5g \
                         -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-cli-3.2.2.Final/bin/quarkus" \
                         -pl $MODULES_ARG clean verify -Dnative -am
           fi
