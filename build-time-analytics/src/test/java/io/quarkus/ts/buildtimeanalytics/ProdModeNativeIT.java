@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.QuarkusCliClient.Result;
 import io.quarkus.test.bootstrap.QuarkusCliRestService;
+import io.quarkus.test.configuration.PropertyLookup;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.EnabledOnNative;
 
@@ -19,6 +20,9 @@ import io.quarkus.test.scenarios.annotations.EnabledOnNative;
 @QuarkusScenario
 @EnabledOnNative
 public class ProdModeNativeIT extends AbstractAnalyticsIT {
+
+    private static final PropertyLookup NATIVE_IMG_XMX = new PropertyLookup("quarkus.native.native-image-xmx");
+
     @BeforeEach
     public void beforeEach() {
         recreateConfigDir();
@@ -27,7 +31,7 @@ public class ProdModeNativeIT extends AbstractAnalyticsIT {
     @Test
     public void extensionSetA() {
         QuarkusCliRestService app = createAppWithExtensions(EXTENSION_SET_A);
-        Result buildResult = buildApp(app::buildOnNative);
+        Result buildResult = buildNativeApp(app);
         verifyBuildSuccessful(buildResult);
         verifyValidPayloadPresent(app);
     }
@@ -35,9 +39,17 @@ public class ProdModeNativeIT extends AbstractAnalyticsIT {
     @Test
     public void extensionSetB() {
         QuarkusCliRestService app = createAppWithExtensions(EXTENSION_SET_B);
-        Result buildResult = buildApp(app::buildOnNative);
+        Result buildResult = buildNativeApp(app);
         verifyBuildSuccessful(buildResult);
         verifyValidPayloadPresent(app);
+    }
+
+    private Result buildNativeApp(QuarkusCliRestService app) {
+        final String nativeImgXmx = NATIVE_IMG_XMX.get();
+        if (nativeImgXmx != null) {
+            return buildApp(app::buildOnNative, formatBuildProperty(NATIVE_IMG_XMX.getPropertyKey(), nativeImgXmx));
+        }
+        return buildApp(app::buildOnNative);
     }
 
     @Override
