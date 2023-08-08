@@ -5,10 +5,9 @@ import static java.time.Duration.ofSeconds;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import jakarta.websocket.ClientEndpoint;
 import jakarta.websocket.ContainerProvider;
@@ -42,6 +41,8 @@ public class WebSocketsProducerConsumerIT {
             session.getAsyncRemote().sendText("hello world");
             assertMessage(">> stu: hello world", client);
         }
+
+        assertSessionWasOpenedJustOnce(client);
     }
 
     @Test
@@ -59,6 +60,8 @@ public class WebSocketsProducerConsumerIT {
                 assertMessage(">> bob: hello alice", bobChat, aliceChat);
             }
         }
+
+        assertSessionWasOpenedJustOnce(aliceChat, bobChat);
     }
 
     @Test
@@ -76,6 +79,8 @@ public class WebSocketsProducerConsumerIT {
                 assertMessage(">> bob: hello alice", bobChat, aliceChat);
             }
         }
+
+        assertSessionWasOpenedJustOnce(aliceChat, bobChat);
     }
 
     @Test
@@ -97,6 +102,8 @@ public class WebSocketsProducerConsumerIT {
                 assertMessage("User athos left", porthosChat, aramisChat);
             }
         }
+
+        assertSessionWasOpenedJustOnce(athosChat, porthosChat, aramisChat);
     }
 
     @Test
@@ -106,6 +113,8 @@ public class WebSocketsProducerConsumerIT {
             session.getAsyncRemote().sendText("今日は přátelé, как дела? \uD83E\uDED6 ?");
             assertMessage(">> traveler: 今日は přátelé, как дела? \uD83E\uDED6 ?", client);
         }
+
+        assertSessionWasOpenedJustOnce(client);
     }
 
     @Test
@@ -117,6 +126,8 @@ public class WebSocketsProducerConsumerIT {
             assertMessage("Three", client);
             assertMessage("Four", client);
         }
+
+        assertSessionWasOpenedJustOnce(client);
     }
 
     private static URI getUri(String with) throws URISyntaxException {
@@ -137,6 +148,12 @@ public class WebSocketsProducerConsumerIT {
                     .untilAsserted(() -> Assertions.assertEquals(expectedMessage, client.getMessage()));
             long timeSpentWaiting = System.currentTimeMillis() - start;
             LOG.infof("Waited %s milliseconds for asynchronous message to arrive", timeSpentWaiting);
+        }
+    }
+
+    private static void assertSessionWasOpenedJustOnce(Client... clients) {
+        for (Client client : clients) {
+            Assertions.assertEquals(1, client.getNumberOfOpenedSessions());
         }
     }
 
@@ -161,7 +178,7 @@ public class WebSocketsProducerConsumerIT {
     @ClientEndpoint
     public static class Client {
         private final LinkedBlockingDeque<String> messages = new LinkedBlockingDeque<>();
-        private final Set<String> joins = new ConcurrentSkipListSet<>();
+        private final AtomicInteger sessionOpenCounter = new AtomicInteger();
 
         @OnOpen
         public void open(Session session) {
@@ -173,11 +190,12 @@ public class WebSocketsProducerConsumerIT {
                     Assertions.fail(result.getException());
                 }
             });
+
+            sessionOpenCounter.incrementAndGet();
         }
 
         @OnMessage
         void message(String msg) {
-            // TODO sometimes sessions are reopened several times without closing, need to check, if this is right
             if (!msg.endsWith("joined")) {
                 messages.add(msg);
             }
@@ -185,6 +203,10 @@ public class WebSocketsProducerConsumerIT {
 
         public String getMessage() throws InterruptedException {
             return messages.poll(10, TimeUnit.SECONDS);
+        }
+
+        public int getNumberOfOpenedSessions() {
+            return this.sessionOpenCounter.get();
         }
     }
 }

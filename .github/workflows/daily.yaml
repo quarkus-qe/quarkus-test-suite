@@ -39,9 +39,9 @@ jobs:
     strategy:
       matrix:
         java: [ 11, 17 ]
-        profiles: [ "root-modules,http-modules,security-modules,monitoring-modules,spring-modules,test-tooling-modules",
+        profiles: [ "root-modules,http-modules,security-modules,spring-modules",
                    "sql-db-modules",
-                   "messaging-modules,websockets-modules"]
+                   "messaging-modules,websockets-modules,monitoring-modules,test-tooling-modules"]
     steps:
       - uses: actions/checkout@v3
       - name: Reclaim Disk Space
@@ -90,12 +90,12 @@ jobs:
       matrix:
         java: [ 11 ]
         image: [ "ubi-quarkus-graalvmce-builder-image:22.3-java17", "ubi-quarkus-mandrel-builder-image:22.3-java17" ]
-        profiles: [ "root-modules,monitoring-modules,spring-modules,test-tooling-modules",
+        profiles: [ "root-modules,spring-modules",
                    "http-modules",
                    "security-modules",
                     "sql-db-modules -pl env-info,sql-db/hibernate,sql-db/sql-app,sql-db/sql-app-compatibility,sql-db/multiple-pus,sql-db/panache-flyway,sql-db/hibernate-reactive",
                     "sql-db-modules -pl env-info,sql-db/reactive-rest-data-panache,sql-db/vertx-sql,sql-db/reactive-vanilla,sql-db/hibernate-fulltext-search,sql-db/narayana-transactions",
-                   "messaging-modules,websockets-modules"]
+                   "messaging-modules,websockets-modules,monitoring-modules,test-tooling-modules"]
     steps:
       - uses: actions/checkout@v3
       - name: Reclaim Disk Space
@@ -127,6 +127,7 @@ jobs:
         run: |
           mvn -fae -V -B -s .github/mvn-settings.xml -P ${{ matrix.profiles }} -fae clean verify -Dnative \
             -Dquarkus.native.builder-image=quay.io/quarkus/${{ matrix.image }} \
+            -Dquarkus.native.native-image-xmx=5g \
             -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli"
       - name: Zip Artifacts
         if: failure()
