@@ -88,7 +88,7 @@ public abstract class AbstractVertxIT {
         JsonObject jsonObject = new JsonObject().put("name", "Bender");
         HttpClient httpClient = Vertx.vertx().createHttpClient();
         httpClient.request(HttpMethod.GET, service.getPort(), service.getURI(Protocol.NONE).getHost(),
-                        "/hello?name=" + jsonObject.getString("name"))
+                "/hello?name=" + jsonObject.getString("name"))
                 .compose(request -> request.send())
                 .compose(HttpClientResponse::body)
                 .onSuccess(body -> {
