@@ -5,3 +5,4 @@ INSERT INTO account (id, name, lastName, accountNumber, amount, updatedAt, creat
 INSERT INTO account (id, name, lastName, accountNumber, amount, updatedAt, createdAt) VALUES (nextval('Account_SEQ'), 'Francisco', 'Quevedo', 'ES8521006742088984966817', 100, null, CURRENT_TIMESTAMP);
 INSERT INTO account (id, name, lastName, accountNumber, amount, updatedAt, createdAt) VALUES (nextval('Account_SEQ'), 'Eduardo', 'Mendoza', 'ES8521006742088984966899', 100, null, CURRENT_TIMESTAMP);
 
+CREATE TABLE IF NOT EXISTS recovery_log (id INT);
