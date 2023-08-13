@@ -8,6 +8,7 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.ts.transactions.recovery.TransactionExecutor;
 
 @QuarkusScenario
 @DisabledOnOs(value = OS.WINDOWS, disabledReason = "Windows does not support Linux Containers / Testcontainers (Jaeger)")
@@ -26,7 +27,23 @@ public class OracleTransactionGeneralUsageIT extends TransactionCommons {
             .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl);
 
     @Override
+    protected RestService getApp() {
+        return app;
+    }
+
+    @Override
+    protected TransactionExecutor getTransactionExecutorUsedForRecovery() {
+        return TransactionExecutor.QUARKUS_TRANSACTION_CALL;
+    }
+
+    @Override
     protected String[] getExpectedJdbcOperationNames() {
         return new String[] { "SELECT mydb", "INSERT mydb.journal", "UPDATE mydb.account" };
+    }
+
+    @Override
+    protected void testTransactionRecoveryInternal() {
+        // disables transaction recovery test for Oracle due to upstream issue
+        // TODO: remove this method when https://github.com/quarkusio/quarkus/issues/35333 gets fixed
     }
 }
