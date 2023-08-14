@@ -1,5 +1,6 @@
 package io.quarkus.ts.buildtimeanalytics;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.quarkus.test.services.quarkus.model.QuarkusProperties;
@@ -9,8 +10,10 @@ public class AnalyticsUtils {
     // Quarkus reports extensions' versions in the analytics payload as full artifact version.
     // So for 999-SNAPSHOT, it can look like e.g. 999-20230718.203351-1091
     private static final String QUARKUS_EXTENSION_SNAPSHOT_VERSION_REGEX = "999-.*";
-    private static final String QUARKUS_EXTENSION_VERSION_REGEX = getExtensionVersionRegex();
-    public static final Pattern QUARKUS_EXTENSION_VERSION_PATTERN = Pattern.compile(QUARKUS_EXTENSION_VERSION_REGEX);
+    // RHBQ artifacts may differ in the number suffix from a platform version.
+    // E.g.: 3.2.0.Final-redhat-00002 vs. 3.2.0.Final-redhat-00003
+    private static final String RHBQ_VERSION_REGEX_FORMAT = "%s-redhat-\\d{5}";
+    public static final Pattern QUARKUS_EXTENSION_VERSION_PATTERN = Pattern.compile(getExtensionVersionRegex());
 
     public static final String QUARKUS_ANALYTICS_DISABLED_PROPERTY = "quarkus.analytics.disabled";
     public static final String QUARKUS_ANALYTICS_URI_BASE_PROPERTY = "quarkus.analytics.uri.base";
@@ -103,6 +106,13 @@ public class AnalyticsUtils {
 
     private static String getExtensionVersionRegex() {
         String version = QuarkusProperties.getVersion();
-        return version.equalsIgnoreCase(QUARKUS_SNAPSHOT_VERSION) ? QUARKUS_EXTENSION_SNAPSHOT_VERSION_REGEX : version;
+        Matcher rhbqMacher = Pattern.compile(String.format(RHBQ_VERSION_REGEX_FORMAT, "(.*)")).matcher(version);
+        if (rhbqMacher.matches()) {
+            return String.format(RHBQ_VERSION_REGEX_FORMAT, rhbqMacher.group(1));
+        }
+        if (version.equalsIgnoreCase(QUARKUS_SNAPSHOT_VERSION)) {
+            return QUARKUS_EXTENSION_SNAPSHOT_VERSION_REGEX;
+        }
+        return version;
     }
 }
