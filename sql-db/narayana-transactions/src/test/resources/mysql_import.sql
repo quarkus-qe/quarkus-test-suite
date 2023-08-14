@@ -5,3 +5,5 @@ INSERT INTO account (id, name, lastName, accountNumber, amount, updatedAt, creat
 INSERT INTO account (id, name, lastName, accountNumber, amount, updatedAt, createdAt) SELECT MAX(id) + 1, 'Francisco', 'Quevedo', 'ES8521006742088984966817', 100, null, CURRENT_TIMESTAMP FROM account;
 INSERT INTO account (id, name, lastName, accountNumber, amount, updatedAt, createdAt) SELECT MAX(id) + 1, 'Eduardo', 'Mendoza', 'ES8521006742088984966899', 100, null, CURRENT_TIMESTAMP FROM account;
 UPDATE account_SEQ SET next_val=(SELECT MAX(id) + 1 FROM account);
+
+CREATE TABLE IF NOT EXISTS recovery_log (id INT);

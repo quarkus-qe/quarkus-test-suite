@@ -1,6 +1,11 @@
 package io.quarkus.ts.transactions;
 
+import static io.quarkus.test.utils.AwaitilityUtils.untilAsserted;
+import static io.quarkus.ts.transactions.recovery.driver.CrashingXAResource.RECOVERY_SUBPATH;
+import static io.quarkus.ts.transactions.recovery.driver.CrashingXAResource.TRANSACTION_LOGS_PATH;
 import static io.restassured.RestAssured.given;
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
 import static org.awaitility.Awaitility.await;
 
 import java.time.Duration;
@@ -9,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 import org.apache.http.HttpStatus;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -17,13 +23,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import io.quarkus.test.bootstrap.JaegerService;
+import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.services.JaegerContainer;
+import io.quarkus.ts.transactions.recovery.TransactionExecutor;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class) // we keep order to ensure JDBC traces are ready
 public abstract class TransactionCommons {
 
+    private static final String ENABLE_TRANSACTION_RECOVERY = "quarkus.transaction-manager.enable-recovery";
     static final String ACCOUNT_NUMBER_MIGUEL = "SK0389852379529966291984";
     static final String ACCOUNT_NUMBER_GARCILASO = "FR9317569000409377431694J37";
     static final String ACCOUNT_NUMBER_LUIS = "ES8521006742088984966816";
@@ -35,6 +44,15 @@ public abstract class TransactionCommons {
 
     @JaegerContainer(expectedLog = "\"Health Check state change\",\"status\":\"ready\"")
     static final JaegerService jaeger = new JaegerService();
+
+    protected abstract RestService getApp();
+
+    /**
+     * As it would be too expensive to try recovery for each an every type of transaction
+     * (and probably it makes little sense for recovery happens on lower layer)
+     * we assign each executor to a database so that we test all transaction executors.
+     */
+    protected abstract TransactionExecutor getTransactionExecutorUsedForRecovery();
 
     @Order(1)
     @Tag("QUARKUS-2492")
@@ -177,6 +195,90 @@ public abstract class TransactionCommons {
                 .then().statusCode(HttpStatus.SC_BAD_REQUEST);
         double afterRollback = getMetricsValue(metricName);
         Assertions.assertEquals(beforeRollback, afterRollback, "Gauge should not be increased on a rollback transaction");
+    }
+
+    @Order(8)
+    @Tag("QUARKUS-2739")
+    @Test
+    public void testTransactionRecovery() {
+        // make it possible to disable transaction recovery tests for certain databases
+        testTransactionRecoveryInternal();
+    }
+
+    protected void testTransactionRecoveryInternal() {
+        // test transactions without crash so that we check that on normal circumstances, there are no issues
+        makeTransaction(false, false);
+        // now make transaction sure transaction happened
+        assertRecoveryLogContainsTransactions(2);
+        // delete previous transactions so that we start for recovery from scratch
+        deletePreviousTransactions();
+
+        // test rollback only transaction is not committed; also by setting `crash` flag we verify that rollback
+        // transactions are never written into JDBC object store, therefore they are not recovered either
+        // (for crash flag only works during two-phase commit when JDBC Object store is in action)
+        makeTransaction(true, true);
+        assertRecoveryLogContainsTransactions(0);
+
+        // test transactions recovery
+        try {
+            makeTransaction(false, true);
+        } catch (Exception ignored) {
+            // transaction crashed during two-phase commit, now we need to check that recovery_log is empty as planned
+            getApp().withProperty(ENABLE_TRANSACTION_RECOVERY, FALSE.toString());
+            getApp().restartAndWaitUntilServiceIsStarted();
+            assertRecoveryLogContainsTransactions(0);
+            assertJdbcObjectStoreContainsTransactions(1);
+
+            // now enable automatic recovery and see the transaction recovered
+            getApp().withProperty(ENABLE_TRANSACTION_RECOVERY, TRUE.toString());
+            getApp().restartAndWaitUntilServiceIsStarted();
+            // this might take a little while before periodic recovery module is started and run
+            // default timeout should be fine, but if this happens to be flaky, we can safely raise the timeout
+            untilAsserted(() -> assertRecoveryLogContainsTransactions(2));
+        }
+    }
+
+    private void deletePreviousTransactions() {
+        getApp().given()
+                .contentType(ContentType.JSON)
+                .delete(TRANSACTION_LOGS_PATH)
+                .then()
+                .statusCode(HttpStatus.SC_NO_CONTENT);
+        // make sure that delete worked
+        assertRecoveryLogContainsTransactions(0);
+    }
+
+    private void makeTransaction(boolean rollback, boolean crash) {
+        String transactionLogsPath = TRANSACTION_LOGS_PATH;
+        if (crash) {
+            transactionLogsPath += RECOVERY_SUBPATH;
+        }
+        getApp().given()
+                .contentType(ContentType.JSON)
+                .queryParam("rollback", rollback)
+                .queryParam("executor", getTransactionExecutorUsedForRecovery())
+                .post(transactionLogsPath)
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body(Matchers.is("2"));
+    }
+
+    private void assertRecoveryLogContainsTransactions(int number) {
+        getApp().given()
+                .contentType(ContentType.JSON)
+                .get(TRANSACTION_LOGS_PATH)
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body(Matchers.is(Integer.toString(number)));
+    }
+
+    private void assertJdbcObjectStoreContainsTransactions(int number) {
+        getApp().given()
+                .contentType(ContentType.JSON)
+                .get(TRANSACTION_LOGS_PATH + "/jdbc-object-store")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body(Matchers.is(Integer.toString(number)));
     }
 
     private AccountEntity getAccount(String accountNumber) {

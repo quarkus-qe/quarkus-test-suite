@@ -8,6 +8,7 @@ import io.quarkus.test.bootstrap.SqlServerService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.ts.transactions.recovery.TransactionExecutor;
 
 @QuarkusScenario
 @DisabledOnOs(value = OS.WINDOWS, disabledReason = "Windows does not support Linux Containers / Testcontainers (Jaeger)")
@@ -23,10 +24,27 @@ public class MssqlTransactionGeneralUsageIT extends TransactionCommons {
             .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl)
             .withProperty("quarkus.datasource.username", database.getUser())
             .withProperty("quarkus.datasource.password", database.getPassword())
-            .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl);
+            // disable encryption as we don't provide trust server certificate etc.
+            .withProperty("quarkus.datasource.jdbc.url", () -> database.getJdbcUrl() + ";encrypt=false;");
+
+    @Override
+    protected RestService getApp() {
+        return app;
+    }
+
+    @Override
+    protected TransactionExecutor getTransactionExecutorUsedForRecovery() {
+        return TransactionExecutor.INJECTED_USER_TRANSACTION;
+    }
 
     @Override
     protected String[] getExpectedJdbcOperationNames() {
         return new String[] { "SELECT msdb.account", "INSERT msdb.journal", "UPDATE msdb.account" };
+    }
+
+    @Override
+    protected void testTransactionRecoveryInternal() {
+        // disable transaction recovery tests till upstream issue is fixed
+        // TODO: remove this method when gets fixed https://github.com/quarkusio/quarkus/issues/35336
     }
 }
