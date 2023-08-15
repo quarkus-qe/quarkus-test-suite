@@ -10,7 +10,17 @@
       {
         "name": "test-admin-role"
       }
-    ]
+    ],
+    "client": {
+      "test-application-client": [
+        {
+          "id": "5b9947c6-eb74-4de6-8623-0285720993f3",
+          "name": "uma_protection",
+          "composite": false,
+          "clientRole": true
+        }
+      ]
+    }
   },
   "users": [
     {
@@ -51,6 +61,16 @@
         "test-user-role",
         "uma_protection"
       ]
+    },
+    {
+      "username": "service-account-backend-service",
+      "enabled": true,
+      "serviceAccountClientId": "test-application-client",
+      "clientRoles": {
+        "test-application-client": [
+          "uma_protection"
+        ]
+      }
     }
   ],
   "clients": [
