@@ -3,26 +3,30 @@ package io.quarkus.ts.security.oidcclient.mtls;
 import static io.quarkus.ts.security.oidcclient.mtls.MutualTlsKeycloakService.KC_DEV_MODE_P12_CMD;
 import static io.quarkus.ts.security.oidcclient.mtls.MutualTlsKeycloakService.newKeycloakInstance;
 
-import org.junit.jupiter.api.Tag;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.condition.DisabledIf;
 
 import io.quarkus.test.bootstrap.KeycloakService;
 import io.quarkus.test.bootstrap.RestService;
+import io.quarkus.test.configuration.PropertyLookup;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.KeycloakContainer;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.test.utils.Command;
 
 /**
  * Keystore file type is automatically detected in following tests by its extension in quarkus-oidc.
  * Extension declared here is used by tests only.
  */
-@Tag("fips-incompatible")
+@DisabledIf(value = "cannotRunOnFIPS", disabledReason = "PKCS12 keystore is not FIPS compliant on Red Hat OpenJDK 11")
 @QuarkusScenario
 public class Pkcs12OidcMtlsIT extends KeycloakMtlsAuthN {
 
-    //TODO Remove workaround after Keycloak is fixed https://github.com/keycloak/keycloak/issues/9916
     @KeycloakContainer(command = KC_DEV_MODE_P12_CMD, port = KEYCLOAK_PORT)
     static KeycloakService keycloak = newKeycloakInstance(REALM_FILE_PATH, REALM_DEFAULT, "realms")
-            .withRedHatFipsDisabled()
             .withProperty("HTTPS_KEYSTORE", "resource_with_destination::/etc/|server-keystore." + P12_KEYSTORE_FILE_EXTENSION)
             .withProperty("HTTPS_TRUSTSTORE",
                     "resource_with_destination::/etc/|server-truststore." + P12_KEYSTORE_FILE_EXTENSION);
@@ -43,5 +47,26 @@ public class Pkcs12OidcMtlsIT extends KeycloakMtlsAuthN {
     @Override
     protected String getKeystoreFileExtension() {
         return P12_KEYSTORE_FILE_EXTENSION;
+    }
+
+    private static boolean cannotRunOnFIPS() {
+        String javaVersion = new PropertyLookup("java.version").get();
+        String javaVMVendor = new PropertyLookup("java.vm.vendor").get();
+
+        if (javaVersion.matches("11.*") && javaVMVendor.matches(".*Red.*Hat.*")) {
+            List<String> commandOutputLines = new ArrayList<>();
+
+            try {
+                new Command("sysctl", "crypto.fips_enabled").outputToLines(commandOutputLines).runAndWait();
+            } catch (IOException | InterruptedException e) {
+                return false;
+            }
+
+            boolean isFipsEnabled = commandOutputLines.get(0).matches(".*1");
+
+            return javaVersion.matches("11.*") && javaVMVendor.matches(".*Red.*Hat.*") && isFipsEnabled;
+        }
+
+        return false;
     }
 }
