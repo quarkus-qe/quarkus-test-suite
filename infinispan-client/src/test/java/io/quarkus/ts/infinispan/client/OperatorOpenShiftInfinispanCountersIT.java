@@ -19,6 +19,7 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftDeploymentStrategy;
 import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.test.utils.AwaitilityUtils;
 import io.quarkus.test.utils.Command;
 import io.restassured.response.Response;
 
@@ -105,6 +106,9 @@ public class OperatorOpenShiftInfinispanCountersIT extends BaseOpenShiftInfinisp
 
         // kill the app = fail of the client
         one.stop();
+
+        // wait for app to actually be down
+        AwaitilityUtils.untilIsTrue(() -> ocClient.podsInService(one).size() == 0);
 
         // try to invoke the cache
         one.given()
@@ -301,6 +305,20 @@ public class OperatorOpenShiftInfinispanCountersIT extends BaseOpenShiftInfinisp
 
         killInfinispanCluster();
         restartInfinispanCluster();
+
+        // wait for clients to be reconnected to infinispan cluster
+        await().atMost(1, TimeUnit.MINUTES).untilAsserted(() -> {
+            one.given()
+                    .get("/first-counter/get-cache")
+                    .then()
+                    .statusCode(Matchers.allOf(Matchers.greaterThanOrEqualTo(200), Matchers.lessThan(300)));
+        });
+        await().atMost(1, TimeUnit.MINUTES).untilAsserted(() -> {
+            two.given()
+                    .get("/first-counter/get-cache")
+                    .then()
+                    .statusCode(Matchers.allOf(Matchers.greaterThanOrEqualTo(200), Matchers.lessThan(300)));
+        });
 
         // create the deleted cache counter again
         resetCacheCounter(one, "/first-counter/reset-cache");
