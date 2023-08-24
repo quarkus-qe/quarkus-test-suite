@@ -17,6 +17,30 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <environmentVariables>
+                        <!-- We run the tests with CI set to false as otherwise analytics are disabled -->
+                        <!-- See https://github.com/quarkusio/quarkus/pull/35456 -->
+                        <CI>false</CI>
+                    </environmentVariables>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <environmentVariables>
+                        <!-- We run the analytics integration test with CI set to false as otherwise analytics are disabled -->
+                        <!-- See https://github.com/quarkusio/quarkus/pull/35456 -->
+                        <CI>false</CI>
+                    </environmentVariables>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
     <profiles>
         <profile>
             <!-- Disable native build on this module -->
