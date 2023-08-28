@@ -5,7 +5,6 @@ import static io.quarkus.ts.sqldb.sqlapp.DbUtil.getImageVersion;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.github.dockerjava.api.model.Image;
@@ -17,7 +16,6 @@ import io.quarkus.test.utils.DockerUtils;
 import io.quarkus.test.utils.SocketUtils;
 
 @QuarkusScenario
-@Tag("podman-incompatible") //todo https://github.com/quarkusio/quarkus/issues/33985
 public class DevModeOracleDevServiceUserExperienceIT {
 
     private static final String ORACLE_NAME = getImageName("oracle.image");
