@@ -67,9 +67,8 @@ public final class CrashingXADataSource implements XADataSource {
                 .container()
                 .instance(DataSourcesBuildTimeConfig.class)
                 .get()
-                .dataSources()
-                .get(DEFAULT_DATASOURCE_NAME) // use default ds in order to determine db kind
-                .dbKind()
+                .getDataSourceRuntimeConfig(DEFAULT_DATASOURCE_NAME) // use default ds in order to determine db kind
+                        .dbKind
                 .map(dbKindRaw -> new DatabaseKindConverter().convert(dbKindRaw))
                 .orElseThrow(); // we require explicitly set db kind for sake of this test
 
