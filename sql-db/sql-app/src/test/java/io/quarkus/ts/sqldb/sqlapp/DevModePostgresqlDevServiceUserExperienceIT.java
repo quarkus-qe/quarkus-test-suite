@@ -18,7 +18,6 @@ import io.quarkus.test.utils.SocketUtils;
 
 @Tag("QUARKUS-959")
 @QuarkusScenario
-@Tag("podman-incompatible") //todo https://github.com/quarkusio/quarkus/issues/33985
 public class DevModePostgresqlDevServiceUserExperienceIT {
 
     // we use '-alpine' version as no other test is using it, which mitigates the fact that sometimes

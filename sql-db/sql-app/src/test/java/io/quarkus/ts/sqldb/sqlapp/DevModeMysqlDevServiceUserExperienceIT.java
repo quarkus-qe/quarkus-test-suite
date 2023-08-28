@@ -18,7 +18,6 @@ import io.quarkus.test.utils.SocketUtils;
 
 @Tag("QUARKUS-959")
 @QuarkusScenario
-@Tag("podman-incompatible") //todo https://github.com/quarkusio/quarkus/issues/33985
 public class DevModeMysqlDevServiceUserExperienceIT {
 
     private static final String MYSQL_NAME = getImageName("mysql.upstream.80.image");
