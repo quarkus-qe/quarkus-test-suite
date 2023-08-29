@@ -1,8 +1,5 @@
 package io.quarkus.ts.transactions;
 
-import org.junit.jupiter.api.condition.DisabledOnOs;
-import org.junit.jupiter.api.condition.OS;
-
 import io.quarkus.test.bootstrap.PostgresqlService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -11,7 +8,6 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.transactions.recovery.TransactionExecutor;
 
 @QuarkusScenario
-@DisabledOnOs(value = OS.WINDOWS, disabledReason = "Windows does not support Linux Containers / Testcontainers (Jaeger)")
 public class PostgresqlTransactionGeneralUsageIT extends TransactionCommons {
 
     private static final String ENABLE_PREPARED_TRANSACTIONS = "--max_prepared_transactions=100";
