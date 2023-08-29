@@ -7,6 +7,7 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.ts.transactions.recovery.TransactionExecutor;
 
 @OpenShiftScenario
 @EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
@@ -23,4 +24,19 @@ public class OpenShiftMariaDbTransactionGeneralUsageIT extends TransactionCommon
             .withProperty("quarkus.datasource.username", database.getUser())
             .withProperty("quarkus.datasource.password", database.getPassword())
             .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl);
+
+    @Override
+    protected RestService getApp() {
+        return app;
+    }
+
+    @Override
+    protected TransactionExecutor getTransactionExecutorUsedForRecovery() {
+        return TransactionExecutor.STATIC_TRANSACTION_MANAGER;
+    }
+
+    @Override
+    protected void testTransactionRecoveryInternal() {
+        // disabled on OpenShift as there are required changes in Test Framework in container restart
+    }
 }

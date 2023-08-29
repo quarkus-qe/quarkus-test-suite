@@ -9,6 +9,7 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.ts.transactions.recovery.TransactionExecutor;
 
 // TODO https://github.com/quarkus-qe/quarkus-test-suite/issues/756
 @Tag("fips-incompatible") // native-mode
@@ -27,4 +28,14 @@ public class MysqlTransactionGeneralUsageIT extends TransactionCommons {
             .withProperty("quarkus.datasource.username", database.getUser())
             .withProperty("quarkus.datasource.password", database.getPassword())
             .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl);
+
+    @Override
+    protected RestService getApp() {
+        return app;
+    }
+
+    @Override
+    protected TransactionExecutor getTransactionExecutorUsedForRecovery() {
+        return TransactionExecutor.INJECTED_TRANSACTION_MANAGER;
+    }
 }
