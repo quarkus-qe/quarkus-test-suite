@@ -1,6 +1,5 @@
 package io.quarkus.ts.http.jakartarest.reactive;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 
 import io.quarkus.test.scenarios.OpenShiftDeploymentStrategy;
@@ -11,6 +10,5 @@ import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
 // OCP Native coverage is not required (Test plan QUARKUS-2487), due to a lack of resources and the ROI.
 @DisabledOnNative
-@Disabled("https://github.com/quarkusio/quarkus/issues/35344")
 public class OpenShiftCompressionHandlerIT extends CompressionHandlerIT {
 }
