@@ -15,7 +15,6 @@ import io.quarkus.test.utils.SocketUtils;
 
 @Tag("QUARKUS-959")
 @QuarkusScenario
-@Tag("podman-incompatible") //todo https://github.com/quarkusio/quarkus/issues/33985
 public class DevModeMariadbDevServicesUserExperienceIT {
 
     private static final String MARIA_DB_NAME = DbUtil.getImageName("mariadb.10.image");
