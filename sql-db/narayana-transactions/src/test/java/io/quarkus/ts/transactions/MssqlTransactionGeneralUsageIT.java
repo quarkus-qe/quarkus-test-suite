@@ -1,8 +1,5 @@
 package io.quarkus.ts.transactions;
 
-import org.junit.jupiter.api.condition.DisabledOnOs;
-import org.junit.jupiter.api.condition.OS;
-
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.bootstrap.SqlServerService;
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -11,7 +8,6 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.transactions.recovery.TransactionExecutor;
 
 @QuarkusScenario
-@DisabledOnOs(value = OS.WINDOWS, disabledReason = "Windows does not support Linux Containers / Testcontainers (Jaeger)")
 public class MssqlTransactionGeneralUsageIT extends TransactionCommons {
 
     private static final int MSSQL_PORT = 1433;

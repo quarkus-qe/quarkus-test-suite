@@ -51,35 +51,5 @@
                 </repository>
             </repositories>
         </profile>
-        <profile>
-            <id>windows</id>
-            <activation>
-                <os>
-                    <family>windows</family>
-                </os>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <systemProperties>
-                                <!-- disable Dev Services for Kubernetes on Windows due to Docker limitations -->
-                                <quarkus.kubernetes-client.devservices.enabled>false</quarkus.kubernetes-client.devservices.enabled>
-                            </systemProperties>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-failsafe-plugin</artifactId>
-                        <configuration>
-                            <systemProperties>
-                                <!-- disable Dev Services for Kubernetes on Windows due to Docker limitations -->
-                                <quarkus.kubernetes-client.devservices.enabled>false</quarkus.kubernetes-client.devservices.enabled>
-                            </systemProperties>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
     </profiles>
 </project>
