@@ -24,12 +24,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 
 import io.quarkus.test.bootstrap.QuarkusCliRestService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 
+@DisabledOnOs(OS.WINDOWS) // TODO mvavrik: must only run when Quarkus CLI and Docker are available
 @Tag("QUARKUS-2812")
 @Tag("quarkus-cli")
 @QuarkusScenario
