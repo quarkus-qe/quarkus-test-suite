@@ -10,18 +10,17 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.http.HttpStatus;
+import org.htmlunit.FailingHttpStatusCodeException;
+import org.htmlunit.Page;
+import org.htmlunit.SilentCssErrorHandler;
+import org.htmlunit.TextPage;
+import org.htmlunit.WebClient;
+import org.htmlunit.WebRequest;
+import org.htmlunit.html.HtmlForm;
+import org.htmlunit.html.HtmlPage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.SilentCssErrorHandler;
-import com.gargoylesoftware.htmlunit.TextPage;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.WebRequest;
-import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 import io.quarkus.test.bootstrap.KeycloakService;
 import io.quarkus.test.bootstrap.Protocol;
@@ -144,8 +143,8 @@ public abstract class BaseWebappSecurityIT {
         assertTrue(page instanceof HtmlPage, "Should be in an HTML page");
         HtmlForm loginForm = ((HtmlPage) page).getForms().get(0);
 
-        loginForm.getInputByName("username").setValueAttribute(user);
-        loginForm.getInputByName("password").setValueAttribute(user);
+        loginForm.getInputByName("username").setValue(user);
+        loginForm.getInputByName("password").setValue(user);
 
         page = loginForm.getInputByName("login").click();
     }

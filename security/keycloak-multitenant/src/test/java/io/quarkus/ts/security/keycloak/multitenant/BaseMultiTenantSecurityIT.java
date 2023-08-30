@@ -8,18 +8,17 @@ import java.net.URI;
 import java.util.Optional;
 
 import org.apache.http.HttpStatus;
+import org.htmlunit.SilentCssErrorHandler;
+import org.htmlunit.TextPage;
+import org.htmlunit.WebClient;
+import org.htmlunit.WebRequest;
+import org.htmlunit.html.HtmlForm;
+import org.htmlunit.html.HtmlPage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-
-import com.gargoylesoftware.htmlunit.SilentCssErrorHandler;
-import com.gargoylesoftware.htmlunit.TextPage;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.WebRequest;
-import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 import io.quarkus.test.bootstrap.KeycloakService;
 import io.quarkus.test.bootstrap.Protocol;
@@ -107,8 +106,8 @@ public abstract class BaseMultiTenantSecurityIT {
     private TextPage whenLogin(HtmlPage loginPage, String user) throws Exception {
         HtmlForm loginForm = loginPage.getForms().get(0);
 
-        loginForm.getInputByName("username").setValueAttribute(USER);
-        loginForm.getInputByName("password").setValueAttribute(USER);
+        loginForm.getInputByName("username").setValue(USER);
+        loginForm.getInputByName("password").setValue(USER);
         return loginForm.getInputByName("login").click();
     }
 
