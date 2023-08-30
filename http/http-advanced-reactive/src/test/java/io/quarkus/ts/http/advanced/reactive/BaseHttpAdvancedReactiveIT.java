@@ -1,8 +1,5 @@
 package io.quarkus.ts.http.advanced.reactive;
 
-import static com.gargoylesoftware.htmlunit.util.MimeType.IMAGE_JPEG;
-import static com.gargoylesoftware.htmlunit.util.MimeType.IMAGE_PNG;
-import static com.gargoylesoftware.htmlunit.util.MimeType.TEXT_CSS;
 import static io.quarkus.ts.http.advanced.reactive.MediaTypeResource.ANY_ENCODING;
 import static io.quarkus.ts.http.advanced.reactive.MediaTypeResource.APPLICATION_YAML;
 import static io.quarkus.ts.http.advanced.reactive.MediaTypeResource.ENGLISH;
@@ -33,6 +30,9 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.in;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.htmlunit.util.MimeType.IMAGE_JPEG;
+import static org.htmlunit.util.MimeType.IMAGE_PNG;
+import static org.htmlunit.util.MimeType.TEXT_CSS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
