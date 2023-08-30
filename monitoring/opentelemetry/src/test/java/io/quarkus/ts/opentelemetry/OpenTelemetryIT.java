@@ -23,8 +23,6 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.condition.DisabledOnOs;
-import org.junit.jupiter.api.condition.OS;
 
 import io.quarkus.test.bootstrap.JaegerService;
 import io.quarkus.test.bootstrap.RestService;
@@ -35,7 +33,6 @@ import io.restassured.response.Response;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class) // order methods as SDK autoconfigure test expects previous traces
 @QuarkusScenario
-@DisabledOnOs(value = OS.WINDOWS, disabledReason = "Windows does not support Linux Containers / Testcontainers")
 public class OpenTelemetryIT {
 
     private Response resp;

@@ -1,8 +1,6 @@
 package io.quarkus.ts.transactions;
 
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.condition.DisabledOnOs;
-import org.junit.jupiter.api.condition.OS;
 
 import io.quarkus.test.bootstrap.MySqlService;
 import io.quarkus.test.bootstrap.RestService;
@@ -14,7 +12,6 @@ import io.quarkus.ts.transactions.recovery.TransactionExecutor;
 // TODO https://github.com/quarkus-qe/quarkus-test-suite/issues/756
 @Tag("fips-incompatible") // native-mode
 @QuarkusScenario
-@DisabledOnOs(value = OS.WINDOWS, disabledReason = "Windows does not support Linux Containers / Testcontainers (Jaeger)")
 public class MysqlTransactionGeneralUsageIT extends TransactionCommons {
 
     static final int MYSQL_PORT = 3306;
