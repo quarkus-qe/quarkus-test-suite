@@ -23,4 +23,14 @@ public class MssqlHandlerIT extends CommonTestCases {
             .withProperty("app.selected.db", "mssql")
             // Enable Flyway for MySQL
             .withProperty("quarkus.flyway.mssql.migrate-at-start", "true");
+
+    @Override
+    public String getDBName() {
+        return "mssql";
+    }
+
+    @Override
+    protected String getMetricKey(String metricName) {
+        return "mssql_" + metricName + "{clientName=\"mssql\",clientType=\"sql\"}";
+    }
 }

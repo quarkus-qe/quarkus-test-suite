@@ -2,15 +2,14 @@ package io.quarkus.ts.vertx;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 import static org.testcontainers.shaded.org.hamcrest.Matchers.containsString;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
@@ -97,6 +96,40 @@ public abstract class AbstractVertxIT {
                 .onFailure(Throwable::printStackTrace);
     }
 
+    @Test
+    public void additionalMetrics() {
+        requests().get("/hello/bus?name=train").then()
+                .statusCode(HttpStatus.SC_OK)
+                .body("content", is("Greetings, train"));
+        requests().get("/hello/bus?name=ship").then()
+                .statusCode(HttpStatus.SC_OK)
+                .body("content", is("Greetings, ship"));
+        requests().get("/hello/bus?name=plane").then()
+                .statusCode(HttpStatus.SC_OK)
+                .body("content", is("Greetings, plane"));
+
+        Response response = requests().get("/q/metrics");
+        assertEquals(HttpStatus.SC_OK, response.statusCode());
+        assertThat(response.getContentType(), containsString("application/openmetrics-text"));
+        String body = response.body().asString();
+        Map<String, Metric> metrics = parseMetrics(body);
+        Metric sentTotal = metrics.get("eventBus_sent_total");
+        assertNotNull(sentTotal);
+        assertEquals("3.0", sentTotal.getValue());
+        assertEquals("greetings", sentTotal.getTags().get("address"));
+        Metric delivered = metrics.get("eventBus_delivered");
+        assertNotNull(delivered);
+        assertEquals("3.0", delivered.getValue());
+        assertEquals("greetings", delivered.getTags().get("address"));
+        Metric handlers = metrics.get("eventBus_handlers");
+        assertNotNull(handlers);
+        assertEquals("2.0", handlers.getValue()); //GreetingService and Second  GreetingService
+        assertEquals("greetings", handlers.getTags().get("address"));
+        Metric discarded = metrics.get("eventBus_discarded");
+        assertNotNull(discarded);
+        assertEquals("0.0", discarded.getValue());
+    }
+
     public abstract RequestSpecification requests();
 
     private Map<String, Metric> parseMetrics(String body) {
@@ -104,74 +137,8 @@ public abstract class AbstractVertxIT {
         Arrays.stream(body.split("\n"))
                 .filter(line -> !line.startsWith("#"))
                 .map(Metric::new)
-                .forEach(metric -> metrics.put(metric.name, metric));
+                .forEach(metric -> metrics.put(metric.getName(), metric));
         return metrics;
     }
 
-    private class Metric {
-        private final String value;
-        private final String name;
-
-        /**
-         *
-         * @param source metric from the file, eg:
-         *        worker_pool_queue_size{pool_name="vert.x-internal-blocking",pool_type="worker"} 0.0
-         *        content in curly brackets is ignored (for now)
-         *        since we do not care about values, we store them as strings, and ignore duplicated keys.
-         */
-        public Metric(String source) {
-            final int DEFAULT = -1;
-            int space = DEFAULT;
-            int closing = DEFAULT;
-            int opening = DEFAULT;
-            byte[] bytes = source.getBytes(StandardCharsets.UTF_8);
-            for (int i = bytes.length - 1; i >= 0; i--) {
-                byte current = bytes[i];
-                if (current == ' ' && space == DEFAULT) {
-                    space = i;
-                }
-                if (current == '}' && closing == DEFAULT) {
-                    closing = i;
-                }
-                if (current == '{' && opening == DEFAULT) {
-                    opening = i;
-                }
-            }
-            String key;
-            if (space > 0) {
-                value = source.substring(space);
-                key = source.substring(0, space);
-            } else {
-                throw new IllegalArgumentException("Metric " + source + " doesn't contain a value");
-            }
-            if (closing < space && opening < closing && opening > 0) {
-                name = source.substring(0, opening);
-            } else {
-                name = key;
-            }
-        }
-
-        public String getValue() {
-            return value;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o)
-                return true;
-            if (o == null || getClass() != o.getClass())
-                return false;
-            Metric metric = (Metric) o;
-            return value.equals(metric.value) && name.equals(metric.name);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(value, name);
-        }
-    }
 }

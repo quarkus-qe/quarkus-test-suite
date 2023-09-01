@@ -23,4 +23,14 @@ public class PostgresqlHandlerIT extends CommonTestCases {
             .withProperty("app.selected.db", "postgresql")
             // Enable Flyway for Postgresql
             .withProperty("quarkus.flyway.migrate-at-start", "true");
+
+    @Override
+    public String getDBName() {
+        return "postgresql";
+    }
+
+    @Override
+    protected String getMetricKey(String metricName) {
+        return "postgresql_" + metricName + "{clientName=\"<default>\",clientType=\"sql\"}";
+    }
 }

@@ -29,4 +29,14 @@ public class OracleHandlerIT extends CommonTestCases {
     public void wrongBasketFormatCheckout() {
         // FIXME: drop this method when https://github.com/eclipse-vertx/vertx-sql-client/issues/1343 is fixed
     }
+
+    @Override
+    public String getDBName() {
+        return "oracle";
+    }
+
+    @Override
+    protected String getMetricKey(String metricName) {
+        return "oracle_" + metricName + "{clientName=\"oracle\",clientType=\"sql\"}";
+    }
 }
