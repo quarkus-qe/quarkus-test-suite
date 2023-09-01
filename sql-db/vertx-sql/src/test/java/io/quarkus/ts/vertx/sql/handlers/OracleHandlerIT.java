@@ -24,4 +24,19 @@ public class OracleHandlerIT extends CommonTestCases {
             .withProperty("app.selected.db", "oracle")
             // Enable Flyway for Oracle
             .withProperty("quarkus.flyway.oracle.migrate-at-start", "true");
+
+    @Override
+    public void wrongBasketFormatCheckout() {
+        // FIXME: drop this method when https://github.com/eclipse-vertx/vertx-sql-client/issues/1343 is fixed
+    }
+
+    @Override
+    public String getDBName() {
+        return "oracle";
+    }
+
+    @Override
+    protected String getMetricKey(String metricName) {
+        return "oracle_" + metricName + "{clientName=\"oracle\",clientType=\"sql\"}";
+    }
 }
