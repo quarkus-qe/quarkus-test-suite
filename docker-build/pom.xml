@@ -24,13 +24,16 @@
         </dependency>
     </dependencies>
     <profiles>
-        <!-- Skipped on Windows as does not support Linux Containers / Testcontainers -->
+        <!-- Skipped on Windows when availability of Linux containers is not explicitly declared -->
         <profile>
             <id>skip-tests-on-windows</id>
             <activation>
                 <os>
                     <family>windows</family>
                 </os>
+                <property>
+                    <name>!linux-containers-available</name>
+                </property>
             </activation>
             <properties>
                 <quarkus.container-image.build>false</quarkus.container-image.build>
