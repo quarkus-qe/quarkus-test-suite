@@ -36,6 +36,6 @@ public class OpenShiftMysqlTransactionGeneralUsageIT extends TransactionCommons 
 
     @Override
     protected void testTransactionRecoveryInternal() {
-        // disabled on OpenShift as there are required changes in Test Framework in container restart
+        // FIXME: enable when https://github.com/quarkus-qe/quarkus-test-suite/issues/1397 gets fixed
     }
 }
