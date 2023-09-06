@@ -1,12 +1,16 @@
 package io.quarkus.ts.transactions;
 
 import static io.quarkus.test.utils.AwaitilityUtils.untilAsserted;
+import static io.quarkus.test.utils.AwaitilityUtils.AwaitilitySettings.usingTimeout;
+import static io.quarkus.test.utils.TestExecutionProperties.isBareMetalPlatform;
 import static io.quarkus.ts.transactions.recovery.driver.CrashingXAResource.RECOVERY_SUBPATH;
 import static io.quarkus.ts.transactions.recovery.driver.CrashingXAResource.TRANSACTION_LOGS_PATH;
 import static io.restassured.RestAssured.given;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
+import static java.time.Duration.ofMinutes;
 import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.time.Duration;
 import java.util.List;
@@ -222,20 +226,31 @@ public abstract class TransactionCommons {
         // test transactions recovery
         try {
             makeTransaction(false, true);
-        } catch (Exception ignored) {
-            // transaction crashed during two-phase commit, now we need to check that recovery_log is empty as planned
-            getApp().withProperty(ENABLE_TRANSACTION_RECOVERY, FALSE.toString());
-            getApp().restartAndWaitUntilServiceIsStarted();
-            assertRecoveryLogContainsTransactions(0);
-            assertJdbcObjectStoreContainsTransactions(1);
+        } catch (Exception | AssertionError ignored) {
+            if (isBareMetalPlatform()) {
+                // transaction crashed during two-phase commit, now we need to check that recovery_log is empty as planned
+                getApp().withProperty(ENABLE_TRANSACTION_RECOVERY, FALSE.toString());
+                getApp().restartAndWaitUntilServiceIsStarted();
+                untilAsserted(() -> assertRecoveryLogContainsTransactions(0));
+                assertJdbcObjectStoreContainsTransactions(1);
 
-            // now enable automatic recovery and see the transaction recovered
-            getApp().withProperty(ENABLE_TRANSACTION_RECOVERY, TRUE.toString());
-            getApp().restartAndWaitUntilServiceIsStarted();
-            // this might take a little while before periodic recovery module is started and run
-            // default timeout should be fine, but if this happens to be flaky, we can safely raise the timeout
-            untilAsserted(() -> assertRecoveryLogContainsTransactions(2));
+                // now enable automatic recovery and see the transaction recovered
+                getApp().withProperty(ENABLE_TRANSACTION_RECOVERY, TRUE.toString());
+                getApp().restartAndWaitUntilServiceIsStarted();
+                // this might take a little while before periodic recovery module is started and run
+                // default timeout should be fine, but if this happens to be flaky, we can safely raise the timeout
+                untilAsserted(() -> assertRecoveryLogContainsTransactions(2));
+            } else {
+                // cloud platforms like K8 and OCP takes care of restart when pod crashes
+                // which also means recovery is still enabled when pod is restarted
+                // but that's the most likely how user will use this feature, so we just test that
+                // the recovery was successful
+                untilAsserted(() -> assertRecoveryLogContainsTransactions(2),
+                        usingTimeout(ofMinutes(ASSERT_SERVICE_TIMEOUT_MINUTES)));
+            }
+            return;
         }
+        fail("The application was supposed to crash");
     }
 
     private void deletePreviousTransactions() {
@@ -353,7 +368,7 @@ public abstract class TransactionCommons {
             }
         }
 
-        Assertions.fail("Metrics property " + name + " not found.");
+        fail("Metrics property " + name + " not found.");
         return 0d;
     }
 
