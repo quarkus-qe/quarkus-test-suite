@@ -11,12 +11,12 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.bootstrap.QuarkusCliClient;
 import io.quarkus.test.bootstrap.QuarkusCliRestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnNative;
+import io.quarkus.test.scenarios.annotations.EnabledOnNative;
 
 @Tag("QUARKUS-960")
 @Tag("quarkus-cli")
 @QuarkusScenario
-@DisabledOnNative // Only for JVM verification
+@EnabledOnNative
 public class QuarkusCliCreateNativeApplicationIT {
 
     @Inject
