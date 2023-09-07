@@ -1111,6 +1111,10 @@ Reactive equivalent of `nosql-db/mongodb`. Uses reactive ReactiveMongoClient (wi
 
 Provides some coverage similar to `infinispan-client` module, but with focus on connecting to local cluster and Dev mode and not on working with OpenShift
 
+### `nosql-db/elasticsearch`
+
+Provides coverage for quarkus-elasticsearch-rest-client
+
 ### `websockets/quarkus-websockets`
 Coverage for sending messages over websockets
 
