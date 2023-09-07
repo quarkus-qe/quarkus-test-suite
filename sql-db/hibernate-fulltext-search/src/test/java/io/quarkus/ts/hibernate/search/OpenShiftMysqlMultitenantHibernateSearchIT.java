@@ -34,7 +34,7 @@ public class OpenShiftMysqlMultitenantHibernateSearchIT extends AbstractMultiten
             .withDatabase("company2")
             .withProperty(MAX_ALLOWED_PACKET_KEY, MAX_ALLOWED_PACKET_VALUE);
 
-    @Container(image = "${elastic.71.image}", port = ELASTIC_PORT, expectedLog = "started")
+    @Container(image = "${elastic.7x.image}", port = ELASTIC_PORT, expectedLog = "started")
     static DefaultService elastic = new DefaultService()
             .withProperty("discovery.type", "single-node")
             // Limit resources as Elasticsearch official docker image use half of available RAM

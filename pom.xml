@@ -237,7 +237,7 @@
                                 <quarkus.s2i.base-native-image>${quarkus.s2i.base-native-image}</quarkus.s2i.base-native-image>
                                 <!-- Services used in test suite -->
                                 <postgresql.latest.image>${postgresql.latest.image}</postgresql.latest.image>
-                                <elastic.71.image>docker.io/library/elasticsearch:7.17.10</elastic.71.image>
+                                <elastic.7x.image>docker.io/library/elasticsearch:7.17.12</elastic.7x.image>
                                 <mysql.57.image>docker.io/library/mysql:5.7.42</mysql.57.image>
                                 <mysql.upstream.80.image>docker.io/library/mysql:8.0</mysql.upstream.80.image>
                                 <mysql.80.image>registry.access.redhat.com/rhscl/mysql-80-rhel7</mysql.80.image>
@@ -578,6 +578,7 @@
                 <module>nosql-db/mongodb</module>
                 <module>nosql-db/mongodb-reactive</module>
                 <module>nosql-db/infinispan</module>
+                <module>nosql-db/elasticsearch</module>
             </modules>
         </profile>
         <profile>
