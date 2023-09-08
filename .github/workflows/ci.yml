@@ -73,6 +73,7 @@ jobs:
     strategy:
       matrix:
         java: [ 11 ]
+        cli: [ 3.2.5.Final ]
         module-mvn-args: ${{ fromJSON(needs.prepare-jvm-latest-modules-mvn-param.outputs.MODULES_MAVEN_PARAM) }}
     steps:
       - uses: actions/checkout@v3
@@ -88,10 +89,10 @@ jobs:
           cache: 'maven'
       - name: Install Quarkus CLI
         run: |
-          wget -O quarkus-cli.zip -q --no-check-certificate --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 10 https://github.com/quarkusio/quarkus/releases/download/3.2.2.Final/quarkus-cli-3.2.2.Final.zip
+          wget -O quarkus-cli.zip -q --no-check-certificate --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 10 https://github.com/quarkusio/quarkus/releases/download/${{ matrix.cli }}/quarkus-cli-${{ matrix.cli }}.zip
           unzip -qo quarkus-cli.zip
-          chmod +x ./quarkus-cli-3.2.2.Final/bin/quarkus
-          ./quarkus-cli-3.2.2.Final/bin/quarkus version
+          chmod +x ./quarkus-cli-${{ matrix.cli }}/bin/quarkus
+          ./quarkus-cli-${{ matrix.cli }}/bin/quarkus version
       - name: Build with Maven
         run: |
           MODULES_MAVEN_PARAM=""
@@ -100,7 +101,7 @@ jobs:
             MODULES_MAVEN_PARAM="-pl ${MODULES_ARG}"
           fi
 
-          mvn -fae -V -B -s .github/mvn-settings.xml clean verify -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-cli-3.2.2.Final/bin/quarkus" ${{ matrix.module-mvn-args }} -am
+          mvn -fae -V -B -s .github/mvn-settings.xml clean verify -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-cli-${{ matrix.cli }}/bin/quarkus" ${{ matrix.module-mvn-args }} -am
       - name: Zip Artifacts
         if: failure()
         run: |
@@ -119,6 +120,7 @@ jobs:
     strategy:
       matrix:
         java: [ 11 ]
+        cli: [ 3.2.5.Final ]
     steps:
       - uses: actions/checkout@v3
       - name: Reclaim Disk Space
@@ -133,17 +135,17 @@ jobs:
           cache: 'maven'
       - name: Install Quarkus CLI
         run: |
-          wget -O quarkus-cli.zip -q --no-check-certificate --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 10 https://github.com/quarkusio/quarkus/releases/download/3.2.2.Final/quarkus-cli-3.2.2.Final.zip
+          wget -O quarkus-cli.zip -q --no-check-certificate --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 10 https://github.com/quarkusio/quarkus/releases/download/${{ matrix.cli }}/quarkus-cli-${{ matrix.cli }}.zip
           unzip -qo quarkus-cli.zip
-          chmod +x ./quarkus-cli-3.2.2.Final/bin/quarkus
-          ./quarkus-cli-3.2.2.Final/bin/quarkus version
+          chmod +x ./quarkus-cli-${{ matrix.cli }}/bin/quarkus
+          ./quarkus-cli-${{ matrix.cli }}/bin/quarkus version
       - name: Build with Maven
         run: |
           if [[ -n ${MODULES_ARG} ]]; then
             echo "Running modules: ${MODULES_ARG}"
             mvn -fae -V -B -s .github/mvn-settings.xml -fae -Dall-modules \
                         -Dquarkus.native.native-image-xmx=5g \
-                        -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-cli-3.2.2.Final/bin/quarkus" \
+                        -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-cli-${{ matrix.cli }}/bin/quarkus" \
                         -pl $MODULES_ARG clean verify -Dnative -am
           fi
       - name: Zip Artifacts
