@@ -35,8 +35,4 @@ public class OpenShiftMariaDbTransactionGeneralUsageIT extends TransactionCommon
         return TransactionExecutor.STATIC_TRANSACTION_MANAGER;
     }
 
-    @Override
-    protected void testTransactionRecoveryInternal() {
-        // disabled on OpenShift as there are required changes in Test Framework in container restart
-    }
 }

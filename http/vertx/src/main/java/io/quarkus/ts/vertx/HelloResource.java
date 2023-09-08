@@ -30,4 +30,13 @@ public class HelloResource {
                 .map(string -> String.format(string, name).trim())
                 .map(Hello::new);
     }
+
+    @GET
+    @Path("bus")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Uni<Hello> getFromBus(@QueryParam("name") @DefaultValue("World") String name) {
+        return vertx.eventBus().<String> request("greetings", name)
+                .onItem()
+                .transform(response -> new Hello(response.body()));
+    }
 }

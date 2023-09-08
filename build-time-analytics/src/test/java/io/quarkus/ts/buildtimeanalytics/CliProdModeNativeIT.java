@@ -14,12 +14,14 @@ import io.quarkus.test.bootstrap.QuarkusCliRestService;
 import io.quarkus.test.configuration.PropertyLookup;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.EnabledOnNative;
+import io.quarkus.test.scenarios.annotations.EnabledWhenLinuxContainersAvailable;
 
+@EnabledWhenLinuxContainersAvailable
 @Tag("QUARKUS-2812")
 @Tag("quarkus-cli")
 @QuarkusScenario
 @EnabledOnNative
-public class ProdModeNativeIT extends AbstractAnalyticsIT {
+public class CliProdModeNativeIT extends AbstractAnalyticsIT {
 
     private static final PropertyLookup NATIVE_IMG_XMX = new PropertyLookup("quarkus.native.native-image-xmx");
 

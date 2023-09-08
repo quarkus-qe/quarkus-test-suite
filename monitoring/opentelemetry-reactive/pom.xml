@@ -36,6 +36,10 @@
             <artifactId>quarkus-scheduler</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-micrometer-registry-prometheus</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.quarkus.qe</groupId>
             <artifactId>quarkus-test-service-jaeger</artifactId>
             <scope>test</scope>

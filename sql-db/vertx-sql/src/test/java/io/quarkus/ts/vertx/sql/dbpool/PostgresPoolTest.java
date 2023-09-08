@@ -19,16 +19,15 @@ import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.condition.DisabledOnOs;
-import org.junit.jupiter.api.condition.OS;
 
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
+import io.quarkus.test.scenarios.annotations.EnabledWhenLinuxContainersAvailable;
 import io.smallrye.mutiny.Uni;
 import io.vertx.mutiny.pgclient.PgPool;
 import io.vertx.mutiny.sqlclient.RowSet;
 
-@DisabledOnOs(OS.WINDOWS) // TODO mvavrik: FW must handle this and run test when Docker is available
+@EnabledWhenLinuxContainersAvailable
 @QuarkusTest
 @TestProfile(PostgresqlTestProfile.class)
 @TestMethodOrder(OrderAnnotation.class)

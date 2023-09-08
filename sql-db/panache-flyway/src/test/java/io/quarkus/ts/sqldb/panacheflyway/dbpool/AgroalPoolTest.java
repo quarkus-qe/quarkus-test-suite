@@ -22,12 +22,11 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledOnOs;
-import org.junit.jupiter.api.condition.OS;
 
 import io.agroal.api.AgroalDataSource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
+import io.quarkus.test.scenarios.annotations.EnabledWhenLinuxContainersAvailable;
 import io.quarkus.ts.sqldb.panacheflyway.UserRepository;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.helpers.test.AssertSubscriber;
@@ -37,7 +36,7 @@ import io.smallrye.mutiny.tuples.Tuple2;
  * The aim of these tests is verified agroal and entityManager pool management
  * Some of these tests required some extra load, in order to reproduce concurrency issues.
  */
-@DisabledOnOs(OS.WINDOWS) // TODO mvavrik: FW must handle this and run test when Docker is available
+@EnabledWhenLinuxContainersAvailable
 @Tag("fips-incompatible") // native-mode
 @QuarkusTest
 @TestProfile(AgroalTestProfile.class)

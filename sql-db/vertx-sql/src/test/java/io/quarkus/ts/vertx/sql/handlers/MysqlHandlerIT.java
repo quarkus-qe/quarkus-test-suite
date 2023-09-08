@@ -27,4 +27,14 @@ public class MysqlHandlerIT extends CommonTestCases {
             .withProperty("app.selected.db", "mysql")
             // Enable Flyway for MySQL
             .withProperty("quarkus.flyway.mysql.migrate-at-start", "true");
+
+    @Override
+    public String getDBName() {
+        return "mysql";
+    }
+
+    @Override
+    protected String getMetricKey(String metricName) {
+        return "mysql_" + metricName + "{clientName=\"mysql\",clientType=\"sql\"}";
+    }
 }
