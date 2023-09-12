@@ -320,8 +320,8 @@ public class QuarkusCliCreateJvmApplicationIT {
 
     private void assertExpectedJavaVersion(File pomFile, String expectedJavaVersion) {
         MavenXpp3Reader reader = new MavenXpp3Reader();
-        try {
-            Model model = reader.read(new FileReader(pomFile));
+        try (FileReader fileReader = new FileReader(pomFile)) {
+            Model model = reader.read(fileReader);
             Assertions.assertEquals(model.getProperties().get("maven.compiler.release"), expectedJavaVersion,
                     "Unexpected Java version defined in maven.compiler.release property of pom.xml. " +
                             "Java support tool should detect host Java version or use " +
@@ -332,8 +332,7 @@ public class QuarkusCliCreateJvmApplicationIT {
     }
 
     private void assertDockerJavaVersion(File dockerFile, String expectedVersion) {
-        try {
-            Scanner sc = new Scanner(dockerFile);
+        try (Scanner sc = new Scanner(dockerFile)) {
             String line = "";
             while (sc.hasNextLine()) {
                 line = sc.nextLine();
