@@ -14,6 +14,7 @@ import jakarta.inject.Inject;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.condition.OS;
 
@@ -50,6 +51,7 @@ public class QuarkusCliSpecialCharsIT {
         assertCreateJavaApplicationAtFolder(FOLDER_WITH_SPACES);
     }
 
+    @DisabledOnOs(OS.WINDOWS) // TODO: enable me when https://github.com/quarkusio/quarkus/issues/35913 gets fixed
     @Test
     public void shouldCreateApplicationOnJvmWithSpecialChars() {
         assertCreateJavaApplicationAtFolder(FOLDER_WITH_SPECIAL_CHARS);
