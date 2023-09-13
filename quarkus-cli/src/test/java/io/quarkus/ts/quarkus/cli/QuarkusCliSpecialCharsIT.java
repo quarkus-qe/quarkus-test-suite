@@ -4,6 +4,7 @@ import static io.quarkus.ts.quarkus.cli.QuarkusCliUtils.getCurrentStreamVersion;
 import static io.quarkus.ts.quarkus.cli.QuarkusCliUtils.isUpstream;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +15,7 @@ import jakarta.inject.Inject;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.condition.OS;
 
 import io.quarkus.test.bootstrap.QuarkusCliClient;
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -125,16 +127,19 @@ public class QuarkusCliSpecialCharsIT {
     }
 
     private void whenBuildOnNativeAppAt(String folder) {
-        result = cliClient.run(TARGET.resolve(folder + "/" + ARTIFACT_ID), "build", "--native");
+        result = cliClient.run(TARGET.resolve(folder + File.separator + ARTIFACT_ID), "build", "--native");
     }
 
     private void whenBuildOnJvmAppAt(String folder) {
-        result = cliClient.run(TARGET.resolve(folder + "/" + ARTIFACT_ID), "build");
+        result = cliClient.run(TARGET.resolve(folder + File.separator + ARTIFACT_ID), "build");
     }
 
     private void whenCreateAppAt(String folder) {
         List<String> args = getDefaultAppArgs("create", "app");
-        args.addAll(List.of("--output-directory=" + folder, ARTIFACT_ID));
+        if (OS.current() == OS.WINDOWS) {
+            folder = String.format("\"%s\"", folder);
+        }
+        args.addAll(List.of("--output-directory", folder, ARTIFACT_ID));
         result = cliClient.run(args.toArray(new String[args.size()]));
     }
 
