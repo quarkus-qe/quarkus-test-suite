@@ -981,6 +981,9 @@ Verifies all the Quarkus CLI features: https://quarkus.io/version/main/guides/cl
 
 In order to enable this module, the test suite must be executed with `-Dall-modules -Dinclude.quarkus-cli-tests`. The Quarkus CLI is expected to be called `quarkus`. We can configure the test suite to use another Quarkus CLI binary name using `-Dts.quarkus.cli.cmd=/path/to/quarkus-dev-cli`.
 
+#### Windows Prerequisites
+Ensure UTF-8 support is enabled, see for example https://stackoverflow.com/questions/57131654/using-utf-8-encoding-chcp-65001-in-command-prompt-windows-powershell-window or search for `chcp 65001`. `QuarkusCliCreateJvmApplicationIT.shouldCreateApplicationWithCodeStarter` and `QuarkusCliCreateJvmApplicationIT.shouldCreateJacocoReportsFromApplicationOnJvm` tests fail without UTF-8 support enabled on Windows.
+
 ### `Kamelet`
 
 Quarkus-kamelet provide you support to interacting with Camel routes templates.
