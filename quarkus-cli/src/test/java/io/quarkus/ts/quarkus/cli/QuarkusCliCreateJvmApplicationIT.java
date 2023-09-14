@@ -37,6 +37,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.OS;
 
 import io.quarkus.test.bootstrap.QuarkusCliClient;
 import io.quarkus.test.bootstrap.QuarkusCliRestService;
@@ -121,6 +122,8 @@ public class QuarkusCliCreateJvmApplicationIT {
         // Create application
         QuarkusCliRestService app = cliClient.createApplication("app", defaultWithFixedStream().withExtraArgs("--gradle"));
 
+        // Run Gradle Daemon to avoid file lock on quarkus-cli-command.out when the daemon is started as part of 'app.buildOnJvm()'
+        runGradleDaemon(app);
         // Should build on Jvm
         final String repository = System.getProperty("maven.repo.local");
         final Result result;
@@ -136,6 +139,37 @@ public class QuarkusCliCreateJvmApplicationIT {
         // Start using DEV mode
         app.start();
         app.given().get().then().statusCode(HttpStatus.SC_OK);
+
+        // Stop Gradle Daemon to save resources
+        stopGradleDaemon(app);
+    }
+
+    private void runGradleDaemon(QuarkusCliRestService app) {
+        runGradleWrapper(app, "--daemon");
+    }
+
+    private void stopGradleDaemon(QuarkusCliRestService app) {
+        runGradleWrapper(app, "--stop");
+    }
+
+    private static void runGradleWrapper(QuarkusCliRestService app, String command) {
+        Path workingDirectory = app.getServiceFolder();
+        ProcessBuilder builder = new ProcessBuilder();
+        if (OS.current() == OS.WINDOWS) {
+            builder.command("cmd.exe", "/c", "gradlew", command);
+        } else {
+            builder.command("sh", "-c", "./gradlew", command);
+        }
+        try {
+            Process process = builder.redirectErrorStream(true)
+                    .directory(workingDirectory.toFile())
+                    .redirectOutput(ProcessBuilder.Redirect.DISCARD)
+                    .redirectError(ProcessBuilder.Redirect.DISCARD)
+                    .start();
+            process.waitFor();
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Tag("QUARKUS-1071")
@@ -320,8 +354,8 @@ public class QuarkusCliCreateJvmApplicationIT {
 
     private void assertExpectedJavaVersion(File pomFile, String expectedJavaVersion) {
         MavenXpp3Reader reader = new MavenXpp3Reader();
-        try {
-            Model model = reader.read(new FileReader(pomFile));
+        try (FileReader fileReader = new FileReader(pomFile)) {
+            Model model = reader.read(fileReader);
             Assertions.assertEquals(model.getProperties().get("maven.compiler.release"), expectedJavaVersion,
                     "Unexpected Java version defined in maven.compiler.release property of pom.xml. " +
                             "Java support tool should detect host Java version or use " +
@@ -332,8 +366,7 @@ public class QuarkusCliCreateJvmApplicationIT {
     }
 
     private void assertDockerJavaVersion(File dockerFile, String expectedVersion) {
-        try {
-            Scanner sc = new Scanner(dockerFile);
+        try (Scanner sc = new Scanner(dockerFile)) {
             String line = "";
             while (sc.hasNextLine()) {
                 line = sc.nextLine();

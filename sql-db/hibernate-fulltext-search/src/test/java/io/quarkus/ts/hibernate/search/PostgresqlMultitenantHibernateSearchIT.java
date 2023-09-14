@@ -14,7 +14,7 @@ public class PostgresqlMultitenantHibernateSearchIT extends AbstractMultitenantH
     static final int ELASTIC_PORT = 9200;
     static final int POSTGRESQL_PORT = 5432;
 
-    @Container(image = "${elastic.71.image}", port = ELASTIC_PORT, expectedLog = "started")
+    @Container(image = "${elastic.7x.image}", port = ELASTIC_PORT, expectedLog = "started")
     static DefaultService elastic = new DefaultService()
             .withProperty("discovery.type", "single-node")
             // Limit resources as Elasticsearch official docker image use half of available RAM
