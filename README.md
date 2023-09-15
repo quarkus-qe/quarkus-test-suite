@@ -984,24 +984,6 @@ In order to enable this module, the test suite must be executed with `-Dall-modu
 #### Windows Prerequisites
 Ensure UTF-8 support is enabled, see for example https://stackoverflow.com/questions/57131654/using-utf-8-encoding-chcp-65001-in-command-prompt-windows-powershell-window or search for `chcp 65001`. `QuarkusCliCreateJvmApplicationIT.shouldCreateApplicationWithCodeStarter` and `QuarkusCliCreateJvmApplicationIT.shouldCreateJacocoReportsFromApplicationOnJvm` tests fail without UTF-8 support enabled on Windows.
 
-### `Kamelet`
-
-Quarkus-kamelet provide you support to interacting with Camel routes templates.
-The aim of this module is to cover the following Kamelet scenarios:
-* Camel producers, those scenarios where your service produces events and are consumed by a camel route
-* Camel consumers, those scenarios where your service consumes a camel route
-* Chain routes multiples routes
-* Load application properties as routes bodies
-* Validate Kamelet resources as ocp/k8s kamelet yamls(routes-temapltes, routes-bindings...)
-
-Project folder structure
-
-* `/resources/kamelets` contains kamelets resources as templates or KameletBindings. Also, there are groovy scripts 
-in order to instantiate these templates by your self (as an example). 
-
-* `KameletRoutes` contains templates that could be invoked (tested) directly by code. So is not 
-need it to be deployed into ocp or some other platform.
-
 ### `Qute`
 Coverage for Qute template engine.
 Module `qute/synchronous` contains coverage for Qute templating and integration with RESTEasy.
