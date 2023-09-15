@@ -403,9 +403,6 @@
                 <module>infinispan-client</module>
                 <module>super-size/many-extensions</module>
                 <module>quarkus-cli</module>
-                <!-- TODO: uncomment Kamelet module when 3.0 is released -->
-                <!-- module does not compile and Camel Quarkus BOM breaks native build of other modules -->
-                <!-- <module>kamelet</module> -->
                 <module>logging/jboss</module>
                 <module>cache/caffeine</module>
                 <module>qute/multimodule</module>
@@ -432,9 +429,6 @@
                 <module>infinispan-client</module>
                 <module>super-size/many-extensions</module>
                 <module>quarkus-cli</module>
-                <!-- TODO: uncomment Kamelet module when 3.0 is released -->
-                <!-- module does not compile and Camel Quarkus BOM breaks native build of other modules -->
-                <!-- <module>kamelet</module> -->
                 <module>logging/jboss</module>
                 <module>cache/caffeine</module>
                 <module>build-time-analytics</module>
