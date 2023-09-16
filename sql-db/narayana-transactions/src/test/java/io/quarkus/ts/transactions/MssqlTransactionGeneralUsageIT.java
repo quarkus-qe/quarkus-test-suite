@@ -1,5 +1,11 @@
 package io.quarkus.ts.transactions;
 
+import static io.quarkus.test.services.containers.DockerContainerManagedResource.DOCKER_INNER_CONTAINER;
+
+import java.io.IOException;
+
+import org.testcontainers.containers.GenericContainer;
+
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.bootstrap.SqlServerService;
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -13,7 +19,19 @@ public class MssqlTransactionGeneralUsageIT extends TransactionCommons {
     private static final int MSSQL_PORT = 1433;
 
     @Container(image = "${mssql.image}", port = MSSQL_PORT, expectedLog = "Service Broker manager has started")
-    static SqlServerService database = new SqlServerService();
+    static SqlServerService database = new SqlServerService().onPostStart(service -> {
+        // enable XA transactions
+        var self = (SqlServerService) service;
+        try {
+            self
+                    .<GenericContainer<?>> getPropertyFromContext(DOCKER_INNER_CONTAINER)
+                    .execInContainer(
+                            "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", self.getUser(), "-P", self.getPassword(),
+                            "-Q", "EXEC sp_sqljdbc_xa_install");
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    });
 
     @QuarkusApplication
     public static final RestService app = new RestService().withProperties("mssql.properties")
@@ -34,13 +52,13 @@ public class MssqlTransactionGeneralUsageIT extends TransactionCommons {
     }
 
     @Override
+    protected boolean isDatabaseTableLockedWhenTransactionFailed() {
+        return true;
+    }
+
+    @Override
     protected String[] getExpectedJdbcOperationNames() {
         return new String[] { "SELECT msdb.account", "INSERT msdb.journal", "UPDATE msdb.account" };
     }
 
-    @Override
-    protected void testTransactionRecoveryInternal() {
-        // disable transaction recovery tests till upstream issue is fixed
-        // TODO: remove this method when gets fixed https://github.com/quarkusio/quarkus/issues/35336
-    }
 }
