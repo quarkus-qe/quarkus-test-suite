@@ -57,7 +57,7 @@
         <exclude.quarkus.devmode.tests>no</exclude.quarkus.devmode.tests>
         <!-- Docker images used by both surefire and failsafe plugin -->
         <postgresql.latest.image>docker.io/library/postgres:15</postgresql.latest.image>
-        <wiremock-jre8.version>2.35.0</wiremock-jre8.version>
+        <wiremock-jre8.version>2.35.1</wiremock-jre8.version>
     </properties>
     <dependencyManagement>
         <dependencies>
