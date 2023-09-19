@@ -11,7 +11,7 @@ jobs:
       matrix:
         java: [ 11 ]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Reclaim Disk Space
         run: .github/ci-prerequisites.sh
       - name: Install required tools
@@ -45,7 +45,7 @@ jobs:
                    "sql-db-modules",
                    "messaging-modules,websockets-modules,monitoring-modules,test-tooling-modules"]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Reclaim Disk Space
         run: .github/ci-prerequisites.sh
       - name: Install JDK {{ matrix.java }}
@@ -99,7 +99,7 @@ jobs:
                     "sql-db-modules -pl env-info,sql-db/reactive-rest-data-panache,sql-db/vertx-sql,sql-db/reactive-vanilla,sql-db/hibernate-fulltext-search,sql-db/narayana-transactions",
                    "messaging-modules,websockets-modules,monitoring-modules,test-tooling-modules"]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Reclaim Disk Space
         run: .github/ci-prerequisites.sh
       - name: Install JDK {{ matrix.java }}
@@ -149,7 +149,7 @@ jobs:
       matrix:
         java: [ 11, 17 ]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install JDK {{ matrix.java }}
         uses: actions/setup-java@v3
         with:
@@ -191,7 +191,7 @@ jobs:
         graalvm-version: [ "mandrel-latest" ]
         graalvm-java-version: [ "17" ]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install JDK {{ matrix.java }}
         uses: actions/setup-java@v3
         with:
