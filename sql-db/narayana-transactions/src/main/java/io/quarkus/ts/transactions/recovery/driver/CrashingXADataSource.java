@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 import org.mariadb.jdbc.MariaDbDataSource;
 import org.postgresql.xa.PGXADataSource;
 
+import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 import com.microsoft.sqlserver.jdbc.SQLServerXADataSource;
 import com.mysql.cj.jdbc.MysqlXADataSource;
 
@@ -35,7 +36,7 @@ import oracle.jdbc.xa.client.OracleXADataSource;
 
 // Agroal extension register directly used drivers, but since we are delegating, we need to register it ourselves
 @RegisterForReflection(targets = { OracleXADataSource.class, MariaDbDataSource.class, MysqlXADataSource.class,
-        SQLServerXADataSource.class })
+        SQLServerXADataSource.class, SQLServerDataSource.class })
 public final class CrashingXADataSource implements XADataSource {
 
     /**

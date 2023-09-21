@@ -58,6 +58,14 @@ public abstract class TransactionCommons {
      */
     protected abstract TransactionExecutor getTransactionExecutorUsedForRecovery();
 
+    /**
+     * Whether when database table is part of the two-phase transaction and the transaction fails before commit,
+     * it is locked until the transaction is finished. The only database we experience it for is Microsoft SQL server.
+     */
+    protected boolean isDatabaseTableLockedWhenTransactionFailed() {
+        return false;
+    }
+
     @Order(1)
     @Tag("QUARKUS-2492")
     @Test
@@ -231,7 +239,9 @@ public abstract class TransactionCommons {
                 // transaction crashed during two-phase commit, now we need to check that recovery_log is empty as planned
                 getApp().withProperty(ENABLE_TRANSACTION_RECOVERY, FALSE.toString());
                 getApp().restartAndWaitUntilServiceIsStarted();
-                untilAsserted(() -> assertRecoveryLogContainsTransactions(0));
+                if (!isDatabaseTableLockedWhenTransactionFailed()) {
+                    untilAsserted(() -> assertRecoveryLogContainsTransactions(0));
+                }
                 assertJdbcObjectStoreContainsTransactions(1);
 
                 // now enable automatic recovery and see the transaction recovered
