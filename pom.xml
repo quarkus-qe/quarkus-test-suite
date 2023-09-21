@@ -57,6 +57,7 @@
         <exclude.quarkus.devmode.tests>no</exclude.quarkus.devmode.tests>
         <!-- Docker images used by both surefire and failsafe plugin -->
         <postgresql.latest.image>docker.io/library/postgres:15</postgresql.latest.image>
+        <build-reporter-maven-extension.version>3.2.0</build-reporter-maven-extension.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -163,6 +164,14 @@
         </dependency>
     </dependencies>
     <build>
+        <extensions>
+            <!-- Build Reporter collects and generates build reports analyzed by Jenkins jobs using AWS EC2 Windows-->
+            <extension>
+                <groupId>io.quarkus.bot</groupId>
+                <artifactId>build-reporter-maven-extension</artifactId>
+                <version>${build-reporter-maven-extension.version}</version>
+            </extension>
+        </extensions>
         <pluginManagement>
             <plugins>
                 <plugin>
