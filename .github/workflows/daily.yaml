@@ -97,7 +97,7 @@ jobs:
                    "security-modules",
                     "sql-db-modules -pl env-info,sql-db/hibernate,sql-db/sql-app,sql-db/sql-app-compatibility,sql-db/multiple-pus,sql-db/panache-flyway,sql-db/hibernate-reactive",
                     "sql-db-modules -pl env-info,sql-db/reactive-rest-data-panache,sql-db/vertx-sql,sql-db/reactive-vanilla,sql-db/hibernate-fulltext-search,sql-db/narayana-transactions",
-                   "messaging-modules,websockets-modules,monitoring-modules,test-tooling-modules"]
+                   "messaging-modules,websockets-modules,monitoring-modules,test-tooling-modules,nosql-db-modules"]
     steps:
       - uses: actions/checkout@v4
       - name: Reclaim Disk Space
