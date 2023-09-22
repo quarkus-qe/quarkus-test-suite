@@ -58,7 +58,7 @@
         <!-- Docker images used by both surefire and failsafe plugin -->
         <postgresql.latest.image>docker.io/library/postgres:15</postgresql.latest.image>
         <wiremock-jre8.version>2.35.1</wiremock-jre8.version>
-        <build-reporter-maven-extension.version>3.2.0</build-reporter-maven-extension.version>
+        <build-reporter-maven-extension.version>3.2.2</build-reporter-maven-extension.version>
     </properties>
     <dependencyManagement>
         <dependencies>
