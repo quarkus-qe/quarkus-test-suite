@@ -10,6 +10,7 @@ import io.quarkus.test.services.QuarkusApplication;
 
 @OpenShiftScenario
 @DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/1146")
+@DisabledIfSystemProperty(named = "ts.s390x.missing.services.excludes", matches = "true", disabledReason = "bitnami/mongodb container not available on s390x.")
 public class OpenShiftMongoClientReactiveIT extends AbstractMongoClientReactiveIT {
 
     @Container(image = "${mongodb.image}", port = 27017, expectedLog = "Waiting for connections")
