@@ -1,5 +1,6 @@
 package io.quarkus.ts.hibernate.search;
 
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import io.quarkus.test.bootstrap.DefaultService;
@@ -11,6 +12,7 @@ import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
 @OpenShiftScenario
+@DisabledIfSystemProperty(named = "ts.s390x.missing.services.excludes", matches = "true", disabledReason = "elasticsearch container not available on s390x.")
 @EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
 public class OpenShiftMysqlMultitenantHibernateSearchIT extends AbstractMultitenantHibernateSearchIT {
     private static final int ELASTIC_PORT = 9200;

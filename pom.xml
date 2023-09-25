@@ -252,6 +252,7 @@
                                 <quarkus.s2i.base-jvm-image>${quarkus.s2i.base-jvm-image}</quarkus.s2i.base-jvm-image>
                                 <quarkus.s2i.base-native-image>${quarkus.s2i.base-native-image}</quarkus.s2i.base-native-image>
                                 <!-- Services used in test suite -->
+                                <amqbroker.image>registry.access.redhat.com/amq-broker-7/amq-broker-72-openshift:latest</amqbroker.image>
                                 <postgresql.latest.image>${postgresql.latest.image}</postgresql.latest.image>
                                 <elastic.7x.image>docker.io/library/elasticsearch:7.17.12</elastic.7x.image>
                                 <mysql.57.image>docker.io/library/mysql:5.7.42</mysql.57.image>
@@ -787,6 +788,57 @@
                                         <mariadb.105.image>registry.redhat.io/rhel8/mariadb-105</mariadb.105.image>
                                         <amq-streams.image>registry.redhat.io/amq7/amq-streams-kafka-27-rhel7</amq-streams.image>
                                         <amq-streams.version>1.7.0</amq-streams.version>
+                                    </systemPropertyVariables>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>openshift-s390x</id>
+            <activation>
+                <property>
+                    <name>openshift-s390x</name>
+                </property>
+            </activation>
+            <properties>
+                <include.tests>**/*OpenShift*IT.java</include.tests>
+                <exclude.openshift.tests>no</exclude.openshift.tests>
+            </properties>
+        </profile>
+        <profile>
+            <id>openshift-s390x-containers</id>
+            <activation>
+                <property>
+                    <name>openshift-s390x</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                                <configuration>
+                                    <systemPropertyVariables>
+                                        <ts.s390x.missing.services.excludes>true</ts.s390x.missing.services.excludes>
+                                        <ts.redhat.registry.enabled>true</ts.redhat.registry.enabled>
+                                        <!-- Product Services -->
+                                        <amqbroker.image>registry.redhat.io/amq7/amq-broker-rhel8:7.10</amqbroker.image>
+                                        <rhsso.image>registry.redhat.io/rh-sso-7/sso76-openshift-rhel8</rhsso.image>
+                                        <postgresql.10.image>registry.redhat.io/rhel8/postgresql-10</postgresql.10.image>
+                                        <mysql.80.image>registry.redhat.io/rhel8/mysql-80</mysql.80.image>
+                                        <mariadb.103.image>registry.redhat.io/rhel8/mariadb-103</mariadb.103.image>
+                                        <mariadb.105.image>registry.redhat.io/rhel8/mariadb-105</mariadb.105.image>
+                                        <amq-streams.image>registry.redhat.io/amq7/amq-streams-kafka-33-rhel8</amq-streams.image>
+                                        <amq-streams.version>2.3.0</amq-streams.version>
                                     </systemPropertyVariables>
                                 </configuration>
                             </execution>
