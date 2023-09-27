@@ -115,6 +115,7 @@ public class QuarkusCliCreateJvmApplicationIT {
         assertDockerJavaVersion(getFileFromApplication(app, DOCKER_FOLDER, DOCKERFILE_JVM), JDK_17);
     }
 
+    @Disabled("https://issues.redhat.com/browse/QUARKUS-3439")
     @Tag("QUARKUS-1071")
     @Test
     public void shouldCreateApplicationWithGradleOnJvm() {
