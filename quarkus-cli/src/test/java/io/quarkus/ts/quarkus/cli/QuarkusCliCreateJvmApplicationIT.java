@@ -173,6 +173,7 @@ public class QuarkusCliCreateJvmApplicationIT {
         }
     }
 
+    @Disabled("https://issues.redhat.com/browse/QUARKUS-3371")
     @Tag("QUARKUS-1071")
     @Test
     public void shouldCreateApplicationWithJbangOnJvm() {
