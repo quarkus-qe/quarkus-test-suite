@@ -22,7 +22,7 @@ public class QpidIT {
 
     static final int ASSERT_TIMEOUT_MINUTES = 1;
 
-    @AmqContainer(image = "registry.access.redhat.com/amq-broker-7/amq-broker-72-openshift", protocol = AmqProtocol.AMQP)
+    @AmqContainer(image = "${amqbroker.image}", protocol = AmqProtocol.AMQP)
     static AmqService artemis = new AmqService();
 
     @QuarkusApplication
