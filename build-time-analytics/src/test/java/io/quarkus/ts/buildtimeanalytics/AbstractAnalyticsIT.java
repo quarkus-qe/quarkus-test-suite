@@ -142,8 +142,8 @@ public abstract class AbstractAnalyticsIT {
 
     private List<Dependency> getPomDependencies(QuarkusCliRestService app) {
         MavenXpp3Reader reader = new MavenXpp3Reader();
-        try {
-            Model model = reader.read(new FileReader(getPomFile(app)));
+        try (var fileReader = new FileReader(getPomFile(app))) {
+            Model model = reader.read(fileReader);
             return model.getDependencies().stream()
                     .filter(dependency -> !Objects.equals(dependency.getScope(), "test"))
                     .collect(Collectors.toList());
