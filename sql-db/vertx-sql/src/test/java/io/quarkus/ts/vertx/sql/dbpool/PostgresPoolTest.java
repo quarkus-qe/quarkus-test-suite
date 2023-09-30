@@ -1,11 +1,11 @@
 package io.quarkus.ts.vertx.sql.dbpool;
 
-import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.net.URL;
 import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -14,16 +14,22 @@ import jakarta.inject.Inject;
 
 import org.apache.http.HttpStatus;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
+import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 import io.quarkus.test.scenarios.annotations.EnabledWhenLinuxContainersAvailable;
 import io.smallrye.mutiny.Uni;
+import io.vertx.core.http.HttpMethod;
+import io.vertx.mutiny.core.Vertx;
+import io.vertx.mutiny.ext.web.client.WebClient;
 import io.vertx.mutiny.pgclient.PgPool;
 import io.vertx.mutiny.sqlclient.RowSet;
 
@@ -39,11 +45,33 @@ public class PostgresPoolTest {
     @Inject
     PgPool postgresql;
 
+    @Inject
+    Vertx vertx;
+
+    @TestHTTPResource
+    URL url;
+
     @ConfigProperty(name = "quarkus.datasource.reactive.max-size")
     int datasourceMaxSize;
 
     @ConfigProperty(name = "quarkus.datasource.reactive.idle-timeout")
     int idle;
+
+    private static WebClient webClient;
+
+    @BeforeEach
+    public void setupClient() {
+        if (webClient == null) {
+            webClient = WebClient.create(vertx);
+        }
+    }
+
+    @AfterAll
+    public static void closeClient() {
+        if (webClient != null) {
+            webClient.close();
+        }
+    }
 
     @Test
     @DisplayName("DB connections are re-used")
@@ -52,7 +80,7 @@ public class PostgresPoolTest {
         CountDownLatch done = new CountDownLatch(EVENTS);
 
         for (int i = 0; i < EVENTS; i++) {
-            makeHttpReqAsJson("airlines/", HttpStatus.SC_OK);
+            makeHttpReqAsJson("/airlines/", HttpStatus.SC_OK);
             Uni<Boolean> connectionsReUsed = activeConnections()
                     .onItem().ifNull()
                     .failWith(() -> new RuntimeException("Oh No! no postgres active connections found!"))
@@ -76,7 +104,7 @@ public class PostgresPoolTest {
         CountDownLatch done = new CountDownLatch(EVENTS);
 
         for (int i = 0; i < EVENTS; i++) {
-            makeHttpReqAsJson("airlines/", HttpStatus.SC_OK);
+            makeHttpReqAsJson("/airlines/", HttpStatus.SC_OK);
             Uni<Long> activeConnectionsAmount = activeConnections()
                     .onItem().ifNull()
                     .failWith(() -> new RuntimeException("Oh No! no postgres active connections found!"))
@@ -119,10 +147,8 @@ public class PostgresPoolTest {
     }
 
     private void makeHttpReqAsJson(String path, int expectedStatus) {
-        given()
-                .when().get(path)
-                .then()
-                .statusCode(expectedStatus);
+        var response = webClient.request(HttpMethod.GET, url.getPort(), url.getHost(), path).sendAndAwait();
+        assertEquals(expectedStatus, response.statusCode());
     }
 
     private boolean checkDbActiveConnections(long active) {
