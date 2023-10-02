@@ -1,5 +1,7 @@
 package io.quarkus.ts.http.advanced.reactive;
 
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
+
 import io.quarkus.test.bootstrap.KeycloakService;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
@@ -8,6 +10,7 @@ import io.quarkus.test.services.KeycloakContainer;
 import io.quarkus.test.services.QuarkusApplication;
 
 @OpenShiftScenario
+@DisabledIfSystemProperty(named = "ts.s390x.missing.services.excludes", matches = "true", disabledReason = "keycloak container not available on s390x.")
 public class OpenShiftHttpAdvancedReactiveIT extends BaseHttpAdvancedReactiveIT {
 
     private static final String REALM_DEFAULT = "test-realm";

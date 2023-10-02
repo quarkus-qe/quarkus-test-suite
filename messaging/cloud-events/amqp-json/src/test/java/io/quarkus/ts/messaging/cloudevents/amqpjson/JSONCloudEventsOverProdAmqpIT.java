@@ -9,7 +9,7 @@ import io.quarkus.test.services.containers.model.AmqProtocol;
 
 @QuarkusScenario
 public class JSONCloudEventsOverProdAmqpIT extends BaseJSONCloudEventsOverAmqpIT {
-    @AmqContainer(image = "registry.access.redhat.com/amq-broker-7/amq-broker-72-openshift", protocol = AmqProtocol.AMQP)
+    @AmqContainer(image = "${amqbroker.image}", protocol = AmqProtocol.AMQP)
     static AmqService amq = new AmqService();
 
     @QuarkusApplication
