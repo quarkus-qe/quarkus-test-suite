@@ -33,6 +33,7 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.junit.jupiter.api.Assertions;
 
 import io.quarkus.test.bootstrap.QuarkusCliClient;
 import io.quarkus.test.bootstrap.QuarkusCliClient.Result;
@@ -80,8 +81,12 @@ public abstract class AbstractAnalyticsIT {
     protected void verifyRemoteConfigRefreshed() {
         File remoteConfigFile = getRemoteConfigFile();
         assertTrue(remoteConfigFile.exists());
-        JsonPath json = JsonPath.from(remoteConfigFile);
-        assertFalse(json.getList("deny_anonymous_ids", String.class).contains("fake-anonymous-id"));
+        try (var reader = new FileReader(remoteConfigFile)) {
+            JsonPath json = JsonPath.from(reader);
+            assertFalse(json.getList("deny_anonymous_ids", String.class).contains("fake-anonymous-id"));
+        } catch (IOException e) {
+            Assertions.fail("Failed to reader 'remoteConfigFile: " + e.getMessage());
+        }
     }
 
     protected void verifyBuildSuccessful(Result buildResult) {
@@ -104,9 +109,13 @@ public abstract class AbstractAnalyticsIT {
     }
 
     private void validatePayload(QuarkusCliRestService app, File payload) {
-        JsonPath json = JsonPath.from(payload);
-        validateJsonValues(json);
-        validateExtensions(app, json);
+        try (var reader = new FileReader(payload)) {
+            JsonPath json = JsonPath.from(reader);
+            validateJsonValues(json);
+            validateExtensions(app, json);
+        } catch (IOException e) {
+            Assertions.fail("Failed to read 'payload': " + e.getMessage());
+        }
     }
 
     private void validateJsonValues(JsonPath json) {
