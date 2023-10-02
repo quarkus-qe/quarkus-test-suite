@@ -262,7 +262,7 @@ public class QuarkusCliCreateJvmApplicationIT {
         assertTrue(result.isSuccessful(), SMALLRYE_HEALTH_EXTENSION + " was not uninstalled. Output: " + result.getOutput());
 
         // The health endpoint should be now gone
-        app.restart();
+        app.restartAndWaitUntilServiceIsStarted();
         untilAsserted(() -> app.given().get("/q/health").then().statusCode(HttpStatus.SC_NOT_FOUND));
     }
 
