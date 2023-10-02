@@ -25,7 +25,7 @@ import io.quarkus.test.utils.Command;
 @QuarkusScenario
 public class Pkcs12OidcMtlsIT extends KeycloakMtlsAuthN {
 
-    @KeycloakContainer(command = KC_DEV_MODE_P12_CMD, port = KEYCLOAK_PORT)
+    @KeycloakContainer(command = KC_DEV_MODE_P12_CMD, port = KEYCLOAK_PORT, builder = LocalHostKeycloakContainerManagedResourceBuilder.class)
     static KeycloakService keycloak = newKeycloakInstance(REALM_FILE_PATH, REALM_DEFAULT, "realms")
             .withProperty("HTTPS_KEYSTORE", "resource_with_destination::/etc/|server-keystore." + P12_KEYSTORE_FILE_EXTENSION)
             .withProperty("HTTPS_TRUSTSTORE",

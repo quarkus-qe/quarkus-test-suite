@@ -17,6 +17,7 @@ public class MutualTlsKeycloakService extends KeycloakService {
     // command used by Keycloak 18+ container in order to launch JKS secured Keycloak
     public static final String KC_DEV_MODE_JKS_CMD = "start-dev " +
             "--import-realm --hostname-strict=false --hostname-strict-https=false --features=token-exchange " +
+            "--hostname=localhost " + // required by LocalHostKeycloakContainerManagedResourceBuilder
             "--https-client-auth=required " +
             "--https-key-store-file=/etc/server-keystore.jks " +
             "--https-trust-store-file=/etc/server-truststore.jks " +
@@ -25,6 +26,7 @@ public class MutualTlsKeycloakService extends KeycloakService {
     // command used by Keycloak 18+ container in order to launch P12 secured Keycloak
     public static final String KC_DEV_MODE_P12_CMD = "start-dev " +
             "--import-realm --hostname-strict=false --hostname-strict-https=false --features=token-exchange " +
+            "--hostname=localhost " + // required by LocalHostKeycloakContainerManagedResourceBuilder
             "--https-client-auth=required " +
             "--https-key-store-file=/etc/server-keystore.p12 " +
             "--https-trust-store-file=/etc/server-truststore.p12 " +
