@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: [ 11 ]
+        java: [ 17 ]
     steps:
       - uses: actions/checkout@v3
       - name: Install JDK {{ matrix.java }}
@@ -72,8 +72,8 @@ jobs:
     needs: prepare-jvm-latest-modules-mvn-param
     strategy:
       matrix:
-        java: [ 11 ]
-        cli: [ 3.2.5.Final ]
+        java: [ 17 ]
+        cli: [ 3.2.6.Final ]
         module-mvn-args: ${{ fromJSON(needs.prepare-jvm-latest-modules-mvn-param.outputs.MODULES_MAVEN_PARAM) }}
     steps:
       - uses: actions/checkout@v3
@@ -120,7 +120,7 @@ jobs:
     strategy:
       matrix:
         java: [ 11 ]
-        cli: [ 3.2.5.Final ]
+        cli: [ 3.2.6.Final ]
     steps:
       - uses: actions/checkout@v3
       - name: Reclaim Disk Space
