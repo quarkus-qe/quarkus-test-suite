@@ -22,17 +22,13 @@ import io.quarkus.test.services.containers.model.KafkaVendor;
 // TODO https://github.com/quarkusio/quarkus/issues/25136
 @Tag("fips-incompatible")
 public class InfinispanKafkaSaslIT {
-    /**
-     * We can't rename this file to use the default SSL settings part of KafkaService.
-     */
-    private static final String BOOK_TITLE = "testBook";
 
-    @Container(image = "${infinispan.image}", expectedLog = "${infinispan.expected-log}", port = 11222, command = "-c /infinispan-config.xml")
+    @Container(image = "${infinispan.image}", expectedLog = "${infinispan.expected-log}", port = 11222, command = "-c /infinispan-config.xml", builder = LocalHostInfinispanManagedResourceBuilder.class)
     static final InfinispanService infinispan = new InfinispanService()
             .withConfigFile("infinispan-config.xml")
             .withSecretFiles("keystore.jks");
 
-    @KafkaContainer(vendor = KafkaVendor.STRIMZI, protocol = KafkaProtocol.SASL)
+    @KafkaContainer(vendor = KafkaVendor.STRIMZI, protocol = KafkaProtocol.SASL, builder = LocalHostKafkaContainerManagedResourceBuilder.class)
     static final KafkaService kafkasasl = new KafkaService();
 
     @QuarkusApplication
