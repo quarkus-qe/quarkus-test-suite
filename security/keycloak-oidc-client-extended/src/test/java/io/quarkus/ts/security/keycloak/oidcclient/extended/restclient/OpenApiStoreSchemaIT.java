@@ -66,8 +66,10 @@ public class OpenApiStoreSchemaIT extends BaseOidcIT {
     }
 
     private JsonObject fromJson(URI openApiJson) throws IOException {
-        String jsonStr = IOUtils.toString(new FileReader(openApiJson.getPath()));
-        return new JsonObject(jsonStr);
+        try (var reader = new FileReader(openApiJson.getPath())) {
+            String jsonStr = IOUtils.toString(reader);
+            return new JsonObject(jsonStr);
+        }
     }
 
     private String fileExtension(String uri) {
