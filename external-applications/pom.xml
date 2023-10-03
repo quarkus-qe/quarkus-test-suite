@@ -17,19 +17,8 @@
     <artifactId>external-applications</artifactId>
     <packaging>jar</packaging>
     <name>Quarkus QE TS: External Applications</name>
-    <build>
-        <plugins>
-            <!-- Skip Quarkus Maven plugin build on JVM and Native since we're going to deploy external apps -->
-            <plugin>
-                <groupId>${quarkus.platform.group-id}</groupId>
-                <artifactId>quarkus-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>build</id>
-                        <phase>none</phase>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+    <properties>
+        <!-- Skip Quarkus Maven plugin build on JVM and Native since we're going to deploy external apps -->
+        <quarkus.build.skip>true</quarkus.build.skip>
+    </properties>
 </project>
