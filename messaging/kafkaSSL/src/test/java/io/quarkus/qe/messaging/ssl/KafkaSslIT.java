@@ -26,7 +26,7 @@ public class KafkaSslIT {
      */
     private static final String TRUSTSTORE_FILE = "strimzi-server-ssl-truststore.p12";
 
-    @KafkaContainer(vendor = KafkaVendor.STRIMZI, protocol = KafkaProtocol.SSL, kafkaConfigResources = TRUSTSTORE_FILE)
+    @KafkaContainer(vendor = KafkaVendor.STRIMZI, protocol = KafkaProtocol.SSL, kafkaConfigResources = TRUSTSTORE_FILE, builder = LocalHostKafkaContainerManagedResourceBuilder.class)
     static final KafkaService kafkassl = new KafkaService();
 
     @QuarkusApplication
