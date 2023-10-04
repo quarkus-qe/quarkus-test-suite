@@ -2,7 +2,6 @@ package io.quarkus.ts.many.extensions;
 
 import static io.restassured.RestAssured.given;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 
@@ -14,7 +13,6 @@ import io.restassured.specification.RequestSpecification;
 @Tag("use-quarkus-openshift-extension")
 @Tag("serverless")
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
-@Disabled("https://github.com/quarkusio/quarkus/issues/35288")
 public class ServerlessExtensionOpenShiftManyExtensionsIT extends ManyExtensionsIT {
 
     private RequestSpecification HTTPS_CLIENT_SPEC = given().relaxedHTTPSValidation();
