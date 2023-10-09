@@ -49,9 +49,9 @@ public abstract class AbstractSpringWebOpenApiReactiveIT {
                 .map(pathChunk -> "'" + pathChunk + "'")
                 .collect(Collectors.joining("."));
         final Map<String, Object> objectMap = response.jsonPath().getMap(jsonPath);
-        Assertions.assertNotNull(objectMap);
-        Assertions.assertEquals(1, objectMap.keySet().size());
-        Assertions.assertEquals(type, objectMap.keySet().iterator().next());
+        Assertions.assertNotNull(objectMap, "Fails on " + jsonPath);
+        Assertions.assertEquals(1, objectMap.keySet().size(), "Fails on " + jsonPath);
+        Assertions.assertEquals(type, objectMap.keySet().iterator().next(), "Fails on " + jsonPath);
     }
 
 }
