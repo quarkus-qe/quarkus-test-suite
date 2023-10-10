@@ -85,7 +85,8 @@ public class CliDevModeIT extends AbstractAnalyticsIT {
     @Test
     public void extensionSetA() {
         QuarkusCliRestService app = createAppWithExtensions(EXTENSION_SET_A);
-        startDevMode(app);
+        // Extension set has gRPC, use new approach with single HTTP server instance
+        startDevMode(app.withProperty("quarkus.grpc.server.use-separate-server", "false"));
         verifyValidPayloadPresent(app);
     }
 
