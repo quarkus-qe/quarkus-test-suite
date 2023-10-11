@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -27,8 +27,8 @@ public class LargeStaticResourceIT {
 
     @Test
     public void testBigFileAvailability() throws IOException {
-        URL bigFileURL = new URL(RestAssured.baseURI + ":" + RestAssured.port + "/big-file");
-        HttpURLConnection connection = (HttpURLConnection) bigFileURL.openConnection();
+        URI bigFileURL = URI.create(RestAssured.baseURI + ":" + RestAssured.port + "/big-file");
+        HttpURLConnection connection = (HttpURLConnection) bigFileURL.toURL().openConnection();
         connection.setRequestMethod("HEAD");
         connection.setConnectTimeout(TWO_SECONDS);
         connection.connect();

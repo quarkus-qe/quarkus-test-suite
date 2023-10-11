@@ -1,9 +1,7 @@
 package io.quarkus.ts.qute;
 
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -222,8 +220,8 @@ public class Application {
         final String host = system.getValue("quarkus.http.host", String.class);
         final Integer port = system.getValue("quarkus.http.port", Integer.class);
         try {
-            return new URL("http", host, port, path).toURI();
-        } catch (URISyntaxException | MalformedURLException e) {
+            return new URI("http", null, host, port, path, null, null);
+        } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
     }
