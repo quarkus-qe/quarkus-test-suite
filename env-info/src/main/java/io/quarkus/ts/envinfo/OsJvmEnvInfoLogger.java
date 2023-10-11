@@ -35,6 +35,8 @@ public class OsJvmEnvInfoLogger {
             + "  </ul>\n"
             + "</li>\n";
 
+    private static final String VERSION_COMMAND = "--version";
+
     public static void main(String[] args) throws IOException, InterruptedException {
         final String os = getOs();
         final String architecture = System.getProperty("os.arch");
@@ -57,7 +59,8 @@ public class OsJvmEnvInfoLogger {
     }
 
     private static String getJavaVersionCmdOutput() throws InterruptedException, IOException {
-        final String cmd = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java --version";
+        final String javaExecutablePath = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
+        final String[] cmd = new String[] { javaExecutablePath, VERSION_COMMAND };
         Process pr = Runtime.getRuntime().exec(cmd);
         pr.waitFor(1, TimeUnit.MINUTES);
         return new BufferedReader(new InputStreamReader(pr.getInputStream())).lines().reduce((first, second) -> second)
@@ -65,7 +68,8 @@ public class OsJvmEnvInfoLogger {
     }
 
     private static List<String> getMvnVersionCmdOutput() {
-        final String cmd = System.getProperty("maven.home") + File.separator + "bin" + File.separator + "mvn --version";
+        String mavenExecutablePath = System.getProperty("maven.home") + File.separator + "bin" + File.separator + "mvn";
+        final String[] cmd = new String[] { mavenExecutablePath, VERSION_COMMAND };
         try {
             Process pr = Runtime.getRuntime().exec(cmd);
             pr.waitFor(1, TimeUnit.MINUTES);
