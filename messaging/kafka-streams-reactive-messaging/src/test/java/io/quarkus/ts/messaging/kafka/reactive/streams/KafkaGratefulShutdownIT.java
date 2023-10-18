@@ -1,5 +1,6 @@
 package io.quarkus.ts.messaging.kafka.reactive.streams;
 
+import static io.quarkus.ts.messaging.kafka.reactive.streams.DisabledOnWindowsWithRhbqCondition.DISABLED_IF_RHBQ_ON_WINDOWS;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -9,6 +10,7 @@ import java.util.function.Predicate;
 
 import org.jboss.logmanager.Level;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
 
 import io.quarkus.test.bootstrap.KafkaService;
 import io.quarkus.test.bootstrap.RestService;
@@ -20,6 +22,7 @@ import io.quarkus.test.services.containers.model.KafkaVendor;
 import io.quarkus.ts.messaging.kafka.reactive.streams.shutdown.SlowTopicConsumer;
 import io.quarkus.ts.messaging.kafka.reactive.streams.shutdown.SlowTopicResource;
 
+@DisabledIf(value = DISABLED_IF_RHBQ_ON_WINDOWS, disabledReason = "QUARKUS-3434")
 @QuarkusScenario
 @DisabledOnNative(reason = "Due to high native build execution time")
 public class KafkaGratefulShutdownIT {

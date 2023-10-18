@@ -1,13 +1,17 @@
 package io.quarkus.ts.messaging.kafka.reactive.streams;
 
+import static io.quarkus.ts.messaging.kafka.reactive.streams.DisabledOnWindowsWithRhbqCondition.DISABLED_IF_RHBQ_ON_WINDOWS;
+
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
 
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.DevModeQuarkusApplication;
 
+@DisabledIf(value = DISABLED_IF_RHBQ_ON_WINDOWS, disabledReason = "QUARKUS-3434")
 @Tag("QUARKUS-1026")
 @Tag("QUARKUS-959")
 @QuarkusScenario

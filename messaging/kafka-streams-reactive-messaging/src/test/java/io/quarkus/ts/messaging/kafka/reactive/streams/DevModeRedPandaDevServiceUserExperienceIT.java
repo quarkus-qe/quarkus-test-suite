@@ -1,8 +1,11 @@
 package io.quarkus.ts.messaging.kafka.reactive.streams;
 
+import static io.quarkus.ts.messaging.kafka.reactive.streams.DisabledOnWindowsWithRhbqCondition.DISABLED_IF_RHBQ_ON_WINDOWS;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
 
 import com.github.dockerjava.api.model.Image;
 
@@ -11,6 +14,7 @@ import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.DevModeQuarkusApplication;
 import io.quarkus.test.utils.DockerUtils;
 
+@DisabledIf(value = DISABLED_IF_RHBQ_ON_WINDOWS, disabledReason = "QUARKUS-3434")
 @Tag("QUARKUS-959")
 @QuarkusScenario
 public class DevModeRedPandaDevServiceUserExperienceIT {
