@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
@@ -27,9 +28,16 @@ import io.restassured.response.Response;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class OperatorOpenShiftInfinispanCountersIT extends BaseOpenShiftInfinispanIT {
 
+    private static final AtomicBoolean CLUSTER_CREATED = new AtomicBoolean(false);
+
     @QuarkusApplication
     static RestService one = new RestService()
-            .onPreStart(s -> createInfinispanCluster());
+            .onPreStart(s -> {
+                // prevent attempting to create cluster on restart
+                if (CLUSTER_CREATED.compareAndSet(false, true)) {
+                    createInfinispanCluster();
+                }
+            });
 
     @QuarkusApplication
     static RestService two = new RestService();
