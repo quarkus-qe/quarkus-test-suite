@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -25,12 +26,14 @@ public class PureVertxHttpClientTest {
     URL url;
 
     WebClient httpClient;
+    Vertx vertx;
     static final int EXPECTED_EVENTS = 25000;
     private static final int TIMEOUT_SEC = 10;
 
     @BeforeEach
     public void setup() {
-        httpClient = WebClient.create(Vertx.vertx(), new WebClientOptions());
+        vertx = Vertx.vertx();
+        httpClient = WebClient.create(vertx, new WebClientOptions());
     }
 
     @Test
@@ -45,5 +48,14 @@ public class PureVertxHttpClientTest {
 
         done.await(TIMEOUT_SEC, TimeUnit.SECONDS);
         assertEquals(0, done.getCount(), String.format("Missing %d events.", EXPECTED_EVENTS - done.getCount()));
+    }
+
+    @AfterEach
+    public void cleanUp() {
+        if (httpClient != null)
+            httpClient.close();
+
+        if (vertx != null)
+            vertx.close();
     }
 }

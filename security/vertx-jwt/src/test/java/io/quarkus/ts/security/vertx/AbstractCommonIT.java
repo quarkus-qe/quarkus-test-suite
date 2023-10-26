@@ -80,6 +80,8 @@ public abstract class AbstractCommonIT {
                 .delete("/replicant/" + replicant.getId())
                 .then()
                 .statusCode(anyOf(is(204), is(404)));
+
+        vertx.close();
     }
 
     protected enum Invalidity {
