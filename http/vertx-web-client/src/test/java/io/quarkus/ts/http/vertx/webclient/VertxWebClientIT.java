@@ -54,7 +54,7 @@ public class VertxWebClientIT {
 
     private Response resp;
 
-    @JaegerContainer(useOtlpCollector = true, expectedLog = "\"Health Check state change\",\"status\":\"ready\"")
+    @JaegerContainer(expectedLog = "\"Health Check state change\",\"status\":\"ready\"")
     static final JaegerService jaeger = new JaegerService();
 
     @Container(image = "${wiremock.image}", port = 8080, expectedLog = "verbose")
