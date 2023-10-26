@@ -6,8 +6,8 @@ import java.net.URL;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import jakarta.inject.Inject;
+
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -25,37 +25,28 @@ public class PureVertxHttpClientTest {
     @TestHTTPResource
     URL url;
 
-    WebClient httpClient;
+    @Inject
     Vertx vertx;
-    static final int EXPECTED_EVENTS = 25000;
+    private static final int EXPECTED_EVENTS = 25000;
     private static final int TIMEOUT_SEC = 10;
-
-    @BeforeEach
-    public void setup() {
-        vertx = Vertx.vertx();
-        httpClient = WebClient.create(vertx, new WebClientOptions());
-    }
 
     @Test
     public void quarkusTestFipsVertxHttpClient() throws InterruptedException {
-        CountDownLatch done = new CountDownLatch(EXPECTED_EVENTS);
+        var webClient = WebClient.create(vertx, new WebClientOptions());
+        try {
+            CountDownLatch done = new CountDownLatch(EXPECTED_EVENTS);
 
-        for (int i = 0; i < EXPECTED_EVENTS; i++) {
-            httpClient.getAbs(url.toString() + "/chuck/pong")
-                    .expect(ResponsePredicate.status(200))
-                    .send().subscribe().with(resp -> done.countDown());
+            for (int i = 0; i < EXPECTED_EVENTS; i++) {
+                webClient.getAbs(url.toString() + "/chuck/pong")
+                        .expect(ResponsePredicate.status(200))
+                        .send().subscribe().with(resp -> done.countDown());
+            }
+
+            done.await(TIMEOUT_SEC, TimeUnit.SECONDS);
+            assertEquals(0, done.getCount(), String.format("Missing %d events.", EXPECTED_EVENTS - done.getCount()));
+        } finally {
+            webClient.close();
         }
-
-        done.await(TIMEOUT_SEC, TimeUnit.SECONDS);
-        assertEquals(0, done.getCount(), String.format("Missing %d events.", EXPECTED_EVENTS - done.getCount()));
     }
 
-    @AfterEach
-    public void cleanUp() {
-        if (httpClient != null)
-            httpClient.close();
-
-        if (vertx != null)
-            vertx.close();
-    }
 }
