@@ -1,5 +1,6 @@
 package io.quarkus.ts.http.restclient.reactive;
 
+import static com.github.tomakehurst.wiremock.core.Options.ChunkedEncodingPolicy.NEVER;
 import static io.quarkus.ts.http.restclient.reactive.resources.PlainBookResource.SEARCH_TERM_VAL;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
@@ -8,8 +9,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.UUID;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import com.github.tomakehurst.wiremock.http.Fault;
 
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
@@ -23,9 +31,23 @@ import io.restassured.response.Response;
 public class ReactiveRestClientIT {
 
     private static final String HEMINGWAY_BOOKS = "In Our Time, The Sun Also Rises, A Farewell to Arms, The Old Man and the Sea";
+    private static WireMockServer mockServer;
 
+    static {
+        mockServer = new WireMockServer(WireMockConfiguration.options()
+                .dynamicPort()
+                .useChunkedTransferEncoding(NEVER));
+        mockServer.stubFor(WireMock.get(WireMock.urlPathMatching("/malformed/"))
+                .willReturn(WireMock.aResponse().withFault(Fault.MALFORMED_RESPONSE_CHUNK)));
+
+        mockServer.start();
+    }
+
+    static final String MALFORMED_URL = "quarkus.rest-client.\"io.quarkus.ts.http.restclient.reactive.MalformedClient\".url";
     @QuarkusApplication
-    static RestService app = new RestService().withProperties("modern.properties");
+    static RestService app = new RestService()
+            .withProperties("modern.properties")
+            .withProperty(MALFORMED_URL, () -> mockServer.baseUrl());
 
     @Test
     public void shouldGetBookFromRestClientJson() {
@@ -225,5 +247,16 @@ public class ReactiveRestClientIT {
                 .then()
                 .statusCode(200)
                 .body(is("The Hobbit: An Unexpected Journey"));
+    }
+
+    @Test
+    public void malformedChunk() {
+        Response response = app.given().get("/client/malformed");
+        Assertions.assertEquals("io.vertx.core.http.HttpClosedException", response.body().asString());
+    }
+
+    @AfterAll
+    static void afterAll() {
+        mockServer.stop();
     }
 }
