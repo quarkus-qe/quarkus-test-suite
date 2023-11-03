@@ -501,6 +501,7 @@
                 <module>security/keycloak-oidc-client-reactive-extended</module>
                 <module>security/vertx-jwt</module>
                 <module>security/oidc-client-mutual-tls</module>
+                <module>security/webauthn</module>
             </modules>
         </profile>
         <profile>
