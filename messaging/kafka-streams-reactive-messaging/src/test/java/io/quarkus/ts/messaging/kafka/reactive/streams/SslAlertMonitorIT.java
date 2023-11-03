@@ -16,7 +16,7 @@ public class SslAlertMonitorIT extends BaseKafkaStreamTest {
      */
     private static final String TRUSTSTORE_FILE = "strimzi-server-ssl-truststore.p12";
 
-    @KafkaContainer(vendor = KafkaVendor.STRIMZI, protocol = KafkaProtocol.SSL, kafkaConfigResources = TRUSTSTORE_FILE)
+    @KafkaContainer(vendor = KafkaVendor.STRIMZI, protocol = KafkaProtocol.SSL, kafkaConfigResources = TRUSTSTORE_FILE, builder = LocalHostKafkaContainerManagedResourceBuilder.class)
     static final KafkaService kafka = new KafkaService();
 
     @QuarkusApplication

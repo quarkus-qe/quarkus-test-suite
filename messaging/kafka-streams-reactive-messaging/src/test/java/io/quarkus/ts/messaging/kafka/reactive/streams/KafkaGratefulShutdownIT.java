@@ -8,7 +8,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 import org.jboss.logmanager.Level;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.condition.OS;
 
 import io.quarkus.test.bootstrap.KafkaService;
 import io.quarkus.test.bootstrap.RestService;
@@ -20,6 +24,7 @@ import io.quarkus.test.services.containers.model.KafkaVendor;
 import io.quarkus.ts.messaging.kafka.reactive.streams.shutdown.SlowTopicConsumer;
 import io.quarkus.ts.messaging.kafka.reactive.streams.shutdown.SlowTopicResource;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @QuarkusScenario
 @DisabledOnNative(reason = "Due to high native build execution time")
 public class KafkaGratefulShutdownIT {
@@ -40,26 +45,24 @@ public class KafkaGratefulShutdownIT {
             .withProperty("quarkus.kafka-streams.bootstrap-servers", kafka::getBootstrapUrl)
             .withProperty(KAFKA_LOG_PROPERTY, Level.DEBUG.getName());
 
+    @Order(1)
     @Test
-    public void shouldWaitForMessagesWhenGratefulShutdownIsEnabled() {
-        givenApplicationWithGratefulShutdownEnabled();
+    public void shouldWaitForMessagesWhenGratefulShutdownIsEnabled() throws InterruptedException {
         givenMessagesInTopic();
+        if (OS.current() == OS.WINDOWS) {
+            Thread.sleep(1000);
+        }
         whenStopApplication();
         thenAllMessagesAreProcessedOrKafkaIsShutdown();
     }
 
+    @Order(2)
     @Test
     public void shouldNotWaitForMessagesWhenGratefulShutdownIsDisabled() {
         givenApplicationWithGratefulShutdownDisabled();
         givenMessagesInTopic();
         whenStopApplication();
         thenAllMessagesAreNotProcessed();
-    }
-
-    private void givenApplicationWithGratefulShutdownEnabled() {
-        app.stop();
-        app.withProperty(GRATEFUL_SHUTDOWN_PROPERTY, Boolean.TRUE.toString());
-        app.start();
     }
 
     private void givenApplicationWithGratefulShutdownDisabled() {
