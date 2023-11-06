@@ -256,7 +256,7 @@
                                 <!-- Oracle image - we aim to use same version as Dev Services for Oracle so that we only download one image -->
                                 <oracle.image>docker.io/gvenzl/oracle-free:23-slim-faststart</oracle.image>
                                 <db2.image>quay.io/quarkusqeteam/db2:11.5.7.0</db2.image>
-                                <mongodb.image>docker.io/bitnami/mongodb:5.0</mongodb.image>
+                                <mongodb.image>docker.io/library/mongo:5.0</mongodb.image>
                                 <redis.image>docker.io/library/redis:6.0</redis.image>
                                 <wiremock.image>quay.io/ocpmetal/wiremock</wiremock.image>
                                 <!-- TODO use official image when/if this fixed https://github.com/hashicorp/docker-consul/issues/184 -->
