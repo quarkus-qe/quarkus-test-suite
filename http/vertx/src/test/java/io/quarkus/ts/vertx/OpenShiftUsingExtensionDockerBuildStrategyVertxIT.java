@@ -1,6 +1,5 @@
 package io.quarkus.ts.vertx;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -9,7 +8,6 @@ import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.services.QuarkusApplication;
 import io.restassured.specification.RequestSpecification;
 
-@Disabled("Disabled until Quarkus QuickStarts migrates to Quarkus 3")
 @Tag("use-quarkus-openshift-extension")
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtensionAndDockerBuildStrategy)
 public class OpenShiftUsingExtensionDockerBuildStrategyVertxIT extends AbstractVertxIT {
