@@ -15,6 +15,8 @@ import jakarta.ws.rs.sse.Sse;
 import jakarta.ws.rs.sse.SseEventSink;
 import jakarta.ws.rs.sse.SseEventSource;
 
+import org.eclipse.microprofile.config.ConfigProvider;
+
 @Path("/sse")
 public class SseResource {
     @Context
@@ -35,6 +37,7 @@ public class SseResource {
 
     private String consumeSse() {
         StringBuilder response = new StringBuilder();
+        int port = ConfigProvider.getConfig().getValue("quarkus.http.port", Integer.class);
 
         /*
          * Client connects to itself (to server endpoint running on same app),
@@ -42,7 +45,7 @@ public class SseResource {
          * Which cannot be done in test code itself.
          * This method acts just as a client
          */
-        WebTarget target = ClientBuilder.newClient().target("http://localhost:" + getQuarkusPort() + "/api/sse/server");
+        WebTarget target = ClientBuilder.newClient().target("http://localhost:" + port + "/api/sse/server");
         SseEventSource updateSource = SseEventSource.target(target).build();
         updateSource.register(ev -> {
             response.append("event: ").append(ev.getName()).append(" ").append(ev.readData());
@@ -54,23 +57,8 @@ public class SseResource {
         });
         updateSource.open();
 
-        LockSupport.parkNanos(2_000_000_000L);
+        LockSupport.parkNanos(1_000_000_000L);
         return response.toString();
-    }
-
-    /**
-     * Test runner assigns random ports, on which the app should run.
-     * Parse this port from the CLI and return it.
-     * If no parameter is specified, return the default (8080)
-     *
-     * @return port on which the application is running
-     */
-    private int getQuarkusPort() {
-        String value = System.getProperty("quarkus.http.port");
-        if (value == null || value.isEmpty()) {
-            return 8080;
-        }
-        return Integer.parseInt(value);
     }
 
     @GET
@@ -78,7 +66,6 @@ public class SseResource {
     @Produces(MediaType.SERVER_SENT_EVENTS)
     public void sendSseEvents(@Context SseEventSink eventSink) {
         eventSink.send(createEvent("test234", "test"));
-        LockSupport.parkNanos(1_000_000_000L);
     }
 
     private OutboundSseEvent createEvent(String name, String data) {
