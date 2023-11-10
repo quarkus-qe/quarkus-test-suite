@@ -10,13 +10,14 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 
+import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-import io.quarkus.oidc.token.propagation.AccessToken;
 import io.quarkus.ts.security.keycloak.oidcclient.extended.restclient.model.Score;
+import io.quarkus.ts.security.keycloak.oidcclient.extended.restclient.ping.filters.DefaultTokenRequestFilter;
 
 @RegisterRestClient
-@AccessToken
+@RegisterProvider(DefaultTokenRequestFilter.class)
 @Path("/rest-pong")
 public interface TokenPropagationPongClient {
 
