@@ -1,5 +1,7 @@
 package io.quarkus.ts.http.advanced.reactive;
 
+import java.util.Map;
+
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.CookieParam;
 import jakarta.ws.rs.FormParam;
@@ -54,6 +56,19 @@ public class CookiesResource {
             responseBuilder = Response.ok(getSameSite(newCookie));
         }
         return responseBuilder.cookie(newCookie).build();
+    }
+
+    @GET
+    @Path("newcookie-serialization")
+    public Map<String, NewCookie> getRequestCookies(HttpHeaders httpHeaders) {
+        NewCookie cookie = new NewCookie.Builder(TEST_COOKIE).value("test-cookie-value").build();
+        return Map.of(cookie.getName(), cookie);
+    }
+
+    @GET
+    @Path("cookie-serialization")
+    public Map<String, jakarta.ws.rs.core.Cookie> test(HttpHeaders httpHeaders) {
+        return httpHeaders.getCookies();
     }
 
     public static String toRawCookie(String sameSite) {
