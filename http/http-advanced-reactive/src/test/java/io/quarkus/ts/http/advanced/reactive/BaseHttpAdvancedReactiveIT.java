@@ -12,6 +12,7 @@ import static io.quarkus.ts.http.advanced.reactive.MultipleResponseSerializersRe
 import static io.quarkus.ts.http.advanced.reactive.MultipleResponseSerializersResource.MULTIPLE_RESPONSE_SERIALIZERS_PATH;
 import static io.quarkus.ts.http.advanced.reactive.NinetyNineBottlesOfBeerResource.QUARKUS_PLATFORM_VERSION_LESS_THAN_2_8_3;
 import static io.quarkus.ts.http.advanced.reactive.NinetyNineBottlesOfBeerResource.QUARKUS_PLATFORM_VERSION_LESS_THAN_2_8_3_VAL;
+import static io.quarkus.ts.http.advanced.reactive.SseEventUpdateResource.DATA_VALUE;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_OCTET_STREAM;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_XML;
@@ -71,6 +72,7 @@ import io.quarkus.example.HelloWorldProto;
 import io.quarkus.example.StreamingGrpc;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
+import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.scenarios.annotations.EnabledOnQuarkusVersion;
 import io.quarkus.ts.http.advanced.reactive.clients.HttpVersionClientService;
 import io.quarkus.ts.http.advanced.reactive.clients.HttpVersionClientServiceAsync;
@@ -443,6 +445,17 @@ public abstract class BaseHttpAdvancedReactiveIT {
         Assertions.assertTrue(response.contains("Unconstrained"), "Unconstrained interceptor should be invoked");
         Assertions.assertTrue(response.contains("Server"), "Server interceptor should be invoked");
         Assertions.assertFalse(response.contains("Client"), "Client interceptor should not be invoked");
+    }
+
+    @DisplayName("SSE check for event responses values containing empty data")
+    @Test
+    @DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/36986")
+    void testSseResponseForEmptyData() {
+        getApp().given()
+                .get(ROOT_PATH + "/sse/client-update")
+                .then().statusCode(SC_OK)
+                .body(containsString(String.format("event: name=NON EMPTY data={%s} and is empty: false", DATA_VALUE)),
+                        containsString("event: name=EMPTY data={} and is empty: true"));
     }
 
     private void assertAcceptedMediaTypeEqualsResponseBody(String acceptedMediaType) {
