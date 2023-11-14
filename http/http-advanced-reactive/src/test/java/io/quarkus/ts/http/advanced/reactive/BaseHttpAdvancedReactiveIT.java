@@ -427,6 +427,24 @@ public abstract class BaseHttpAdvancedReactiveIT {
         Assertions.assertEquals("^[A-Za-z]+$", validation.get("pattern").asText());
     }
 
+    @Test
+    @Tag("https://github.com/quarkusio/quarkus/pull/36664")
+    public void interceptedTest() {
+        // make server to generate a response so interceptors might intercept it
+        // ignore response, we will read interceptors result later
+        getApp().given()
+                .get(ROOT_PATH + "/intercepted")
+                .thenReturn();
+
+        String response = getApp().given()
+                .get(ROOT_PATH + "/intercepted/messages")
+                .thenReturn().getBody().asString();
+
+        Assertions.assertTrue(response.contains("Unconstrained"), "Unconstrained interceptor should be invoked");
+        Assertions.assertTrue(response.contains("Server"), "Server interceptor should be invoked");
+        Assertions.assertFalse(response.contains("Client"), "Client interceptor should not be invoked");
+    }
+
     private void assertAcceptedMediaTypeEqualsResponseBody(String acceptedMediaType) {
         getApp()
                 .given()
