@@ -402,6 +402,13 @@ Vert.x Mutiny webClient exploratory test.
 
 Also see http/vertx-web-client/README.md
 
+### `http/vertx-web-validation`
+Ensure that you can deploy a simple Quarkus application with predefined routes using schema parser from vertx-json-schema and Router Vert.x approach,
+ incorporating web validation configuration through ValidationHandlerBuilder. One of the goal of vertx-web-validation functionality is to validate parameters and bodies of incoming requests.
+
+It also verifies multiple deployment strategies like:
+- Using Quarkus OpenShift extension
+
 ### `http/graphql`
 This module covers some basic scenarios around GraphQL.
 
