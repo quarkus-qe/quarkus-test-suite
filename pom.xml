@@ -550,8 +550,9 @@
                 <module>monitoring/micrometer-prometheus-oidc</module>
                 <module>monitoring/opentelemetry</module>
                 <module>monitoring/opentelemetry-reactive</module>
-                <module>monitoring/microprofile-opentracing</module>
-                <module>monitoring/opentracing-reactive-grpc</module>
+                <!-- TODO: enable when Quarkiverse extensions are released: https://github.com/quarkusio/quarkus/pull/36602 -->
+                <!-- <module>monitoring/microprofile-opentracing</module> -->
+                <!-- <module>monitoring/opentracing-reactive-grpc</module> -->
             </modules>
         </profile>
         <profile>
