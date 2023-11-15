@@ -92,7 +92,7 @@ public class AnalyticsUtils {
             "quarkus-smallrye-jwt-build",
             "quarkus-smallrye-metrics",
             "quarkus-smallrye-openapi",
-            "quarkus-smallrye-opentracing",
+            "quarkus-opentelemetry",
             "quarkus-smallrye-reactive-messaging",
             "quarkus-smallrye-reactive-messaging-kafka",
             "quarkus-spring-cache",
