@@ -1,5 +1,8 @@
 package io.quarkus.ts.sqldb.sqlapp;
 
+import static io.quarkus.test.utils.ImageUtil.getImageName;
+import static io.quarkus.test.utils.ImageUtil.getImageVersion;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
@@ -17,8 +20,8 @@ import io.quarkus.test.utils.SocketUtils;
 @QuarkusScenario
 public class DevModeMariadbDevServicesUserExperienceIT {
 
-    private static final String MARIA_DB_NAME = DbUtil.getImageName("mariadb.10.image");
-    private static final String MARIA_DB_VERSION = DbUtil.getImageVersion("mariadb.10.image");
+    private static final String MARIA_DB_NAME = getImageName("mariadb.10.image");
+    private static final String MARIA_DB_VERSION = getImageVersion("mariadb.10.image");
 
     @DevModeQuarkusApplication
     static RestService app = new RestService()

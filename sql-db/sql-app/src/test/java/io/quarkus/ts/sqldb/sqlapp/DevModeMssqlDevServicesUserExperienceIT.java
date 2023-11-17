@@ -1,5 +1,8 @@
 package io.quarkus.ts.sqldb.sqlapp;
 
+import static io.quarkus.test.utils.ImageUtil.getImageName;
+import static io.quarkus.test.utils.ImageUtil.getImageVersion;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
@@ -17,8 +20,8 @@ import io.quarkus.test.utils.SocketUtils;
 @QuarkusScenario
 public class DevModeMssqlDevServicesUserExperienceIT {
 
-    private static final String MSSQL_NAME = DbUtil.getImageName("mssql.image");
-    private static final String MSSQL_VERSION = DbUtil.getImageVersion("mssql.image");
+    private static final String MSSQL_NAME = getImageName("mssql.image");
+    private static final String MSSQL_VERSION = getImageVersion("mssql.image");
 
     @DevModeQuarkusApplication
     static RestService app = new RestService()

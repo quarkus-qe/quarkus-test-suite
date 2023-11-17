@@ -110,7 +110,6 @@ You could have a look [on this link](src/main/resources/db/migration/common/V1.0
 
 ## Useful material
 
-Docker compose: `src/test/resources/docker-compose.yaml`
 Swagger: `http://localhost:8082/q/swagger-ui/`
 
 Example: 

@@ -17,6 +17,7 @@ import io.quarkus.test.utils.DockerUtils;
 @Tag("podman-incompatible") //TODO: https://github.com/quarkusio/quarkus/issues/28721
 public class DockerBuildIT {
 
+    // Local container build, no need in tracking image in properties
     private static final String DOCKER_IMG_NAME = "hello-world-app";
     private static final String DOCKER_IMG_VERSION = "1.0.0";
 

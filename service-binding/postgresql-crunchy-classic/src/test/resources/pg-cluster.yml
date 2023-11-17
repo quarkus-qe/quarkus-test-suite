@@ -4,6 +4,7 @@ metadata:
   name: hippo
 spec:
   openshift: true
+  # Image is used only in this configuration, no need in tracking the image in Maven properties
   image: registry.developers.crunchydata.com/crunchydata/crunchy-postgres:ubi8-14.2-1
   postgresVersion: 14
   instances:
@@ -16,6 +17,7 @@ spec:
             storage: 150Mi
   backups:
     pgbackrest:
+      # Image is used only in this configuration, no need in tracking the image in Maven properties
       image: registry.developers.crunchydata.com/crunchydata/crunchy-pgbackrest:ubi8-2.38-0
       repos:
         - name: repo1

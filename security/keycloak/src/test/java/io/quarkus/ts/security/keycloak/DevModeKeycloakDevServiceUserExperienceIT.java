@@ -1,5 +1,8 @@
 package io.quarkus.ts.security.keycloak;
 
+import static io.quarkus.test.utils.ImageUtil.getImageName;
+import static io.quarkus.test.utils.ImageUtil.getImageVersion;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -15,8 +18,8 @@ import io.quarkus.test.utils.DockerUtils;
 @QuarkusScenario
 public class DevModeKeycloakDevServiceUserExperienceIT {
 
-    private static final String KEYCLOAK_VERSION = "19.0.0";
-    private static final String KEYCLOAK_IMAGE = "quay.io/keycloak/keycloak";
+    private static final String KEYCLOAK_VERSION = getImageVersion("keycloak.image");
+    private static final String KEYCLOAK_IMAGE = getImageName("keycloak.image");
     private static final String SECRET_KEYS_MISSING = "Secret key for encrypting tokens in a session cookie is missing, auto-generating it";
 
     /**
@@ -24,7 +27,7 @@ public class DevModeKeycloakDevServiceUserExperienceIT {
      */
     @DevModeQuarkusApplication
     static RestService app = new RestService()
-            .withProperty("quarkus.keycloak.devservices.image-name", String.format("%s:%s", KEYCLOAK_IMAGE, KEYCLOAK_VERSION))
+            .withProperty("quarkus.keycloak.devservices.image-name", "${keycloak.image}")
             .withProperty("quarkus.oidc.credentials.secret", "") // we don't want to use client secret for encryption secret
             .onPreStart(s -> DockerUtils.removeImage(KEYCLOAK_IMAGE, KEYCLOAK_VERSION));
 

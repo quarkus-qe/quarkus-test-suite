@@ -16,8 +16,10 @@ import io.quarkus.test.utils.DockerUtils;
 @Tag("QUARKUS-1087")
 @QuarkusScenario
 public class DevModeApicurioDevServiceUserExperienceIT {
+
+    // Use container image and version defined in KafkaRegistry
     private static final String APICURIO_VERSION = KafkaRegistry.APICURIO.getDefaultVersion();
-    private static final String APICURIO_IMAGE = "apicurio/apicurio-registry-mem";
+    private static final String APICURIO_IMAGE = KafkaRegistry.APICURIO.getImage();
 
     @DevModeQuarkusApplication
     static RestService appDevServices = new RestService()
@@ -28,7 +30,7 @@ public class DevModeApicurioDevServiceUserExperienceIT {
 
     @Test
     public void verifyIfUserIsInformedAboutApicurioServicePulling() {
-        appDevServices.logs().assertContains("Pulling docker image: apicurio/apicurio-registry-mem");
+        appDevServices.logs().assertContains("Pulling docker image: quay.io/apicurio/apicurio-registry-mem");
         appDevServices.logs().assertContains("Please be patient; this may take some time but only needs to be done once");
         appDevServices.logs().assertContains("Starting to pull image");
         appDevServices.logs().assertContains("Dev Services for Apicurio Registry started");

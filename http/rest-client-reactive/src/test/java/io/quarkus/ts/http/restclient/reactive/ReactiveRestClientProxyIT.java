@@ -17,7 +17,7 @@ public class ReactiveRestClientProxyIT {
     private static final String USER = "proxyuser";
     private static final String PASSWORD = "proxypassword";
 
-    @Container(image = "docker.io/library/nginx:1-alpine", port = 8090, expectedLog = "Configuration complete; ready for start up")
+    @Container(image = "${nginx.image}", port = 8090, expectedLog = "Configuration complete; ready for start up")
     static RestService proxy = new RestService()
             .withProperty("_whatever", "resource_with_destination::/etc/nginx/|nginx.conf");
 
