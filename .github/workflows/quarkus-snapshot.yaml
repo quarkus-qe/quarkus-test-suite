@@ -27,7 +27,7 @@ jobs:
       matrix:
         profiles: [ "root-modules-no-qute,monitoring-modules,spring-modules,test-tooling-modules",
                     "http-modules",
-                    "security-modules",
+                    "security-modules,cache-modules",
                     "sql-db-modules",
                     "messaging-modules-no-kafka,websockets-modules"]
 
