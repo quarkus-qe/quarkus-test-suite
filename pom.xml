@@ -410,11 +410,9 @@
                 <module>lifecycle-application</module>
                 <module>external-applications</module>
                 <module>scheduling/quartz</module>
-                <module>infinispan-client</module>
                 <module>super-size/many-extensions</module>
                 <module>quarkus-cli</module>
                 <module>logging/jboss</module>
-                <module>cache/caffeine</module>
                 <module>qute/multimodule</module>
                 <module>qute/synchronous</module>
                 <module>qute/reactive</module>
@@ -436,12 +434,24 @@
                 <module>lifecycle-application</module>
                 <module>external-applications</module>
                 <module>scheduling/quartz</module>
-                <module>infinispan-client</module>
                 <module>super-size/many-extensions</module>
                 <module>quarkus-cli</module>
                 <module>logging/jboss</module>
-                <module>cache/caffeine</module>
                 <module>build-time-analytics</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>cache-modules</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>all-modules</name>
+                </property>
+            </activation>
+            <modules>
+                <module>env-info</module>
+                <module>cache/caffeine</module>
+                <module>infinispan-client</module>
             </modules>
         </profile>
         <profile>
