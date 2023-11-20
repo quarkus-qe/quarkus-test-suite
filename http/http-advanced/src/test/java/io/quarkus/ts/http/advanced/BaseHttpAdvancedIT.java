@@ -124,6 +124,15 @@ public abstract class BaseHttpAdvancedIT {
     }
 
     @Test
+    @Tag("QUARKUS-3742")
+    @DisplayName("GRPC client and server global interceptors test")
+    public void testGrpcGlobalInterceptors() {
+        getApp().given().when().get("/api/grpc/global/interceptors").then().statusCode(HttpStatus.SC_OK)
+                .body(containsString("ClientInterceptors$ClassTarget"),
+                        containsString("ClientInterceptors$MethodTarget"));
+    }
+
+    @Test
     @DisplayName("Http/2 Server test")
     public void http2Server() throws InterruptedException, URISyntaxException {
         CountDownLatch done = new CountDownLatch(1);
