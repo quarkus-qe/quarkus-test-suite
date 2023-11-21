@@ -61,7 +61,7 @@ jobs:
             echo "Running modules: ${MODULES_ARG}"
             echo "MODULES_MAVEN_PARAM=[\" -pl ${MODULES_ARG} -Dall-modules\"]" >> $GITHUB_OUTPUT
           else
-            echo "MODULES_MAVEN_PARAM=[' -P root-modules,spring-modules,http-modules,test-tooling-modules', ' -P security-modules,sql-db-modules,messaging-modules,websockets-modules,monitoring-modules']" >> $GITHUB_OUTPUT
+            echo "MODULES_MAVEN_PARAM=[' -P root-modules,cache-modules,spring-modules,http-modules,test-tooling-modules', ' -P security-modules,sql-db-modules,messaging-modules,websockets-modules,monitoring-modules']" >> $GITHUB_OUTPUT
           fi
     outputs:
       MODULES_MAVEN_PARAM: ${{ steps.prepare-modules-mvn-param.outputs.MODULES_MAVEN_PARAM }}
@@ -73,7 +73,7 @@ jobs:
     strategy:
       matrix:
         java: [ 17 ]
-        cli: [ 3.2.8.Final ]
+        cli: [ 3.2.9.Final ]
         module-mvn-args: ${{ fromJSON(needs.prepare-jvm-latest-modules-mvn-param.outputs.MODULES_MAVEN_PARAM) }}
     steps:
       - uses: actions/checkout@v3
@@ -120,7 +120,7 @@ jobs:
     strategy:
       matrix:
         java: [ 11 ]
-        cli: [ 3.2.8.Final ]
+        cli: [ 3.2.9.Final ]
     steps:
       - uses: actions/checkout@v3
       - name: Reclaim Disk Space

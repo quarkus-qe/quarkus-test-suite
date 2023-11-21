@@ -8,6 +8,8 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.in;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.net.URISyntaxException;
@@ -60,6 +62,7 @@ public abstract class BaseHttpAdvancedIT {
     private static final String PASSWORD = "password";
     private static final String KEY_STORE_PATH = "META-INF/resources/server.keystore";
     private static final int ASSERT_TIMEOUT_SECONDS = 10;
+    private static final String SSE_ERROR_MESSAGE = "java.lang.ClassNotFoundException: Provider for jakarta.ws.rs.sse.SseEventSource.Builder cannot be found";
 
     protected abstract RestService getApp();
 
@@ -240,6 +243,34 @@ public abstract class BaseHttpAdvancedIT {
         assertEquals(200, resp.statusCode(), "RequestScope custom context has been removed with the event propagation");
         Assertions.assertTrue(resp.asString().equalsIgnoreCase(requestScopeValue),
                 "Unexpected requestScope custom context value");
+    }
+
+    @Test
+    @Tag("https://github.com/quarkusio/quarkus/issues/36402")
+    public void sseConnectionTest() {
+        String response = getApp().given().get("/api/sse/client").thenReturn().body().asString();
+
+        assertFalse(response.contains(SSE_ERROR_MESSAGE),
+                "SSE failed, https://github.com/quarkusio/quarkus/issues/36402 not fixed");
+        assertTrue(response.contains("event: test234 test"), "SSE failed, unknown bug. Response: " + response);
+    }
+
+    @Test
+    @Tag("https://github.com/quarkusio/quarkus/pull/36664")
+    public void interceptedTest() {
+        // make server to generate a response so interceptors might intercept it
+        // ignore response, we will read interceptors result later
+        getApp().given()
+                .get(ROOT_PATH + "/intercepted")
+                .thenReturn();
+
+        String response = getApp().given()
+                .get(ROOT_PATH + "/intercepted/messages")
+                .thenReturn().getBody().asString();
+
+        Assertions.assertTrue(response.contains("Unconstrained"), "Unconstrained interceptor should be invoked");
+        Assertions.assertTrue(response.contains("Server"), "Server interceptor should be invoked");
+        Assertions.assertFalse(response.contains("Client"), "Client interceptor should not be invoked");
     }
 
     protected Protocol getProtocol() {

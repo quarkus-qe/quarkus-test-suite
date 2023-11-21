@@ -47,6 +47,7 @@ The following subsections will introduce how to deploy and run the test suite in
 If you have a look the main `pom.xml` you will notice that there are several profiles or in other words the test suite is a maven monorepo that you can compile and verify at once or by topics. Let's review the main profiles:
 
 * root-modules: talk about Quarkus "core stuff" as configuration or properties. Is a basic stuff that should work as a pre-requisite to other modules.
+* cache-modules: cover Quarkus application data caching
 * http-modules: talk about HTTP extensions and no-application endpoints like `/q/health`
 * security-modules: cover all security stuff like OAuth, JWT, OpenId, Keycloak etc
 * messaging-modules: is focus on brokers as Kafka or Artemis-AMQP
@@ -1083,6 +1084,15 @@ It covers different usages:
 2. from a request scoped service
 3. from a blocking endpoint
 4. from a reactive endpoint 
+
+### `cache/redis`
+
+Verifies the `quarkus-redis-cache` extension using `@CacheResult`, `@CacheInvalidate`, `@CacheInvalidateAll` and `@CacheKey`.
+It covers different usages:
+1. from an application scoped service
+2. from a request scoped service
+
+Also verify that Qute correctly indicate that does not work with remote cache.
 
 ### `cache/spring`
 

@@ -1,11 +1,12 @@
 package io.quarkus.ts.http.advanced.reactive;
 
 import static io.quarkus.ts.http.advanced.reactive.CookiesResource.TEST_COOKIE;
-import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
 import static io.restassured.matcher.RestAssuredMatchers.detailedCookie;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -50,6 +51,28 @@ public class CookiesIT {
                 .statusCode(200)
                 .body(is(sameSite))
                 .cookie("vertx", detailedCookie().sameSite(sameSite).secured(true));
+    }
+
+    @Test
+    @Tag("QUARKUS-3736")
+    void testNewCookiesSerialization() {
+        given()
+                .get("/cookie/newcookie-serialization")
+                .then()
+                .statusCode(200)
+                .body(containsString(String.format("\"name\":\"%s\"", TEST_COOKIE)),
+                        containsString("\"value\":\"test-cookie-value\""));
+    }
+
+    @Test
+    @Tag("QUARKUS-3736")
+    void testCookiesSerialization() {
+        given().cookie(String.format("%s=\"test-cookie-value\";", TEST_COOKIE))
+                .get("/cookie/cookie-serialization")
+                .then()
+                .statusCode(200)
+                .body(containsString(String.format("\"name\":\"%s\"", TEST_COOKIE)),
+                        containsString("\"value\":\"test-cookie-value\""));
     }
 
     private static void assertSameSiteAttribute(String sameSite) {

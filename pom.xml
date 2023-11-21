@@ -18,8 +18,8 @@
         <failsafe-plugin.version>3.1.0</failsafe-plugin.version>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-        <quarkus.platform.version>3.2.8.Final</quarkus.platform.version>
-        <quarkus.ide.version>3.2.8.Final</quarkus.ide.version>
+        <quarkus.platform.version>3.2.9.Final</quarkus.platform.version>
+        <quarkus.ide.version>3.2.9.Final</quarkus.ide.version>
         <quarkus.qe.framework.version>1.3.0.Beta28</quarkus.qe.framework.version>
         <quarkus-qpid-jms.version>2.4.0</quarkus-qpid-jms.version>
         <apache-httpclient-fluent.version>4.5.14</apache-httpclient-fluent.version>
@@ -256,8 +256,8 @@
                                 <!-- Oracle image - we aim to use same version as Dev Services for Oracle so that we only download one image -->
                                 <oracle.image>docker.io/gvenzl/oracle-free:23-slim-faststart</oracle.image>
                                 <db2.image>quay.io/quarkusqeteam/db2:11.5.7.0</db2.image>
-                                <mongodb.image>docker.io/bitnami/mongodb:5.0</mongodb.image>
-                                <redis.image>docker.io/library/redis:6.0</redis.image>
+                                <mongodb.image>docker.io/library/mongo:5.0</mongodb.image>
+                                <redis.image>docker.io/library/redis:7.2</redis.image>
                                 <wiremock.image>quay.io/ocpmetal/wiremock</wiremock.image>
                                 <!-- TODO use official image when/if this fixed https://github.com/hashicorp/docker-consul/issues/184 -->
                                 <consul.image>docker.io/bitnami/consul:1.15.2</consul.image>
@@ -403,14 +403,12 @@
                 <module>lifecycle-application</module>
                 <module>external-applications</module>
                 <module>scheduling/quartz</module>
-                <module>infinispan-client</module>
                 <module>super-size/many-extensions</module>
                 <module>quarkus-cli</module>
                 <!-- TODO: uncomment Kamelet module when 3.0 is released -->
                 <!-- module does not compile and Camel Quarkus BOM breaks native build of other modules -->
                 <!-- <module>kamelet</module> -->
                 <module>logging/jboss</module>
-                <module>cache/caffeine</module>
                 <module>qute/multimodule</module>
                 <module>qute/synchronous</module>
                 <module>qute/reactive</module>
@@ -432,15 +430,28 @@
                 <module>lifecycle-application</module>
                 <module>external-applications</module>
                 <module>scheduling/quartz</module>
-                <module>infinispan-client</module>
                 <module>super-size/many-extensions</module>
                 <module>quarkus-cli</module>
                 <!-- TODO: uncomment Kamelet module when 3.0 is released -->
                 <!-- module does not compile and Camel Quarkus BOM breaks native build of other modules -->
                 <!-- <module>kamelet</module> -->
                 <module>logging/jboss</module>
-                <module>cache/caffeine</module>
                 <module>build-time-analytics</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>cache-modules</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>all-modules</name>
+                </property>
+            </activation>
+            <modules>
+                <module>env-info</module>
+                <module>cache/caffeine</module>
+                <module>cache/redis</module>
+                <module>infinispan-client</module>
             </modules>
         </profile>
         <profile>
@@ -787,6 +798,8 @@
                                         <mariadb.105.image>registry.redhat.io/rhel8/mariadb-105</mariadb.105.image>
                                         <amq-streams.image>registry.redhat.io/amq7/amq-streams-kafka-27-rhel7</amq-streams.image>
                                         <amq-streams.version>1.7.0</amq-streams.version>
+                                        <!-- run 'docker manifest inspect mongo:5.0' and use digest for architecture 'arm64', variant '8', os 'linux' -->
+                                        <mongodb.image>docker.io/library/mongo@sha256:6f851e31a1b317c6fa681b7dad5f94c622f1c3588477f3b769579dc5462ee659</mongodb.image>
                                     </systemPropertyVariables>
                                 </configuration>
                             </execution>
