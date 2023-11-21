@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -147,6 +148,7 @@ public class RedisCacheIT {
      * Check if the usage of Qute and redis throw expected error
      */
     @Test
+    @Tag("QUARKUS-3715")
     public void quteShouldThrowError() {
         assertThat(getFromPath("/template/error"), containsString("not supported for remote caches"));
     }
