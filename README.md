@@ -1102,6 +1102,15 @@ It covers different usages:
 3. from a blocking endpoint
 4. from a reactive endpoint
 
+### `cache/redis`
+
+Verifies the `quarkus-redis-cache` extension using `@CacheResult`, `@CacheInvalidate`, `@CacheInvalidateAll` and `@CacheKey`.
+It covers different usages:
+1. from an application scoped service
+2. from a request scoped service
+
+Also verify that Qute correctly indicate that does not work with remote cache.
+
 ### `cache/spring`
 
 Verifies the `quarkus-spring-cache` extension using `@Cacheable`, `@CacheEvict` and `@CachePut`.
