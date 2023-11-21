@@ -3,11 +3,13 @@ package io.quarkus.ts.openshift.security.basic.callback;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
 
+@Tag("QUARKUS-3674")
 @QuarkusTest
 public class TestSecurityEnabledTest extends AbstractSecurityCallbackTest {
     @BeforeAll
