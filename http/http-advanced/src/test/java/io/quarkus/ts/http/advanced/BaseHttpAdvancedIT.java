@@ -246,7 +246,7 @@ public abstract class BaseHttpAdvancedIT {
     }
 
     @Test
-    @Tag("https://github.com/quarkusio/quarkus/issues/36402")
+    @Tag("QUARKUS-3685")
     public void sseConnectionTest() {
         String response = getApp().given().get("/api/sse/client").thenReturn().body().asString();
 
@@ -256,7 +256,7 @@ public abstract class BaseHttpAdvancedIT {
     }
 
     @Test
-    @Tag("https://github.com/quarkusio/quarkus/pull/36664")
+    @Tag("QUARKUS-3672")
     public void interceptedTest() {
         // make server to generate a response so interceptors might intercept it
         // ignore response, we will read interceptors result later
