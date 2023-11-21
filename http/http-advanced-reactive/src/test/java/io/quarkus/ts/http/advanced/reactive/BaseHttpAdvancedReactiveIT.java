@@ -449,6 +449,7 @@ public abstract class BaseHttpAdvancedReactiveIT {
 
     @DisplayName("SSE check for event responses values containing empty data")
     @Test
+    @Tag("QUARKUS-3701")
     @DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/36986")
     void testSseResponseForEmptyData() {
         getApp().given()

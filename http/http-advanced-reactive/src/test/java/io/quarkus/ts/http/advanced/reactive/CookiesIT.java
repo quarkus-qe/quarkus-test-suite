@@ -6,6 +6,7 @@ import static io.restassured.matcher.RestAssuredMatchers.detailedCookie;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -53,6 +54,7 @@ public class CookiesIT {
     }
 
     @Test
+    @Tag("QUARKUS-3736")
     void testNewCookiesSerialization() {
         given()
                 .get("/cookie/newcookie-serialization")
@@ -63,6 +65,7 @@ public class CookiesIT {
     }
 
     @Test
+    @Tag("QUARKUS-3736")
     void testCookiesSerialization() {
         given().cookie(String.format("%s=\"test-cookie-value\";", TEST_COOKIE))
                 .get("/cookie/cookie-serialization")
