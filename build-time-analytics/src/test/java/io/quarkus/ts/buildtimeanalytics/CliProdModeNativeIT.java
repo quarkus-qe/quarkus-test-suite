@@ -13,6 +13,7 @@ import io.quarkus.test.bootstrap.QuarkusCliClient.Result;
 import io.quarkus.test.bootstrap.QuarkusCliRestService;
 import io.quarkus.test.configuration.PropertyLookup;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.scenarios.annotations.EnabledOnNative;
 import io.quarkus.test.scenarios.annotations.EnabledWhenLinuxContainersAvailable;
 
@@ -21,6 +22,7 @@ import io.quarkus.test.scenarios.annotations.EnabledWhenLinuxContainersAvailable
 @Tag("quarkus-cli")
 @QuarkusScenario
 @EnabledOnNative
+@DisabledOnNative(reason = "https://github.com/quarkus-qe/quarkus-test-suite/pull/1539")
 public class CliProdModeNativeIT extends AbstractAnalyticsIT {
 
     private static final PropertyLookup NATIVE_IMG_XMX = new PropertyLookup("quarkus.native.native-image-xmx");
