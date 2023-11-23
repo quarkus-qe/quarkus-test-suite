@@ -428,7 +428,7 @@ public abstract class BaseHttpAdvancedReactiveIT {
     }
 
     @Test
-    @Tag("https://github.com/quarkusio/quarkus/pull/36664")
+    @Tag("QUARKUS-3672")
     public void interceptedTest() {
         // make server to generate a response so interceptors might intercept it
         // ignore response, we will read interceptors result later
