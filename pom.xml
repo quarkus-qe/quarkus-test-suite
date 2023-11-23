@@ -19,7 +19,7 @@
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
         <quarkus.platform.version>999-SNAPSHOT</quarkus.platform.version>
-        <quarkus.ide.version>3.5.3</quarkus.ide.version>
+        <quarkus.ide.version>3.6.0</quarkus.ide.version>
         <quarkus.qe.framework.version>1.4.0.Beta1</quarkus.qe.framework.version>
         <quarkus-qpid-jms.version>2.4.0</quarkus-qpid-jms.version>
         <apache-httpclient-fluent.version>4.5.14</apache-httpclient-fluent.version>
