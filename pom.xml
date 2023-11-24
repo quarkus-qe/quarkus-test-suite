@@ -18,8 +18,8 @@
         <failsafe-plugin.version>2.22.2</failsafe-plugin.version>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-        <quarkus.platform.version>2.13.8.Final</quarkus.platform.version>
-        <quarkus.qe.framework.version>1.2.5.Final</quarkus.qe.framework.version>
+        <quarkus.platform.version>2.13.9.Final</quarkus.platform.version>
+        <quarkus.qe.framework.version>1.2.6.Final</quarkus.qe.framework.version>
         <quarkus-qpid-jms.version>0.38.0</quarkus-qpid-jms.version>
         <quarkus-ide-config.version>2.12.1.Final</quarkus-ide-config.version>
         <apache-httpclient-fluent.version>4.5.13</apache-httpclient-fluent.version>
