@@ -60,6 +60,7 @@ public abstract class AbstractAnalyticsIT {
     private QuarkusCliRestService createApp(String appName, String... extensions) {
         String gav = QuarkusProperties.PLATFORM_GROUP_ID.get() + ":quarkus-bom:" + QuarkusProperties.getVersion();
         QuarkusCliClient.CreateApplicationRequest createApplicationRequest = defaults()
+                .withStream(null) // HOTFIX: combination of --stream and --platform-bom exits without generating app
                 .withPlatformBom(gav)
                 .withExtraArgs("--no-code", "--no-wrapper")
                 .withExtensions(extensions);
