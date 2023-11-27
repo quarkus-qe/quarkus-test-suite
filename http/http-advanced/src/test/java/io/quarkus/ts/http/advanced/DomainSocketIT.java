@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
@@ -27,6 +28,7 @@ import io.vertx.ext.web.codec.BodyCodec;
 
 @QuarkusScenario
 @Tag("https://github.com/quarkusio/quarkus/issues/24739")
+@Disabled("https://github.com/quarkusio/quarkus/issues/37319")
 @DisabledOnOs(value = OS.WINDOWS, disabledReason = "Netty Native Transport not supported on Windows, see https://quarkus.io/guides/vertx-reference#native-transport")
 @DisabledIfSystemProperty(named = "profile.id", matches = "native", disabledReason = "Only for JVM mode, error in native mode - https://github.com/quarkusio/quarkus/issues/25928")
 public class DomainSocketIT {
