@@ -855,6 +855,7 @@
                                         <mariadb.105.image>registry.redhat.io/rhel8/mariadb-105</mariadb.105.image>
                                         <amq-streams.image>registry.redhat.io/amq7/amq-streams-kafka-33-rhel8</amq-streams.image>
                                         <amq-streams.version>2.3.0</amq-streams.version>
+                                        <mongodb.image>docker.io/library/mongo:4.4.6</mongodb.image>
                                     </systemPropertyVariables>
                                 </configuration>
                             </execution>
