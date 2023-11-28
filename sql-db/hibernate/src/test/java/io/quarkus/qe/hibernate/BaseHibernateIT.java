@@ -10,8 +10,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("QUARKUS-3731")
 public abstract class BaseHibernateIT {
 
     private static final String TRANSACTION_SCOPE_BASE_PATH = "/transaction-scope";
