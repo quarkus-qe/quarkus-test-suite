@@ -1,16 +1,19 @@
 package io.quarkus.ts.sb.postgresql;
 
+import static io.quarkus.test.utils.AwaitilityUtils.untilAsserted;
+import static io.quarkus.test.utils.AwaitilityUtils.AwaitilitySettings.using;
+import static java.time.Duration.ofSeconds;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -47,22 +50,23 @@ public class OpenShiftPostgreSqlSbIT {
                 .statusCode(HttpStatus.SC_OK);
     }
 
-    private static boolean areRequiredOperatorsInstalled() {
-        List<String> output = new ArrayList<>();
-        try {
-            // TODO: figure out a better way to wait for this - this wait is necessary as it takes some time for API to
-            //       populate new namespace with objects
-            Thread.sleep(2000);
-            new Command("oc", "get", "csv").outputToLines(output).runAndWait();
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-        String outputString = output.stream().collect(Collectors.joining(System.lineSeparator()));
-        return (outputString.contains("postgresoperator") && outputString.contains("service-binding-operator"));
+    private static void assertRequiredOperatorsInstalled() {
+        untilAsserted(() -> {
+            List<String> output = new ArrayList<>();
+            try {
+                // TODO: figure out a better way to wait for this - this wait is necessary as it takes some
+                //  time for API to populate new namespace with objects
+                new Command("oc", "get", "csv").outputToLines(output).runAndWait();
+            } catch (Exception e) {
+                throw new RuntimeException(e.getMessage(), e);
+            }
+            assertTrue(output.stream().anyMatch(str -> str.contains("postgresoperator")));
+            assertTrue(output.stream().anyMatch(str -> str.contains("service-binding-operator")));
+        }, using(ofSeconds(2), ofSeconds(60)));
     }
 
     private static void createPostgresCluster() {
-        Assumptions.assumeTrue(areRequiredOperatorsInstalled());
+        assertRequiredOperatorsInstalled();
         applyCustomResourceDefinition("pg-cluster.yml");
         try {
             // TODO: figure out a better way to wait for this - sometimes operator takes a while to create object
