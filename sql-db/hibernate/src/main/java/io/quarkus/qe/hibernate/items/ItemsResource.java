@@ -9,10 +9,13 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 
+import io.quarkus.hibernate.orm.PersistenceUnit;
+
 @Path("/items")
 @Transactional
 public class ItemsResource {
 
+    @PersistenceUnit("named")
     @Inject
     EntityManager em;
 
