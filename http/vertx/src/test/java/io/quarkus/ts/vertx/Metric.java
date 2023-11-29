@@ -13,6 +13,7 @@ class Metric {
     private final String name;
     private final String value;
     private final Map<String, String> tags;
+    private final String object;
 
     /**
      * @param source metric from the file, eg:
@@ -48,8 +49,10 @@ class Metric {
             boolean withBrackets = closing < space && opening < closing && opening > 0;
             if (withBrackets) {
                 name = source.substring(0, opening);
+                object = source.substring(opening, closing + 1);
             } else {
                 name = key;
+                object = null;
             }
             if (withBrackets) {
                 String params = source.substring(opening + 1, closing);
@@ -78,6 +81,10 @@ class Metric {
 
     public Map<String, String> getTags() {
         return tags;
+    }
+
+    public String getObject() {
+        return object;
     }
 
     @Override
