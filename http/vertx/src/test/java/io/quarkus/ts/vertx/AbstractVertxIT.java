@@ -48,6 +48,7 @@ public abstract class AbstractVertxIT {
         assertTrue(metrics.containsKey("worker_pool_active"));
         assertTrue(metrics.containsKey("worker_pool_completed_total"));
         assertTrue(metrics.containsKey("worker_pool_queue_size"));
+        assertTrue(metrics.containsKey("worker_pool_rejected_total"));
     }
 
     @Test
@@ -121,7 +122,7 @@ public abstract class AbstractVertxIT {
 
     public abstract RequestSpecification requests();
 
-    private Map<String, Metric> parseMetrics(String body) {
+    private static Map<String, Metric> parseMetrics(String body) {
         Map<String, Metric> metrics = new HashMap<>(128);
         Arrays.stream(body.split("\n"))
                 .filter(line -> !line.startsWith("#"))
@@ -130,9 +131,10 @@ public abstract class AbstractVertxIT {
         return metrics;
     }
 
-    private class Metric {
+    static class Metric {
         private final String value;
         private final String name;
+        private final String object;
 
         /**
          *
@@ -168,8 +170,10 @@ public abstract class AbstractVertxIT {
             }
             if (closing < space && opening < closing && opening > 0) {
                 name = source.substring(0, opening);
+                object = source.substring(opening, closing + 1);
             } else {
                 name = key;
+                object = null;
             }
         }
 
@@ -179,6 +183,10 @@ public abstract class AbstractVertxIT {
 
         public String getName() {
             return name;
+        }
+
+        public String getObject() {
+            return object;
         }
 
         @Override

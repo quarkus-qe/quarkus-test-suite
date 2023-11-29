@@ -30,4 +30,17 @@ public class HelloResource {
                 .map(string -> String.format(string, name).trim())
                 .map(Hello::new);
     }
+
+    @Path("/blocking")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Uni<Hello> getMessageBlocking(@QueryParam("name") @DefaultValue("World") String name) {
+        return vertx.executeBlocking(() -> vertx.fileSystem()
+                .readFile("message.template")
+                .map(Buffer::toString)
+                .map(string -> String.format(string, name).trim())
+                .map(Hello::new)
+                .await()
+                .indefinitely());
+    }
 }
