@@ -13,6 +13,8 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 
+import io.quarkus.hibernate.orm.PersistenceUnit;
+
 @Path("/hello")
 public class JakartaPersistenceAndHibernateValidatorResource {
     // reproducer for https://github.com/quarkusio/quarkus/issues/8323
@@ -20,6 +22,7 @@ public class JakartaPersistenceAndHibernateValidatorResource {
     @Inject
     Validator validator;
 
+    @PersistenceUnit("named")
     @Inject
     EntityManager em;
 
