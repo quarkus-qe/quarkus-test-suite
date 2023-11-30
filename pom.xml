@@ -35,6 +35,7 @@
         <!-- <quarkus-helm.version>0.1.1</quarkus-helm.version> -->
         <quarkiverse.config.version>2.2.2</quarkiverse.config.version>
         <quarkiverse.pact.version>1.1.0</quarkiverse.pact.version>
+        <quarkiverse.smallrye-opentracing.version>1.0.0</quarkiverse.smallrye-opentracing.version>
         <smallrye-stork.version>2.4.0</smallrye-stork.version>
         <assertj.version>3.24.2</assertj.version>
         <profile.id>jvm</profile.id>
@@ -138,6 +139,11 @@
                 <groupId>io.quarkiverse.pact</groupId>
                 <artifactId>quarkus-pact-consumer</artifactId>
                 <version>${quarkiverse.pact.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkiverse.opentracing</groupId>
+                <artifactId>quarkus-smallrye-opentracing</artifactId>
+                <version>${quarkiverse.smallrye-opentracing.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -562,9 +568,8 @@
                 <module>monitoring/micrometer-prometheus-oidc</module>
                 <module>monitoring/opentelemetry</module>
                 <module>monitoring/opentelemetry-reactive</module>
-                <!-- TODO: enable when Quarkiverse extensions are released: https://github.com/quarkusio/quarkus/pull/36602 -->
-                <!-- <module>monitoring/microprofile-opentracing</module> -->
-                <!-- <module>monitoring/opentracing-reactive-grpc</module> -->
+                <module>monitoring/microprofile-opentracing</module>
+                <module>monitoring/opentracing-reactive-grpc</module>
             </modules>
         </profile>
         <profile>
