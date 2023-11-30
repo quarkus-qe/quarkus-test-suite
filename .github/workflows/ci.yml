@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: [ 11 ]
+        java: [ 17 ]
     steps:
       - uses: actions/checkout@v4
       - name: Reclaim Disk Space
@@ -38,7 +38,7 @@ jobs:
     needs: build-dependencies
     strategy:
       matrix:
-        java: [ 11 ]
+        java: [ 17 ]
     steps:
       - uses: actions/checkout@v4
       - name: Install JDK {{ matrix.java }}
@@ -69,7 +69,8 @@ jobs:
         continue-on-error: true
       - id: detect-changes
         run: |
-          MODULES=$(find -name pom.xml | sed -e 's|pom.xml| |' | sed -e 's|./| |' | grep -v " quarkus/")
+          # FIXME: remove helm filter from following line when helm module is enabled
+          MODULES=$(find -name pom.xml | sed -e 's|pom.xml| |' | sed -e 's|./| |' | grep -v " quarkus/" | grep -v " helm/helm-minimum")
           CHANGED=""
           MODULES_ARG=""
 
@@ -111,7 +112,7 @@ jobs:
     needs: prepare-jvm-latest-modules-mvn-param
     strategy:
       matrix:
-        java: [ 11 ]
+        java: [ 17 ]
         module-mvn-args: ${{ fromJSON(needs.prepare-jvm-latest-modules-mvn-param.outputs.MODULES_MAVEN_PARAM) }}
     steps:
       - uses: actions/checkout@v4
@@ -161,7 +162,7 @@ jobs:
       MODULES_ARG: ${{ needs.detect-test-suite-modules.outputs.MODULES_ARG }}
     strategy:
       matrix:
-        java: [ 11 ]
+        java: [ 17 ]
     steps:
       - uses: actions/checkout@v4
       - name: Reclaim Disk Space
@@ -216,7 +217,7 @@ jobs:
       MODULES_ARG: ${{ needs.detect-test-suite-modules.outputs.MODULES_ARG }}
     strategy:
       matrix:
-        java: [ 11 ]
+        java: [ 17 ]
     steps:
       - uses: actions/checkout@v4
       - name: Install JDK {{ matrix.java }}

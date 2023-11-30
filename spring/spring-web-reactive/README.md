@@ -18,7 +18,7 @@ Verify correct content types in OpenAPI endpoint output using Mutiny method sign
 - Verify content types in the schema. The types should correspond to the definitions in Spring annotations.
 
 ## Requirements
-- JDK 11+
+- JDK 17+
 - GraalVM
 
 # Quarkus Spring Web Reactive - Spring Boot Bootstrap application
@@ -39,5 +39,5 @@ Test CRUD resource `BookController`:
 Test home page HTML response and value injection in `SimpleController`.
 
 ## Requirements
-- JDK 11+
+- JDK 17+
 - GraalVM

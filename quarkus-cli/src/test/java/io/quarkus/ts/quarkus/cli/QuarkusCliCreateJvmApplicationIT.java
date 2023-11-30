@@ -57,7 +57,7 @@ public class QuarkusCliCreateJvmApplicationIT {
     static final String RESTEASY_REACTIVE_JACKSON_EXTENSION = "quarkus-resteasy-reactive-jackson";
     static final String ROOT_FOLDER = "";
     static final String DOCKER_FOLDER = "/src/main/docker";
-    static final String JDK_11 = "11";
+    static final String JDK_21 = "21";
     static final String JDK_17 = "17";
     static final String JDK_18 = "18";
     static final String DOCKERFILE_JVM = "Dockerfile.jvm";
@@ -91,11 +91,11 @@ public class QuarkusCliCreateJvmApplicationIT {
 
     @Tag("QUARKUS-1472")
     @Test
-    public void shouldCreateAnApplicationForcingJavaVersion11() {
-        CreateApplicationRequest args = defaultWithFixedStream().withExtraArgs("--java=" + JDK_11);
+    public void shouldCreateAnApplicationForcingJavaVersion21() {
+        CreateApplicationRequest args = defaultWithFixedStream().withExtraArgs("--java=" + JDK_21);
         QuarkusCliRestService app = cliClient.createApplication("app", args);
-        assertExpectedJavaVersion(getFileFromApplication(app, ROOT_FOLDER, "pom.xml"), JDK_11);
-        assertDockerJavaVersion(getFileFromApplication(app, DOCKER_FOLDER, DOCKERFILE_JVM), JDK_11);
+        assertExpectedJavaVersion(getFileFromApplication(app, ROOT_FOLDER, "pom.xml"), JDK_21);
+        assertDockerJavaVersion(getFileFromApplication(app, DOCKER_FOLDER, DOCKERFILE_JVM), JDK_21);
     }
 
     @Tag("QUARKUS-1472")
