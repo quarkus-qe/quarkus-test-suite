@@ -28,7 +28,7 @@
             <artifactId>quarkus-smallrye-fault-tolerance</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.quarkus</groupId>
+            <groupId>io.quarkiverse.opentracing</groupId>
             <artifactId>quarkus-smallrye-opentracing</artifactId>
         </dependency>
         <dependency>
