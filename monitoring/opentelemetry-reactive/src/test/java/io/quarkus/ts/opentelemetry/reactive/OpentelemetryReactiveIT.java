@@ -66,7 +66,8 @@ public class OpentelemetryReactiveIT {
 
     @Test
     public void testSchedulerTracing() {
-        String operationName = "SchedulerService.increment";
+        // FIXME: report breaking change if not fixed: https://github.com/quarkusio/quarkus/pull/35989#issuecomment-1836023316
+        String operationName = "1_io.quarkus.ts.opentelemetry.reactive.SchedulerService#increment";
         String[] operations = new String[] { operationName };
 
         // asserts scheduled method was traced
