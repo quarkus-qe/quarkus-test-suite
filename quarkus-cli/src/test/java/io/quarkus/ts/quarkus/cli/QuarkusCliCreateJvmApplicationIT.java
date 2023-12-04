@@ -203,7 +203,11 @@ public class QuarkusCliCreateJvmApplicationIT {
     public void shouldAddAndRemoveExtensions() {
         // Create application
         String gav = QuarkusProperties.PLATFORM_GROUP_ID.get() + ":quarkus-bom:" + QuarkusProperties.getVersion();
-        QuarkusCliRestService app = cliClient.createApplication("app", defaults().withPlatformBom(gav));
+        QuarkusCliRestService app = cliClient.createApplication("app", defaults()
+                // HOTFIX: combination of --stream and --platform-bom exits without generating app
+                // TODO fix when https://github.com/quarkusio/quarkus/issues/37307 resolved
+                .withStream(null)
+                .withPlatformBom(gav));
 
         // By default, it installs only "quarkus-resteasy"
         assertInstalledExtensions(app, RESTEASY_REACTIVE_EXTENSION);
@@ -234,6 +238,9 @@ public class QuarkusCliCreateJvmApplicationIT {
     public void shouldKeepUsingTheSameQuarkusVersionAfterReload() {
         // Generate application using old community version
         QuarkusCliRestService app = cliClient.createApplication("app", defaults()
+                // HOTFIX: combination of --stream and --platform-bom exits without generating app
+                // TODO fix when https://github.com/quarkusio/quarkus/issues/37307 resolved
+                .withStream(null)
                 .withPlatformBom("io.quarkus:quarkus-bom:2.7.0.Final")
                 .withExtensions(SMALLRYE_HEALTH_EXTENSION, RESTEASY_REACTIVE_EXTENSION));
 
