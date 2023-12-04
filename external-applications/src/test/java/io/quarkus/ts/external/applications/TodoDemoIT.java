@@ -12,13 +12,15 @@ import io.quarkus.test.services.GitRepositoryQuarkusApplication;
 @QuarkusScenario
 public class TodoDemoIT {
     private static final String TODO_REPO = "https://github.com/quarkusio/todo-demo-app.git";
+    private static final String TODO_BRANCH = "quarkus2";
     private static final String VERSIONS = "-Dquarkus.platform.group-id=${QUARKUS_PLATFORM_GROUP-ID} -Dquarkus.platform.version=${QUARKUS_PLATFORM_VERSION} ";
     private static final String DEFAULT_OPTIONS = "-DskipTests=true " + VERSIONS;
 
-    @GitRepositoryQuarkusApplication(repo = TODO_REPO, mavenArgs = "-Dquarkus.package.type=uber-jar " + DEFAULT_OPTIONS)
+    @GitRepositoryQuarkusApplication(repo = TODO_REPO, branch = TODO_BRANCH, mavenArgs = "-Dquarkus.package.type=uber-jar "
+            + DEFAULT_OPTIONS)
     static final RestService app = new RestService();
 
-    @GitRepositoryQuarkusApplication(repo = TODO_REPO, artifact = "todo-backend-1.0-SNAPSHOT.jar", mavenArgs = "-Dquarkus.package.type=uber-jar -Dquarkus.package.add-runner-suffix=false"
+    @GitRepositoryQuarkusApplication(repo = TODO_REPO, branch = TODO_BRANCH, artifact = "todo-backend-1.0-SNAPSHOT.jar", mavenArgs = "-Dquarkus.package.type=uber-jar -Dquarkus.package.add-runner-suffix=false"
             + DEFAULT_OPTIONS)
     static final RestService replaced = new RestService();
 
