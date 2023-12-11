@@ -41,4 +41,21 @@ public class HelloResource {
     public Response hello() {
         return Response.ok("hello").header("Transfer-Encoding", "chunked").build();
     }
+
+    public record Data(String data) {
+    }
+
+    @GET
+    @Path("short-record-response")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response shortRecordInResponseClass() {
+        return Response.ok().entity(new Data("ok")).build();
+    }
+
+    @GET
+    @Path("short-record")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Data shortRecordReturnedDirectly() {
+        return new Data("ok");
+    }
 }
