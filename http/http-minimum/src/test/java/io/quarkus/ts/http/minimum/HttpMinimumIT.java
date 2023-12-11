@@ -5,6 +5,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
+import jakarta.ws.rs.core.MediaType;
+
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -43,6 +45,22 @@ public class HttpMinimumIT {
                 .statusCode(HttpStatus.SC_OK)
                 .headers("Transfer-Encoding", is(nullValue()))
                 .headers("Content-Length", is(notNullValue()));
+    }
+
+    @Test
+    public void shortRecordInResponseClass() {
+        givenSpec().get("/api/hello/short-record-response").then()
+                .statusCode(HttpStatus.SC_OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body("data", is("ok"));
+    }
+
+    @Test
+    public void shortRecordReturnedDirectly() {
+        givenSpec().get("/api/hello/short-record").then()
+                .statusCode(HttpStatus.SC_OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body("data", is("ok"));
     }
 
     protected RequestSpecification givenSpec() {
