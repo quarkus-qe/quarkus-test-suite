@@ -56,7 +56,7 @@ jobs:
           check-latest: true
           cache: 'maven'
       - name: Download Maven Repo
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: maven-repo
           path: .
@@ -110,7 +110,7 @@ jobs:
           check-latest: true
           cache: 'maven'
       - name: Download Maven Repo
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: maven-repo
           path: .
@@ -158,7 +158,7 @@ jobs:
           check-latest: true
           cache: 'maven'
       - name: Download Maven Repo
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: maven-repo
           path: .
@@ -200,7 +200,7 @@ jobs:
           check-latest: true
           cache: 'maven'
       - name: Download Maven Repo
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: maven-repo
           path: .
