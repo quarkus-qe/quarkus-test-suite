@@ -29,7 +29,7 @@ jobs:
         shell: bash
         run: tar -I 'pigz -9' -cf maven-repo.tgz -C ~ .m2/repository
       - name: Persist Maven Repo
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: maven-repo
           path: maven-repo.tgz
@@ -56,7 +56,7 @@ jobs:
           check-latest: true
           cache: 'maven'
       - name: Download Maven Repo
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: maven-repo
           path: .
@@ -80,9 +80,9 @@ jobs:
           zip -R artifacts-jvm${{ matrix.java }}.zip '*-reports/*'
       - name: Archive artifacts
         if: failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: ci-artifacts
+          name: artifacts-linux-jvm${{ matrix.java }}
           path: artifacts-jvm${{ matrix.java }}.zip
   linux-build-native-latest:
     name: Daily - Linux - Native build - Latest Version
@@ -110,7 +110,7 @@ jobs:
           check-latest: true
           cache: 'maven'
       - name: Download Maven Repo
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: maven-repo
           path: .
@@ -137,9 +137,9 @@ jobs:
           zip -R artifacts-native${{ matrix.java }}.zip '*-reports/*'
       - name: Archive artifacts
         if: failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: ci-artifacts
+          name: artifacts-linux-native${{ matrix.java }}
           path: artifacts-native${{ matrix.java }}.zip
   windows-build-jvm-latest:
     name: Daily - Windows - JVM build - Latest Version
@@ -158,7 +158,7 @@ jobs:
           check-latest: true
           cache: 'maven'
       - name: Download Maven Repo
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v
         with:
           name: maven-repo
           path: .
@@ -177,9 +177,9 @@ jobs:
           /usr/bin/find . -name '*-reports/*' -type d | tar -czf artifacts-latest-windows-jvm${{ matrix.java }}.tar -T -
       - name: Archive artifacts
         if: failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: ci-artifacts
+          name: artifacts-windows-jvm${{ matrix.java }}
           path: artifacts-latest-windows-jvm${{ matrix.java }}.tar
   windows-build-native-latest:
     name: Daily - Windows - Native build - Latest Version
@@ -200,7 +200,7 @@ jobs:
           check-latest: true
           cache: 'maven'
       - name: Download Maven Repo
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: maven-repo
           path: .
@@ -232,7 +232,7 @@ jobs:
           /usr/bin/find . -name '*-reports/*' -type d | tar -czf artifacts-latest-windows-native${{ matrix.java }}.tar -T -
       - name: Archive artifacts
         if: failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: ci-artifacts
+          name: artifacts-latest-windows-native${{ matrix.java }}
           path: artifacts-latest-windows-native${{ matrix.java }}.tar
