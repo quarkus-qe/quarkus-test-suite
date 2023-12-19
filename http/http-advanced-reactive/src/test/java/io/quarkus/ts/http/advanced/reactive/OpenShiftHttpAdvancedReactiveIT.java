@@ -1,5 +1,9 @@
 package io.quarkus.ts.http.advanced.reactive;
 
+import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM;
+import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_BASE_PATH;
+import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_FILE;
+
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 
 import io.quarkus.test.bootstrap.KeycloakService;
@@ -13,11 +17,9 @@ import io.quarkus.test.services.QuarkusApplication;
 @DisabledIfSystemProperty(named = "ts.s390x.missing.services.excludes", matches = "true", disabledReason = "keycloak container not available on s390x.")
 public class OpenShiftHttpAdvancedReactiveIT extends BaseHttpAdvancedReactiveIT {
 
-    private static final String REALM_DEFAULT = "test-realm";
-
     //TODO Remove workaround after Keycloak is fixed https://github.com/keycloak/keycloak/issues/9916
-    @KeycloakContainer(command = { "start-dev --import-realm --hostname-strict=false" })
-    static KeycloakService keycloak = new KeycloakService("/keycloak-realm.json", REALM_DEFAULT, "/realms")
+    @KeycloakContainer(command = { "start-dev", "--import-realm", "--hostname-strict=false" })
+    static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH)
             .withProperty("JAVA_OPTS", "-Dcom.redhat.fips=false");
 
     @QuarkusApplication(ssl = true)

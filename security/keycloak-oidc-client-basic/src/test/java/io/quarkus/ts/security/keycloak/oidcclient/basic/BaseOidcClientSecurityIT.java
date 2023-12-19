@@ -13,8 +13,6 @@ import io.quarkus.test.bootstrap.RestService;
 
 public abstract class BaseOidcClientSecurityIT {
 
-    static final String REALM_DEFAULT = "test-realm";
-
     @Test
     public void clientCredentialsSecuredResource() {
         getApp().given()

@@ -1,5 +1,6 @@
 package io.quarkus.ts.security.keycloak.multitenant;
 
+import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -27,9 +28,8 @@ import io.quarkus.test.bootstrap.RestService;
 public abstract class BaseMultiTenantSecurityIT {
 
     protected static final String USER = "test-user";
-    protected static final String REALM_DEFAULT = "test-realm";
 
-    private static final String LOGIN_REALM_REGEXP = ".*(Sign|Log) in to " + REALM_DEFAULT + ".*";
+    private static final String LOGIN_REALM_REGEXP = ".*(Sign|Log) in to " + DEFAULT_REALM + ".*";
 
     private WebClient webClient;
 

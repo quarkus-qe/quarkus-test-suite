@@ -1,6 +1,6 @@
 package io.quarkus.ts.security.oidcclient.mtls;
 
-import static io.quarkus.ts.security.oidcclient.mtls.MutualTlsKeycloakService.KC_DEV_MODE_P12_CMD;
+import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_FILE;
 import static io.quarkus.ts.security.oidcclient.mtls.MutualTlsKeycloakService.newKeycloakInstance;
 
 import io.quarkus.test.bootstrap.KeycloakService;
@@ -16,8 +16,13 @@ import io.quarkus.test.services.QuarkusApplication;
 @QuarkusScenario
 public class Pkcs12OidcMtlsIT extends KeycloakMtlsAuthN {
 
-    @KeycloakContainer(command = KC_DEV_MODE_P12_CMD, port = KEYCLOAK_PORT, builder = LocalHostKeycloakContainerManagedResourceBuilder.class)
-    static KeycloakService keycloak = newKeycloakInstance(REALM_FILE_PATH, REALM_DEFAULT, "realms")
+    @KeycloakContainer(command = { "start-dev", "--import-realm", "--hostname-strict=false",
+            "--hostname-strict-https=false", "--features=token-exchange",
+            "--hostname=localhost", // required by LocalHostKeycloakContainerManagedResourceBuilder
+            "--https-client-auth=required", "--https-key-store-file=/etc/server-keystore.p12",
+            "--https-trust-store-file=/etc/server-truststore.p12",
+            "--https-trust-store-password=password" }, port = KEYCLOAK_PORT, builder = LocalHostKeycloakContainerManagedResourceBuilder.class)
+    static KeycloakService keycloak = newKeycloakInstance(DEFAULT_REALM_FILE, REALM_DEFAULT, "realms")
             .withProperty("HTTPS_KEYSTORE", "resource_with_destination::/etc/|server-keystore." + P12_KEYSTORE_FILE_EXTENSION)
             .withProperty("HTTPS_TRUSTSTORE",
                     "resource_with_destination::/etc/|server-truststore." + P12_KEYSTORE_FILE_EXTENSION);

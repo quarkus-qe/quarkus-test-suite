@@ -55,7 +55,6 @@ import io.vertx.mutiny.ext.web.client.predicate.ResponsePredicateResult;
 
 public abstract class BaseHttpAdvancedIT {
 
-    protected static final String REALM_DEFAULT = "test-realm";
     private static final String ROOT_PATH = "/api";
     private static final int TIMEOUT_SEC = 3;
     private static final int RETRY = 3;
