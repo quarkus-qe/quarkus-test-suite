@@ -1,7 +1,7 @@
 package io.quarkus.ts.sqldb.sqlapp;
 
-import static io.quarkus.ts.sqldb.sqlapp.DbUtil.getImageName;
-import static io.quarkus.ts.sqldb.sqlapp.DbUtil.getImageVersion;
+import static io.quarkus.test.utils.ImageUtil.getImageName;
+import static io.quarkus.test.utils.ImageUtil.getImageVersion;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;

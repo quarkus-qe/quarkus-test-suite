@@ -1,7 +1,7 @@
 package io.quarkus.ts.reactive.db.clients;
 
-import static io.quarkus.ts.reactive.db.clients.DbUtil.getImageName;
-import static io.quarkus.ts.reactive.db.clients.DbUtil.getImageVersion;
+import static io.quarkus.test.utils.ImageUtil.getImageName;
+import static io.quarkus.test.utils.ImageUtil.getImageVersion;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;

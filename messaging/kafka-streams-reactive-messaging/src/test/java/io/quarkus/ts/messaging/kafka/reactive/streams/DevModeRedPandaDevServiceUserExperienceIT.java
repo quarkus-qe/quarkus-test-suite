@@ -1,5 +1,8 @@
 package io.quarkus.ts.messaging.kafka.reactive.streams;
 
+import static io.quarkus.test.utils.ImageUtil.getImageName;
+import static io.quarkus.test.utils.ImageUtil.getImageVersion;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -15,18 +18,18 @@ import io.quarkus.test.utils.DockerUtils;
 @QuarkusScenario
 public class DevModeRedPandaDevServiceUserExperienceIT {
 
-    private static final String RED_PANDA_VERSION = "v22.3.4";
-    private static final String RED_PANDA_IMAGE = "vectorized/redpanda";
+    private static final String RED_PANDA_VERSION = getImageVersion("redpanda.image");;
+    private static final String RED_PANDA_IMAGE = getImageName("redpanda.image");
 
     @DevModeQuarkusApplication
     static RestService app = new RestService()
             .withProperty("quarkus.kafka.devservices.enabled", Boolean.TRUE.toString())
-            .withProperty("quarkus.kafka.devservices.image-name", String.format("%s:%s", RED_PANDA_IMAGE, RED_PANDA_VERSION))
+            .withProperty("quarkus.kafka.devservices.image-name", "${redpanda.image}")
             .onPreStart(s -> DockerUtils.removeImage(RED_PANDA_IMAGE, RED_PANDA_VERSION));
 
     @Test
     public void verifyIfUserIsInformedAboutRedPandaDevServicePulling() {
-        app.logs().assertContains("Pulling docker image: vectorized/redpanda");
+        app.logs().assertContains("Pulling docker image: redpandadata/redpanda");
         app.logs().assertContains("Please be patient; this may take some time but only needs to be done once");
         app.logs().assertContains("Starting to pull image");
         app.logs().assertContains("Dev Services for Kafka started");

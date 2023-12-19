@@ -25,8 +25,10 @@ public class MySqlDatabaseTestResource implements QuarkusTestResourceLifecycleMa
 
     @Override
     public Map<String, String> start() {
+        String image = System.getProperty("mysql.80.image");
+
         container = new MySQLContainer<>(
-                DockerImageName.parse("registry.access.redhat.com/rhscl/mysql-80-rhel7").asCompatibleSubstituteFor(MYSQL));
+                DockerImageName.parse(image).asCompatibleSubstituteFor(MYSQL));
         container.withUrlParam("currentSchema", DEFAULT_SCHEMA);
         container.start();
 
