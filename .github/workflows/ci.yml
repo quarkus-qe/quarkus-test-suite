@@ -152,7 +152,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: ci-artifacts
+          name: artifacts-latest-linux-jvm${{ matrix.java }}
           path: artifacts-latest-linux-jvm${{ matrix.java }}.zip
   linux-build-native-latest:
     name: PR - Linux - Native build - Latest Version
@@ -207,7 +207,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: ci-artifacts
+          name: artifacts-latest-linux-native${{ matrix.java }}
           path: artifacts-latest-linux-native${{ matrix.java }}.zip
   windows-build-jvm-latest:
     name: PR - Windows - JVM build - Latest Version
@@ -255,5 +255,5 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: ci-artifacts
+          name: artifacts-latest-windows-jvm${{ matrix.java }}
           path: artifacts-latest-windows-jvm${{ matrix.java }}.tar
