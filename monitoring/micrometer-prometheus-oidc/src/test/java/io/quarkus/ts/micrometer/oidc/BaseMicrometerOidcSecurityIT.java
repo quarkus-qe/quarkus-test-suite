@@ -1,5 +1,8 @@
 package io.quarkus.ts.micrometer.oidc;
 
+import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM;
+import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_BASE_PATH;
+import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_FILE;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -18,7 +21,6 @@ import io.quarkus.test.services.KeycloakContainer;
 public abstract class BaseMicrometerOidcSecurityIT {
 
     static final String NORMAL_USER = "test-normal-user";
-    static final String REALM_DEFAULT = "test-realm";
     static final String CLIENT_ID_DEFAULT = "test-application-client";
     static final String CLIENT_SECRET_DEFAULT = "test-application-client-secret";
     static final int ASSERT_SERVICE_TIMEOUT_MINUTES = 1;
@@ -28,8 +30,8 @@ public abstract class BaseMicrometerOidcSecurityIT {
     static final String UNAUTHORIZED_HTTP_CALL_METRIC = HTTP_METRIC + "outcome=\"CLIENT_ERROR\",status=\"401\",uri=\"%s\"}";
 
     //TODO Remove workaround after Keycloak is fixed https://github.com/keycloak/keycloak/issues/9916
-    @KeycloakContainer(command = { "start-dev --import-realm" })
-    static KeycloakService keycloak = new KeycloakService("/keycloak-realm.json", REALM_DEFAULT, "/realms")
+    @KeycloakContainer(command = { "start-dev", "--import-realm" })
+    static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH)
             .withProperty("JAVA_OPTS", "-Dcom.redhat.fips=false");
 
     private AuthzClient authzClient;

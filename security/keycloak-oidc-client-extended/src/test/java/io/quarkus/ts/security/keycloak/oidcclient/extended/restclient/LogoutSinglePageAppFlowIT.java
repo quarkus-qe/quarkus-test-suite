@@ -1,5 +1,6 @@
 package io.quarkus.ts.security.keycloak.oidcclient.extended.restclient;
 
+import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_BASE_PATH;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,8 +31,8 @@ public class LogoutSinglePageAppFlowIT {
     static final String REALM_DEFAULT = "quarkus";
 
     @KeycloakContainer(command = {
-            "start-dev --import-realm --hostname-strict-https=false --features=token-exchange" })
-    static KeycloakService keycloak = new KeycloakService("/kc-logout-realm.json", REALM_DEFAULT, "/realms")
+            "start-dev", "--import-realm", "--hostname-strict-https=false", })
+    static KeycloakService keycloak = new KeycloakService("/kc-logout-realm.json", REALM_DEFAULT, DEFAULT_REALM_BASE_PATH)
             .withProperty("JAVA_OPTS", "-Dcom.redhat.fips=false");
 
     @QuarkusApplication(classes = { LogoutFlow.class, LogoutTenantResolver.class })

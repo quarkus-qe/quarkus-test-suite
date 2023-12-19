@@ -24,7 +24,6 @@ public abstract class BaseAuthzSecurityReactiveIT {
 
     static final String NORMAL_USER = "test-normal-user";
     static final String ADMIN_USER = "test-admin-user";
-    static final String REALM_DEFAULT = "test-realm";
     static final String CLIENT_ID_DEFAULT = "test-application-client";
     static final String CLIENT_SECRET_DEFAULT = "test-application-client-secret";
 

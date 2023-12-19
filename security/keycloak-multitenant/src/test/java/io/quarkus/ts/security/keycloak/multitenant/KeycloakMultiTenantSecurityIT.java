@@ -1,5 +1,9 @@
 package io.quarkus.ts.security.keycloak.multitenant;
 
+import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM;
+import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_BASE_PATH;
+import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_FILE;
+
 import org.junit.jupiter.api.Tag;
 
 import io.quarkus.test.bootstrap.KeycloakService;
@@ -13,9 +17,8 @@ import io.quarkus.test.services.QuarkusApplication;
 public class KeycloakMultiTenantSecurityIT extends BaseMultiTenantSecurityIT {
 
     //TODO Remove workaround after Keycloak is fixed https://github.com/keycloak/keycloak/issues/9916
-    @KeycloakContainer(command = {
-            "start-dev --import-realm --hostname-strict-https=false --features=token-exchange" })
-    static KeycloakService keycloak = new KeycloakService("/keycloak-realm.json", REALM_DEFAULT, "/realms")
+    @KeycloakContainer(command = { "start-dev", "--import-realm", "--hostname-strict=false", "--features=token-exchange" })
+    static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH)
             .withProperty("JAVA_OPTS", "-Dcom.redhat.fips=false");
 
     @QuarkusApplication

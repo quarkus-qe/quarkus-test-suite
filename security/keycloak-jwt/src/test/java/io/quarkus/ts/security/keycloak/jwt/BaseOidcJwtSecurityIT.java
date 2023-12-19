@@ -1,5 +1,6 @@
 package io.quarkus.ts.security.keycloak.jwt;
 
+import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -22,10 +23,9 @@ import io.quarkus.test.bootstrap.RestService;
 
 public abstract class BaseOidcJwtSecurityIT {
 
-    protected static final String REALM_DEFAULT = "test-realm";
     protected static final String CLIENT_ID_DEFAULT = "test-application-client";
 
-    private static final String LOGIN_REALM_REGEXP = ".*(Sign|Log) in to " + REALM_DEFAULT + ".*";
+    private static final String LOGIN_REALM_REGEXP = ".*(Sign|Log) in to " + DEFAULT_REALM + ".*";
 
     private WebClient webClient;
     private HtmlPage page;

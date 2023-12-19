@@ -5,6 +5,7 @@ import static org.keycloak.representations.idm.CredentialRepresentation.PASSWORD
 
 import java.nio.file.Paths;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
@@ -14,6 +15,7 @@ import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
+@Disabled // TODO mvavrik: fixing this will probably require fixing config map names created for resources
 @OpenShiftScenario
 @DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/1145")
 @EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
