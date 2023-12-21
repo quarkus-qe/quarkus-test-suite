@@ -7,12 +7,14 @@ import static org.hamcrest.CoreMatchers.is;
 import java.util.UUID;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.ts.security.keycloak.oidcclient.reactive.extended.model.Score;
 import io.restassured.http.ContentType;
 
+@Disabled("https://github.com/quarkusio/quarkus/pull/37788")
 @QuarkusScenario
 public class OidcRestClientIT extends BaseOidcIT {
 
