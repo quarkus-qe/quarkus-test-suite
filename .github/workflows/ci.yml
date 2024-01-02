@@ -65,7 +65,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: files
-        uses: tj-actions/changed-files@v40
+        uses: tj-actions/changed-files@v41
         continue-on-error: true
       - id: detect-changes
         run: |
