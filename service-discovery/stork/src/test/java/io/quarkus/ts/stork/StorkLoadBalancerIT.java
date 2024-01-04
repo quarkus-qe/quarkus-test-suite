@@ -58,14 +58,14 @@ public class StorkLoadBalancerIT extends AbstractCommonTestCases {
     static RestService mainPingService = new RestService()
             .withProperty("quarkus.stork.pong-replica.service-discovery.type", "consul")
             .withProperty("quarkus.stork.pong-replica.service-discovery.refresh-period", "1")
-            .withProperty("quarkus.stork.pong-replica.load-balancer", "round-robin")
+            .withProperty("quarkus.stork.pong-replica.load-balancer.type", "round-robin")
             .withProperty("quarkus.stork.pong-replica.service-discovery.consul-port",
                     () -> Integer.toString(consul.getURI().getPort()))
             .withProperty("quarkus.stork.pong-replica.service-discovery.consul-host",
                     () -> getConsultEndpoint(consul.getConsulEndpoint()))
             .withProperty("quarkus.stork.pong.service-discovery.type", "consul")
             .withProperty("quarkus.stork.pong.service-discovery.refresh-period", "1")
-            .withProperty("quarkus.stork.pong.load-balancer", "round-robin")
+            .withProperty("quarkus.stork.pong.load-balancer.type", "round-robin")
             .withProperty("quarkus.stork.pong.service-discovery.consul-port",
                     () -> Integer.toString(consul.getURI().getPort()))
             .withProperty("quarkus.stork.pong.service-discovery.consul-host",
