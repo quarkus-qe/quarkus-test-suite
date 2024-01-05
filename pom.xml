@@ -541,8 +541,9 @@
                 <module>messaging/amqp-reactive</module>
                 <module>messaging/qpid</module>
                 <module>messaging/kafka-streams-reactive-messaging</module>
-                <module>messaging/kafka-confluent-avro-reactive-messaging</module>
-                <module>messaging/kafka-strimzi-avro-reactive-messaging</module>
+                <!-- TODO: enable these modules once https://github.com/quarkusio/quarkus/issues/38054 is fixed-->
+                <!-- <module>messaging/kafka-confluent-avro-reactive-messaging</module>-->
+                <!-- <module>messaging/kafka-strimzi-avro-reactive-messaging</module>-->
                 <module>messaging/kafka-producer</module>
                 <module>messaging/kafkaSSL</module>
                 <module>messaging/infinispan-grpc-kafka</module>
