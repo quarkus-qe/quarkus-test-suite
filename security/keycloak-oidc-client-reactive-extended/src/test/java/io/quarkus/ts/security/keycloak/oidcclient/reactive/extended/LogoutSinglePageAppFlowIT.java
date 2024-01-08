@@ -3,8 +3,7 @@ package io.quarkus.ts.security.keycloak.oidcclient.reactive.extended;
 import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_BASE_PATH;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -60,11 +59,11 @@ public class LogoutSinglePageAppFlowIT {
                     .getContentAsString();
 
             assertThat(content, containsString("alice, cache size: 0"));
-            assertNotNull(getSessionCookie(webClient, null));
+            assertTrue(isSessionCookiePresent(webClient));
 
             HtmlPage page = webClient.getPage(app.getURI(Protocol.HTTP).toString() + "/code-flow/logout");
             assertThat(page.getBody().asNormalizedText(), containsString("You are logged out"));
-            assertNull(getSessionCookie(webClient, "code-flow"));
+            assertFalse(isSessionCookiePresent(webClient));
 
             // double-check session is not valid anymore
             boolean isLoginPage = isRedirectedToLoginPage(webClient, "/code-flow/authenticated");
@@ -96,7 +95,19 @@ public class LogoutSinglePageAppFlowIT {
         return webClient;
     }
 
-    private Cookie getSessionCookie(WebClient webClient, String tenantId) {
-        return webClient.getCookieManager().getCookie("q_session" + (tenantId == null ? "" : "_" + tenantId));
+    /**
+     * Search for "q_session" cookie.
+     * This might be one cookie, or it might be chunked into several ones,
+     * which are named "q_session_chunk_1" etc.
+     *
+     * @return True if cookie is present, chunked or not. False otherwise.
+     */
+    private boolean isSessionCookiePresent(WebClient webClient) {
+        for (Cookie cookie : webClient.getCookieManager().getCookies()) {
+            if (cookie.getName().startsWith("q_session")) {
+                return true;
+            }
+        }
+        return false;
     }
 }
