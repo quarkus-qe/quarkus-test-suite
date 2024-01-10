@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
@@ -31,6 +32,7 @@ import io.restassured.common.mapper.TypeRef;
 @Tag("use-quarkus-openshift-extension")
 @Tag("serverless")
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
+@Disabled("https://github.com/quarkusio/quarkus/issues/38018")
 public class ServerlessExtensionOpenShiftFunqyKnEventsIT {
 
     @QuarkusApplication
