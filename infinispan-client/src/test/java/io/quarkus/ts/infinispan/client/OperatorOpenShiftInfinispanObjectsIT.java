@@ -28,6 +28,7 @@ import io.restassured.response.Response;
 
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Disabled("https://github.com/quarkusio/quarkus/issues/38018")
 public class OperatorOpenShiftInfinispanObjectsIT extends BaseOpenShiftInfinispanIT {
 
     private static final int CACHE_ENTRY_MAX = 5;

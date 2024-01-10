@@ -1,8 +1,11 @@
 package io.quarkus.ts.configmap.api.server;
 
+import org.junit.jupiter.api.Disabled;
+
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.services.QuarkusApplication;
 
+@Disabled("https://github.com/quarkusio/quarkus/issues/38018")
 public class OpenShiftFileSystemConfigMapConfigIT extends OpenShiftBaseConfigIT {
 
     @QuarkusApplication

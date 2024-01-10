@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 import jakarta.inject.Inject;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -31,6 +32,7 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.restassured.response.Response;
 
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
+@Disabled("https://github.com/quarkusio/quarkus/issues/38018")
 public class OpenShiftConfigSourcePriorityIT {
 
     private static final String CONFIGMAP_YAML = CONFIGMAP + "-yaml";
