@@ -1,6 +1,6 @@
 package io.quarkus.ts.http.undertow.listener;
 
-import java.util.LinkedList;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpSession;
@@ -19,7 +19,11 @@ import io.micrometer.core.instrument.binder.system.ProcessorMetrics;
 public final class SessionListener implements HttpSessionListener {
 
     public static final String GAUGE_ACTIVE_SESSION = "io_quarkus_ts_active_sessions_amount";
-    private LinkedList<String> sessionsBucket = new LinkedList<>();
+    /*
+     * Needs to use thread-safe collection.
+     * When multiple sessions gets created or destroyed at once, it might create inconsistencies otherwise.
+     */
+    private final ConcurrentLinkedDeque<String> sessionsBucket = new ConcurrentLinkedDeque<>();
 
     SessionListener(MeterRegistry registry) {
         registry.gaugeCollectionSize(GAUGE_ACTIVE_SESSION, Tags.empty(), sessionsBucket);
