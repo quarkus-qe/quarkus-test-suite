@@ -2,13 +2,13 @@ package io.quarkus.ts.http.undertow;
 
 import static io.quarkus.ts.http.undertow.listener.SessionListener.GAUGE_ACTIVE_SESSION;
 import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.Duration;
 import java.util.Map;
 import java.util.stream.IntStream;
 
 import org.apache.http.HttpStatus;
-import org.apache.http.util.Asserts;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -79,7 +79,7 @@ public class HttpServletWithSessionListenerIT {
     }
 
     private void thenCheckActiveSessionsEqualTo(int threshold) {
-        Asserts.check(getActiveSessions() == threshold, "Unexpected active sessions amount");
+        assertEquals(threshold, getActiveSessions(), "Unexpected active sessions amount");
     }
 
     private void thenWaitToEvictSessionsAndCheckActiveSessionsEqualTo(int value) {
