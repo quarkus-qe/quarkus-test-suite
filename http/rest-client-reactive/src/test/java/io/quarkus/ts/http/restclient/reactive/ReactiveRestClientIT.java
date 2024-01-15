@@ -2,6 +2,7 @@ package io.quarkus.ts.http.restclient.reactive;
 
 import static com.github.tomakehurst.wiremock.core.Options.ChunkedEncodingPolicy.NEVER;
 import static io.quarkus.ts.http.restclient.reactive.resources.PlainBookResource.SEARCH_TERM_VAL;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,6 +23,7 @@ import com.github.tomakehurst.wiremock.http.Fault;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.EnabledOnNative;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.http.restclient.reactive.json.Book;
 import io.quarkus.ts.http.restclient.reactive.json.BookRepository;
@@ -253,6 +255,16 @@ public class ReactiveRestClientIT {
     public void malformedChunk() {
         Response response = app.given().get("/client/malformed");
         Assertions.assertEquals("io.vertx.core.http.HttpClosedException", response.body().asString());
+    }
+
+    @Test
+    @EnabledOnNative
+    // reproduced for: https://github.com/quarkusio/quarkus/issues/36986
+    public void sseIndexMethodOnNativeTest() {
+        app.given().get("/sse/client")
+                .then()
+                .statusCode(200)
+                .body(containsString("random SSE data"));
     }
 
     @AfterAll
