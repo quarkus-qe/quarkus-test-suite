@@ -259,7 +259,7 @@ public class ReactiveRestClientIT {
 
     @Test
     @EnabledOnNative
-    // reproduced for: https://github.com/quarkusio/quarkus/issues/36986
+    @Tag("https://github.com/quarkusio/quarkus/issues/36986")
     public void sseIndexMethodOnNativeTest() {
         app.given().get("/sse/client")
                 .then()
