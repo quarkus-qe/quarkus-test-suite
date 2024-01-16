@@ -1,7 +1,10 @@
 package io.quarkus.ts.http.restclient.reactive.resources;
 
 import java.util.Arrays;
-import java.util.concurrent.locks.LockSupport;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.GET;
@@ -31,24 +34,29 @@ public class SseResource {
     @GET
     @Path("client")
     @Produces(MediaType.TEXT_PLAIN)
-    public Response clientUpdate() {
+    public Response clientUpdate() throws InterruptedException {
         String host = ConfigProvider.getConfig().getValue("quarkus.http.host", String.class);
         int port = ConfigProvider.getConfig().getValue("quarkus.http.port", Integer.class);
-        StringBuilder eventCapture = new StringBuilder();
+        List<String> receivedData = new CopyOnWriteArrayList<>();
 
         WebTarget target = ClientBuilder.newClient().target("http://" + host + ":" + port + "/sse/server-update");
         try (SseEventSource eventSource = SseEventSource.target(target).build()) {
             eventSource.register(
-                    ev -> eventCapture.append("event: name=").append(ev.getName()).append(" data={").append(ev.readData())
-                            .append("} and is empty: ").append(ev.isEmpty()).append("\n"),
-                    thr -> eventCapture.append("Error: ").append(thr.getMessage()).append("\n")
-                            .append(Arrays.toString(thr.getStackTrace())));
-
+                    ev -> {
+                        String event = "event: name=" + ev.getName() + " data={" + ev.readData() + "} and is empty: "
+                                + ev.isEmpty()
+                                + "\n";
+                        receivedData.add(event);
+                    }, thr -> {
+                        String event = "Error: " + thr.getMessage() + "\n" + Arrays.toString(thr.getStackTrace());
+                        receivedData.add(event);
+                    });
+            CountDownLatch latch = new CountDownLatch(2);
             eventSource.open();
-            LockSupport.parkNanos(2_000_000_000L);
+            latch.await(1, TimeUnit.SECONDS);
         }
 
-        return Response.ok(eventCapture).build();
+        return Response.ok(String.join("\n", receivedData)).build();
     }
 
     @GET
