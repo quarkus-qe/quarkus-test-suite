@@ -24,10 +24,10 @@ public class VanillaReactiveRestClientIT {
         List<String> logs = app.getLogs();
 
         // app produces error log (not stack trace) after startup in its log if issue in not fixed,
-        // search fox this error text
+        // search for this error text
         for (String log : logs) {
             if (log.contains(CONTAINER_FILTER_ERROR_TEXT)) {
-                fail("Detected failure-indicating text in app's log. Issue https://github.com/quarkusio/quarkus/issues/31024is not fixed.");
+                fail("Detected failure-indicating text in app's log. Issue https://github.com/quarkusio/quarkus/issues/31024 might not be fixed.");
             }
         }
     }
