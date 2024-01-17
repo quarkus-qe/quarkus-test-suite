@@ -362,7 +362,7 @@ Additional coverage:
 - Handling Multipart Form data
 
 ### `http/rest-client`
-Verifies Rest Client configuration using `quarkus-rest-client-jaxb` (XML support) and `quarkus-rest-client-jsonb` (JSON support).
+Verifies Rest Client configuration using `quarkus-resteasy-client-jaxb` (XML support) and `quarkus-resteasy-client-jsonb` (JSON support).
 This module will setup a very minimal configuration (only `quarkus-resteasy`) and have four endpoints:
 - Two endpoints to get a book in JSON and XML formats.
 - Two endpoints to get the value of the previous endpoints using the rest client interface.
