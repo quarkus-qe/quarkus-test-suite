@@ -269,6 +269,14 @@ public class ReactiveRestClientIT {
                 .body(containsString("random SSE data"));
     }
 
+    @Test
+    @Tag("https://github.com/quarkusio/quarkus/pull/37268")
+    public void clientHeaderInjectionTest() {
+        app.given().get("/headers")
+                .then()
+                .body(containsString("clientFilterInvoked"));
+    }
+
     @AfterAll
     static void afterAll() {
         mockServer.stop();
