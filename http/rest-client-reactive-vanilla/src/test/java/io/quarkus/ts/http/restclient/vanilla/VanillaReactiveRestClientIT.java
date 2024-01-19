@@ -1,4 +1,4 @@
-package io.quarkus.ts.http.restclient.reactive;
+package io.quarkus.ts.http.restclient.vanilla;
 
 import static org.junit.jupiter.api.Assertions.fail;
 

@@ -1,4 +1,4 @@
-package io.quarkus.ts.http.restclient.reactive;
+package io.quarkus.ts.http.restclient.vanilla;
 
 import java.io.Closeable;
 import java.util.List;

@@ -1,4 +1,4 @@
-package io.quarkus.ts.http.restclient.reactive;
+package io.quarkus.ts.http.restclient.vanilla;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.container.ContainerRequestContext;

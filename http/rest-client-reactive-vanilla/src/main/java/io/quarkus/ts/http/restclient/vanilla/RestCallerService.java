@@ -1,4 +1,4 @@
-package io.quarkus.ts.http.restclient.reactive;
+package io.quarkus.ts.http.restclient.vanilla;
 
 import java.net.URI;
 
@@ -16,11 +16,7 @@ import io.quarkus.runtime.Startup;
 public class RestCallerService {
 
     @PostConstruct
-    void init() {
-        callRest();
-    }
-
-    void callRest() {
+    void initRestApi() {
         RestClientBuilder builder = RestClientBuilder.newBuilder()//
                 .baseUri(URI.create("localhost"));
 
