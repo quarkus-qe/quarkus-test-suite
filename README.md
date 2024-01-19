@@ -365,6 +365,10 @@ This module will setup a very minimal configuration (only `quarkus-resteasy`) an
 Reactive equivalent of the http/rest-client module.  
 Exclusions: XML test. Reason: https://quarkus.io/blog/resteasy-reactive/#what-jax-rs-features-are-missing
 
+### `http/rest-client-reactive-vanilla`
+Verifies Rest Client usage, while no request are going only internally on the server.
+This module requires to not have any resteasy dependency, for an issue to be reproducible. 
+
 ### `http/hibernate-validator`
 Verifies HTTP endpoints validation using `quarkus-hibernate-validator` works correctly in Resteasy Classic and Resteasy Reactive.
 This module will setup a simple endpoint and will validate the right message format is set when there are validation errors.
