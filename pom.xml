@@ -487,6 +487,7 @@
                 <module>http/reactive-routes</module>
                 <module>http/rest-client</module>
                 <module>http/rest-client-reactive</module>
+                <module>http/rest-client-reactive-vanilla</module>
                 <module>http/servlet-undertow</module>
                 <module>http/vertx-web-client</module>
                 <module>http/vertx-web-validation</module>
