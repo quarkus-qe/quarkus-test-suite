@@ -38,7 +38,7 @@
         <smallrye-stork.version>2.5.0</smallrye-stork.version>
         <assertj.version>3.25.1</assertj.version>
         <profile.id>jvm</profile.id>
-        <htmlunit.version>3.9.0</htmlunit.version>
+        <htmlunit.version>3.10.0</htmlunit.version>
         <!-- Faster build when using -DskipTests -->
         <quarkus.build.skip>${skipTests}</quarkus.build.skip>
         <!-- S2i configuration -->
