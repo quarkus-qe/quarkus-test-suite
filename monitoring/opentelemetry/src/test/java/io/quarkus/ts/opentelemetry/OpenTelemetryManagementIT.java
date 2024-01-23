@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.bootstrap.JaegerService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 import io.quarkus.test.services.JaegerContainer;
 import io.quarkus.test.services.QuarkusApplication;
 
@@ -34,6 +35,7 @@ public class OpenTelemetryManagementIT {
     /**
      * Test openTelemetry not sending traces from management endpoints
      */
+    @DisabledOnQuarkusVersion(version = "3.2.9.Final", reason = "Fixed in 3.2.10")
     @Test
     @Tag("https://github.com/quarkusio/quarkus/pull/37218")
     public void managementEndpointExcludedFromTracesTest() {

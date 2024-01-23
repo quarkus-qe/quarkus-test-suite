@@ -259,6 +259,7 @@ public class ReactiveRestClientIT {
         Assertions.assertEquals("io.vertx.core.http.HttpClosedException", response.body().asString());
     }
 
+    @DisabledOnQuarkusVersion(version = "3.2.9.Final", reason = "Fixed in 3.2.10")
     @Test
     @EnabledOnNative
     @Tag("https://github.com/quarkusio/quarkus/issues/36986")
@@ -269,6 +270,7 @@ public class ReactiveRestClientIT {
                 .body(containsString("random SSE data"));
     }
 
+    @DisabledOnQuarkusVersion(version = "3.2.9.Final", reason = "Fixed in 3.2.10")
     @Test
     @Tag("https://github.com/quarkusio/quarkus/pull/37268")
     public void clientHeaderInjectionTest() {

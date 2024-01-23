@@ -9,8 +9,10 @@ import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 import io.quarkus.test.services.QuarkusApplication;
 
+@DisabledOnQuarkusVersion(version = "3.2.9.Final", reason = "Fixed in 3.2.10.Final")
 @QuarkusScenario
 public class VanillaReactiveRestClientIT {
     private static final String CONTAINER_FILTER_ERROR_TEXT = "CDI: programmatic lookup problem detected";
