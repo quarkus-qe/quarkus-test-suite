@@ -15,6 +15,7 @@ import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.bootstrap.inject.OpenShiftClient;
@@ -24,6 +25,7 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.utils.Command;
 
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtensionAndDockerBuildStrategy)
+@DisabledIfSystemProperty(named = "ts.s390x.missing.services.excludes", matches = "true", disabledReason = "Crunchy Postgres operator not available on s390x.")
 public class OpenShiftPostgreSqlSbIT {
 
     @Inject
