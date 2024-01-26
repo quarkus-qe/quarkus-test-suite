@@ -1,0 +1,5 @@
+cityList:
+  - name: Tokio
+    country: Japan
+  - name: Paris
+    country: France
