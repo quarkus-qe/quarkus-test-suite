@@ -191,6 +191,9 @@
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${surefire-plugin.version}</version>
+                    <configuration>
+                        <rerunFailingTestsCount>2</rerunFailingTestsCount>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -199,6 +202,7 @@
                     <configuration>
                         <!-- fixes unavailable native binary build logs, https://github.com/quarkus-qe/quarkus-test-framework/issues/785 -->
                         <forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/>
+                        <rerunFailingTestsCount>2</rerunFailingTestsCount>
                     </configuration>
                 </plugin>
             </plugins>
@@ -765,6 +769,7 @@
                                 <amq-streams.image>registry.redhat.io/amq7/amq-streams-kafka-33-rhel8</amq-streams.image>
                                 <amq-streams.version>2.3.0</amq-streams.version>
                             </systemPropertyVariables>
+                            <rerunFailingTestsCount>1</rerunFailingTestsCount>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -817,6 +822,7 @@
                                         <!-- run 'docker manifest inspect mongo:5.0' and use digest for architecture 'arm64', variant '8', os 'linux' -->
                                         <mongodb.image>docker.io/library/mongo@sha256:6f851e31a1b317c6fa681b7dad5f94c622f1c3588477f3b769579dc5462ee659</mongodb.image>
                                     </systemPropertyVariables>
+                                    <rerunFailingTestsCount>1</rerunFailingTestsCount>
                                 </configuration>
                             </execution>
                         </executions>
@@ -869,6 +875,7 @@
                                         <amq-streams.version>2.3.0</amq-streams.version>
                                         <mongodb.image>docker.io/library/mongo:4.4.6</mongodb.image>
                                     </systemPropertyVariables>
+                                    <rerunFailingTestsCount>1</rerunFailingTestsCount>
                                 </configuration>
                             </execution>
                         </executions>
