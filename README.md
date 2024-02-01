@@ -371,6 +371,12 @@ This module will setup a very minimal configuration (only `quarkus-resteasy`) an
 Reactive equivalent of the http/rest-client module.
 Exclusions: XML test. Reason: https://quarkus.io/blog/resteasy-reactive/#what-jax-rs-features-are-missing
 
+Additionally, it's include endpoints to check usage of HTTP/2 using REST client over the http and https.
+HTTP/2 REST client tests check sync and async response by:
+- Two endpoint used by client
+- Eight endpoints used for validation of client request
+
+
 ### `http/rest-client-reactive-vanilla`
 Verifies Rest Client usage, while no request are going only internally on the server.
 This module requires to not have any resteasy dependency, for an issue to be reproducible. 
