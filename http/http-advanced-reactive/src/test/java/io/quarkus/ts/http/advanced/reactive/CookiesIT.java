@@ -105,9 +105,8 @@ public class CookiesIT {
             response.statusCode(204)
                     .cookie(TEST_COOKIE, detailedCookie().sameSite((String) null));
         } else {
-            sameSite = sameSite.toUpperCase();
             response.statusCode(200)
-                    .body(is(sameSite))
+                    .body(is(sameSite.toUpperCase()))
                     .cookie(TEST_COOKIE, detailedCookie().sameSite(sameSite));
         }
     }
