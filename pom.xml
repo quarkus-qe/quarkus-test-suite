@@ -60,7 +60,7 @@
         <mysql.80.image>registry.access.redhat.com/rhscl/mysql-80-rhel7</mysql.80.image>
         <rhbk.image>registry.redhat.io/rhbk/keycloak-rhel9:22-6</rhbk.image>
         <wiremock-jre8.version>2.35.1</wiremock-jre8.version>
-        <build-reporter-maven-extension.version>3.3.3</build-reporter-maven-extension.version>
+        <build-reporter-maven-extension.version>3.4.4</build-reporter-maven-extension.version>
     </properties>
     <dependencyManagement>
         <dependencies>
