@@ -56,9 +56,9 @@
         <exclude.quarkus.cli.tests>**/QuarkusCli*IT.java</exclude.quarkus.cli.tests>
         <exclude.quarkus.devmode.tests>no</exclude.quarkus.devmode.tests>
         <!-- Docker images used by both surefire and failsafe plugin -->
-        <postgresql.latest.image>docker.io/library/postgres:15</postgresql.latest.image>
-        <mysql.80.image>registry.access.redhat.com/rhscl/mysql-80-rhel7</mysql.80.image>
-        <rhbk.image>registry.redhat.io/rhbk/keycloak-rhel9:22-6</rhbk.image>
+        <postgresql.latest.image>docker.io/postgres:16.1</postgresql.latest.image>
+        <mysql.80.image>registry.redhat.io/rhel9/mysql-80</mysql.80.image>
+        <rhbk.image>registry.redhat.io/rhbk/keycloak-rhel9:22-8</rhbk.image>
         <wiremock-jre8.version>2.35.1</wiremock-jre8.version>
         <build-reporter-maven-extension.version>3.4.4</build-reporter-maven-extension.version>
     </properties>
@@ -265,28 +265,28 @@
                                 <quarkus.s2i.base-native-image>${quarkus.s2i.base-native-image}</quarkus.s2i.base-native-image>
                                 <!-- Services used in test suite -->
                                 <nginx.image>docker.io/library/nginx:1-alpine</nginx.image>
-                                <amqbroker.image>registry.access.redhat.com/amq-broker-7/amq-broker-72-openshift:latest</amqbroker.image>
-                                <amqbroker.1.0x.image>quay.io/artemiscloud/activemq-artemis-broker:1.0.23</amqbroker.1.0x.image>
-                                <redpanda.image>redpandadata/redpanda:v23.2.16</redpanda.image>
+                                <amqbroker.image>registry.redhat.io/amq7/amq-broker-rhel8:7.11</amqbroker.image>
+                                <amqbroker.1.0x.image>quay.io/artemiscloud/activemq-artemis-broker:1.0.25</amqbroker.1.0x.image>
+                                <redpanda.image>redpandadata/redpanda:v23.3.4</redpanda.image>
                                 <postgresql.latest.image>${postgresql.latest.image}</postgresql.latest.image>
-                                <elastic.7x.image>docker.io/library/elasticsearch:7.17.12</elastic.7x.image>
-                                <mysql.57.image>docker.io/library/mysql:5.7.42</mysql.57.image>
+                                <elastic.7x.image>docker.io/library/elasticsearch:7.17.17</elastic.7x.image>
+                                <mysql.57.image>docker.io/library/mysql:5.7.44</mysql.57.image>
                                 <mysql.upstream.80.image>docker.io/library/mysql:8.0</mysql.upstream.80.image>
                                 <mysql.80.image>${mysql.80.image}</mysql.80.image>
-                                <mariadb.10.image>docker.io/library/mariadb:10.10</mariadb.10.image>
+                                <mariadb.10.image>docker.io/library/mariadb:10.11</mariadb.10.image>
                                 <mssql.image>mcr.microsoft.com/mssql/rhel/server:2022-latest</mssql.image>
                                 <!-- Oracle image - we aim to use same version as Dev Services for Oracle so that we only download one image -->
                                 <oracle.image>docker.io/gvenzl/oracle-free:23-slim-faststart</oracle.image>
                                 <db2.image>quay.io/quarkusqeteam/db2:11.5.7.0</db2.image>
                                 <mongodb.image>docker.io/library/mongo:5.0</mongodb.image>
                                 <redis.image>docker.io/library/redis:7.2</redis.image>
-                                <wiremock.image>quay.io/ocpmetal/wiremock</wiremock.image>
+                                <wiremock.image>docker.io/wiremock/wiremock:3.3.1</wiremock.image>
                                 <!-- TODO use official image when/if this fixed https://github.com/hashicorp/docker-consul/issues/184 -->
-                                <consul.image>docker.io/bitnami/consul:1.15.2</consul.image>
+                                <consul.image>docker.io/bitnami/consul:1.17.2</consul.image>
                                 <infinispan.image>quay.io/infinispan/server:14.0</infinispan.image>
                                 <infinispan.expected-log>Infinispan Server.*started in</infinispan.expected-log>
                                 <spring.cloud.server.image>quay.io/quarkusqeteam/spring-cloud-config-server:3.0</spring.cloud.server.image>
-                                <keycloak.image>quay.io/keycloak/keycloak:22.0.5</keycloak.image>
+                                <keycloak.image>quay.io/keycloak/keycloak:23.0.6</keycloak.image>
                                 <bouncycastle.bctls-fips.version>1.0.12.2</bouncycastle.bctls-fips.version>
                             </systemPropertyVariables>
                         </configuration>
@@ -762,12 +762,12 @@
                                 <ts.redhat.registry.enabled>true</ts.redhat.registry.enabled>
                                 <!-- Product Services -->
                                 <rhbk.image>${rhbk.image}</rhbk.image>
-                                <postgresql.10.image>registry.redhat.io/rhscl/postgresql-10-rhel7</postgresql.10.image>
-                                <postgresql.latest.image>registry.redhat.io/rhscl/postgresql-13-rhel7</postgresql.latest.image>
-                                <mariadb.103.image>registry.redhat.io/rhscl/mariadb-103-rhel7</mariadb.103.image>
-                                <mariadb.105.image>registry.redhat.io/rhel8/mariadb-105</mariadb.105.image>
-                                <amq-streams.image>registry.redhat.io/amq7/amq-streams-kafka-33-rhel8</amq-streams.image>
-                                <amq-streams.version>2.3.0</amq-streams.version>
+                                <postgresql.10.image>registry.redhat.io/rhel8/postgresql-10</postgresql.10.image>
+                                <postgresql.latest.image>registry.redhat.io/rhel9/postgresql-15</postgresql.latest.image>
+                                <mariadb.103.image>registry.redhat.io/rhel8/mariadb-103</mariadb.103.image>
+                                <mariadb.105.image>registry.redhat.io/rhel9/mariadb-105</mariadb.105.image>
+                                <amq-streams.image>registry.redhat.io/amq-streams/kafka-35-rhel8</amq-streams.image>
+                                <amq-streams.version>2.6.0</amq-streams.version>
                             </systemPropertyVariables>
                             <rerunFailingTestsCount>1</rerunFailingTestsCount>
                         </configuration>
@@ -817,8 +817,8 @@
                                         <mysql.80.image>registry.redhat.io/rhel8/mysql-80</mysql.80.image>
                                         <mariadb.103.image>registry.redhat.io/rhel8/mariadb-103</mariadb.103.image>
                                         <mariadb.105.image>registry.redhat.io/rhel8/mariadb-105</mariadb.105.image>
-                                        <amq-streams.image>registry.redhat.io/amq7/amq-streams-kafka-27-rhel7</amq-streams.image>
-                                        <amq-streams.version>1.7.0</amq-streams.version>
+                                        <amq-streams.image>registry.redhat.io/amq-streams/kafka-35-rhel8</amq-streams.image>
+                                        <amq-streams.version>2.6.0</amq-streams.version>
                                         <!-- run 'docker manifest inspect mongo:5.0' and use digest for architecture 'arm64', variant '8', os 'linux' -->
                                         <mongodb.image>docker.io/library/mongo@sha256:6f851e31a1b317c6fa681b7dad5f94c622f1c3588477f3b769579dc5462ee659</mongodb.image>
                                     </systemPropertyVariables>
@@ -865,14 +865,14 @@
                                         <ts.ibm-z-p.missing.services.excludes>true</ts.ibm-z-p.missing.services.excludes>
                                         <ts.redhat.registry.enabled>true</ts.redhat.registry.enabled>
                                         <!-- Product Services -->
-                                        <amqbroker.image>registry.redhat.io/amq7/amq-broker-rhel8:7.10</amqbroker.image>
+                                        <amqbroker.image>registry.redhat.io/amq7/amq-broker-rhel8:7.11</amqbroker.image>
                                         <rhbk.image>${rhbk.image}</rhbk.image>
                                         <postgresql.10.image>registry.redhat.io/rhel8/postgresql-10</postgresql.10.image>
                                         <mysql.80.image>registry.redhat.io/rhel8/mysql-80</mysql.80.image>
                                         <mariadb.103.image>registry.redhat.io/rhel8/mariadb-103</mariadb.103.image>
                                         <mariadb.105.image>registry.redhat.io/rhel8/mariadb-105</mariadb.105.image>
-                                        <amq-streams.image>registry.redhat.io/amq7/amq-streams-kafka-33-rhel8</amq-streams.image>
-                                        <amq-streams.version>2.3.0</amq-streams.version>
+                                        <amq-streams.image>registry.redhat.io/amq-streams/kafka-35-rhel8</amq-streams.image>
+                                        <amq-streams.version>2.6.0</amq-streams.version>
                                         <mongodb.image>docker.io/library/mongo:4.4.6</mongodb.image>
                                     </systemPropertyVariables>
                                     <rerunFailingTestsCount>1</rerunFailingTestsCount>
