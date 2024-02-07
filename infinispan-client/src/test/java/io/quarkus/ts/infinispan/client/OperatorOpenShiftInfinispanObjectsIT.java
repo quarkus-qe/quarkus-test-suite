@@ -13,7 +13,6 @@ import java.util.List;
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -28,7 +27,6 @@ import io.restassured.response.Response;
 
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Disabled("https://github.com/quarkusio/quarkus/issues/38018")
 public class OperatorOpenShiftInfinispanObjectsIT extends BaseOpenShiftInfinispanIT {
 
     private static final int CACHE_ENTRY_MAX = 5;
@@ -96,7 +94,6 @@ public class OperatorOpenShiftInfinispanObjectsIT extends BaseOpenShiftInfinispa
 
     @Test
     @Order(4)
-    @Disabled("https://issues.redhat.com/browse/ISPN-13292")
     public void testCacheEvictionByLifespanAndIdleTime() {
         whenAddCacheItemsWithLifespanAndIdleTime(maxThresholdItemList, CACHE_LIFESPAN_SEC + 20, CACHE_IDLE_TIME_SEC);
         await().pollDelay(Duration.ofSeconds(15)).atMost(Duration.ofSeconds(20)).untilAsserted(() -> {

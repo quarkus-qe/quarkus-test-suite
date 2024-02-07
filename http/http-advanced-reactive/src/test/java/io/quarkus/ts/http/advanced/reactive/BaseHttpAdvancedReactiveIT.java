@@ -71,7 +71,6 @@ import io.quarkus.example.HelloWorldProto;
 import io.quarkus.example.StreamingGrpc;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
-import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.scenarios.annotations.EnabledOnQuarkusVersion;
 import io.restassured.http.Header;
 import io.restassured.response.ValidatableResponse;
@@ -418,7 +417,6 @@ public abstract class BaseHttpAdvancedReactiveIT {
     @DisplayName("SSE check for event responses values containing empty data")
     @Test
     @Tag("QUARKUS-3701")
-    @DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/36986")
     void testSseResponseForEmptyData() {
         getApp().given()
                 .get(ROOT_PATH + "/sse/client-update")
