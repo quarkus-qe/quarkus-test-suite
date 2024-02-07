@@ -15,13 +15,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 
 import io.quarkus.test.scenarios.OpenShiftDeploymentStrategy;
 import io.quarkus.test.scenarios.OpenShiftScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.services.knative.eventing.FunqyKnativeEventsService;
 import io.quarkus.test.services.knative.eventing.OpenShiftExtensionFunqyKnativeEventsService;
@@ -29,10 +29,10 @@ import io.quarkus.test.services.knative.eventing.spi.ForwardResponseDTO;
 import io.restassured.common.mapper.TypeRef;
 
 @DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/1142")
+@DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/37142")
 @Tag("use-quarkus-openshift-extension")
 @Tag("serverless")
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
-@Disabled("https://github.com/quarkusio/quarkus/issues/38018")
 public class ServerlessExtensionOpenShiftFunqyKnEventsIT {
 
     @QuarkusApplication
