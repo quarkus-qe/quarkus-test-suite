@@ -10,7 +10,7 @@ import io.quarkus.test.services.KeycloakContainer;
 import io.quarkus.test.services.QuarkusApplication;
 
 @OpenShiftScenario
-@DisabledIfSystemProperty(named = "ts.s390x.missing.services.excludes", matches = "true", disabledReason = "keycloak container not available on s390x.")
+@DisabledIfSystemProperty(named = "ts.ibm-z-p.missing.services.excludes", matches = "true", disabledReason = "keycloak container not available on s390x & ppc64le.")
 public class OpenShiftHttpAdvancedIT extends BaseHttpAdvancedIT {
 
     //TODO Remove workaround after Keycloak is fixed https://github.com/keycloak/keycloak/issues/9916

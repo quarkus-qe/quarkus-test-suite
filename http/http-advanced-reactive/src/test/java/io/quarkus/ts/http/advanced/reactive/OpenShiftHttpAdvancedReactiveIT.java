@@ -10,7 +10,7 @@ import io.quarkus.test.services.KeycloakContainer;
 import io.quarkus.test.services.QuarkusApplication;
 
 @OpenShiftScenario
-@DisabledIfSystemProperty(named = "ts.s390x.missing.services.excludes", matches = "true", disabledReason = "keycloak container not available on s390x.")
+@DisabledIfSystemProperty(named = "ts.ibm-z-p.missing.services.excludes", matches = "true", disabledReason = "keycloak container not available on s390x & ppc64le.")
 public class OpenShiftHttpAdvancedReactiveIT extends BaseHttpAdvancedReactiveIT {
 
     private static final String REALM_DEFAULT = "test-realm";

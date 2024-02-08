@@ -25,7 +25,7 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.utils.Command;
 
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtensionAndDockerBuildStrategy)
-@DisabledIfSystemProperty(named = "ts.s390x.missing.services.excludes", matches = "true", disabledReason = "Crunchy Postgres operator not available on s390x.")
+@DisabledIfSystemProperty(named = "ts.ibm-z-p.missing.services.excludes", matches = "true", disabledReason = "Crunchy Postgres operator not available on s390x & ppc64le.")
 public class OpenShiftPostgreSqlSbIT {
 
     @Inject
