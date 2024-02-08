@@ -17,6 +17,7 @@ import java.util.Map;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.jboss.logging.Logger;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.yaml.snakeyaml.Yaml;
 
@@ -25,6 +26,7 @@ import io.smallrye.openapi.runtime.io.Format;
 import io.vertx.core.json.JsonObject;
 
 @QuarkusScenario
+@Disabled("https://github.com/quarkusio/quarkus/issues/38676")
 public class OpenApiStoreSchemaIT extends BaseOidcIT {
 
     private static final Logger LOGGER = Logger.getLogger(OpenApiStoreSchemaIT.class.getName());
