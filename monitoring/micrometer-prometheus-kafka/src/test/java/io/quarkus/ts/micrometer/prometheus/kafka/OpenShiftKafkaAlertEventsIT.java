@@ -9,7 +9,7 @@ import io.quarkus.test.services.KafkaContainer;
 import io.quarkus.test.services.QuarkusApplication;
 
 @OpenShiftScenario
-@DisabledIfSystemProperty(named = "ts.s390x.missing.services.excludes", matches = "true", disabledReason = "debezium/zookeeper container not available on s390x.")
+@DisabledIfSystemProperty(named = "ts.ibm-z-p.missing.services.excludes", matches = "true", disabledReason = "debezium/zookeeper container not available on s390x & ppc64le.")
 public class OpenShiftKafkaAlertEventsIT extends BaseOpenShiftAlertEventsIT {
 
     @KafkaContainer
