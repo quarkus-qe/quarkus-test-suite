@@ -831,10 +831,10 @@
             </build>
         </profile>
         <profile>
-            <id>openshift-s390x</id>
+            <id>openshift-ibm-z-p</id>
             <activation>
                 <property>
-                    <name>openshift-s390x</name>
+                    <name>openshift-ibm-z-p</name>
                 </property>
             </activation>
             <properties>
@@ -843,10 +843,10 @@
             </properties>
         </profile>
         <profile>
-            <id>openshift-s390x-containers</id>
+            <id>openshift-ibm-z-p-containers</id>
             <activation>
                 <property>
-                    <name>openshift-s390x</name>
+                    <name>openshift-ibm-z-p</name>
                 </property>
             </activation>
             <build>
@@ -862,7 +862,7 @@
                                 </goals>
                                 <configuration>
                                     <systemPropertyVariables>
-                                        <ts.s390x.missing.services.excludes>true</ts.s390x.missing.services.excludes>
+                                        <ts.ibm-z-p.missing.services.excludes>true</ts.ibm-z-p.missing.services.excludes>
                                         <ts.redhat.registry.enabled>true</ts.redhat.registry.enabled>
                                         <!-- Product Services -->
                                         <amqbroker.image>registry.redhat.io/amq7/amq-broker-rhel8:7.10</amqbroker.image>
