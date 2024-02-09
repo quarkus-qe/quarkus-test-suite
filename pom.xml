@@ -36,7 +36,7 @@
         <quarkiverse.pact.version>1.1.0</quarkiverse.pact.version>
         <quarkiverse.smallrye-opentracing.version>1.0.0</quarkiverse.smallrye-opentracing.version>
         <smallrye-stork.version>2.5.0</smallrye-stork.version>
-        <assertj.version>3.25.2</assertj.version>
+        <assertj.version>3.25.3</assertj.version>
         <profile.id>jvm</profile.id>
         <htmlunit.version>3.10.0</htmlunit.version>
         <!-- Faster build when using -DskipTests -->
