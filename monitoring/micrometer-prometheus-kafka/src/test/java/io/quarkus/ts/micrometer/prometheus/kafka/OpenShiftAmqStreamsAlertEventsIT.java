@@ -11,7 +11,7 @@ import io.quarkus.test.services.QuarkusApplication;
 
 @OpenShiftScenario
 @DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/1144")
-@DisabledIfSystemProperty(named = "ts.s390x.missing.services.excludes", matches = "true", disabledReason = "debezium/zookeeper container not available on s390x.")
+@DisabledIfSystemProperty(named = "ts.ibm-z-p.missing.services.excludes", matches = "true", disabledReason = "debezium/zookeeper container not available on s390x & ppc64le.")
 @EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
 public class OpenShiftAmqStreamsAlertEventsIT extends BaseOpenShiftAlertEventsIT {
 
