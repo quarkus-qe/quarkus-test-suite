@@ -519,14 +519,14 @@ Container images used in the tests are:
   - version 10: `registry.redhat.io/rhel8/postgresql-10` (only if `ts.redhat.registry.enabled` is set)
 - MySQL:
   - version 5.7: `mysql:5.7`
-  - version 8.0: `registry.redhat.io/rhel8/mysql-80`
+  - version 8.0: `registry.access.redhat.com/rhscl/mysql-80-rhel7`
 - MariaDB:
   - version 10.11: `mariadb:10.11`
   - version 10.3: `registry.redhat.io/rhel8/mariadb-103`
   - version 10.5: `registry.redhat.io/rhel8/mariadb-105`
 - MSSQL: `mcr.microsoft.com/mssql/rhel/server`
 - Oracle
-  - version 21 XE: `gvenzl/oracle-free:23-slim-faststart`
+  - version 23: `gvenzl/oracle-free:23-slim-faststart`
 
 ### `sql-db/sql-app-oracle`
 Functionally identical to `sql-db/sql-app`, but using only `quarkus-jdbc-oracle` driver. This is a workaround for the missing native Oracle coverage in `sql-db/sql-app`.
