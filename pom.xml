@@ -288,6 +288,7 @@
                                 <spring.cloud.server.image>quay.io/quarkusqeteam/spring-cloud-config-server:3.0</spring.cloud.server.image>
                                 <keycloak.image>quay.io/keycloak/keycloak:23.0.6</keycloak.image>
                                 <bouncycastle.bctls-fips.version>1.0.12.2</bouncycastle.bctls-fips.version>
+                                <rhbk.image>${rhbk.image}</rhbk.image>
                             </systemPropertyVariables>
                         </configuration>
                     </execution>
