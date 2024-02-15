@@ -17,7 +17,7 @@ public class MySqlDatabaseIT extends AbstractSqlDatabaseIT {
 
     static final int MYSQL_PORT = 3306;
 
-    @Container(image = "${mysql.57.image}", port = MYSQL_PORT, expectedLog = "port: " + MYSQL_PORT)
+    @Container(image = "${mysql.80.image}", port = MYSQL_PORT, expectedLog = "port: " + MYSQL_PORT)
     static MySqlService database = new MySqlService();
 
     @QuarkusApplication
