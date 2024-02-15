@@ -12,18 +12,16 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import io.quarkus.test.bootstrap.KeycloakService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
-import io.quarkus.test.services.Container;
+import io.quarkus.test.services.KeycloakContainer;
 import io.quarkus.test.services.QuarkusApplication;
 
-@Disabled // TODO mvavrik: fixing this will probably require fixing config map names created for resources
+@Disabled("https://github.com/quarkusio/quarkus/issues/38803") //TODO mvavrik: fixing this will probably require fixing config map names created for resources
 @OpenShiftScenario
 @DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/1145")
 @EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
 public class OpenShiftRhSsoOidcMtlsIT extends KeycloakMtlsAuthN {
 
-    protected static final String EXPECTED_LOG = "Http management interface listening";
-
-    @Container(image = "${rhsso.image}", expectedLog = EXPECTED_LOG, port = KEYCLOAK_PORT)
+    @KeycloakContainer(command = { "start-dev", "--import-realm" }, image = "${rhbk.image}")
     static KeycloakService rhsso = newRhSsoInstance("/keycloak-realm.json", REALM_DEFAULT).withRedHatFipsDisabled();
 
     /**
