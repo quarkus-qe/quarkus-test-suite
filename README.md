@@ -524,7 +524,6 @@ Container images used in the tests are:
   - version 16: `postgres:16.1`
   - version 10: `registry.redhat.io/rhel8/postgresql-10` (only if `ts.redhat.registry.enabled` is set)
 - MySQL:
-  - version 5.7: `mysql:5.7`
   - version 8.0: `registry.access.redhat.com/rhscl/mysql-80-rhel7`
 - MariaDB:
   - version 10.11: `mariadb:10.11`
