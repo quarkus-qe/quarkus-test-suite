@@ -3,11 +3,11 @@ package io.quarkus.ts.http.jakartarest;
 import static io.restassured.RestAssured.given;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.restassured.response.ResponseBodyExtractionOptions;
 
 @Tag("QUARKUS-1554")
@@ -33,10 +33,10 @@ public class RESTEasyJacksonSerializationIT {
     }
 
     @Test
-    @Disabled("https://github.com/quarkusio/quarkus/issues/22654")
+    @DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/22654")
     public void serializeBigList() {
         String basePath = "/hello/big-serialize-list?expSize=";
-        // Try couple of variations just to tease out possible edge cases
+        // Try a couple of variations just to tease out possible edge cases
         mustBeMoreThanZero(makeQuery(basePath + (LONGEST_EAGER_ALLOC - SECOND_RANDOM_VARIATION)).jsonPath().getInt("size"));
         mustBeMoreThanZero(makeQuery(basePath + (LONGEST_EAGER_ALLOC + FIRST_RANDOM_VARIATION)).jsonPath().getInt("size"));
         mustBeMoreThanZero(makeQuery(basePath + (THIRD_RANDOM_VARIATION * LONGEST_EAGER_ALLOC - FIRST_RANDOM_VARIATION))
