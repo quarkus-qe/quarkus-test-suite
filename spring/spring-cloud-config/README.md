@@ -5,7 +5,7 @@
 We'll start a Spring Cloud Server instance using a property file placed at `src/test/resources`:
 
 ```
-docker run -v /src/test/resources:/config -e SPRING_PROFILES_ACTIVE=native -p 8888:8888 hyness/spring-cloud-config-server
+docker run -v /src/test/resources:/config -e SPRING_PROFILES_ACTIVE=native -p 8888:8888 quay.io/quarkusqeteam/spring-cloud-config-server:3.0
 ```
 
 Note that the property file must be named as `{quarkus.application.name}-{quarkus.profile}.properties` (YAML is also allowed).
