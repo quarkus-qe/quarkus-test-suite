@@ -11,7 +11,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -27,7 +26,6 @@ import io.restassured.response.Response;
 
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Disabled("https://github.com/quarkusio/quarkus/issues/38018")
 public class OperatorOpenShiftInfinispanCountersIT extends BaseOpenShiftInfinispanIT {
 
     private static final AtomicBoolean CLUSTER_CREATED = new AtomicBoolean(false);

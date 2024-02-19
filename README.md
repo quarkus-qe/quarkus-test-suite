@@ -371,6 +371,12 @@ This module will setup a very minimal configuration (only `quarkus-resteasy`) an
 Reactive equivalent of the http/rest-client module.
 Exclusions: XML test. Reason: https://quarkus.io/blog/resteasy-reactive/#what-jax-rs-features-are-missing
 
+Additionally, it's include endpoints to check usage of HTTP/2 using REST client over the http and https.
+HTTP/2 REST client tests check sync and async response by:
+- Two endpoint used by client
+- Eight endpoints used for validation of client request
+
+
 ### `http/rest-client-reactive-vanilla`
 Verifies Rest Client usage, while no request are going only internally on the server.
 This module requires to not have any resteasy dependency, for an issue to be reproducible. 
@@ -505,7 +511,7 @@ The application also uses RESTEasy to expose a RESTful API, Jackson for JSON ser
 There are actually coverage scenarios `sql-app` directory:
 
 - `postgresql`: the PostgreSQL JDBC driver; produces the PostgreSQL-specific build of the application and runs the OpenShift test with PostgreSQL
-- `mysql`: same for MysQL
+- `mysql`: same for MySQL
 - `mariadb`: same for MariaDB
 - `mssql`: same for MSSQL
 - `oracle`: The same case as the others, but for Oracle, only JVM mode is supported. Native mode is not covered due to a bug in Quarkus, which causes it to fail when used in combination with other JDBC drivers (see `OracleDatabaseIT`). OpenShift scenario is also not supported due to another bug (see `OpenShiftOracleDatabaseIT`).
@@ -515,16 +521,18 @@ This might not be recommended for production, but is good enough for test.
 Container images used in the tests are:
 
 - PostgreSQL:
-  - version 13: `postgres:13.6`
-  - version 10: `registry.redhat.io/rhscl/postgresql-10-rhel7` (only if `ts.redhat.registry.enabled` is set)
+  - version 16: `postgres:16.1`
+  - version 10: `registry.redhat.io/rhel8/postgresql-10` (only if `ts.redhat.registry.enabled` is set)
 - MySQL:
   - version 5.7: `mysql:5.7`
   - version 8.0: `registry.access.redhat.com/rhscl/mysql-80-rhel7`
 - MariaDB:
-  - version 10.6: `mariadb:10.6`
+  - version 10.11: `mariadb:10.11`
+  - version 10.3: `registry.redhat.io/rhel8/mariadb-103`
+  - version 10.5: `registry.redhat.io/rhel8/mariadb-105`
 - MSSQL: `mcr.microsoft.com/mssql/rhel/server`
 - Oracle
-  - version 21 XE: `gvenzl/oracle-xe:21-slim-faststart`
+  - version 23: `gvenzl/oracle-free:23-slim-faststart`
 
 ### `sql-db/sql-app-oracle`
 Functionally identical to `sql-db/sql-app`, but using only `quarkus-jdbc-oracle` driver. This is a workaround for the missing native Oracle coverage in `sql-db/sql-app`.

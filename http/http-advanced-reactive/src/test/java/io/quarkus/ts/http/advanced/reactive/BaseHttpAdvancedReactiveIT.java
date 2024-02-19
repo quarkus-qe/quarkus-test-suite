@@ -53,7 +53,6 @@ import jakarta.ws.rs.core.Response;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -72,11 +71,7 @@ import io.quarkus.example.HelloWorldProto;
 import io.quarkus.example.StreamingGrpc;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
-import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.scenarios.annotations.EnabledOnQuarkusVersion;
-import io.quarkus.ts.http.advanced.reactive.clients.HttpVersionClientService;
-import io.quarkus.ts.http.advanced.reactive.clients.HttpVersionClientServiceAsync;
-import io.quarkus.ts.http.advanced.reactive.clients.RestClientServiceBuilder;
 import io.restassured.http.Header;
 import io.restassured.response.ValidatableResponse;
 import io.smallrye.mutiny.Uni;
@@ -96,7 +91,6 @@ public abstract class BaseHttpAdvancedReactiveIT {
     private static final int RETRY = 3;
     private static final String PASSWORD = "password";
     private static final String KEY_STORE_PATH = "META-INF/resources/server.keystore";
-    private static final int ASSERT_TIMEOUT_SECONDS = 10;
     private static final String UTF_8_CHARSET = ";charset=UTF-8";
     private static final String CONTENT = "content";
 
@@ -233,33 +227,6 @@ public abstract class BaseHttpAdvancedReactiveIT {
 
         done.await(TIMEOUT_SEC, TimeUnit.SECONDS);
         assertThat(done.getCount(), equalTo(0L));
-    }
-
-    @Test
-    @DisplayName("Http/2 Client Sync test")
-    @Disabled("blocked by: https://issues.redhat.com/browse/QUARKUS-658")
-    public void http2ClientSync() throws Exception {
-        HttpVersionClientService versionHttpClient = new RestClientServiceBuilder<HttpVersionClientService>(
-                getAppEndpoint()).withHostVerified(true).withPassword(PASSWORD).withKeyStorePath(KEY_STORE_PATH)
-                .build(HttpVersionClientService.class);
-
-        Response resp = versionHttpClient.getClientHttpVersion();
-        assertEquals(SC_OK, resp.getStatus());
-        assertEquals(HttpVersion.HTTP_2.name(), resp.getHeaderString(HttpClientVersionResource.HTTP_VERSION));
-    }
-
-    @Test
-    @DisplayName("Http/2 Client Async test")
-    @Disabled("blocked by: https://issues.redhat.com/browse/QUARKUS-658")
-    public void http2ClientAsync() throws Exception {
-        HttpVersionClientServiceAsync clientServiceAsync = new RestClientServiceBuilder<HttpVersionClientServiceAsync>(
-                getAppEndpoint()).withHostVerified(true).withPassword(PASSWORD).withKeyStorePath(KEY_STORE_PATH)
-                .build(HttpVersionClientServiceAsync.class);
-
-        Response resp = clientServiceAsync.getClientHttpVersion().await().atMost(Duration.ofSeconds(ASSERT_TIMEOUT_SECONDS));
-
-        assertEquals(SC_OK, resp.getStatus());
-        assertEquals(HttpVersion.HTTP_2.name(), resp.getHeaderString(HttpClientVersionResource.HTTP_VERSION));
     }
 
     @Test
@@ -450,7 +417,6 @@ public abstract class BaseHttpAdvancedReactiveIT {
     @DisplayName("SSE check for event responses values containing empty data")
     @Test
     @Tag("QUARKUS-3701")
-    @DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/36986")
     void testSseResponseForEmptyData() {
         getApp().given()
                 .get(ROOT_PATH + "/sse/client-update")

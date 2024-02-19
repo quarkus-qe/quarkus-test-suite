@@ -1,7 +1,5 @@
 package io.quarkus.ts.hibernate.reactive;
 
-import org.junit.jupiter.api.Disabled;
-
 import io.quarkus.test.bootstrap.OracleService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -9,7 +7,6 @@ import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
-@Disabled("https://github.com/quarkusio/quarkus/issues/38263")
 public class OracleDatabaseIT extends AbstractDatabaseHibernateReactiveIT {
 
     private static final String ORACLE_USER = "quarkus_test";

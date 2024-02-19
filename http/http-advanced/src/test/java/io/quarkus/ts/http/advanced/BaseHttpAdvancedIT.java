@@ -25,7 +25,6 @@ import jakarta.ws.rs.core.Response;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -41,9 +40,6 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.EnabledOnQuarkusVersion;
-import io.quarkus.ts.http.advanced.clients.HttpVersionClientService;
-import io.quarkus.ts.http.advanced.clients.HttpVersionClientServiceAsync;
-import io.quarkus.ts.http.advanced.clients.RestClientServiceBuilder;
 import io.smallrye.mutiny.Uni;
 import io.vertx.core.http.HttpVersion;
 import io.vertx.core.json.JsonObject;
@@ -60,7 +56,6 @@ public abstract class BaseHttpAdvancedIT {
     private static final int RETRY = 3;
     private static final String PASSWORD = "password";
     private static final String KEY_STORE_PATH = "META-INF/resources/server.keystore";
-    private static final int ASSERT_TIMEOUT_SECONDS = 10;
     private static final String SSE_ERROR_MESSAGE = "java.lang.ClassNotFoundException: Provider for jakarta.ws.rs.sse.SseEventSource.Builder cannot be found";
 
     protected abstract RestService getApp();
@@ -149,33 +144,6 @@ public abstract class BaseHttpAdvancedIT {
 
         done.await(TIMEOUT_SEC, TimeUnit.SECONDS);
         assertThat(done.getCount(), equalTo(0L));
-    }
-
-    @Test
-    @DisplayName("Http/2 Client Sync test")
-    @Disabled("blocked by: https://issues.redhat.com/browse/QUARKUS-658")
-    public void http2ClientSync() throws Exception {
-        HttpVersionClientService versionHttpClient = new RestClientServiceBuilder<HttpVersionClientService>(
-                getAppEndpoint()).withHostVerified(true).withPassword(PASSWORD).withKeyStorePath(KEY_STORE_PATH)
-                .build(HttpVersionClientService.class);
-
-        Response resp = versionHttpClient.getClientHttpVersion();
-        assertEquals(HttpStatus.SC_OK, resp.getStatus());
-        assertEquals(HttpVersion.HTTP_2.name(), resp.getHeaderString(HttpClientVersionResource.HTTP_VERSION));
-    }
-
-    @Test
-    @DisplayName("Http/2 Client Async test")
-    @Disabled("blocked by: https://issues.redhat.com/browse/QUARKUS-658")
-    public void http2ClientAsync() throws Exception {
-        HttpVersionClientServiceAsync clientServiceAsync = new RestClientServiceBuilder<HttpVersionClientServiceAsync>(
-                getAppEndpoint()).withHostVerified(true).withPassword(PASSWORD).withKeyStorePath(KEY_STORE_PATH)
-                .build(HttpVersionClientServiceAsync.class);
-
-        Response resp = clientServiceAsync.getClientHttpVersion().await().atMost(Duration.ofSeconds(ASSERT_TIMEOUT_SECONDS));
-
-        assertEquals(HttpStatus.SC_OK, resp.getStatus());
-        assertEquals(HttpVersion.HTTP_2.name(), resp.getHeaderString(HttpClientVersionResource.HTTP_VERSION));
     }
 
     @Test

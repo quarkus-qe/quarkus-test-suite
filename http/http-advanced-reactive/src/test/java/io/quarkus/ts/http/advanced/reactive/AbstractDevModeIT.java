@@ -48,12 +48,12 @@ public abstract class AbstractDevModeIT {
     }
 
     @Test
-    @Disabled("https://github.com/quarkusio/quarkus/issues/30511")
+    @Disabled("Wait for this to be fixed https://github.com/HtmlUnit/htmlunit/issues/232 or rewrite from HtmlUnit")
     public void uiChange() throws IOException {
         RestService app = getApp();
         URILike uri = getUri();
 
-        HtmlPage before = webClient.getPage(uri.withPath("/q/dev/io.quarkus.quarkus-vertx-http/config").toString());
+        HtmlPage before = webClient.getPage(uri.withPath("/q/dev-ui/configuration-form-editor").toString());
         QuarkusUIField field = new QuarkusUIField(before.getElementById(PROPERTY));
         assertEquals("42", field.getValue(), "Wrong initial value shown in UI!");
         assertEquals("42", app.getProperty(PROPERTY, ""), "Properties contain wrong initial value!");
