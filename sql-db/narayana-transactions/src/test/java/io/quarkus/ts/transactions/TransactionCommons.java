@@ -20,7 +20,6 @@ import java.util.function.Predicate;
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
@@ -213,7 +212,6 @@ public abstract class TransactionCommons {
     @Order(8)
     @Tag("QUARKUS-2739")
     @Test
-    @Disabled("https://github.com/quarkus-qe/quarkus-test-suite/issues/1397")
     public void testTransactionRecovery() {
         // make it possible to disable transaction recovery tests for certain databases
         testTransactionRecoveryInternal();
