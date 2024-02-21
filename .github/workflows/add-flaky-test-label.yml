@@ -12,12 +12,12 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GH_REPO: ${{ github.repository }}
-      PR_NUMBER: ${{ github.event.number }}
+      PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
     steps:
       - name: 'Download "jobs-with-flaky-tests" artifact'
         env:
           WORKFLOW_ID:  ${{ github.event.workflow_run.id }}
-        run: gh run download $WORKFLOW_ID -n jobs-with-flaky-tests
+        run: gh run download $WORKFLOW_ID -n jobs-with-flaky-tests || true
       - name: 'Add "triage/flaky-test" label'
         if: ${{ hashFiles('**/jobs-with-flaky-tests') != '' }}
         run: |
