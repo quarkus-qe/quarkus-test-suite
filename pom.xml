@@ -63,6 +63,7 @@
         <build-reporter-maven-extension.version>3.4.4</build-reporter-maven-extension.version>
         <reruns>2</reruns>
         <oc.reruns>1</oc.reruns>
+        <flaky-run-reporter.version>0.1.2.Beta1</flaky-run-reporter.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -186,6 +187,12 @@
                 <groupId>io.quarkus.bot</groupId>
                 <artifactId>build-reporter-maven-extension</artifactId>
                 <version>${build-reporter-maven-extension.version}</version>
+            </extension>
+            <!--Creates report about detected flaky tests during SureFire and FailSafe test runs -->
+            <extension>
+                <groupId>io.quarkus.qe</groupId>
+                <artifactId>flaky-run-reporter</artifactId>
+                <version>${flaky-run-reporter.version}</version>
             </extension>
         </extensions>
         <pluginManagement>
