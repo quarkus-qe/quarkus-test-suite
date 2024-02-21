@@ -12,7 +12,6 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GH_REPO: ${{ github.repository }}
-      PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
       WORKFLOW_ID:  ${{ github.event.workflow_run.id }}
     steps:
       - name: 'Download "jobs-with-flaky-tests" artifact'
@@ -23,8 +22,8 @@ jobs:
       - name: 'Add "triage/flaky-test" label'
         if: ${{ hashFiles('**/pr-number') != '' }}
         run: |
-          gh pr edit "$PR_NUMBER" --add-label 'triage/flaky-test'
+          gh pr edit "$(cat pr-number)" --add-label 'triage/flaky-test'
       - name: 'Comment on PR about flaky tests'
         if: ${{ hashFiles('**/pr-number') != '' }}
         run: |
-          gh pr comment "$PR_NUMBER" --body "Following jobs contain at least one flaky test: $(cat jobs-with-flaky-tests)"
+          gh pr comment "$(cat pr-number)" --body "Following jobs contain at least one flaky test: $(cat jobs-with-flaky-tests)"
