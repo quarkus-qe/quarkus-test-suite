@@ -262,6 +262,7 @@ jobs:
       - name: Detect flaky tests
         id: flaky-test-detector
         if: ${{ hashFiles('**/flaky-run-report.json') != '' }}
+        shell: bash
         run: echo "has-flaky-tests=true" >> "$GITHUB_OUTPUT"
       - name: Zip Artifacts
         shell: bash
