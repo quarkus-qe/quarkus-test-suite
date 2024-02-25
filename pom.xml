@@ -60,7 +60,7 @@
         <mysql.80.image>registry.access.redhat.com/rhscl/mysql-80-rhel7</mysql.80.image>
         <rhbk.image>registry.redhat.io/rhbk/keycloak-rhel9:22-8</rhbk.image>
         <wiremock-jre8.version>2.35.2</wiremock-jre8.version>
-        <build-reporter-maven-extension.version>3.4.4</build-reporter-maven-extension.version>
+        <build-reporter-maven-extension.version>3.5.0</build-reporter-maven-extension.version>
         <reruns>2</reruns>
         <oc.reruns>1</oc.reruns>
         <flaky-run-reporter.version>0.1.2.Beta1</flaky-run-reporter.version>
