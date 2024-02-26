@@ -15,9 +15,10 @@ import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.QuarkusApplication;
+import io.restassured.specification.RequestSpecification;
 
 @QuarkusScenario
-public class TLSIT implements GRPCIT {
+public class TLSIT implements GRPCIT, StreamingHttpIT {
 
     private static ManagedChannel channel;
     @QuarkusApplication(grpc = true, ssl = true)
@@ -50,6 +51,11 @@ public class TLSIT implements GRPCIT {
     @Override
     public RestService app() {
         return app;
+    }
+
+    @Override
+    public RequestSpecification given() {
+        return app().relaxedHttps().given();
     }
 
     @AfterAll

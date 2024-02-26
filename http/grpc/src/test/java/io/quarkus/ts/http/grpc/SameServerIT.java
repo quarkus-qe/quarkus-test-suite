@@ -11,7 +11,7 @@ import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
-public class SameServerIT implements GRPCIT {
+public class SameServerIT implements GRPCIT, StreamingHttpIT {
 
     @QuarkusApplication(grpc = true)
     static final GrpcService app = new GrpcService();
