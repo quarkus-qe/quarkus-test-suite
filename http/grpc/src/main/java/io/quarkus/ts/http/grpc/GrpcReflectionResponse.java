@@ -1,7 +1,10 @@
-package io.quarkus.ts.http.advanced.reactive;
+package io.quarkus.ts.http.grpc;
 
 import java.util.List;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
+@RegisterForReflection
 public final class GrpcReflectionResponse {
     private final int serviceCount;
     private final List<String> serviceList;
