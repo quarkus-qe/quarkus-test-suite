@@ -8,7 +8,7 @@ import io.quarkus.test.scenarios.OpenShiftScenario;
 
 @OpenShiftScenario
 @Disabled("https://github.com/quarkus-qe/quarkus-test-framework/issues/1052+1053")
-public class OpenShiftGRPCIT implements GRPCIT, StreamingHttpIT {
+public class OpenShiftGRPCIT implements GRPCIT, StreamingHttpIT, ReflectionHttpIT {
 
     @Override
     public RestService app() {
