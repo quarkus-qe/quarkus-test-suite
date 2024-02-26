@@ -510,6 +510,7 @@
                 <module>http/graphql-telemetry</module>
                 <module>http/vertx</module>
                 <module>http/management</module>
+                <module>http/grpc</module>
             </modules>
         </profile>
         <profile>
