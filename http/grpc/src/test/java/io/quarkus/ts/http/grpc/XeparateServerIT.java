@@ -11,7 +11,7 @@ import io.quarkus.test.services.QuarkusApplication;
 @QuarkusScenario
 @DisplayName("SeparateServer")
 //This test should be the last, or we get complains, that the channel was not shut down before closure. This is a bug in our framework.
-public class XeparateServerIT implements GRPCIT, StreamingHttpIT {
+public class XeparateServerIT implements GRPCIT, StreamingHttpIT, ReflectionHttpIT {
 
     @QuarkusApplication(grpc = true)
     static final GrpcService app = (GrpcService) new GrpcService()
