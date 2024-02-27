@@ -22,15 +22,8 @@ public class TLSIT implements GRPCIT, StreamingHttpIT, ReflectionHttpIT {
 
     private static ManagedChannel channel;
     @QuarkusApplication(grpc = true, ssl = true)
-    // See https://github.com/quarkusio/quarkus/issues/38965 to learn, why we use these parameters
     static final GrpcService app = (GrpcService) new GrpcService()
-            .withProperty("quarkus.grpc.clients.plain.port", "${quarkus.http.ssl-port}")
-            //            .withProperty("quarkus.grpc.clients.streaming.port", "${quarkus.http.ssl-port}")
-            .withProperty("quarkus.http.ssl.certificate.files", "tls/server.pem")
-            .withProperty("quarkus.http.ssl.certificate.key-files", "tls/server.key")
-            .withProperty("quarkus.grpc.server.ssl.certificate", "tls/server.pem")
-            .withProperty("quarkus.grpc.server.ssl.key", "tls/server.key")
-            .withProperty("quarkus.grpc.clients.plain.ssl.trust-store", "tls/ca.pem");
+            .withProperty("quarkus.profile", "ssl");
 
     public Channel getChannel() {
         if (channel != null) {
