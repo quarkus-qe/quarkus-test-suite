@@ -9,12 +9,8 @@
     </parent>
     <artifactId>grpc</artifactId>
     <packaging>jar</packaging>
-    <name>Quarkus QE TS: HTTP: GRPS</name>
+    <name>Quarkus QE TS: HTTP: gRPC</name>
     <dependencies>
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-resteasy-reactive</artifactId>
-        </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-resteasy-reactive-jackson</artifactId>
