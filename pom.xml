@@ -26,7 +26,7 @@
         <formatter-maven-plugin.version>2.23.0</formatter-maven-plugin.version>
         <impsort-maven-plugin.version>1.9.0</impsort-maven-plugin.version>
         <xml-format-maven-plugin.version>3.3.1</xml-format-maven-plugin.version>
-        <checkstyle.version>10.13.0</checkstyle.version>
+        <checkstyle.version>10.14.0</checkstyle.version>
         <jsoup.version>1.17.2</jsoup.version>
         <!-- TODO: uncomment Camel Quarkus BOM when Camel Quarkus 3 is released -->
         <!-- <camel-quarkus-bom.version>2.16.0</camel-quarkus-bom.version> -->
