@@ -2,10 +2,10 @@
 
 1. Start Spring Cloud Server from Docker
 
-We'll start a Spring Cloud Server instance using a property file placed at `src/test/resources`:
-
+We'll start a Spring Cloud Server instance using a property file placed at `/src/test/resources/config`
+Note that you should use absolute path to config directory
 ```
-docker run -v /src/test/resources:/config -e SPRING_PROFILES_ACTIVE=native -p 8888:8888 quay.io/quarkusqeteam/spring-cloud-config-server:3.0
+docker run -v /src/test/resources/config:/config -e SPRING_PROFILES_ACTIVE=native -p 8888:8888 quay.io/quarkusqeteam/spring-cloud-config-server:4.1
 ```
 
 Note that the property file must be named as `{quarkus.application.name}-{quarkus.profile}.properties` (YAML is also allowed).
