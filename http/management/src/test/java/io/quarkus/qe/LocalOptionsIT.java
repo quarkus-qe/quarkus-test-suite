@@ -27,7 +27,8 @@ public class LocalOptionsIT {
     static final RestService tls = new RestService()
             .withProperty("quarkus.management.port", "9003")
             .withProperty("quarkus.management.ssl.certificate.key-store-file", "META-INF/resources/server.keystore")
-            .withProperty("quarkus.management.ssl.certificate.key-store-password", "password");
+            .withProperty("quarkus.management.ssl.certificate.key-store-password", "password")
+            .withProperty("quarkus.management.ssl.certificate.key-store-file-type", "PKCS12");
 
     @QuarkusApplication
     static final RestService unmanaged = new RestService()
