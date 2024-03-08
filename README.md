@@ -582,6 +582,8 @@ PanacheRepository is a facade class. Facade class can override certain methods t
 PanacheRepositoryResource methods.
 
 - AgroalPoolTest, will cover how the db pool is managed in terms of IDLE-timeout, max connections and concurrency.
+- InitContainer tests, which cover, whether we can use custom init containers
+  - Dockerfile for custom init container can be found inside resources folder 
 
 ### `sql-db/reactive-rest-data-panache`
 
