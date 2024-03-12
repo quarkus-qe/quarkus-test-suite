@@ -18,7 +18,7 @@ import io.restassured.response.Response;
 public class ResteasyReactiveUsingXmlIT extends BaseResteasyIT {
 
     @QuarkusApplication(classes = ReactiveResource.class, dependencies = {
-            @Dependency(artifactId = "quarkus-resteasy-reactive-jaxb")
+            @Dependency(artifactId = "quarkus-rest-jaxb")
     })
     static final RestService app = new RestService();
 

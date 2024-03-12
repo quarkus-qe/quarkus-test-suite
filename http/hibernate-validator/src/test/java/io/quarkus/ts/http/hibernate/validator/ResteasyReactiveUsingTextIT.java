@@ -14,7 +14,7 @@ import io.quarkus.ts.http.hibernate.validator.sources.ReactiveResource;
 public class ResteasyReactiveUsingTextIT extends BaseResteasyIT {
 
     @QuarkusApplication(classes = ReactiveResource.class, dependencies = {
-            @Dependency(artifactId = "quarkus-resteasy-reactive")
+            @Dependency(artifactId = "quarkus-rest")
     })
     static final RestService app = new RestService();
 
