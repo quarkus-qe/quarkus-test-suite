@@ -3,6 +3,7 @@ package io.quarkus.ts.http.pact;
 import java.util.HashMap;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +19,7 @@ import au.com.dius.pact.core.model.V4Interaction;
 import au.com.dius.pact.core.model.V4Pact;
 import au.com.dius.pact.core.model.annotations.Pact;
 
+@Disabled("https://github.com/quarkiverse/quarkus-pact/issues/191")
 @QuarkusTest
 @Tag("QUARKUS-1024")
 @ExtendWith(PactConsumerTestExt.class)

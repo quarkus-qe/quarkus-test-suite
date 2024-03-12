@@ -1,6 +1,7 @@
 package io.quarkus.ts.http.pact;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +15,7 @@ import au.com.dius.pact.provider.junit5.PactVerificationInvocationContextProvide
 import au.com.dius.pact.provider.junitsupport.Provider;
 import au.com.dius.pact.provider.junitsupport.loader.PactFolder;
 
+@Disabled("https://github.com/quarkiverse/quarkus-pact/issues/191")
 @QuarkusTest
 @Tag("QUARKUS-1024")
 @Provider("TheProvider")
