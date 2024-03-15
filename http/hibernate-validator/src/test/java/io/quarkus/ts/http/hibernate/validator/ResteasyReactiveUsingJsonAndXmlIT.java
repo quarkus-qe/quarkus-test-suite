@@ -20,8 +20,8 @@ import io.restassured.response.Response;
 public class ResteasyReactiveUsingJsonAndXmlIT extends BaseResteasyIT {
 
     @QuarkusApplication(classes = ReactiveResource.class, dependencies = {
-            @Dependency(artifactId = "quarkus-resteasy-reactive-jackson"),
-            @Dependency(artifactId = "quarkus-resteasy-reactive-jaxb")
+            @Dependency(artifactId = "quarkus-rest-jackson"),
+            @Dependency(artifactId = "quarkus-rest-jaxb")
     })
     static final RestService app = new RestService();
 

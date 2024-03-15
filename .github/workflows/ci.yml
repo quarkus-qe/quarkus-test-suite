@@ -76,8 +76,11 @@ jobs:
 
           for module in $MODULES
           do
-            if [[ "${{ steps.files.outputs.all_changed_and_modified_files }}" =~ ("$module") ]] ; then
-                CHANGED=$(echo $CHANGED" "$module)
+            # FIXME: remove next condition when OpenTracing version is bumped
+            if [[ "$module" != *"opentracing"* ]] ; then
+              if [[ "${{ steps.files.outputs.all_changed_and_modified_files }}" =~ ("$module") ]] ; then
+                  CHANGED=$(echo $CHANGED" "$module)
+              fi
             fi
           done
 

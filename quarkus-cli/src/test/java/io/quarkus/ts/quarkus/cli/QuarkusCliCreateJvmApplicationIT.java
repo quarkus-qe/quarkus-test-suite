@@ -51,10 +51,10 @@ import io.quarkus.test.services.quarkus.model.QuarkusProperties;
 @DisabledOnNative // Only for JVM verification
 public class QuarkusCliCreateJvmApplicationIT {
 
-    static final String RESTEASY_REACTIVE_EXTENSION = "quarkus-resteasy-reactive";
+    static final String RESTEASY_REACTIVE_EXTENSION = "quarkus-rest";
     static final String SMALLRYE_HEALTH_EXTENSION = "quarkus-smallrye-health";
     static final String SPRING_WEB_EXTENSION = "quarkus-spring-web";
-    static final String RESTEASY_REACTIVE_JACKSON_EXTENSION = "quarkus-resteasy-reactive-jackson";
+    static final String RESTEASY_REACTIVE_JACKSON_EXTENSION = "quarkus-rest-jackson";
     static final String ROOT_FOLDER = "";
     static final String DOCKER_FOLDER = "/src/main/docker";
     static final String JDK_21 = "21";
@@ -65,6 +65,7 @@ public class QuarkusCliCreateJvmApplicationIT {
     @Inject
     static QuarkusCliClient cliClient;
 
+    @Disabled // TODO: enable when 3.9.x platform is released
     @Tag("QUARKUS-1071")
     @Tag("QUARKUS-1072")
     @Test
@@ -115,6 +116,7 @@ public class QuarkusCliCreateJvmApplicationIT {
         assertDockerJavaVersion(getFileFromApplication(app, DOCKER_FOLDER, DOCKERFILE_JVM), JDK_17);
     }
 
+    @Disabled // TODO: enable when 3.9.x platform is released
     @Tag("QUARKUS-1071")
     @Test
     public void shouldCreateApplicationWithGradleOnJvm() {
@@ -220,6 +222,7 @@ public class QuarkusCliCreateJvmApplicationIT {
                 RESTEASY_REACTIVE_JACKSON_EXTENSION);
     }
 
+    @Disabled // TODO: enable when 3.9.x platform is released
     @Tag("QUARKUS-1071")
     @Test
     public void shouldCreateApplicationWithCodeStarter() {
@@ -227,7 +230,7 @@ public class QuarkusCliCreateJvmApplicationIT {
         QuarkusCliRestService app = cliClient.createApplication("app",
                 defaultWithFixedStream().withExtensions(RESTEASY_REACTIVE_JACKSON_EXTENSION, SPRING_WEB_EXTENSION));
 
-        // Verify By default, it installs only "quarkus-resteasy-reactive-jackson" and "quarkus-spring-web"
+        // Verify By default, it installs only "quarkus-rest-jackson" and "quarkus-spring-web"
         assertInstalledExtensions(app, RESTEASY_REACTIVE_JACKSON_EXTENSION, SPRING_WEB_EXTENSION);
 
         // Start using DEV mode
@@ -266,6 +269,7 @@ public class QuarkusCliCreateJvmApplicationIT {
         untilAsserted(() -> app.given().get("/q/health").then().statusCode(HttpStatus.SC_NOT_FOUND));
     }
 
+    @Disabled // TODO: enable when 3.9.x platform is released
     @Tag("https://github.com/quarkusio/quarkus/issues/25184")
     @Test
     public void shouldKeepUsingTheSameQuarkusVersionAfterReload() {
@@ -305,19 +309,20 @@ public class QuarkusCliCreateJvmApplicationIT {
                 "JaCoCo exec file doesn't exist");
     }
 
+    @Disabled // TODO: enable when 3.9.x platform is released
     @Tag("QUARKUS-1296")
     @Test
     public void verifyRestEasyReactiveAndClassicResteasyCollisionUserMsg() {
         QuarkusCliRestService app = cliClient.createApplication("dependencyCollision",
-                defaultWithFixedStream().withExtensions("resteasy", "resteasy-reactive"));
+                defaultWithFixedStream().withExtensions("resteasy", "rest"));
 
         Result buildResult = app.buildOnJvm();
 
         assertFalse(buildResult.isSuccessful(),
-                "Should fail because 'resteasy' and 'resteasy-reactive' extensions are not compatible");
+                "Should fail because 'resteasy' and 'rest' extensions are not compatible");
 
         assertBuildError(buildResult, "Please make sure there is only one provider of the following capabilities");
-        assertBuildError(buildResult, "io.quarkus:quarkus-resteasy-reactive");
+        assertBuildError(buildResult, "io.quarkus:quarkus-rest");
         assertBuildError(buildResult, "io.quarkus:quarkus-resteasy");
     }
 

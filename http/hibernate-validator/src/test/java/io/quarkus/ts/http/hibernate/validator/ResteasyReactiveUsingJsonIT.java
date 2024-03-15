@@ -18,7 +18,7 @@ import io.restassured.response.Response;
 public class ResteasyReactiveUsingJsonIT extends BaseResteasyIT {
 
     @QuarkusApplication(classes = ReactiveResource.class, dependencies = {
-            @Dependency(artifactId = "quarkus-resteasy-reactive-jackson")
+            @Dependency(artifactId = "quarkus-rest-jackson")
     })
     static final RestService app = new RestService();
 
