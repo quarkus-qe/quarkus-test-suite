@@ -65,6 +65,7 @@ public class QuarkusCliCreateJvmApplicationIT {
     @Inject
     static QuarkusCliClient cliClient;
 
+    @Disabled // TODO: enable when 3.9.x platform is released
     @Tag("QUARKUS-1071")
     @Tag("QUARKUS-1072")
     @Test
@@ -115,6 +116,7 @@ public class QuarkusCliCreateJvmApplicationIT {
         assertDockerJavaVersion(getFileFromApplication(app, DOCKER_FOLDER, DOCKERFILE_JVM), JDK_17);
     }
 
+    @Disabled // TODO: enable when 3.9.x platform is released
     @Tag("QUARKUS-1071")
     @Test
     public void shouldCreateApplicationWithGradleOnJvm() {
@@ -220,6 +222,7 @@ public class QuarkusCliCreateJvmApplicationIT {
                 RESTEASY_REACTIVE_JACKSON_EXTENSION);
     }
 
+    @Disabled // TODO: enable when 3.9.x platform is released
     @Tag("QUARKUS-1071")
     @Test
     public void shouldCreateApplicationWithCodeStarter() {
@@ -266,6 +269,7 @@ public class QuarkusCliCreateJvmApplicationIT {
         untilAsserted(() -> app.given().get("/q/health").then().statusCode(HttpStatus.SC_NOT_FOUND));
     }
 
+    @Disabled // TODO: enable when 3.9.x platform is released
     @Tag("https://github.com/quarkusio/quarkus/issues/25184")
     @Test
     public void shouldKeepUsingTheSameQuarkusVersionAfterReload() {
@@ -305,6 +309,7 @@ public class QuarkusCliCreateJvmApplicationIT {
                 "JaCoCo exec file doesn't exist");
     }
 
+    @Disabled // TODO: enable when 3.9.x platform is released
     @Tag("QUARKUS-1296")
     @Test
     public void verifyRestEasyReactiveAndClassicResteasyCollisionUserMsg() {

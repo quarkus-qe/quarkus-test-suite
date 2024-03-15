@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import jakarta.inject.Inject;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -13,6 +14,7 @@ import io.quarkus.test.bootstrap.QuarkusCliRestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.EnabledOnNative;
 
+@Disabled // TODO: enable when 3.9.x platform is released
 @Tag("QUARKUS-960")
 @Tag("quarkus-cli")
 @QuarkusScenario
