@@ -43,6 +43,7 @@ import io.quarkus.test.bootstrap.QuarkusCliClient;
 import io.quarkus.test.bootstrap.QuarkusCliRestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnNative;
+import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 import io.quarkus.test.services.quarkus.model.QuarkusProperties;
 
 @Tag("QUARKUS-960")
@@ -176,6 +177,7 @@ public class QuarkusCliCreateJvmApplicationIT {
 
     @Tag("QUARKUS-1071")
     @Test
+    @DisabledOnQuarkusVersion(version = ".*redhat.*", reason = "https://issues.redhat.com/browse/QUARKUS-3371")
     public void shouldCreateApplicationWithJbangOnJvm() {
 
         // Create application
