@@ -911,7 +911,7 @@ client "acks" them, i.e. acknowledges their processing.
 ### `messaging/amqp-reactive`
 
 Verifies that JMS server is up and running and Quarkus can communicate with this service.
-This module is using Reactive Messaging approach by leveraging `quarkus-smallrye-reactive-messaging-amqp` extension.
+This module is using Quarkus Messaging approach by leveraging `quarkus-messaging-amqp` extension.
 
 There is a PriceProducer that generates message every second, the value of the message is "tick number" multiplied by 10 modulo 100.
 PriceConsumer puts received number into ConcurrentLinkedQueue of Integers.
