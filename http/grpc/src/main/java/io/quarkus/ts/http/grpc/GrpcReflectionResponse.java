@@ -1,4 +1,4 @@
-package io.quarkus.ts.http.advanced.reactive;
+package io.quarkus.ts.http.grpc;
 
 import java.util.List;
 
