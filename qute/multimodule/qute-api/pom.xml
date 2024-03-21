@@ -21,7 +21,7 @@
             </activation>
             <properties>
                 <!-- To not build the module on Native -->
-                <quarkus.package.type>fast-jar</quarkus.package.type>
+                <quarkus.build.skip>true</quarkus.build.skip>
             </properties>
         </profile>
     </profiles>
