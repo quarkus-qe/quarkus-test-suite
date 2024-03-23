@@ -9,6 +9,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.http.HttpStatus;
@@ -53,7 +54,7 @@ public class OpentelemetryReactiveIT {
     public void testContextPropagation() {
         int pageLimit = 10;
         String operationName = "GET /ping/pong";
-        String[] operations = new String[] { "GET /ping/pong", "GET", "GET /hello" };
+        String[] operations = new String[] { "GET /ping/pong", "GET /hello", "GET /hello" };
 
         await().atMost(1, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(1)).untilAsserted(() -> {
             whenDoPingPongRequest();
@@ -61,6 +62,11 @@ public class OpentelemetryReactiveIT {
             thenTriggeredOperationsMustBe(containsInAnyOrder(operations));
             thenTraceSpanSizeMustBe(is(3)); // 2 endpoint's + rest client call
             verifyStandardSourceCodeAttributesArePresent(operationName);
+            ArrayList<String> spanKinds = resp.body().path(
+                    "data[0].spans.findAll { it.operationName == '%s' }.tags.flatten().findAll { it.key == 'span.kind' }.value.flatten()",
+                    "GET /hello");
+            Assertions.assertTrue(spanKinds.contains("client"));
+            Assertions.assertTrue(spanKinds.contains("server"));
         });
     }
 

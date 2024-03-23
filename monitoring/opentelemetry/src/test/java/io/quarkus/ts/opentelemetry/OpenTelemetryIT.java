@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -19,6 +20,7 @@ import java.util.stream.Stream;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matcher;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -58,7 +60,7 @@ public class OpenTelemetryIT {
     public void testContextPropagation() {
         int pageLimit = 10;
         String operationName = "GET /ping/pong";
-        String[] operations = new String[] { "GET /ping/pong", "GET", "GET /hello" };
+        String[] operations = new String[] { "GET /ping/pong", "GET /hello", "GET /hello" };
 
         await().atMost(1, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(1)).untilAsserted(() -> {
             whenDoPingPongRequest();
@@ -66,6 +68,12 @@ public class OpenTelemetryIT {
             thenTriggeredOperationsMustBe(containsInAnyOrder(operations));
             thenTraceSpanSizeMustBe(is(3)); // 2 endpoint's + rest client call
             verifyStandardSourceCodeAttributesArePresent(operationName);
+
+            ArrayList<String> spanKinds = resp.body().path(
+                    "data[0].spans.findAll { it.operationName == '%s' }.tags.flatten().findAll { it.key == 'span.kind' }.value.flatten()",
+                    "GET /hello");
+            Assertions.assertTrue(spanKinds.contains("client"));
+            Assertions.assertTrue(spanKinds.contains("server"));
         });
     }
 
