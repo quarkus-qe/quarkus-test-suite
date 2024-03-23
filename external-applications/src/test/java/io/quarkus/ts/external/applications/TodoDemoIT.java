@@ -25,13 +25,13 @@ public class TodoDemoIT {
             // store data in /tmp/psql as in OpenShift we don't have permissions to /var/lib/postgresql/data
             .withProperty("PGDATA", "/tmp/psql");
 
-    @GitRepositoryQuarkusApplication(repo = TODO_REPO, mavenArgs = "-Dquarkus.package.type=uber-jar" + DEFAULT_OPTIONS)
+    @GitRepositoryQuarkusApplication(repo = TODO_REPO, mavenArgs = "-Dquarkus.package.jar.type=uber-jar" + DEFAULT_OPTIONS)
     static final RestService app = new RestService()
             .withProperty("quarkus.datasource.username", database.getUser())
             .withProperty("quarkus.datasource.password", database.getPassword())
             .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl);
 
-    @GitRepositoryQuarkusApplication(repo = TODO_REPO, artifact = "todo-backend-1.0-SNAPSHOT.jar", mavenArgs = "-Dquarkus.package.type=uber-jar -Dquarkus.package.add-runner-suffix=false"
+    @GitRepositoryQuarkusApplication(repo = TODO_REPO, artifact = "todo-backend-1.0-SNAPSHOT.jar", mavenArgs = "-Dquarkus.package.jar.type=uber-jar -Dquarkus.package.add-runner-suffix=false"
             + DEFAULT_OPTIONS)
     static final RestService replaced = new RestService()
             .withProperty("quarkus.datasource.username", database.getUser())
