@@ -13,9 +13,7 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 
 import org.infinispan.client.hotrod.RemoteCache;
-import org.infinispan.query.dsl.Query;
-import org.infinispan.query.dsl.QueryFactory;
-import org.infinispan.query.dsl.QueryResult;
+import org.infinispan.commons.api.query.Query;
 
 import io.quarkus.infinispan.client.Remote;
 
@@ -49,15 +47,13 @@ public class ShopItemResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<ShopItem> listItems(@QueryParam("query") String query) {
-        QueryFactory qf = org.infinispan.client.hotrod.Search.getQueryFactory(cache_items);
         Query<ShopItem> searchQuery;
         if (query != null) {
-            searchQuery = qf.create(query);
+            searchQuery = cache_items.query(query);
         } else {
-            searchQuery = qf.create("from quarkus_qe.ShopItem");
+            searchQuery = cache_items.query("from quarkus_qe.ShopItem");
         }
-        QueryResult<ShopItem> queryResult = searchQuery.execute();
-        return queryResult.list();
+        return searchQuery.execute().list();
     }
 
     @GET
