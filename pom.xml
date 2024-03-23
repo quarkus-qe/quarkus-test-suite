@@ -19,7 +19,7 @@
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
         <quarkus.platform.version>999-SNAPSHOT</quarkus.platform.version>
         <quarkus.ide.version>3.8.3</quarkus.ide.version>
-        <quarkus.qe.framework.version>1.4.2.Beta8</quarkus.qe.framework.version>
+        <quarkus.qe.framework.version>1.4.2.Beta9</quarkus.qe.framework.version>
         <quarkus-qpid-jms.version>2.6.1</quarkus-qpid-jms.version>
         <apache-httpclient-fluent.version>4.5.14</apache-httpclient-fluent.version>
         <confluent.kafka-avro-serializer.version>7.5.1</confluent.kafka-avro-serializer.version>
@@ -716,7 +716,7 @@
                                 <configuration>
                                     <systemPropertyVariables>
                                         <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
-                                        <quarkus.package.type>${quarkus.package.type}</quarkus.package.type>
+                                        <quarkus.native.enabled>${quarkus.native.enabled}</quarkus.native.enabled>
                                         <quarkus.native.container-build>${quarkus.native.container-build}</quarkus.native.container-build>
                                         <quarkus.native.native-image-xmx>${quarkus.native.native-image-xmx}</quarkus.native.native-image-xmx>
                                         <quarkus.native.builder-image>${quarkus.native.builder-image}</quarkus.native.builder-image>
@@ -729,7 +729,7 @@
             </build>
             <properties>
                 <profile.id>native</profile.id>
-                <quarkus.package.type>native</quarkus.package.type>
+                <quarkus.native.enabled>true</quarkus.native.enabled>
                 <quarkus.native.container-build>true</quarkus.native.container-build>
                 <quarkus.native.native-image-xmx>4g</quarkus.native.native-image-xmx>
                 <quarkus.native.builder-image>quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-21</quarkus.native.builder-image>

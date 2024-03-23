@@ -151,7 +151,7 @@ Be sure that GraalVM is installed by running the following command, otherwise yo
 User: `Deploy in OpenShift the module http-minimum compiled with my local GraalVM in order to build my application`
 
 ```shell
-mvn clean verify -Popenshift -Dall-modules -Dquarkus.package.type=native -pl http/http-minimum
+mvn clean verify -Popenshift -Dall-modules -Dquarkus.package.jar.type=native -pl http/http-minimum
 ```
 
 ### Bare metal
