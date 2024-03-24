@@ -8,7 +8,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import jakarta.inject.Provider;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -23,46 +22,44 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import io.quarkus.runtime.StartupEvent;
 
-@Path("/kafka/ssl")
+@Path("/kafka/sasl/ssl")
 @ApplicationScoped
 @Produces(MediaType.APPLICATION_JSON)
-public class SslKafkaEndpoint extends KafkaEndpoint {
+public class SaslSslKafkaEndpoint extends KafkaEndpoint {
 
     @Inject
-    @Named("kafka-consumer-ssl")
-    Provider<KafkaConsumer<String, String>> sslConsumer;
+    @Named("kafka-consumer-sasl-ssl")
+    KafkaConsumer<String, String> saslSslConsumer;
 
     @Inject
-    @Named("kafka-producer-ssl")
-    Provider<KafkaProducer<String, String>> sslProducer;
+    @Named("kafka-producer-sasl-ssl")
+    KafkaProducer<String, String> saslSslProducer;
 
     @Inject
-    @Named("kafka-admin-ssl")
-    Provider<AdminClient> sslAdmin;
+    @Named("kafka-admin-sasl-ssl")
+    AdminClient saslSslAdmin;
 
     public void initialize(@Observes StartupEvent ev,
             @ConfigProperty(name = "kafka.ssl.enable", defaultValue = "false") Boolean sslEnabled) {
         if (sslEnabled) {
-            super.initialize(sslConsumer.get());
+            super.initialize(saslSslConsumer);
         }
     }
 
     @Path("/topics")
     @GET
     public Set<String> getTopics() throws InterruptedException, ExecutionException, TimeoutException {
-        return super.getTopics(sslAdmin.get());
+        return super.getTopics(saslSslAdmin);
     }
 
     @POST
-    public long post(@QueryParam("key") String key, @QueryParam("value") String value)
+    public long produceEvent(@QueryParam("key") String key, @QueryParam("value") String value)
             throws InterruptedException, ExecutionException, TimeoutException {
-        return super.produceEvent(sslProducer.get(), key, value);
+        return super.produceEvent(saslSslProducer, key, value);
     }
 
-    @Override
     @GET
     public String getLast() {
         return super.getLast();
     }
-
 }
