@@ -3,13 +3,11 @@ package io.quarkus.ts.http.jakartarest.reactive;
 import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.OpenShiftScenario;
 
 @OpenShiftScenario
-@Disabled("https://github.com/quarkus-qe/quarkus-test-framework/issues/1034")
 public class OpenShiftExecutionModelIT extends ExecutionModelIT {
     //TODO https://github.com/quarkusio/quarkus/issues/29642
     // investigate: when FILE_SIZE is set to 99999999, we are getting a
