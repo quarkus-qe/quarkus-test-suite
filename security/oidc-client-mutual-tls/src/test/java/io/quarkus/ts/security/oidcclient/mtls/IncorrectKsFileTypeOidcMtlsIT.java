@@ -41,10 +41,11 @@ public class IncorrectKsFileTypeOidcMtlsIT extends BaseOidcMtlsIT {
 
     @Test
     void failAuthenticate() {
-        given()
+        app
+                .given()
                 .when()
                 .auth().oauth2(getToken(NORMAL_USER))
-                .get(RESOURCE_PATH)
+                .get(RESOURCE_PATH + "/oidc")
                 .then()
                 .statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
     }

@@ -30,17 +30,21 @@ public abstract class BaseOidcMtlsIT {
     protected static final String JKS_KEYSTORE_FILE_EXTENSION = "jks";
     protected static final String P12_KEYSTORE_FILE_TYPE = "PKCS12";
     protected static final String P12_KEYSTORE_FILE_EXTENSION = "p12";
+    protected static final String INCORRECT_FILE_TYPE = "incorrect-type";
 
     protected static RestService createRestService(String fileType, String keystoreFileExtension, Supplier<String> realmUrl) {
         return new RestService()
                 .withProperty("quarkus.oidc.tls.verification", "required")
-                .withProperty("quarkus.oidc.tls.trust-store-file", "client-truststore." + keystoreFileExtension)
-                .withProperty("quarkus.oidc.tls.trust-store-password", "password")
-                .withProperty("quarkus.oidc.tls.key-store-file", "client-keystore." + keystoreFileExtension)
-                .withProperty("quarkus.oidc.tls.key-store-password", "password")
+                .withProperty("client-ts-file", "client-truststore." + keystoreFileExtension)
+                .withProperty("server-ts-file", "server-truststore." + keystoreFileExtension)
+                .withProperty("client-ks-file", "client-keystore." + keystoreFileExtension)
+                .withProperty("server-ks-file", "server-keystore." + keystoreFileExtension)
                 .withProperty("quarkus.oidc.auth-server-url", realmUrl)
                 .withProperty("quarkus.oidc.client-id", CLIENT_ID_DEFAULT)
-                .withProperty("quarkus.oidc.tls.trust-store-file-type", fileType)
+                .withProperty("store-file-extension", fileType)
+                // app would fail to start with incorrect file, but we want to test OIDC file type failure
+                .withProperty("server-store-file-extension",
+                        INCORRECT_FILE_TYPE.equals(fileType) ? JKS_KEYSTORE_FILE_TYPE : "${store-file-extension}")
                 .withProperty("quarkus.oidc.credentials.secret", CLIENT_SECRET_DEFAULT);
     }
 
