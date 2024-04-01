@@ -21,7 +21,7 @@ public class HelloResource {
     @Path("/full")
     @Produces(MediaType.TEXT_PLAIN)
     public String getFullSecurityContext(@Context SecurityContext security) {
-        String user = security.getUserPrincipal().getName();
+        String user = security.getUserPrincipal() != null ? security.getUserPrincipal().getName() : "";
         if ("".equals(user)) {
             user = "<anonymous>";
         }

@@ -739,8 +739,11 @@ when OpenID Connect Providers requires so. Keycloak is used as a primary OIDC se
 is used for OpenShift scenarios.
 
 Test cases:
-- Authentication works when user has correct certificates
-- Authentication does not work when user doesn't use any certificate
+- Bearer token authentication works when user has correct certificates
+- Bearer token authentication does not work when user doesn't use any certificate
+- mTLS authentication works when user has correct certificates
+- mTLS authentication does not work when user doesn't use any certificate
+- certificate configuration-based `SecurityIdentity` augmentation
 - Application endpoint require authentication (fail test)
 
 Variants:

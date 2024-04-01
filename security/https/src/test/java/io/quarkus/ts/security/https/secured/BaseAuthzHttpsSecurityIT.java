@@ -15,6 +15,7 @@ import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.Protocol;
@@ -25,6 +26,7 @@ import io.quarkus.ts.security.https.utils.HttpsAssertions;
 
 import javax.net.ssl.SSLContext;
 
+@Tag("QUARKUS-3466")
 public abstract class BaseAuthzHttpsSecurityIT {
     // not using RestAssured because we want 100% control over certificate & hostname verification
 
@@ -97,7 +99,7 @@ public abstract class BaseAuthzHttpsSecurityIT {
 
             HttpsAssertions.assertTls13OnlyHandshakeError(() -> {
                 HttpResponse response = executor.execute(Request.Get(urlWithAuthz())).returnResponse();
-                assertEquals(HttpStatus.SC_FORBIDDEN, response.getStatusLine().getStatusCode());
+                assertEquals(HttpStatus.SC_UNAUTHORIZED, response.getStatusLine().getStatusCode());
             });
         }
     }

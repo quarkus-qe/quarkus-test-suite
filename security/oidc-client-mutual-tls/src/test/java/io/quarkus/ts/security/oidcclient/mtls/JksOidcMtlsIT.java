@@ -4,6 +4,7 @@ import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_FILE;
 import static io.quarkus.ts.security.oidcclient.mtls.MutualTlsKeycloakService.newKeycloakInstance;
 
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.KeycloakService;
 import io.quarkus.test.bootstrap.RestService;
@@ -31,8 +32,21 @@ public class JksOidcMtlsIT extends KeycloakMtlsAuthN {
     /**
      * Keystore file type is automatically detected by file extension by quarkus-oidc.
      */
-    @QuarkusApplication
-    static RestService app = createRestService(JKS_KEYSTORE_FILE_TYPE, JKS_KEYSTORE_FILE_EXTENSION, keycloak::getRealmUrl);
+    @QuarkusApplication(ssl = true)
+    static RestService app = createRestService(JKS_KEYSTORE_FILE_TYPE, JKS_KEYSTORE_FILE_EXTENSION,
+            keycloak::getRealmUrl);
+
+    @Tag("QUARKUS-3466")
+    @Test
+    void verifyMtlsRolesPolicySuccess() {
+        verifyAuthSuccess("/mtls/roles-policy", getExpectedMtlsPrincipal());
+    }
+
+    @Tag("QUARKUS-3466")
+    @Test
+    void verifyMtlsPermissionsAllowedFailure() {
+        verifyUnauthorized("/mtls/permissions-allowed");
+    }
 
     @Override
     protected KeycloakService getKeycloakService() {
@@ -44,4 +58,13 @@ public class JksOidcMtlsIT extends KeycloakMtlsAuthN {
         return JKS_KEYSTORE_FILE_EXTENSION;
     }
 
+    @Override
+    protected RestService getApp() {
+        return app;
+    }
+
+    @Override
+    protected String getExpectedMtlsPrincipal() {
+        return "CN=client,OU=cert,O=quarkus,L=city,ST=state,C=AU";
+    }
 }
