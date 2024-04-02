@@ -31,13 +31,11 @@ public class OpenShiftRhSsoOidcMtlsIT extends KeycloakMtlsAuthN {
     static RestService app = new RestService()
             .withProperty("quarkus.oidc.auth-server-url", rhsso::getRealmUrl)
             .withProperty("quarkus.oidc.client-id", CLIENT_ID_DEFAULT)
-            .withProperty("quarkus.oidc.tls.trust-store-file-type", JKS_KEYSTORE_FILE_EXTENSION)
-            .withProperty("quarkus.oidc.tls.key-store-file-type", JKS_KEYSTORE_FILE_EXTENSION)
             .withProperty("quarkus.oidc.credentials.secret", CLIENT_SECRET_DEFAULT)
-            .withProperty("ks-file-extension", JKS_KEYSTORE_FILE_TYPE)
-            .withProperty("quarkus.oidc.tls.key-store-file", "rhsso-client-keystore.jks")
-            .withProperty("quarkus.oidc.tls.trust-store-file", "rhsso-client-truststore.jks")
-            .withProperty("ks-pwd", PASSWORD);
+            .withProperty("store-file-extension", JKS_KEYSTORE_FILE_TYPE)
+            .withProperty("ks-file", "rhsso-client-keystore.jks")
+            .withProperty("ts-file", "rhsso-client-truststore.jks")
+            .withProperty("store-pwd", PASSWORD);
 
     @Override
     protected String getKeystoreFileExtension() {
@@ -59,5 +57,16 @@ public class OpenShiftRhSsoOidcMtlsIT extends KeycloakMtlsAuthN {
     protected String getKeyStorePath() {
         String keystore = "rhsso-client-keystore." + getKeystoreFileExtension();
         return Paths.get("src", "main", "resources", keystore).toAbsolutePath().toString();
+    }
+
+    @Override
+    protected RestService getApp() {
+        return app;
+    }
+
+    @Override
+    protected String getExpectedMtlsPrincipal() {
+        // FIXME: impl. me before enabling the test as currently this can't be tested
+        throw new UnsupportedOperationException("Needs to be fixed when the test is reworked");
     }
 }
