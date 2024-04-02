@@ -64,6 +64,8 @@ jobs:
     needs: [ build-dependencies, linux-validate-format ]
     steps:
       - uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
       - id: files
         uses: tj-actions/changed-files@v44
         continue-on-error: true
