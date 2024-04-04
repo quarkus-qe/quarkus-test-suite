@@ -627,6 +627,11 @@ Bouncy castle providers:
 Verifies form-based authentication.
 Verifies that Basic Authentication is not used as a fallback option when it is explicitly disabled.
 
+### `security/jpa`
+
+Verifies Basic authentication with Jakarta Persistence identity provider, enabling role-based access control.
+User password is hashed by one of algorithms: MD5, SHA-256, SHA-512.
+
 ### `security/jwt`
 
 Verifies token-based authn and role-based authz.
