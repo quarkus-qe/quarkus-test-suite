@@ -286,6 +286,7 @@ When creating new branch please ensure following items:
  - Pin external application branches, see for example https://github.com/quarkus-qe/quarkus-test-suite/pull/1478
  - Update GH Actions to use the right Quarkus version, see for example https://github.com/quarkus-qe/quarkus-test-suite/commit/cc55ea28e29b1a5a6c29824dfac2bfe04637c354 (and minor fix https://github.com/quarkus-qe/quarkus-test-suite/commit/b37eabfa7a6b3e96fc119d89111d305a0a82df5e)
  - Ensure https://github.com/quarkus-qe/quarkus-test-suite/blob/main/lifecycle-application/pom.xml#L33 uses the right version for relevant branch
+ - Update QuickstartIT to use the proper version of quickstarts (eg https://github.com/quarkus-qe/quarkus-test-suite/pull/1743)
 
 ## Test Framework
 
