@@ -74,7 +74,7 @@ jobs:
     strategy:
       matrix:
         java: [ 17 ]
-        cli: [ 3.8.1 ]
+        cli: [ 3.8.4 ]
         module-mvn-args: ${{ fromJSON(needs.prepare-jvm-latest-modules-mvn-param.outputs.MODULES_MAVEN_PARAM) }}
     outputs:
       has-flaky-tests: ${{steps.flaky-test-detector.outputs.has-flaky-tests}}
@@ -121,7 +121,7 @@ jobs:
     strategy:
       matrix:
         java: [ 17 ]
-        cli: [ 3.8.1 ]
+        cli: [ 3.8.4 ]
     outputs:
       has-flaky-tests: ${{steps.flaky-test-detector.outputs.has-flaky-tests}}
     steps:
