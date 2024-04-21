@@ -73,7 +73,7 @@ jobs:
     strategy:
       matrix:
         java: [ 17 ]
-        cli: [ 3.2.11.Final ]
+        cli: [ 3.2.12.Final ]
         module-mvn-args: ${{ fromJSON(needs.prepare-jvm-latest-modules-mvn-param.outputs.MODULES_MAVEN_PARAM) }}
     steps:
       - uses: actions/checkout@v3
@@ -120,7 +120,7 @@ jobs:
     strategy:
       matrix:
         java: [ 11 ]
-        cli: [ 3.2.11.Final ]
+        cli: [ 3.2.12.Final ]
     steps:
       - uses: actions/checkout@v3
       - name: Reclaim Disk Space
