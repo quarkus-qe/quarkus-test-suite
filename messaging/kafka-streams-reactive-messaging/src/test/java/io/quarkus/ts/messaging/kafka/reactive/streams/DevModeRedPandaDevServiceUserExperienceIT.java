@@ -16,6 +16,7 @@ import io.quarkus.test.utils.DockerUtils;
 
 @Tag("QUARKUS-959")
 @QuarkusScenario
+@DisabledOnRHBQandWindows(reason = "QUARKUS-3434")
 public class DevModeRedPandaDevServiceUserExperienceIT {
 
     private static final String RED_PANDA_VERSION = getImageVersion("redpanda.image");;

@@ -10,6 +10,7 @@ import io.quarkus.test.services.DevModeQuarkusApplication;
 @Tag("QUARKUS-1026")
 @Tag("QUARKUS-959")
 @QuarkusScenario
+@DisabledOnRHBQandWindows(reason = "QUARKUS-3434")
 public class DevModeKafkaStreamIT extends BaseKafkaStreamTest {
 
     /**
