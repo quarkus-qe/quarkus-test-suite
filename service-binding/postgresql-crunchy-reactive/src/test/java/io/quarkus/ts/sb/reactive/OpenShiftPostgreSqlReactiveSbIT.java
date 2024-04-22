@@ -25,6 +25,7 @@ import io.quarkus.test.utils.Command;
 
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtensionAndDockerBuildStrategy)
 @DisabledIfSystemProperty(named = "ts.ibm-z-p.missing.services.excludes", matches = "true", disabledReason = "Crunchy Postgres operator not available on s390x & ppc64le.")
+@DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/1755")
 public class OpenShiftPostgreSqlReactiveSbIT {
 
     private static final String PG_CLUSTER_YML = "pg-cluster.yml";
