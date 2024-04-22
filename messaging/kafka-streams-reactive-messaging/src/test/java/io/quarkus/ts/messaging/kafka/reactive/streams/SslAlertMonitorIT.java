@@ -13,6 +13,7 @@ import io.quarkus.test.services.containers.model.KafkaVendor;
 
 @Tag("fips-incompatible")
 @QuarkusScenario
+@DisabledOnRHBQandWindows(reason = "QUARKUS-3434")
 public class SslAlertMonitorIT extends BaseKafkaStreamTest {
     /**
      * We can't rename this file to use the default SSL settings part of KafkaService.

@@ -11,6 +11,7 @@ import io.quarkus.test.services.DevModeQuarkusApplication;
 @Tag("QUARKUS-1026")
 @Tag("QUARKUS-959")
 @QuarkusScenario
+@DisabledOnRHBQandWindows(reason = "QUARKUS-3434")
 public class DevModeStrimziKafkaStreamIT extends BaseKafkaStreamTest {
 
     static final String DEV_SERVICE_KAFKA_PROVIDER = "strimzi";

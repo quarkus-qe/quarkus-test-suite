@@ -27,6 +27,7 @@ import io.quarkus.ts.messaging.kafka.reactive.streams.shutdown.SlowTopicResource
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @QuarkusScenario
 @DisabledOnNative(reason = "Due to high native build execution time")
+@DisabledOnRHBQandWindows(reason = "QUARKUS-3434")
 public class KafkaGratefulShutdownIT {
 
     private static final int TOTAL_MESSAGES = 10;
