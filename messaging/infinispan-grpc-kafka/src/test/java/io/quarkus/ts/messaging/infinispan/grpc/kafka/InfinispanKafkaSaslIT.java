@@ -23,12 +23,12 @@ import io.quarkus.test.services.containers.model.KafkaVendor;
 @Tag("fips-incompatible")
 public class InfinispanKafkaSaslIT {
 
-    @Container(image = "${infinispan.image}", expectedLog = "${infinispan.expected-log}", port = 11222, command = "-c /infinispan-config.xml", builder = LocalHostInfinispanManagedResourceBuilder.class)
+    @Container(image = "${infinispan.image}", expectedLog = "${infinispan.expected-log}", port = 11222, command = "-c /infinispan-config.xml", portDockerHostToLocalhost = true)
     static final InfinispanService infinispan = new InfinispanService()
             .withConfigFile("infinispan-config.xml")
             .withSecretFiles("keystore.jks");
 
-    @KafkaContainer(vendor = KafkaVendor.STRIMZI, protocol = KafkaProtocol.SASL, builder = LocalHostKafkaContainerManagedResourceBuilder.class)
+    @KafkaContainer(vendor = KafkaVendor.STRIMZI, protocol = KafkaProtocol.SASL)
     static final KafkaService kafkasasl = new KafkaService();
 
     @QuarkusApplication

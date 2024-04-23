@@ -10,10 +10,9 @@ import io.quarkus.test.services.containers.model.KafkaProtocol;
 import io.quarkus.test.services.containers.model.KafkaVendor;
 
 @QuarkusScenario
-@DisabledOnRHBQandWindows(reason = "QUARKUS-3434")
-public class SslAlertMonitorIT extends BaseKafkaStreamTest {
+public class SaslSslAlertMonitorIT extends BaseKafkaStreamTest {
 
-    @KafkaContainer(vendor = KafkaVendor.STRIMZI, protocol = KafkaProtocol.SSL)
+    @KafkaContainer(vendor = KafkaVendor.STRIMZI, protocol = KafkaProtocol.SASL_SSL)
     static final KafkaService kafka = new KafkaService();
 
     @QuarkusApplication
