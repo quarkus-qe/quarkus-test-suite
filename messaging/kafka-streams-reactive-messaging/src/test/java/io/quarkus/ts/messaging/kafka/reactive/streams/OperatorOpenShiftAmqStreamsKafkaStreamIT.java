@@ -13,8 +13,10 @@ import io.quarkus.test.services.operator.KafkaInstance;
 @DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/1147")
 @DisabledIfSystemProperty(named = "ts.ibm-z-p.missing.services.excludes", matches = "true", disabledReason = "debezium/zookeeper container not available on s390x & ppc64le.")
 public class OperatorOpenShiftAmqStreamsKafkaStreamIT extends BaseKafkaStreamTest {
+
+    // TODO: use default CRD file when ActiveMQ Streams operator supports Kafka 3.7
     @Operator(name = "amq-streams", source = "redhat-operators")
-    static KafkaInstance kafka = new KafkaInstance();
+    static KafkaInstance kafka = new KafkaInstance("kafka-instance", "/kafka-3-6-strimzi-operator-kafka-instance.yaml");
 
     @QuarkusApplication
     static RestService app = new RestService()

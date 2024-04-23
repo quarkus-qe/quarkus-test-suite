@@ -16,20 +16,19 @@ import io.quarkus.test.services.containers.model.KafkaProtocol;
 import io.quarkus.test.services.containers.model.KafkaVendor;
 
 @QuarkusScenario
-public class KafkaSslIT {
+public class KafkaSaslSslIT {
 
-    @KafkaContainer(vendor = KafkaVendor.STRIMZI, protocol = KafkaProtocol.SSL)
-    static final KafkaService kafkassl = new KafkaService();
+    @KafkaContainer(vendor = KafkaVendor.STRIMZI, protocol = KafkaProtocol.SASL_SSL)
+    static final KafkaService kafka = new KafkaService();
 
     @QuarkusApplication
     static final RestService app = new RestService()
-            .withProperty("kafka.bootstrap.servers", kafkassl::getBootstrapUrl)
-            .withProperties(kafkassl::getSslProperties)
-            .withProperty("kafka-streams.state.dir", "target")
-            .withProperty("kafka-client-ssl.bootstrap.servers", kafkassl::getBootstrapUrl);
+            .withProperties(kafka::getSslProperties)
+            .withProperty("kafka.bootstrap.servers", kafka::getBootstrapUrl)
+            .withProperty("kafka-client-sasl-ssl.bootstrap.servers", kafka::getBootstrapUrl);
 
     @Test
-    void testKafkaClientSSL() {
+    void testKafkaClientSaslSsl() {
         await().untilAsserted(() -> {
             pushEvent("my-key", "my-value");
             verifyEventWasProcessed("my-key-my-value");
@@ -37,7 +36,7 @@ public class KafkaSslIT {
             verifyEventWasProcessed("my-key-my-value-two");
         });
 
-        get("/kafka/ssl/topics")
+        get("/kafka/sasl/ssl/topics")
                 .then()
                 .statusCode(200)
                 .body(StringContains.containsString("hello"));
@@ -48,13 +47,13 @@ public class KafkaSslIT {
                 .queryParam("key", key)
                 .queryParam("value", value)
                 .when()
-                .post("/kafka/ssl")
+                .post("/kafka/sasl/ssl")
                 .then()
                 .statusCode(200);
     }
 
     private void verifyEventWasProcessed(String expectedEvent) {
-        get("/kafka/ssl")
+        get("/kafka/sasl/ssl")
                 .then()
                 .statusCode(200)
                 .body(StringContains.containsString(expectedEvent));
