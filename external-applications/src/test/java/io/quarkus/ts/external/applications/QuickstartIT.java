@@ -9,7 +9,7 @@ import io.quarkus.test.services.GitRepositoryQuarkusApplication;
 
 @QuarkusScenario
 public class QuickstartIT {
-    @GitRepositoryQuarkusApplication(repo = "https://github.com/quarkusio/quarkus-quickstarts.git", contextDir = "getting-started", mavenArgs = "-Dquarkus.platform.group-id=${QUARKUS_PLATFORM_GROUP-ID} -Dquarkus.platform.version=${QUARKUS_PLATFORM_VERSION}")
+    @GitRepositoryQuarkusApplication(repo = "https://github.com/quarkusio/quarkus-quickstarts.git", branch = "3.2", contextDir = "getting-started", mavenArgs = "-Dquarkus.platform.group-id=${QUARKUS_PLATFORM_GROUP-ID} -Dquarkus.platform.version=${QUARKUS_PLATFORM_VERSION}")
     static final RestService app = new RestService();
 
     @Test
