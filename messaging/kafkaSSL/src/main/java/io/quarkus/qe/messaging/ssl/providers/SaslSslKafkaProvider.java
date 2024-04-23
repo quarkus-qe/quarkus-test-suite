@@ -20,7 +20,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 public class SaslSslKafkaProvider extends KafkaProviders {
 
     private final static String SASL_USERNAME_VALUE = "client";
-    private final static String SASL_PASSWORD_VALUE = "client-secret";
+    private final static String SASL_PASSWORD_VALUE = "client-secret12345678912345678912";
 
     @ConfigProperty(name = "kafka-client-sasl-ssl.bootstrap.servers", defaultValue = "localhost:9092")
     String saslSslKafkaBootStrap;
@@ -68,11 +68,10 @@ public class SaslSslKafkaProvider extends KafkaProviders {
 
     private static void saslSetup(Properties props) {
         props.setProperty(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_SSL");
-        props.setProperty(SaslConfigs.SASL_MECHANISM, "PLAIN");
+        props.setProperty(SaslConfigs.SASL_MECHANISM, "SCRAM-SHA-512");
         props.setProperty(SaslConfigs.SASL_JAAS_CONFIG,
-                "org.apache.kafka.common.security.plain.PlainLoginModule required "
-                        + "username=\"" + SASL_USERNAME_VALUE + "\" "
-                        + "password=\"" + SASL_PASSWORD_VALUE + "\";");
+                "org.apache.kafka.common.security.scram.ScramLoginModule required username=\"%s\" password=\"%s\";"
+                        .formatted(SASL_USERNAME_VALUE, SASL_PASSWORD_VALUE));
     }
 
     protected void sslSetup(Properties props) {
