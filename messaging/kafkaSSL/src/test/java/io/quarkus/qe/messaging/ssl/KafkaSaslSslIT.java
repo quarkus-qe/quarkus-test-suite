@@ -5,7 +5,6 @@ import static io.restassured.RestAssured.given;
 import static org.awaitility.Awaitility.await;
 
 import org.hamcrest.core.StringContains;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.KafkaService;
@@ -17,25 +16,15 @@ import io.quarkus.test.services.containers.model.KafkaProtocol;
 import io.quarkus.test.services.containers.model.KafkaVendor;
 
 @QuarkusScenario
-// TODO https://github.com/quarkusio/quarkus/issues/25136
-@Tag("fips-incompatible")
 public class KafkaSaslSslIT {
 
-    /**
-     * We can't rename this file to use the default SSL settings part of KafkaService.
-     */
-    private static final String TRUSTSTORE_FILE = "strimzi-server-ssl-truststore.p12";
-
-    @KafkaContainer(vendor = KafkaVendor.STRIMZI, protocol = KafkaProtocol.SASL_SSL, kafkaConfigResources = TRUSTSTORE_FILE, builder = LocalHostKafkaContainerManagedResourceBuilder.class)
+    @KafkaContainer(vendor = KafkaVendor.STRIMZI, protocol = KafkaProtocol.SASL_SSL)
     static final KafkaService kafka = new KafkaService();
 
     @QuarkusApplication
     static final RestService app = new RestService()
+            .withProperties(kafka::getSslProperties)
             .withProperty("kafka.bootstrap.servers", kafka::getBootstrapUrl)
-            .withProperty("kafka.ssl.enable", "true")
-            .withProperty("kafka.ssl.truststore.location", TRUSTSTORE_FILE)
-            .withProperty("kafka.ssl.truststore.password", "top-secret")
-            .withProperty("kafka.ssl.truststore.type", "PKCS12")
             .withProperty("kafka-client-sasl-ssl.bootstrap.servers", kafka::getBootstrapUrl);
 
     @Test
