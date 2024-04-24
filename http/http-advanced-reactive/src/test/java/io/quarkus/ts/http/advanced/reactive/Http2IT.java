@@ -23,6 +23,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.security.certificate.CertificateBuilder;
+import io.quarkus.test.services.Certificate;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.services.URILike;
 import io.vertx.core.Vertx;
@@ -41,7 +43,7 @@ import io.vertx.junit5.VertxTestContext;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class Http2IT {
     @QuarkusApplication(ssl = true, classes = { MorningResource.class,
-            CustomFramesResource.class }, properties = "http2.properties")
+            CustomFramesResource.class }, properties = "http2.properties", certificates = @Certificate(configureKeystore = true))
     static RestService app = new RestService();
 
     private static URILike baseUri;
@@ -86,7 +88,7 @@ public class Http2IT {
         HttpClientOptions httpClientOptions = new HttpClientOptions();
         httpClientOptions.setSsl(true)
                 .setUseAlpn(true)
-                .setTrustOptions(new JksOptions().setPath("keystore.jks").setPassword("password"))
+                .setTrustOptions(new JksOptions().setPath(getTruststorePath()).setPassword("password"))
                 .setProtocolVersion(HttpVersion.HTTP_2);
         httpClient = vertx.httpClientBuilder().with(httpClientOptions).build();
 
@@ -114,7 +116,7 @@ public class Http2IT {
     @DisplayName("HttpClient Vertx just with HTTP/2 protocol option set and default port")
     void http2ProtocolTest(Vertx vertx, VertxTestContext vertxTestContext) {
         HttpClientOptions httpClientOptions = new HttpClientOptions()
-                .setTrustOptions(new JksOptions().setPath("keystore.jks").setPassword("password"))
+                .setTrustOptions(new JksOptions().setPath(getTruststorePath()).setPassword("password"))
                 .setProtocolVersion(HttpVersion.HTTP_2);
         httpClient = vertx.httpClientBuilder().with(httpClientOptions).build();
         httpClient.request(HttpMethod.GET, baseUri.getPort(), baseUri.getHost(), BASE_ENDPOINT)
@@ -138,7 +140,7 @@ public class Http2IT {
         HttpClientOptions options = new HttpClientOptions()
                 .setSsl(true)
                 .setUseAlpn(true)
-                .setTrustOptions(new JksOptions().setPath("keystore.jks").setPassword("password"))
+                .setTrustOptions(new JksOptions().setPath(getTruststorePath()).setPassword("password"))
                 .setProtocolVersion(HttpVersion.HTTP_2);
         httpClient = vertx.httpClientBuilder().with(options).build();
         // Define the expected maximum header size limit
@@ -184,7 +186,7 @@ public class Http2IT {
         HttpClientOptions options = new HttpClientOptions()
                 .setSsl(true)
                 .setUseAlpn(true)
-                .setTrustOptions(new JksOptions().setPath("keystore.jks").setPassword("password"))
+                .setTrustOptions(new JksOptions().setPath(getTruststorePath()).setPassword("password"))
                 .setProtocolVersion(HttpVersion.HTTP_2);
         httpClient = vertx.httpClientBuilder().with(options).build();
         httpClient.request(HttpMethod.GET, app.getURI(Protocol.HTTPS).getPort(), baseUri.getHost(), BASE_ENDPOINT)
@@ -216,7 +218,7 @@ public class Http2IT {
                 .setSsl(true)
                 .setUseAlpn(true)
                 .setProtocolVersion(HttpVersion.HTTP_2)
-                .setTrustOptions(new JksOptions().setPath("keystore.jks").setPassword("password"))
+                .setTrustOptions(new JksOptions().setPath(getTruststorePath()).setPassword("password"))
                 .setVerifyHost(false);
         httpClient = vertx.httpClientBuilder().with(options).build();
 
@@ -245,4 +247,11 @@ public class Http2IT {
         httpClient.close();
     }
 
+    private String getTruststorePath() {
+        return app
+                .<CertificateBuilder> getPropertyFromContext(CertificateBuilder.INSTANCE_KEY)
+                .certificates()
+                .get(0)
+                .truststorePath();
+    }
 }

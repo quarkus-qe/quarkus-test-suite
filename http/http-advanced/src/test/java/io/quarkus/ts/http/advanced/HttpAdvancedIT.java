@@ -4,15 +4,13 @@ import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM;
 import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_BASE_PATH;
 import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_FILE;
 
-import org.junit.jupiter.api.Tag;
-
 import io.quarkus.test.bootstrap.KeycloakService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.services.Certificate;
 import io.quarkus.test.services.KeycloakContainer;
 import io.quarkus.test.services.QuarkusApplication;
 
-@Tag("fips-incompatible") // native-mode
 @QuarkusScenario
 public class HttpAdvancedIT extends BaseHttpAdvancedIT {
 
@@ -21,7 +19,7 @@ public class HttpAdvancedIT extends BaseHttpAdvancedIT {
     static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH)
             .withProperty("JAVA_OPTS", "-Dcom.redhat.fips=false");
 
-    @QuarkusApplication(ssl = true)
+    @QuarkusApplication(ssl = true, certificates = @Certificate(configureKeystore = true))
     static RestService app = new RestService().withProperty("quarkus.oidc.auth-server-url", keycloak::getRealmUrl);
 
     @Override

@@ -11,7 +11,6 @@ import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.QuarkusApplication;
 import io.restassured.RestAssured;
 
-@Tag("fips-incompatible") // native-mode
 @Tag("QUARKUS-1546")
 @QuarkusScenario
 public class ContainerRequestFilterIT {
