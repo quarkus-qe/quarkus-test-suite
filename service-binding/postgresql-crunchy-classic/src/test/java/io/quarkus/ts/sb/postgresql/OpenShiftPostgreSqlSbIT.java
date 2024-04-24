@@ -78,7 +78,7 @@ public class OpenShiftPostgreSqlSbIT {
         AwaitilityUtils
                 .untilIsTrue(OpenShiftPostgreSqlSbIT::areRequiredOperatorsInstalled,
                         AwaitilityUtils.AwaitilitySettings.using(Duration.ofSeconds(5),
-                                Duration.ofSeconds(60)));
+                                Duration.ofSeconds(300)));
         applyCustomResourceDefinition("pg-cluster.yml");
         // sometimes operator takes a while to create an object
         AwaitilityUtils
