@@ -82,7 +82,7 @@ public class OpenShiftPostgreSqlReactiveSbIT {
         AwaitilityUtils
                 .untilIsTrue(OpenShiftPostgreSqlReactiveSbIT::areRequiredOperatorsInstalled,
                         AwaitilityUtils.AwaitilitySettings.using(Duration.ofSeconds(10),
-                                Duration.ofSeconds(60)));
+                                Duration.ofSeconds(300)));
         applyCustomResourceDefinition();
         // sometimes operator takes a while to create an object
         AwaitilityUtils
