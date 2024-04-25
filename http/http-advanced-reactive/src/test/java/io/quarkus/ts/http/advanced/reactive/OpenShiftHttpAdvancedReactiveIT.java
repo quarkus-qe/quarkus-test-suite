@@ -10,6 +10,7 @@ import io.quarkus.test.bootstrap.KeycloakService;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
+import io.quarkus.test.services.Certificate;
 import io.quarkus.test.services.KeycloakContainer;
 import io.quarkus.test.services.QuarkusApplication;
 
@@ -22,7 +23,7 @@ public class OpenShiftHttpAdvancedReactiveIT extends BaseHttpAdvancedReactiveIT 
     static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH)
             .withProperty("JAVA_OPTS", "-Dcom.redhat.fips=false");
 
-    @QuarkusApplication(ssl = true)
+    @QuarkusApplication(ssl = true, certificates = @Certificate(configureKeystore = true))
     static RestService app = new RestService().withProperty("quarkus.oidc.auth-server-url",
             keycloak::getRealmUrl);
 

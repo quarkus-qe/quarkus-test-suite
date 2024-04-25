@@ -37,8 +37,6 @@ import static org.htmlunit.util.MimeType.TEXT_CSS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Arrays;
@@ -65,6 +63,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.annotations.EnabledOnQuarkusVersion;
+import io.quarkus.test.security.certificate.CertificateBuilder;
 import io.restassured.http.Header;
 import io.restassured.response.ValidatableResponse;
 import io.smallrye.mutiny.Uni;
@@ -83,7 +82,6 @@ public abstract class BaseHttpAdvancedReactiveIT {
     private static final int TIMEOUT_SEC = 3;
     private static final int RETRY = 3;
     private static final String PASSWORD = "password";
-    private static final String KEY_STORE_PATH = "META-INF/resources/server.keystore";
     private static final String UTF_8_CHARSET = ";charset=UTF-8";
     private static final String CONTENT = "content";
 
@@ -105,7 +103,7 @@ public abstract class BaseHttpAdvancedReactiveIT {
 
     @Test
     @DisplayName("Http/2 Server test")
-    public void http2Server() throws InterruptedException, URISyntaxException {
+    public void http2Server() throws InterruptedException {
         CountDownLatch done = new CountDownLatch(1);
         Uni<JsonObject> content = getApp().mutiny(defaultVertxHttpClientOptions())
                 .getAbs(getAppEndpoint() + "/hello")
@@ -145,24 +143,6 @@ public abstract class BaseHttpAdvancedReactiveIT {
     public void microprofileHttpClientRedirection() throws Exception {
         io.restassured.response.Response health = getApp().given().get("api/client");
         assertEquals(HttpStatus.SC_OK, health.statusCode());
-    }
-
-    @Test
-    @EnabledOnQuarkusVersion(version = "1\\..*", reason = "Redirection is no longer supported in 2.x")
-    public void vertxHttpClientRedirection() throws InterruptedException, URISyntaxException {
-        CountDownLatch done = new CountDownLatch(1);
-        Uni<Integer> statusCode = getApp().mutiny(defaultVertxHttpClientOptions())
-                .getAbs(getAppEndpoint() + "/health").send()
-                .map(HttpResponse::statusCode).ifNoItem()
-                .after(Duration.ofSeconds(TIMEOUT_SEC)).fail().onFailure().retry().atMost(RETRY);
-
-        statusCode.subscribe().with(httpStatusCode -> {
-            assertEquals(SC_OK, httpStatusCode);
-            done.countDown();
-        });
-
-        done.await(TIMEOUT_SEC, TimeUnit.SECONDS);
-        assertThat(done.getCount(), equalTo(0L));
     }
 
     /**
@@ -355,14 +335,17 @@ public abstract class BaseHttpAdvancedReactiveIT {
                 : ResponsePredicateResult.failure("Expected HTTP/2");
     }
 
-    private WebClientOptions defaultVertxHttpClientOptions() throws URISyntaxException {
+    private WebClientOptions defaultVertxHttpClientOptions() {
         return new WebClientOptions().setProtocolVersion(HttpVersion.HTTP_2).setSsl(true).setVerifyHost(false)
                 .setUseAlpn(true)
                 .setTrustStoreOptions(new JksOptions().setPassword(PASSWORD).setPath(defaultTruststore()));
     }
 
-    private String defaultTruststore() throws URISyntaxException {
-        URL res = getClass().getClassLoader().getResource(KEY_STORE_PATH);
-        return Paths.get(res.toURI()).toFile().getAbsolutePath();
+    private String defaultTruststore() {
+        return getApp()
+                .<CertificateBuilder> getPropertyFromContext(CertificateBuilder.INSTANCE_KEY)
+                .certificates()
+                .get(0)
+                .truststorePath();
     }
 }
