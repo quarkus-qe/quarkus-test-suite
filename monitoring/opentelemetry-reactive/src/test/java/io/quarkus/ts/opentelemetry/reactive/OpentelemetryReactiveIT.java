@@ -3,7 +3,10 @@ package io.quarkus.ts.opentelemetry.reactive;
 import static io.quarkus.test.bootstrap.Protocol.HTTP;
 import static io.restassured.RestAssured.given;
 import static org.awaitility.Awaitility.await;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
@@ -31,6 +34,9 @@ public class OpentelemetryReactiveIT {
 
     private Response resp;
 
+    static final String ADMIN_USERNAME = "alice";
+    static final String ADMIN_PASSWORD = "alice";
+
     @JaegerContainer(useOtlpCollector = true, expectedLog = "\"Health Check state change\",\"status\":\"ready\"")
     static final JaegerService jaeger = new JaegerService();
 
@@ -40,7 +46,7 @@ public class OpentelemetryReactiveIT {
             .withProperty("quarkus.application.name", "pongservice")
             .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl);
 
-    @QuarkusApplication(classes = { PingResource.class, PingPongService.class })
+    @QuarkusApplication(classes = { PingResource.class, PingPongService.class, AdminResource.class })
     static final RestService pingservice = new RestService()
             .withProperty("pongservice_url", () -> pongservice.getURI(HTTP).getRestAssuredStyleUri())
             .withProperty("pongservice_port", () -> Integer.toString(pongservice.getURI(HTTP).getPort()))
@@ -68,6 +74,19 @@ public class OpentelemetryReactiveIT {
             Assertions.assertTrue(spanKinds.contains("client"));
             Assertions.assertTrue(spanKinds.contains("server"));
         });
+    }
+
+    @Test
+    public void testSecurityEvents() {
+        int pageLimit = 10;
+        String serviceName = "pingservice";
+        String operationName = "GET /admin";
+        await().atMost(30, TimeUnit.SECONDS).pollInterval(Duration.ofSeconds(1)).untilAsserted(() -> {
+            doSecurityEndpointRequest();
+            thenRetrieveTraces(pageLimit, "1h", serviceName, operationName);
+            assertSecurityEventsAndLogsPresent();
+        });
+
     }
 
     @Test
@@ -101,13 +120,33 @@ public class OpentelemetryReactiveIT {
                 .statusCode(HttpStatus.SC_OK).body(equalToIgnoringCase("ping pong"));
     }
 
+    private void doSecurityEndpointRequest() {
+        given()
+                .auth().basic(ADMIN_USERNAME, ADMIN_PASSWORD)
+                .get(pingservice.getURI(HTTP).withPath("/admin").toString())
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body(equalTo("Hello, admin " + ADMIN_USERNAME));
+    }
+
     private void thenRetrieveTraces(int pageLimit, String lookBack, String serviceName, String operationName) {
-        resp = given().when()
-                .queryParam("operation", operationName)
-                .queryParam("lookback", lookBack)
-                .queryParam("limit", pageLimit)
-                .queryParam("service", serviceName)
-                .get(jaeger.getTraceUrl());
+        await().atMost(10, TimeUnit.SECONDS)
+                .pollInterval(Duration.ofSeconds(1))
+                .until(() -> {
+                    resp = given().when()
+                            .queryParam("operation", operationName)
+                            .queryParam("lookback", lookBack)
+                            .queryParam("limit", pageLimit)
+                            .queryParam("service", serviceName)
+                            .get(jaeger.getTraceUrl());
+                    return !resp.jsonPath().getList("data.spans").isEmpty();
+                });
+    }
+
+    private void assertSecurityEventsAndLogsPresent() {
+        resp.then().body(
+                "data[0].spans.findAll { span -> span.operationName == 'GET /admin' }[0].logs.flatten().findAll { log -> log.fields.find { field -> field.key == 'event' && field.value == 'quarkus.security.authorization.success' } }",
+                is(not(empty())));
     }
 
     private void thenTraceSpanSizeMustBe(Matcher<?> matcher) {
