@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.services.Certificate;
 import io.quarkus.test.services.QuarkusApplication;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
@@ -23,11 +24,9 @@ public class LocalOptionsIT {
     static final RestService custom = new RestService()
             .withProperty("quarkus.management.port", "9002");
 
-    @QuarkusApplication
+    @QuarkusApplication(certificates = @Certificate(configureKeystoreForManagementInterface = true))
     static final RestService tls = new RestService()
-            .withProperty("quarkus.management.port", "9003")
-            .withProperty("quarkus.management.ssl.certificate.key-store-file", "META-INF/resources/server.keystore")
-            .withProperty("quarkus.management.ssl.certificate.key-store-password", "password");
+            .withProperty("quarkus.management.port", "9003");
 
     @QuarkusApplication
     static final RestService unmanaged = new RestService()
@@ -72,9 +71,8 @@ public class LocalOptionsIT {
 
     @Test
     public void tls() {
-        tls.management()
-                .relaxedHTTPSValidation()
-                .get("q/health").then().statusCode(HttpStatus.SC_OK);
+        var statusCode = tls.mutinyHttps().get("/q/health").sendAndAwait().statusCode();
+        assertEquals(HttpStatus.SC_OK, statusCode);
     }
 
     @Test
