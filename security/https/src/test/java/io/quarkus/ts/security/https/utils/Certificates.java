@@ -2,12 +2,10 @@ package io.quarkus.ts.security.https.utils;
 
 public final class Certificates {
 
-    public static final String LOCATION = "src/main/resources/META-INF/resources";
-    public static final String PKCS12 = "pkcs12";
-    public static final String CLIENT_KEYSTORE = LOCATION + "/client-keystore." + PKCS12;
-    public static final String CLIENT_TRUSTSTORE = LOCATION + "/client-truststore." + PKCS12;
-    public static final String UNKNOWN_CLIENT_KEYSTORE = LOCATION + "/unknown-client-keystore." + PKCS12;
-    public static final String GUESS_CLIENT_KEYSTORE = LOCATION + "/guest-client-keystore." + PKCS12;
+    public static final String CLIENT_CN = "client";
+    public static final String GUEST_CLIENT_CN = "guest-client";
+    public static final String UNKNOWN_CLIENT_CN = "unknown";
+    public static final String CLIENT_PASSWORD = "client-password";
 
     private Certificates() {
 
