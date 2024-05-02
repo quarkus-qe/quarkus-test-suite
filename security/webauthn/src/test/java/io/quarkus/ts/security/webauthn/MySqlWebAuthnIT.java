@@ -1,11 +1,14 @@
 package io.quarkus.ts.security.webauthn;
 
+import org.junit.jupiter.api.Tag;
+
 import io.quarkus.test.bootstrap.MySqlService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
+@Tag("fips-incompatible") // TODO: enable when the https://github.com/eclipse-vertx/vertx-sql-client/issues/1436 is fixed
 @QuarkusScenario
 public class MySqlWebAuthnIT extends AbstractWebAuthnTest {
 
