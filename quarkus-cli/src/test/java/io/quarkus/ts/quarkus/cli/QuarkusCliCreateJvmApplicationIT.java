@@ -273,7 +273,7 @@ public class QuarkusCliCreateJvmApplicationIT {
     public void shouldKeepUsingTheSameQuarkusVersionAfterReload() {
         // Generate application using old community version
         QuarkusCliRestService app = cliClient.createApplication("app", defaults()
-                .withPlatformBom("io.quarkus:quarkus-bom:3.0.0.Alpha4")
+                .withPlatformBom("io.quarkus:quarkus-bom:3.9.1")
                 .withExtensions(SMALLRYE_HEALTH_EXTENSION, RESTEASY_REACTIVE_EXTENSION));
 
         // Make sure version and groupId from the TS run is used
