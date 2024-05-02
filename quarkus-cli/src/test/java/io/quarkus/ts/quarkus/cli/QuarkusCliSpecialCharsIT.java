@@ -12,7 +12,6 @@ import java.util.List;
 
 import jakarta.inject.Inject;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
@@ -47,32 +46,27 @@ public class QuarkusCliSpecialCharsIT {
 
     private QuarkusCliClient.Result result;
 
-    @Disabled // TODO: enable when 3.9.x platform is released
     @Test
     public void shouldCreateApplicationOnJvmWithSpaces() {
         assertCreateJavaApplicationAtFolder(FOLDER_WITH_SPACES);
     }
 
-    @Disabled // TODO: enable when 3.9.x platform is released
     @DisabledOnOs(OS.WINDOWS) // TODO: enable me when https://github.com/quarkusio/quarkus/issues/35913 gets fixed
     @Test
     public void shouldCreateApplicationOnJvmWithSpecialChars() {
         assertCreateJavaApplicationAtFolder(FOLDER_WITH_SPECIAL_CHARS);
     }
 
-    @Disabled // TODO: enable when 3.9.x platform is released
     @Test
     public void shouldCreateApplicationOnJvmWithDiacritics() {
         assertCreateJavaApplicationAtFolder(FOLDER_WITH_DIACRITICS);
     }
 
-    @Disabled // TODO: enable when 3.9.x platform is released
     @Test
     public void shouldCreateApplicationOnJvmWithJapanese() {
         assertCreateJavaApplicationAtFolder(FOLDER_WITH_JAPANESE);
     }
 
-    @Disabled // TODO: enable when 3.9.x platform is released
     @Test
     public void shouldCreateApplicationOnJvmWithInternationalization() {
         assertCreateJavaApplicationAtFolder(FOLDER_WITH_INTERNATIONALIZATION);

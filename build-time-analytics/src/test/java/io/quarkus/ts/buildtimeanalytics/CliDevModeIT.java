@@ -21,7 +21,6 @@ import java.time.Duration;
 
 import org.awaitility.core.ThrowingRunnable;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -90,7 +89,6 @@ public class CliDevModeIT extends AbstractAnalyticsIT {
         verifyValidPayloadPresent(app);
     }
 
-    @Disabled // TODO: enable when 3.9.x platform is released
     @Test
     public void extensionSetB() {
         QuarkusCliRestService app = createAppWithExtensions(EXTENSION_SET_B);
