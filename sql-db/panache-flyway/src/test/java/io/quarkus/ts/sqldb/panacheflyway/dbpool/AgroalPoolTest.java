@@ -23,7 +23,6 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.agroal.api.AgroalDataSource;
@@ -46,7 +45,6 @@ import io.vertx.mutiny.ext.web.client.WebClient;
  * Some of these tests required some extra load, in order to reproduce concurrency issues.
  */
 @EnabledWhenLinuxContainersAvailable
-@Tag("fips-incompatible") // native-mode
 @QuarkusTest
 @TestProfile(AgroalTestProfile.class)
 public class AgroalPoolTest {

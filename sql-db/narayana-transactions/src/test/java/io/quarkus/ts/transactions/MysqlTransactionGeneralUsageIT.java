@@ -4,7 +4,6 @@ import static io.quarkus.test.services.containers.DockerContainerManagedResource
 
 import java.io.IOException;
 
-import org.junit.jupiter.api.Tag;
 import org.testcontainers.containers.GenericContainer;
 
 import io.quarkus.test.bootstrap.MySqlService;
@@ -14,8 +13,6 @@ import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.transactions.recovery.TransactionExecutor;
 
-// TODO https://github.com/quarkus-qe/quarkus-test-suite/issues/756
-@Tag("fips-incompatible") // native-mode
 @QuarkusScenario
 public class MysqlTransactionGeneralUsageIT extends TransactionCommons {
 
