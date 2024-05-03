@@ -3,14 +3,12 @@ package io.quarkus.ts.scheduling.quartz;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.QuarkusApplication;
 
-@Tag("fips-incompatible") // native-mode
 @QuarkusScenario
 public class BasicMySqlQuartzIT extends BaseMySqlQuartzIT {
 

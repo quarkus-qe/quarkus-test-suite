@@ -8,8 +8,7 @@ import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
-// TODO https://github.com/quarkus-qe/quarkus-test-suite/issues/756
-@Tag("fips-incompatible") // native-mode
+@Tag("fips-incompatible") // TODO: enable when the https://github.com/eclipse-vertx/vertx-sql-client/issues/1436 is fixed
 @QuarkusScenario
 public class MySQLDatabaseHibernateReactiveIT extends AbstractDatabaseHibernateReactiveIT {
 
