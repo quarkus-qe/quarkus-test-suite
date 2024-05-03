@@ -1,15 +1,11 @@
 package io.quarkus.ts.sqldb.sqlapp;
 
-import org.junit.jupiter.api.Tag;
-
 import io.quarkus.test.bootstrap.MySqlService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
-// TODO https://github.com/quarkus-qe/quarkus-test-suite/issues/756
-@Tag("fips-incompatible") // native-mode
 @QuarkusScenario
 public class MySqlDatabaseIT extends AbstractSqlDatabaseIT {
 
