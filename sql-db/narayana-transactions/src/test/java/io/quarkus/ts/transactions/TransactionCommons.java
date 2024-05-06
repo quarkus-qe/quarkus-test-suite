@@ -16,6 +16,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
@@ -37,6 +38,8 @@ import io.restassured.response.Response;
 public abstract class TransactionCommons {
 
     private static final String ENABLE_TRANSACTION_RECOVERY = "quarkus.transaction-manager.enable-recovery";
+    private static final int SERVICE_TRACES_LIMIT = 1000;
+    private static final String NARAYANA_SERVICE_NAME = "narayanaTransactions";
     static final String ACCOUNT_NUMBER_MIGUEL = "SK0389852379529966291984";
     static final String ACCOUNT_NUMBER_GARCILASO = "FR9317569000409377431694J37";
     static final String ACCOUNT_NUMBER_LUIS = "ES8521006742088984966816";
@@ -172,13 +175,49 @@ public abstract class TransactionCommons {
     @Order(6)
     @Test
     public void verifyJdbcTraces() {
-        for (String operationName : getExpectedJdbcOperationNames()) {
-            verifyRequestTraces(operationName);
+        var serviceTraces = retrieveServiceTraces(NARAYANA_SERVICE_NAME);
+        var operationNames = serviceTraces.jsonPath().getList("data.spans.operationName.flatten()", String.class);
+        for (var operation : getExpectedJdbcOperations()) {
+            verifyTracesForOperationArePresent(operation, operationNames);
         }
     }
 
-    protected String[] getExpectedJdbcOperationNames() {
-        return new String[] { "SELECT mydb.account", "INSERT mydb.journal", "UPDATE mydb.account" };
+    private static void verifyTracesForOperationArePresent(Operation operation, List<String> operationNames) {
+        var matchedOperationNames = operationNames.stream().filter(operation.operationNameMatcher())
+                .collect(Collectors.toSet());
+        if (matchedOperationNames.isEmpty()) {
+            Assertions.fail("Failed to find operation %s, known operation names are: %s".formatted(operation, operationNames));
+        }
+        if (matchedOperationNames.size() > 1) {
+            throw new IllegalStateException(
+                    "Operation %s matched more than one operation names, therefore the test cannot be executed reliably: %s"
+                            .formatted(operation, matchedOperationNames));
+        }
+    }
+
+    /**
+     * @param operationNameMatcher matches found operation names with expected operation name
+     */
+    protected record Operation(Predicate<String> operationNameMatcher) {
+
+        Operation(String operationName) {
+            this(operationName::equals);
+        }
+
+    }
+
+    private Response retrieveServiceTraces(String serviceName) {
+        return given().when()
+                .log().uri()
+                .queryParam("service", serviceName)
+                .queryParam("lookback", "1h")
+                .queryParam("limit", SERVICE_TRACES_LIMIT)
+                .get(jaeger.getTraceUrl());
+    }
+
+    protected Operation[] getExpectedJdbcOperations() {
+        return new Operation[] { new Operation("SELECT mydb.account"), new Operation("INSERT mydb.journal"),
+                new Operation("UPDATE mydb.account") };
     }
 
     @Order(7)
