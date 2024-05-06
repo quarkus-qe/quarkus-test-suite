@@ -57,8 +57,12 @@ public class MssqlTransactionGeneralUsageIT extends TransactionCommons {
     }
 
     @Override
-    protected String[] getExpectedJdbcOperationNames() {
-        return new String[] { "SELECT msdb.account", "INSERT msdb.journal", "UPDATE msdb.account" };
+    protected Operation[] getExpectedJdbcOperations() {
+        return new Operation[] { new Operation("SELECT msdb.account"), new Operation("INSERT msdb.journal"),
+                // here we are looking for UPDATE msdb.ae1_0 because currently DB statement is
+                // update ae1_0 set amount=?,updatedAt=? from account ae1_0 where ae1_0.accountNumber=?
+                // however we shouldn't rely on alias generation logic, therefore we test the UPDATE statement is there
+                new Operation(actualOperationName -> actualOperationName.startsWith("UPDATE msdb.")) };
     }
 
 }

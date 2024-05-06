@@ -33,8 +33,9 @@ public class OracleTransactionGeneralUsageIT extends TransactionCommons {
     }
 
     @Override
-    protected String[] getExpectedJdbcOperationNames() {
-        return new String[] { "SELECT mydb.dual", "INSERT mydb.journal", "UPDATE mydb.account" };
+    protected Operation[] getExpectedJdbcOperations() {
+        return new Operation[] { new Operation("SELECT mydb.dual"), new Operation("INSERT mydb.journal"),
+                new Operation("UPDATE mydb.account") };
     }
 
     @Override
