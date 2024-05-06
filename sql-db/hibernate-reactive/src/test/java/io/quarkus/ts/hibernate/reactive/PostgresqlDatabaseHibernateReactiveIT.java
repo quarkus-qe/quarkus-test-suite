@@ -1,5 +1,8 @@
 package io.quarkus.ts.hibernate.reactive;
 
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
 import io.quarkus.test.bootstrap.PostgresqlService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -30,5 +33,29 @@ public class PostgresqlDatabaseHibernateReactiveIT extends AbstractDatabaseHiber
     @Override
     protected RestService getApp() {
         return app;
+    }
+
+    // TODO: drop is overridden method when #40425 is fixed
+    @Test
+    @Disabled("https://github.com/quarkusio/quarkus/issues/40425")
+    @Override
+    public void createBookWithGeneratedId() {
+        super.createBookWithGeneratedId();
+    }
+
+    // TODO: drop is overridden method when #40425 is fixed
+    @Test
+    @Disabled("https://github.com/quarkusio/quarkus/issues/40425")
+    @Override
+    public void useTransaction() {
+        super.useTransaction();
+    }
+
+    // TODO: drop is overridden method when #40425 is fixed
+    @Test
+    @Disabled("https://github.com/quarkusio/quarkus/issues/40425")
+    @Override
+    public void ensureSessionIsPropagatedOnReactiveTransactions() {
+        super.ensureSessionIsPropagatedOnReactiveTransactions();
     }
 }
