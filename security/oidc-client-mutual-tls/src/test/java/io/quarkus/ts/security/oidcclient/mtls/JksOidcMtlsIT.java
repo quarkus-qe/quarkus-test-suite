@@ -12,7 +12,6 @@ import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.KeycloakContainer;
 import io.quarkus.test.services.QuarkusApplication;
 
-@Tag("fips-incompatible")
 @QuarkusScenario
 public class JksOidcMtlsIT extends KeycloakMtlsAuthN {
 

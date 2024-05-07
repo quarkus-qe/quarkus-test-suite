@@ -5,7 +5,6 @@ import static io.quarkus.ts.security.oidcclient.mtls.MutualTlsKeycloakService.ne
 import static io.restassured.RestAssured.given;
 
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.KeycloakService;
@@ -18,7 +17,6 @@ import io.quarkus.test.services.QuarkusApplication;
  * If keystore/truststore file type does not match declared one, communication between OIDC server
  * and client should fail.
  */
-@Tag("fips-incompatible")
 @QuarkusScenario
 public class IncorrectKsFileTypeOidcMtlsIT extends BaseOidcMtlsIT {
 
