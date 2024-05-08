@@ -14,6 +14,7 @@ import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.DevModeQuarkusApplication;
 import io.quarkus.test.utils.DockerUtils;
 
+@Tag("fips-incompatible") // TODO: enable when https://github.com/quarkusio/quarkus/issues/40526 gets fixed
 @Tag("QUARKUS-1080")
 @QuarkusScenario
 public class DevModeReactiveMysqlDevServiceUserExperienceIT {
