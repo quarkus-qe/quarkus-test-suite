@@ -16,6 +16,7 @@ import io.quarkus.test.services.DevModeQuarkusApplication;
 import io.quarkus.test.utils.DockerUtils;
 import io.quarkus.test.utils.SocketUtils;
 
+@Tag("fips-incompatible") // TODO: enable when https://github.com/quarkusio/quarkus/issues/40526 gets fixed
 @Tag("QUARKUS-959")
 @QuarkusScenario
 public class DevModeMysqlDevServiceUserExperienceIT {
