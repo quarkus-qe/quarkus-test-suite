@@ -2,13 +2,11 @@ package io.quarkus.ts.security.vertx;
 
 import static org.hamcrest.Matchers.is;
 
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.restassured.http.ContentType;
 
-@Tag("fips-incompatible") // native-mode
 @QuarkusScenario
 public class ReplicantHandlerIT extends AbstractCommonIT {
     @Test

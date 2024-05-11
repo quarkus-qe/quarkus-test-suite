@@ -1,11 +1,9 @@
 package io.quarkus.ts.security.vertx;
 
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
 
-@Tag("fips-incompatible") // native-mode
 @QuarkusScenario
 public class NoSecuredResourceIT extends AbstractCommonIT {
     @Test
