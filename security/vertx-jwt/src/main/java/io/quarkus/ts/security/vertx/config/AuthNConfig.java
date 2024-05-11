@@ -7,7 +7,7 @@ import io.smallrye.config.WithName;
 public interface AuthNConfig {
     String alg();
 
-    String secret();
+    String certPath();
 
     @WithName("token-live-span-min")
     int liveSpan();

@@ -4,18 +4,14 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.test.scenarios.QuarkusScenario;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.auth.impl.jose.JWK;
 import io.vertx.ext.auth.impl.jose.JWT;
 
-@Tag("fips-incompatible") // native-mode
-@QuarkusScenario
-public class JwtIT {
+public class JwtTest {
 
     @Test
     void x5cCertificateChainTest() throws Exception {
