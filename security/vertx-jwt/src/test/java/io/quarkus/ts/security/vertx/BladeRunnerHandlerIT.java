@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.restassured.http.ContentType;
 
-@Tag("fips-incompatible") // native-mode
 @QuarkusScenario
 public class BladeRunnerHandlerIT extends AbstractCommonIT {
     @Test

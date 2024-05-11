@@ -11,12 +11,18 @@ import org.junit.jupiter.api.BeforeEach;
 
 import io.quarkus.test.bootstrap.DefaultService;
 import io.quarkus.test.bootstrap.RestService;
+import io.quarkus.test.security.certificate.Certificate.PemCertificate;
+import io.quarkus.test.security.certificate.CertificateBuilder;
+import io.quarkus.test.services.Certificate;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.ts.security.vertx.auth.CertUtils;
 import io.quarkus.ts.security.vertx.model.BladeRunner;
 import io.quarkus.ts.security.vertx.model.Replicant;
 import io.restassured.http.ContentType;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.auth.JWTOptions;
 import io.vertx.ext.auth.PubSecKeyOptions;
 import io.vertx.ext.auth.jwt.JWTAuth;
 import io.vertx.ext.auth.jwt.JWTAuthOptions;
@@ -25,8 +31,9 @@ import io.vertx.mutiny.core.Vertx;
 public abstract class AbstractCommonIT {
 
     static final int REDIS_PORT = 6379;
-    private static final String JWT_ALGORITHM = "HS256";
-    private static final String JWT_SECRET = "keepSecret";
+    private static final String JWT_ALGORITHM = "RS256";
+    private static final String INVALID_PEM_PREFIX = "invalid";
+    private static final String VALID_PEM_PREFIX = "vertx-jwt";
 
     BladeRunner bladeRunner;
     Replicant replicant;
@@ -35,13 +42,17 @@ public abstract class AbstractCommonIT {
     @Container(image = "${redis.image}", port = REDIS_PORT, expectedLog = "Ready to accept connections")
     static DefaultService redis = new DefaultService().withProperty("ALLOW_EMPTY_PASSWORD", "YES");
 
-    @QuarkusApplication
+    @QuarkusApplication(certificates = {
+            @Certificate(format = Certificate.Format.PEM, prefix = VALID_PEM_PREFIX),
+            @Certificate(format = Certificate.Format.PEM, prefix = INVALID_PEM_PREFIX)
+    })
     static RestService app = new RestService()
             .withProperty("quarkus.redis.hosts",
                     () -> {
                         String redisHost = redis.getURI().withScheme("redis").getRestAssuredStyleUri();
                         return String.format("%s:%d", redisHost, redis.getURI().getPort());
-                    });
+                    })
+            .withProperty("authN.cert-path", AbstractCommonIT::getCertificatePath);
 
     @BeforeEach
     public void setup() {
@@ -97,6 +108,7 @@ public abstract class AbstractCommonIT {
         JsonObject authConfig = defaultAuthConfig();
         JsonObject claims = defaultClaims(groups);
         JWTAuth jwt = JWTAuth.create(vertx.getDelegate(), new JWTAuthOptions()
+                .setJWTOptions(new JWTOptions().setAlgorithm(JWT_ALGORITHM))
                 .addPubSecKey(getPubSecKeyOptions(authConfig)));
         switch (invalidity) {
             case WRONG_ISSUER:
@@ -112,8 +124,11 @@ public abstract class AbstractCommonIT {
                 claims.put("exp", currentTimeEpoch());
                 break;
             case WRONG_KEY:
-                authConfig.put("publicKey", "invalid");
+                // this key is invalid simply because it belongs to different keypair
+                var key = getPrivateKey(INVALID_PEM_PREFIX);
+                authConfig.put("publicKey", Buffer.buffer(key));
                 jwt = JWTAuth.create(vertx.getDelegate(), new JWTAuthOptions()
+                        .setJWTOptions(new JWTOptions().setAlgorithm(JWT_ALGORITHM))
                         .addPubSecKey(getPubSecKeyOptions(authConfig)));
                 break;
         }
@@ -122,10 +137,11 @@ public abstract class AbstractCommonIT {
     }
 
     private JsonObject defaultAuthConfig() {
+        var key = getPrivateKey(VALID_PEM_PREFIX);
         return new JsonObject()
-                .put("symmetric", true)
+                .put("symmetric", false)
                 .put("algorithm", JWT_ALGORITHM)
-                .put("publicKey", JWT_SECRET);
+                .put("publicKey", Buffer.buffer(key));
     }
 
     private PubSecKeyOptions getPubSecKeyOptions(JsonObject authConfig) {
@@ -180,5 +196,29 @@ public abstract class AbstractCommonIT {
         replicant.setIq(185);
 
         return replicant;
+    }
+
+    private static String getPrivateKeyPath(String prefix) {
+        return getPemCertificate(prefix).keyPath();
+    }
+
+    private static String getCertificatePath() {
+        return getPemCertificate(VALID_PEM_PREFIX).certPath();
+    }
+
+    private static String getPrivateKey(String prefix) {
+        return CertUtils.loadKey(getPrivateKeyPath(prefix));
+    }
+
+    private static PemCertificate getPemCertificate(String certPrefix) {
+        if (getCertBuilder().findCertificateByPrefix(certPrefix) instanceof PemCertificate pemCert) {
+            return pemCert;
+        } else {
+            throw new IllegalStateException("Failed to find PemCertificate");
+        }
+    }
+
+    private static CertificateBuilder getCertBuilder() {
+        return app.<CertificateBuilder> getPropertyFromContext(CertificateBuilder.INSTANCE_KEY);
     }
 }

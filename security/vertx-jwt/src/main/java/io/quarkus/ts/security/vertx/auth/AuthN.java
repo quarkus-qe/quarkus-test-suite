@@ -6,6 +6,7 @@ import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 
 import io.quarkus.ts.security.vertx.config.AuthNConfig;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.auth.JWTOptions;
 import io.vertx.ext.auth.PubSecKeyOptions;
@@ -29,9 +30,9 @@ public class AuthN {
 
     private PubSecKeyOptions getPubSecKeyOptions() {
         JsonObject authConfig = new JsonObject()
-                .put("symmetric", true)
+                .put("symmetric", false)
                 .put("algorithm", authNConf.alg())
-                .put("publicKey", authNConf.secret());
+                .put("publicKey", Buffer.buffer(CertUtils.loadKey(authNConf.certPath())));
 
         return new PubSecKeyOptions(authConfig).setBuffer(authConfig.getBuffer("publicKey"));
     }
