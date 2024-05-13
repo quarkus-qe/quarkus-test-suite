@@ -21,7 +21,7 @@ public abstract class KafkaProviders {
         return props;
     }
 
-    protected Properties setupConsumerProperties(String kafkaBootStrap, String groupID) {
+    protected Properties setupConsumerProperties(String kafkaBootStrap) {
         Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootStrap);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "test-consumer");

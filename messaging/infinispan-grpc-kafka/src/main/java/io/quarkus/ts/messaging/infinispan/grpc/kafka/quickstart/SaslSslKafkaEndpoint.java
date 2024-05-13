@@ -1,5 +1,6 @@
 package io.quarkus.ts.messaging.infinispan.grpc.kafka.quickstart;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
@@ -18,40 +19,49 @@ import jakarta.ws.rs.core.MediaType;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import io.quarkus.runtime.StartupEvent;
 
-@Path("/kafka/sasl")
+@Path("/kafka/sasl-ssl")
 @ApplicationScoped
 @Produces(MediaType.APPLICATION_JSON)
-public class SaslKafkaEndpoint extends KafkaEndpoint {
+public class SaslSslKafkaEndpoint extends KafkaEndpoint {
 
     @Inject
-    @Named("kafka-consumer-sasl")
-    KafkaConsumer<String, String> saslConsumer;
+    @Named("kafka-consumer-sasl-ssl")
+    KafkaConsumer<String, String> saslSslConsumer;
 
     @Inject
-    @Named("kafka-producer-sasl")
-    KafkaProducer<String, String> saslProducer;
+    @Named("kafka-producer-sasl-ssl")
+    KafkaProducer<String, String> saslSslProducer;
 
     @Inject
-    @Named("kafka-admin-sasl")
-    AdminClient saslAdmin;
+    @Named("kafka-admin-sasl-ssl")
+    AdminClient saslSslAdmin;
 
-    public void initialize(@Observes StartupEvent ev) {
-        super.initialize(saslConsumer);
+    public void initialize(@Observes StartupEvent ev,
+            @ConfigProperty(name = "kafka-client-sasl-ssl.bootstrap.servers") Optional<String> saslSslServers) {
+        // Startup event is called for both InfinispanKafkaSaslSslIT and InfinispanKafkaIT
+        // both we don't want to initialize SASL_SSL beans when they are not going to be called
+        // and Kafka is not configured for SASL_SSL
+        boolean isSaslSslScenario = saslSslServers.isPresent();
+
+        if (isSaslSslScenario) {
+            super.initialize(saslSslConsumer);
+        }
     }
 
     @Path("/topics")
     @GET
     public Set<String> getTopics() throws InterruptedException, ExecutionException, TimeoutException {
-        return super.getTopics(saslAdmin);
+        return super.getTopics(saslSslAdmin);
     }
 
     @POST
     public long produceEvent(@QueryParam("key") String key, @QueryParam("value") String value)
             throws InterruptedException, ExecutionException, TimeoutException {
-        return super.produceEvent(saslProducer, key, value);
+        return super.produceEvent(saslSslProducer, key, value);
     }
 
     @GET
