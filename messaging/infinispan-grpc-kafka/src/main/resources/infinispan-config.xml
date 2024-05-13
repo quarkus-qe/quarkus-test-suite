@@ -5,7 +5,7 @@
         <stack name="encrypt-tcp" extends="tcp">
             <!-- Adds a keystore that nodes use to perform certificate authentication. -->
             <!-- Uses the stack.combine and stack.position attributes to insert SSL_KEY_EXCHANGE into the default TCP stack after VERIFY_SUSPECT2. -->
-            <SSL_KEY_EXCHANGE keystore_name="/keystore.jks" keystore_password="password" stack.combine="INSERT_AFTER" stack.position="VERIFY_SUSPECT2"/>
+            <SSL_KEY_EXCHANGE keystore_name="/keystore.p12" keystore_password="password" stack.combine="INSERT_AFTER" stack.position="VERIFY_SUSPECT2"/>
             <!-- Configures ASYM_ENCRYPT -->
             <!-- Uses the stack.combine and stack.position attributes to insert ASYM_ENCRYPT into the default TCP stack before pbcast.NAKACK2. -->
             <!-- The use_external_key_exchange = "true" attribute configures nodes to use the `SSL_KEY_EXCHANGE` protocol for certificate authentication. -->
@@ -31,7 +31,7 @@
                 <security-realm name="default">
                     <server-identities>
                         <ssl>
-                            <keystore path="/keystore.jks" password="password" alias="1" generate-self-signed-certificate-host="localhost"/>
+                            <keystore path="/keystore.p12" password="password" generate-self-signed-certificate-host="localhost"/>
                         </ssl>
                     </server-identities>
                     <properties-realm groups-attribute="Roles">
