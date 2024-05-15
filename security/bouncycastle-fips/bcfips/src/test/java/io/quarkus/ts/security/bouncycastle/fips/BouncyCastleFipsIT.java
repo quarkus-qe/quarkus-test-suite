@@ -4,12 +4,10 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.core.IsEqual.equalTo;
 
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
 
-@Tag("fips-incompatible") // native-mode
 @QuarkusScenario
 public class BouncyCastleFipsIT {
 
