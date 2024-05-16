@@ -19,7 +19,7 @@
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
         <quarkus.platform.version>3.8.4</quarkus.platform.version>
         <quarkus.ide.version>3.8.4</quarkus.ide.version>
-        <quarkus.qe.framework.version>1.4.4</quarkus.qe.framework.version>
+        <quarkus.qe.framework.version>1.4.5</quarkus.qe.framework.version>
         <quarkus-qpid-jms.version>2.5.0</quarkus-qpid-jms.version>
         <apache-httpclient-fluent.version>4.5.14</apache-httpclient-fluent.version>
         <confluent.kafka-avro-serializer.version>7.5.1</confluent.kafka-avro-serializer.version>
