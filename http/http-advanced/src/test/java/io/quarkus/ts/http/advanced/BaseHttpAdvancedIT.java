@@ -12,9 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
@@ -40,6 +37,7 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.EnabledOnQuarkusVersion;
+import io.quarkus.test.security.certificate.CertificateBuilder;
 import io.smallrye.mutiny.Uni;
 import io.vertx.core.http.HttpVersion;
 import io.vertx.core.json.JsonObject;
@@ -55,7 +53,6 @@ public abstract class BaseHttpAdvancedIT {
     private static final int TIMEOUT_SEC = 3;
     private static final int RETRY = 3;
     private static final String PASSWORD = "password";
-    private static final String KEY_STORE_PATH = "META-INF/resources/server.keystore";
     private static final String SSE_ERROR_MESSAGE = "java.lang.ClassNotFoundException: Provider for jakarta.ws.rs.sse.SseEventSource.Builder cannot be found";
 
     protected abstract RestService getApp();
@@ -128,7 +125,7 @@ public abstract class BaseHttpAdvancedIT {
 
     @Test
     @DisplayName("Http/2 Server test")
-    public void http2Server() throws InterruptedException, URISyntaxException {
+    public void http2Server() throws InterruptedException {
         CountDownLatch done = new CountDownLatch(1);
         Uni<JsonObject> content = getApp().mutiny(defaultVertxHttpClientOptions())
                 .getAbs(getAppEndpoint() + "/hello")
@@ -168,24 +165,6 @@ public abstract class BaseHttpAdvancedIT {
     public void microprofileHttpClientRedirection() {
         io.restassured.response.Response health = getApp().given().get("api/client");
         assertEquals(HttpStatus.SC_OK, health.statusCode());
-    }
-
-    @Test
-    @EnabledOnQuarkusVersion(version = "1\\..*", reason = "Redirection is no longer supported in 2.x")
-    public void vertxHttpClientRedirection() throws InterruptedException, URISyntaxException {
-        CountDownLatch done = new CountDownLatch(1);
-        Uni<Integer> statusCode = getApp().mutiny(defaultVertxHttpClientOptions())
-                .getAbs(getAppEndpoint() + "/health").send()
-                .map(HttpResponse::statusCode).ifNoItem()
-                .after(Duration.ofSeconds(TIMEOUT_SEC)).fail().onFailure().retry().atMost(RETRY);
-
-        statusCode.subscribe().with(httpStatusCode -> {
-            assertEquals(HttpStatus.SC_OK, httpStatusCode);
-            done.countDown();
-        });
-
-        done.await(TIMEOUT_SEC, TimeUnit.SECONDS);
-        assertThat(done.getCount(), equalTo(0L));
     }
 
     @Test
@@ -262,15 +241,18 @@ public abstract class BaseHttpAdvancedIT {
                 : ResponsePredicateResult.failure("Expected HTTP/2");
     }
 
-    private WebClientOptions defaultVertxHttpClientOptions() throws URISyntaxException {
+    private WebClientOptions defaultVertxHttpClientOptions() {
         return new WebClientOptions().setProtocolVersion(HttpVersion.HTTP_2).setSsl(true).setVerifyHost(false)
                 .setUseAlpn(true)
                 .setTrustStoreOptions(new JksOptions().setPassword(PASSWORD).setPath(defaultTruststore()));
     }
 
-    private String defaultTruststore() throws URISyntaxException {
-        URL res = getClass().getClassLoader().getResource(KEY_STORE_PATH);
-        return Paths.get(res.toURI()).toFile().getAbsolutePath();
+    private String defaultTruststore() {
+        return getApp()
+                .<CertificateBuilder> getPropertyFromContext(CertificateBuilder.INSTANCE_KEY)
+                .certificates()
+                .get(0)
+                .truststorePath();
     }
 
     private void wait(Duration timeout) {
