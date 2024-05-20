@@ -25,7 +25,6 @@ import io.vertx.core.net.KeyStoreOptions;
 import io.vertx.ext.web.client.WebClientOptions;
 import io.vertx.mutiny.ext.web.client.WebClient;
 
-@Tag("fips-incompatible") // disabled due to the https://github.com/quarkusio/quarkus/issues/40659
 @QuarkusTest
 public class BouncyCastleFipsJsseTest {
 
