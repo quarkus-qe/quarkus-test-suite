@@ -9,16 +9,16 @@ import org.testcontainers.containers.GenericContainer;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.bootstrap.SqlServerService;
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.services.Container;
+import io.quarkus.test.scenarios.annotations.DisabledOnFipsAndJava17;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.test.services.SqlServerContainer;
 import io.quarkus.ts.transactions.recovery.TransactionExecutor;
 
+@DisabledOnFipsAndJava17(reason = "https://github.com/quarkusio/quarkus/issues/40813")
 @QuarkusScenario
 public class MssqlTransactionGeneralUsageIT extends TransactionCommons {
 
-    private static final int MSSQL_PORT = 1433;
-
-    @Container(image = "${mssql.image}", port = MSSQL_PORT, expectedLog = "Service Broker manager has started")
+    @SqlServerContainer
     static SqlServerService database = new SqlServerService().onPostStart(service -> {
         // enable XA transactions
         var self = (SqlServerService) service;
