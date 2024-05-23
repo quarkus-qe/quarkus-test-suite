@@ -3,15 +3,15 @@ package io.quarkus.ts.sqldb.compatibility;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.bootstrap.SqlServerService;
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.services.Container;
+import io.quarkus.test.scenarios.annotations.DisabledOnFipsAndJava17;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.test.services.SqlServerContainer;
 
+@DisabledOnFipsAndJava17(reason = "https://github.com/quarkusio/quarkus/issues/40813")
 @QuarkusScenario
 public class MssqlDatabaseIT extends AbstractSqlDatabaseIT {
 
-    private static final int MSSQL_PORT = 1433;
-
-    @Container(image = "${mssql.image}", port = MSSQL_PORT, expectedLog = "Service Broker manager has started")
+    @SqlServerContainer
     static SqlServerService database = new SqlServerService();
 
     @QuarkusApplication
