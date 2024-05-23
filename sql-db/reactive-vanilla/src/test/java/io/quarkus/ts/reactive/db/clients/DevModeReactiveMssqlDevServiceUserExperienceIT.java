@@ -11,9 +11,11 @@ import com.github.dockerjava.api.model.Image;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnFipsAndJava17;
 import io.quarkus.test.services.DevModeQuarkusApplication;
 import io.quarkus.test.utils.DockerUtils;
 
+@DisabledOnFipsAndJava17(reason = "https://github.com/quarkusio/quarkus/issues/40813")
 @Tag("QUARKUS-1408")
 @QuarkusScenario
 public class DevModeReactiveMssqlDevServiceUserExperienceIT {
