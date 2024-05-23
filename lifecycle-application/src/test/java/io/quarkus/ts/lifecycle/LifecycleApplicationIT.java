@@ -43,6 +43,6 @@ public class LifecycleApplicationIT {
      * FIXME remove once https://github.com/quarkusio/quarkus/issues/24885 is resolved
      */
     private static String getAdditionalProperties() {
-        return QuarkusProperties.isNativePackageType() ? "native.properties" : "empty.properties";
+        return QuarkusProperties.isNativeEnabled() ? "native.properties" : "empty.properties";
     }
 }
