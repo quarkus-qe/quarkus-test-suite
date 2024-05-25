@@ -43,7 +43,6 @@ public abstract class AbstractDevModeIT {
         //disable everything, that we don't need
         webClient.getOptions().setDownloadImages(false);
         webClient.getOptions().setGeolocationEnabled(false);
-        webClient.getOptions().setAppletEnabled(false);
         webClient.getOptions().setCssEnabled(false);
     }
 
