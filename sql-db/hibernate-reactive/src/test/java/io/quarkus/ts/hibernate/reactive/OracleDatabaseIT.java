@@ -31,28 +31,4 @@ public class OracleDatabaseIT extends AbstractDatabaseHibernateReactiveIT {
     protected RestService getApp() {
         return app;
     }
-
-    // TODO: drop is overridden method when #40425 is fixed
-    @Test
-    @Disabled("https://github.com/quarkusio/quarkus/issues/40425")
-    @Override
-    public void createBookWithGeneratedId() {
-        super.createBookWithGeneratedId();
-    }
-
-    // TODO: drop is overridden method when #40425 is fixed
-    @Test
-    @Disabled("https://github.com/quarkusio/quarkus/issues/40425")
-    @Override
-    public void useTransaction() {
-        super.useTransaction();
-    }
-
-    // TODO: drop is overridden method when #40425 is fixed
-    @Test
-    @Disabled("https://github.com/quarkusio/quarkus/issues/40425")
-    @Override
-    public void ensureSessionIsPropagatedOnReactiveTransactions() {
-        super.ensureSessionIsPropagatedOnReactiveTransactions();
-    }
 }
