@@ -309,7 +309,6 @@ public class QuarkusCliCreateJvmApplicationIT {
 
     @Tag("QUARKUS-1296")
     @Test
-    @Disabled("https://github.com/quarkusio/quarkus/issues/40410")
     public void verifyRestEasyReactiveAndClassicResteasyCollisionUserMsg() {
         QuarkusCliRestService app = cliClient.createApplication("dependencyCollision",
                 defaultWithFixedStream().withExtensions("resteasy", "rest"));
