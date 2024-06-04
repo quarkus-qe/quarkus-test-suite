@@ -16,6 +16,9 @@
   "users": [
     {
       "username": "test-user",
+      "email": "test-user@localhost",
+      "firstName": "test-user",
+      "lastName": "test-user",
       "enabled": true,
       "credentials": [
         {
@@ -29,6 +32,9 @@
     },
     {
       "username": "test-admin",
+      "email": "test-admin@localhost",
+      "firstName": "test-admin",
+      "lastName": "test-admin",
       "enabled": true,
       "credentials": [
         {
