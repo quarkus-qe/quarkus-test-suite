@@ -51,8 +51,8 @@ public class OpenTelemetryIT {
     @QuarkusApplication(classes = { PingResource.class, PingPongService.class })
     static final RestService pingservice = new RestService()
             .withProperty("quarkus.application.name", "pingservice")
-            .withProperty("pongservice_url", () -> pongservice.getURI(HTTP).getRestAssuredStyleUri())
-            .withProperty("pongservice_port", () -> Integer.toString(pongservice.getURI(HTTP).getPort()))
+            .withProperty("pongservice.url", () -> pongservice.getURI(HTTP).getRestAssuredStyleUri())
+            .withProperty("pongservice.port", () -> Integer.toString(pongservice.getURI(HTTP).getPort()))
             .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl);
 
     @Order(1)
