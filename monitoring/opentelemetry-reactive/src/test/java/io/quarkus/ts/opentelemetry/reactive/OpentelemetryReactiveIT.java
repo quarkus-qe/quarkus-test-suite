@@ -48,8 +48,8 @@ public class OpentelemetryReactiveIT {
 
     @QuarkusApplication(classes = { PingResource.class, PingPongService.class, AdminResource.class })
     static final RestService pingservice = new RestService()
-            .withProperty("pongservice_url", () -> pongservice.getURI(HTTP).getRestAssuredStyleUri())
-            .withProperty("pongservice_port", () -> Integer.toString(pongservice.getURI(HTTP).getPort()))
+            .withProperty("pongservice.url", () -> pongservice.getURI(HTTP).getRestAssuredStyleUri())
+            .withProperty("pongservice.port", () -> Integer.toString(pongservice.getURI(HTTP).getPort()))
             .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl)
             // verify OTEL service name has priority over default Quarkus application name
             .withProperty("quarkus.otel.service.name", OTEL_PING_SERVICE_NAME)
