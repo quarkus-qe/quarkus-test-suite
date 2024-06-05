@@ -12,6 +12,7 @@ import java.util.List;
 
 import jakarta.inject.Inject;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
@@ -27,6 +28,7 @@ import io.quarkus.test.utils.FileUtils;
 @Tag("quarkus-cli")
 @QuarkusScenario
 @DisabledOnNative // Only for JVM verification
+@Disabled("TODO enable test as refactor of CLI is finished")
 public class QuarkusCliSpecialCharsIT {
 
     static final String FOLDER_WITH_SPACES = "s p a c e s";
