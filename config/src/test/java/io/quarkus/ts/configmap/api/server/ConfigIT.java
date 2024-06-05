@@ -10,6 +10,7 @@ import static io.quarkus.ts.configmap.api.server.SecretKeysHandler.RSA;
 import static io.quarkus.ts.configmap.api.server.SecretKeysHandler.SHA256;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -17,6 +18,7 @@ import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
+@Disabled("https://github.com/quarkus-qe/quarkus-test-framework/pull/1160")
 public class ConfigIT {
 
     private static final String ANSWER_KEY = "the.answer";
