@@ -46,6 +46,7 @@ public class ReactiveRestClientIT {
     }
 
     static final String MALFORMED_URL = "quarkus.rest-client.\"io.quarkus.ts.http.restclient.reactive.MalformedClient\".url";
+
     @QuarkusApplication
     static RestService app = new RestService()
             .withProperties("modern.properties")
@@ -273,6 +274,24 @@ public class ReactiveRestClientIT {
         app.given().get("/headers")
                 .then()
                 .body(containsString("clientFilterInvoked"));
+    }
+
+    @Test
+    @Tag("https://github.com/quarkusio/quarkus/issues/37323")
+    public void clientRetry() {
+        app.given().get("/client/failing/straight")
+                .then()
+                .statusCode(200)
+                .body(containsString("visitor of this page"));
+    }
+
+    @Test
+    @Tag("https://github.com/quarkusio/quarkus/issues/37323")
+    public void clientReactiveRetry() {
+        app.given().get("/client/failing/reactive")
+                .then()
+                .statusCode(200)
+                .body(containsString("visitor of this page"));
     }
 
     @AfterAll
