@@ -523,19 +523,21 @@
                 <module>security/https</module>
                 <module>security/jpa</module>
                 <module>security/jwt</module>
-                <module>security/keycloak</module>
-                <module>security/keycloak-authz-classic</module>
-                <module>security/keycloak-authz-reactive</module>
-                <module>security/keycloak-jwt</module>
-                <module>security/keycloak-webapp</module>
-                <module>security/keycloak-oauth2</module>
-                <module>security/keycloak-multitenant</module>
-                <module>security/keycloak-oidc-client-basic</module>
-                <module>security/keycloak-oidc-client-extended</module>
-                <module>security/keycloak-oidc-client-reactive-basic</module>
-                <module>security/keycloak-oidc-client-reactive-extended</module>
+                <!-- TODO: Jakub to follow-up https://github.com/quarkus-qe/quarkus-test-framework/pull/1153 -->
+                <!-- <module>security/keycloak</module> -->
+                <!-- <module>security/keycloak-authz-classic</module> -->
+                <!-- <module>security/keycloak-authz-reactive</module> -->
+                <!-- <module>security/keycloak-jwt</module> -->
+                <!-- <module>security/keycloak-webapp</module> -->
+                <!-- <module>security/keycloak-oauth2</module> -->
+                <!-- <module>security/keycloak-multitenant</module> -->
+                <!-- <module>security/keycloak-oidc-client-basic</module> -->
+                <!-- <module>security/keycloak-oidc-client-extended</module> -->
+                <!-- <module>security/keycloak-oidc-client-reactive-basic</module> -->
+                <!-- <module>security/keycloak-oidc-client-reactive-extended</module> -->
                 <module>security/vertx-jwt</module>
-                <module>security/oidc-client-mutual-tls</module>
+                <!-- TODO: Jakub to follow-up https://github.com/quarkus-qe/quarkus-test-framework/pull/1153 -->
+                <!-- <module>security/oidc-client-mutual-tls</module> -->
                 <module>security/webauthn</module>
             </modules>
         </profile>
@@ -582,7 +584,8 @@
                 <module>monitoring/micrometer-prometheus</module>
                 <module>monitoring/micrometer-prometheus-kafka</module>
                 <module>monitoring/micrometer-prometheus-kafka-reactive</module>
-                <module>monitoring/micrometer-prometheus-oidc</module>
+                <!-- TODO: Jakub to follow-up https://github.com/quarkus-qe/quarkus-test-framework/pull/1153 -->
+                <!-- <module>monitoring/micrometer-prometheus-oidc</module> -->
                 <module>monitoring/opentelemetry</module>
                 <module>monitoring/opentelemetry-reactive</module>
                 <!-- FIXME: enable the 'microprofile-opentracing' module when new 'quarkus-smallrye-opentracing' is released -->
