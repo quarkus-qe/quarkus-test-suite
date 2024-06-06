@@ -430,8 +430,7 @@
                 <module>external-applications</module>
                 <module>scheduling/quartz</module>
                 <module>super-size/many-extensions</module>
-                <!-- TODO: handle failures in a separate PR with proper review -->
-                <!-- <module>quarkus-cli</module> -->
+                <module>quarkus-cli</module>
                 <module>logging/jboss</module>
                 <module>qute/multimodule</module>
                 <module>qute/synchronous</module>

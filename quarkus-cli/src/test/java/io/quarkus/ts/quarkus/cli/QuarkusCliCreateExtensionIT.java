@@ -1,6 +1,5 @@
 package io.quarkus.ts.quarkus.cli;
 
-import static io.quarkus.ts.quarkus.cli.QuarkusCliUtils.defaultNewExtensionArgsWithFixedStream;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import jakarta.inject.Inject;
@@ -22,7 +21,7 @@ public class QuarkusCliCreateExtensionIT {
     @Test
     public void shouldCreateAndBuildExtension() {
         // Create extension
-        QuarkusCliDefaultService app = cliClient.createExtension("extension-abc", defaultNewExtensionArgsWithFixedStream());
+        QuarkusCliDefaultService app = cliClient.createExtension("extension-abc");
 
         // Should build on Jvm
         QuarkusCliClient.Result result = app.buildOnJvm();
