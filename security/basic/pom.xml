@@ -13,7 +13,7 @@
     <dependencies>
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-resteasy-reactive</artifactId>
+            <artifactId>quarkus-rest</artifactId>
             <!-- Only reactive dependency can cause https://github.com/quarkusio/quarkus/issues/40307-->
         </dependency>
         <dependency>
