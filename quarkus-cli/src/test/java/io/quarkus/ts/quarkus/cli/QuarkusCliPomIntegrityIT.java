@@ -1,9 +1,9 @@
 package io.quarkus.ts.quarkus.cli;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 import jakarta.inject.Inject;
@@ -31,21 +31,29 @@ public class QuarkusCliPomIntegrityIT {
 
     @Test
     public void shouldKeepCommentInPomAfterAddAndRemoveExtension() throws IOException {
-        final Path POM_PATH = Paths.get("target", QuarkusCliPomIntegrityIT.class.getSimpleName(), APP_NAME, "pom.xml");
-        QuarkusCliRestService app = cliClient.createApplication("my-quarkus-app",
-                QuarkusCliClient.CreateApplicationRequest.defaults());
+        QuarkusCliRestService app = cliClient.createApplication(APP_NAME);
+        var pomFile = app.getFileFromApplication("pom.xml");
 
-        List<String> initialPomContent = Files.readAllLines(POM_PATH);
-        initialPomContent.add(1, COMMENT);
+        try (var fileWriter = new FileWriter(pomFile, true)) {
+            fileWriter.write(System.lineSeparator());
+            fileWriter.write(COMMENT);
+        }
 
         // Add extension
         app.installExtension(NEW_EXTENSION);
-        List<String> updatedPomContent = Files.readAllLines(POM_PATH);
-        Assertions.assertTrue(updatedPomContent.contains(COMMENT), "The comment after add extension still should be there");
+        assertPomContainsComment(pomFile, "The comment after add extension still should be there");
 
         // Remove extension
         app.removeExtension(NEW_EXTENSION);
-        List<String> finalPomContent = Files.readAllLines(POM_PATH);
-        Assertions.assertTrue(finalPomContent.contains(COMMENT), "The comment after remove extension still should be there");
+        assertPomContainsComment(pomFile, "The comment after remove extension still should be there");
+    }
+
+    private static void assertPomContainsComment(File pom, String errMessage) throws IOException {
+        List<String> pomContent = Files.readAllLines(pom.toPath());
+        // the comment is added to the (new) last line,
+        // however Quarkus formats the POM file when extension is added / removed
+        // and removes the new line separator, so we need to look for the comment in the last line;
+        var lastLine = pomContent.get(pomContent.size() - 1);
+        Assertions.assertTrue(lastLine.contains(COMMENT), errMessage);
     }
 }

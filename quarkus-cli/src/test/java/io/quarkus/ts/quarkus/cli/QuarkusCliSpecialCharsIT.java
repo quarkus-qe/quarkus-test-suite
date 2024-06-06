@@ -1,14 +1,6 @@
 package io.quarkus.ts.quarkus.cli;
 
-import static io.quarkus.ts.quarkus.cli.QuarkusCliUtils.getCurrentStreamVersion;
-import static io.quarkus.ts.quarkus.cli.QuarkusCliUtils.isUpstream;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import jakarta.inject.Inject;
 
@@ -21,7 +13,6 @@ import org.junit.jupiter.api.condition.OS;
 import io.quarkus.test.bootstrap.QuarkusCliClient;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnNative;
-import io.quarkus.test.utils.FileUtils;
 
 @Tag("QUARKUS-960")
 @Tag("quarkus-cli")
@@ -39,12 +30,9 @@ public class QuarkusCliSpecialCharsIT {
     static final String EXPECTED_BUILD_OUTPUT = "BUILD SUCCESS";
     static final String PROFILE_ID = "profile.id";
     static final String NATIVE = "native";
-    static final Path TARGET = Path.of("target");
 
     @Inject
     static QuarkusCliClient cliClient;
-
-    private QuarkusCliClient.Result result;
 
     @Test
     public void shouldCreateApplicationOnJvmWithSpaces() {
@@ -104,69 +92,23 @@ public class QuarkusCliSpecialCharsIT {
 
     private void assertCreateNativeApplicationAtFolder(String folder) {
         // Should create app in a folder
-        whenCreateAppAt(folder);
-        thenResultIsSuccessful();
+        var app = cliClient.createApplicationAt(ARTIFACT_ID, folder);
 
         // Should be able to build the app
-        whenBuildOnNativeAppAt(folder);
-        thenBuildOutputIsSuccessful();
-
-        // Clean Up
-        deleteFolder(folder);
+        var result = app.buildOnNative();
+        thenBuildOutputIsSuccessful(result);
     }
 
     private void assertCreateJavaApplicationAtFolder(String folder) {
         // Should create app in a folder
-        whenCreateAppAt(folder);
-        thenResultIsSuccessful();
+        var app = cliClient.createApplicationAt(ARTIFACT_ID, folder);
 
         // Should be able to build the app
-        whenBuildOnJvmAppAt(folder);
-        thenBuildOutputIsSuccessful();
-
-        // Clean Up
-        deleteFolder(folder);
+        var result = app.buildOnJvm();
+        thenBuildOutputIsSuccessful(result);
     }
 
-    private void whenBuildOnNativeAppAt(String folder) {
-        result = cliClient.run(TARGET.resolve(folder + File.separator + ARTIFACT_ID), "build", "--native");
-    }
-
-    private void whenBuildOnJvmAppAt(String folder) {
-        result = cliClient.run(TARGET.resolve(folder + File.separator + ARTIFACT_ID), "build");
-    }
-
-    private void whenCreateAppAt(String folder) {
-        List<String> args = getDefaultAppArgs("create", "app");
-        if (OS.current() == OS.WINDOWS) {
-            folder = String.format("\"%s\"", folder);
-        }
-        args.addAll(List.of("--output-directory", folder, ARTIFACT_ID));
-        result = cliClient.run(args.toArray(new String[args.size()]));
-    }
-
-    private void thenResultIsSuccessful() {
-        assertTrue(result.isSuccessful(), "Something failed, output: " + result.getOutput());
-    }
-
-    private void thenBuildOutputIsSuccessful() {
-        thenResultIsSuccessful();
+    private static void thenBuildOutputIsSuccessful(QuarkusCliClient.Result result) {
         assertTrue(result.getOutput().contains(EXPECTED_BUILD_OUTPUT), "Unexpected output content: " + result.getOutput());
     }
-
-    private void deleteFolder(String folder) {
-        FileUtils.deletePath(TARGET.resolve(folder));
-    }
-
-    private List<String> getDefaultAppArgs(String... defaultArgs) {
-        String version = getCurrentStreamVersion();
-        List<String> args = new ArrayList<>();
-        args.addAll(List.of(defaultArgs));
-        if (!isUpstream(version)) {
-            args.addAll(Arrays.asList("--stream", version));
-        }
-
-        return args;
-    }
-
 }
