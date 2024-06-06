@@ -44,6 +44,22 @@ public class KafkaBlockingProducer {
 
     }
 
+    public void pushMessageEvent(final RoutingContext routingContext) {
+        String message = routingContext.getBodyAsString();
+        emitter.send(message)
+                .onFailure().invoke(exception -> {
+                    routingContext.response()
+                            .setStatusCode(408)
+                            .putHeader("Content-Type", "application/json")
+                            .end(exception.getMessage());
+                })
+                .subscribe().with(resp -> {
+                    routingContext.response()
+                            .putHeader("Content-Type", "application/json")
+                            .end("success");
+                });
+    }
+
     public void pushEventToTopic(final RoutingContext context) {
         Long startMs = System.currentTimeMillis();
         String topic = context.request().getParam("topic");
