@@ -427,13 +427,6 @@ This module covers some basic scenarios around GraphQL.
 ### `http/graphql-telemetry`
 This module covers some basic scenarios around OpenTelemetry usage with GraphQL.
 
-### `helm/helm-minimum`
-This module covers Helm integration by Quarkus-helm extension`io.quarkiverse.helm:quarkus-helm`
-The above extension will generate a Helm chart based on your `application.properties`. We have set up
-a HelloWorld application and then deploy it into Openshift through Helm.
-
-*Note:* This module will push a docker image into `quay.io/quarkusqeteam/ts-quarkus-helm-simple-app` repository, you will need to be logged into Quay in order to push the image.
-
 ### `javaee-like-getting-started`
 
 Based on `mvn io.quarkus:quarkus-maven-plugin:999-SNAPSHOT:create     -DprojectGroupId=io.quarkus.qe     -DprojectArtifactId=scenario-101-getting-started     -DprojectVersion=1.0.0-SNAPSHOT     -DclassName="io.quarkus.qe.hello.GreetingResource"     -Dextensions=io.quarkus:quarkus-hibernate-orm,io.quarkus:quarkus-jsonb,io.quarkus:quarkus-jsonp,io.quarkus:quarkus-resteasy-jsonb,io.quarkus:quarkus-narayana-jta,io.quarkus:quarkus-elytron-security,io.quarkus:quarkus-scheduler,io.quarkus:quarkus-swagger-ui,io.quarkus:quarkus-hibernate-validator,io.quarkus:quarkus-undertow-websockets,io.quarkus:quarkus-smallrye-fault-tolerance,io.quarkus:quarkus-smallrye-metrics,io.quarkus:quarkus-smallrye-openapi,io.quarkus:quarkus-smallrye-jwt,io.quarkus:quarkus-smallrye-health,io.quarkus:quarkus-opentelemetry` generated project.
