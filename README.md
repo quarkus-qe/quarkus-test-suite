@@ -842,19 +842,6 @@ Verify Stork custom service discovery and load balancer implementation.
 * PongReplica: is a "Pong service" replica, that is deployed in another physical service
 * Ping: is the main client microservice that will use `pong` and `pong-replica` services.
 
-### `monitoring/microprofile`
-
-Verifies combined usage of MicroProfile RestClient, Fault Tolerance and OpenTracing.
-
-The test hits a "client" endpoint, which uses RestClient to invoke a "hello" endpoint.
-The response is then modified in the "client" endpoint and returned back to the test.
-The RestClient interface uses Fault Tolerance to guard against the "hello" endpoint errors.
-It is possible to enable/disable the "hello" endpoint, which controls whether Fault Tolerance is used or not.
-
-All HTTP endpoints and internal processing is asynchronous, so Context Propagation is also required.
-Jakarta REST endpoints and RestClient calls are automatically traced with OpenTracing, and some additional logging into the OpenTracing spans is also done.
-Jaeger is deployed in an "all-in-one" configuration, and the OpenShift test verifies the stored traces.
-
 ### `monitoring/opentelemetry`
 
 Testing OpenTelemetry with Jaeger components
