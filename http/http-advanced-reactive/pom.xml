@@ -98,5 +98,10 @@
             <groupId>com.aayushatharva.brotli4j</groupId>
             <artifactId>brotli4j</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.microsoft.playwright</groupId>
+            <artifactId>playwright</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>
