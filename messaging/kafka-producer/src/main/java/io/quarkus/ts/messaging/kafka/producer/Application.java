@@ -42,6 +42,7 @@ public class Application {
         LOG.debug(String.format("Application %s starting...", serviceName));
         addRoute(HttpMethod.POST, "/event/:topic", rc -> producer.pushEventToTopic(rc));
         addRoute(HttpMethod.POST, "/event", rc -> producer.pushEvent(rc));
+        addRoute(HttpMethod.POST, "/messageEvent", rc -> producer.pushMessageEvent(rc));
     }
 
     void onStop(@Observes ShutdownEvent ev) {
