@@ -9,6 +9,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 import java.util.concurrent.TimeUnit;
 
+import io.restassured.filter.cookie.CookieFilter;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,9 +26,12 @@ public abstract class BaseMicrometerOidcSecurityIT {
     static final String CLIENT_SECRET_DEFAULT = "test-application-client-secret";
     static final int ASSERT_SERVICE_TIMEOUT_MINUTES = 1;
     static final String USER_PATH = "/user";
+    static final String NO_VALID_PATH = "/starwars";
     static final String HTTP_METRIC = "http_server_requests_seconds_count{method=\"GET\",";
     static final String OK_HTTP_CALL_METRIC = HTTP_METRIC + "outcome=\"SUCCESS\",status=\"200\",uri=\"%s\"}";
     static final String UNAUTHORIZED_HTTP_CALL_METRIC = HTTP_METRIC + "outcome=\"CLIENT_ERROR\",status=\"401\",uri=\"%s\"}";
+    static final String REDIRECT_HTTP_CALL_METRIC = HTTP_METRIC + "outcome=\"REDIRECTION\",status=\"302\",uri=\"%s\"}";
+    static final String NOT_FOUND_HTTP_CALL_METRIC = HTTP_METRIC + "outcome=\"CLIENT_ERROR\",status=\"404\",uri=\"%s\"}";
 
     //TODO Remove workaround after Keycloak is fixed https://github.com/keycloak/keycloak/issues/9916
     @KeycloakContainer(command = { "start-dev", "--import-realm" })
@@ -53,6 +57,37 @@ public abstract class BaseMicrometerOidcSecurityIT {
     public void shouldTraceHttpWhenUnauthenticated() {
         whenCallUserEndpointWithNoUser();
         thenMetricIsExposedInServiceEndpoint(UNAUTHORIZED_HTTP_CALL_METRIC, 1);
+    }
+
+    @Test
+    public void shouldTraceUrlOfNotFound() {
+        callNotExistPath();
+        thenMetricIsExposedInServiceEndpoint(NOT_FOUND_HTTP_CALL_METRIC, 1);
+    }
+
+    @Test
+    public void shouldTraceUrlOfRedirection() {
+        callRedirectionPath();
+        thenMetricIsExposedInServiceEndpoint(REDIRECT_HTTP_CALL_METRIC, 1);
+    }
+
+    private void callRedirectionPath() {
+        CookieFilter cookieFilter = new CookieFilter();
+        getApp().given()
+                .redirects().follow(false)
+                .filter(cookieFilter)
+                .auth().oauth2(getToken(NORMAL_USER, NORMAL_USER))
+                .get(USER_PATH)
+                .then()
+                .assertThat()
+                .statusCode(302);
+    }
+
+    private void callNotExistPath() {
+        getApp().given()
+                .get(NO_VALID_PATH)
+                .then()
+                .statusCode(HttpStatus.SC_NOT_FOUND);
     }
 
     private void whenCallUserEndpointWithNoUser() {
