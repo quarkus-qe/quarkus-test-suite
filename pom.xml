@@ -418,6 +418,7 @@
                 <module>super-size/many-extensions</module>
                 <module>quarkus-cli</module>
                 <module>logging/jboss</module>
+                <module>logging/thirdparty</module>
                 <module>qute/multimodule</module>
                 <module>qute/synchronous</module>
                 <module>qute/reactive</module>
