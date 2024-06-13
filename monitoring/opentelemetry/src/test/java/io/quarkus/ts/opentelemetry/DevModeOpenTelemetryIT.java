@@ -81,7 +81,7 @@ public class DevModeOpenTelemetryIT {
                 .queryParam("limit", pageLimit)
                 .queryParam("service", serviceName)
                 .get(jaeger.getTraceUrl());
-        LOG.info("Traces  -->  " + response.asPrettyString());
+        LOG.debug("Traces  -->  " + response.asPrettyString());
         return response;
     }
 
