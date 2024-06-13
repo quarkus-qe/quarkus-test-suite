@@ -481,6 +481,13 @@ Module that covers the logging functionality using JBoss Logging Manager. The fo
 - Inject a `Logger` instance using a custom category
 - Setting up the log level property for logger instances
 - Check default `quarkus.log.min-level` value
+- 
+### `logging/thirdparty`
+
+Module that covers, that logging works with various third-party solutions. The following scenarios are covered:
+- Check default `quarkus.log.min-level` value
+- Syslog-type log (syslog-ng is used)
+- Option `quarkus.log.syslog.max-length` filters messages, which are too big
 
 ### `sql-db/hibernate`
 
