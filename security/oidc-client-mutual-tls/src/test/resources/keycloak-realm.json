@@ -14,8 +14,10 @@
   "users": [
     {
       "username": "test-normal-user",
-      "enabled": true,
       "email": "test-normal-user@gmail.com",
+      "firstName": "test-normal-user",
+      "lastName": "test-normal-user",
+      "enabled": true,
       "credentials": [
         {
           "type": "password",
