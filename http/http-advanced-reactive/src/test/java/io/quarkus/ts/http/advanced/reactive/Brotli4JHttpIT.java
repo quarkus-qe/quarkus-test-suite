@@ -3,7 +3,6 @@ package io.quarkus.ts.http.advanced.reactive;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -43,14 +42,16 @@ public class Brotli4JHttpIT {
 
     @Test
     public void checkTextPlainDefaultWithoutBrotli4JEncoding() {
-        app.given()
+        // As we are using quarkus.http.enable-compression=true then gzip compression is used by default
+        Response response = app.given()
                 .get("/compression/default/text")
                 .then()
                 .statusCode(200)
                 .and()
-                .header(HttpHeaders.CONTENT_LENGTH, String.valueOf(CONTENT_LENGTH_DEFAULT_TEXT_PLAIN))
-                .header(HttpHeaders.CONTENT_ENCODING, nullValue())
-                .body(is(DEFAULT_TEXT_PLAIN)).log().all();
+                .header(HttpHeaders.CONTENT_ENCODING, "gzip")
+                .body(is(DEFAULT_TEXT_PLAIN)).extract().response();
+        int contentLength = Integer.parseInt(response.getHeader(HttpHeaders.CONTENT_LENGTH));
+        assertTrue(CONTENT_LENGTH_DEFAULT_TEXT_PLAIN > contentLength);
     }
 
     @Test
