@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -98,6 +99,7 @@ public class SpringDataCompositeEntityIT extends AbstractDbIT {
 
     @Test
     @Tag("QUARKUS-1521")
+    @Disabled("https://github.com/quarkusio/quarkus/issues/41292")
     void ensureFieldPageableIsSerialized() {
         Response response = app.given()
                 .accept("application/json")
