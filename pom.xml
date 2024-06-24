@@ -58,6 +58,7 @@
         <!-- Docker images used by both surefire and failsafe plugin -->
         <postgresql.latest.image>docker.io/library/postgres:15</postgresql.latest.image>
         <build-reporter-maven-extension.version>3.2.0</build-reporter-maven-extension.version>
+        <strimzi.testcontainers.version>0.107.0</strimzi.testcontainers.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -161,6 +162,22 @@
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <!-- Quarkus BOM brings older version of this dependency, so we need to override it manually -->
+            <groupId>io.strimzi</groupId>
+            <artifactId>strimzi-test-container</artifactId>
+            <version>${strimzi.testcontainers.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
     <build>
