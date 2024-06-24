@@ -8,6 +8,8 @@ import jakarta.ws.rs.PathParam;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 
+import io.smallrye.mutiny.Uni;
+
 @Path("/slow-topic")
 public class SlowTopicResource {
 
@@ -22,4 +24,11 @@ public class SlowTopicResource {
             emitter.send("Message " + index);
         }
     }
+
+    @POST
+    @Path("/sendMessage/{content}")
+    public Uni<Void> sendMessage(@PathParam("content") String message) {
+        return Uni.createFrom().completionStage(emitter.send(message));
+    }
+
 }
