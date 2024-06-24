@@ -44,7 +44,9 @@ public class SnappyCompressionIT {
     static final KafkaService kafka = new KafkaService().withProperty("auto.create.topics.enable", "false");
 
     @QuarkusApplication
-    static RestService app = new RestService().withProperty("kafka.bootstrap.servers", kafka::getBootstrapUrl);
+    static RestService app = new RestService()
+            .withProperty("quarkus.kafka.snappy.enabled", "true")
+            .withProperty("kafka.bootstrap.servers", kafka::getBootstrapUrl);
 
     @Test
     public void checkCompressCodecSnappy() throws IOException, InterruptedException {
@@ -78,14 +80,15 @@ public class SnappyCompressionIT {
     @Test
     public void checkIntegrityMessageAfterCompression() {
         String msg = "This is the message";
-        KafkaConsumer<Integer, String> consumer = createConsumer();
-        UniAssertSubscriber<Object> subscriber = makeHttpReqWithMessage("/messageEvent", msg)
-                .subscribe().withSubscriber(UniAssertSubscriber.create());
-        subscriber.awaitItem(Duration.ofSeconds(TIMEOUT_SEC)).getItem();
+        try (var consumer = createConsumer()) {
+            UniAssertSubscriber<Object> subscriber = makeHttpReqWithMessage("/messageEvent", msg)
+                    .subscribe().withSubscriber(UniAssertSubscriber.create());
+            subscriber.awaitItem(Duration.ofSeconds(TIMEOUT_SEC)).getItem();
 
-        ConsumerRecord<Integer, String> records = consumer.poll(Duration.ofMillis(10000))
-                .iterator().next();
-        Assertions.assertEquals(records.value(), msg);
+            ConsumerRecord<Integer, String> records = consumer.poll(Duration.ofMillis(10000))
+                    .iterator().next();
+            Assertions.assertEquals(records.value(), msg);
+        }
     }
 
     @Test

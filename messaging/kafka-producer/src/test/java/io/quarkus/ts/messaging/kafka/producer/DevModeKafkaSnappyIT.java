@@ -1,11 +1,13 @@
 package io.quarkus.ts.messaging.kafka.producer;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.DevModeQuarkusApplication;
 
+@Disabled("Needs refactoring to test Snappy in a DEV mode") // TODO: refactor to test snappy a DEV mode, not prod mode
 @QuarkusScenario
 public class DevModeKafkaSnappyIT extends SnappyCompressionIT {
 
