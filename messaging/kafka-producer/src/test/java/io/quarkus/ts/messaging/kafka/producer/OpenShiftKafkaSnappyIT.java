@@ -12,7 +12,6 @@ import io.quarkus.test.bootstrap.KafkaService;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.KafkaContainer;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.services.containers.model.KafkaVendor;
@@ -21,7 +20,6 @@ import io.smallrye.mutiny.helpers.test.UniAssertSubscriber;
 import io.vertx.mutiny.core.buffer.Buffer;
 
 @OpenShiftScenario
-@DisabledOnNative(reason = "In native mode, Snappy is disabled by default as the use of Snappy requires embedding a native library and unpacking it when the application starts.")
 public class OpenShiftKafkaSnappyIT {
 
     private static final int TIMEOUT_SEC = 5;
@@ -31,7 +29,9 @@ public class OpenShiftKafkaSnappyIT {
     static final KafkaService kafka = new KafkaService().withProperty("auto.create.topics.enable", "false");
 
     @QuarkusApplication
-    static RestService app = new RestService().withProperty("kafka.bootstrap.servers", kafka::getBootstrapUrl);
+    static RestService app = new RestService()
+            .withProperty("quarkus.kafka.snappy.enabled", "true")
+            .withProperty("kafka.bootstrap.servers", kafka::getBootstrapUrl);
 
     @Test
     public void checkCompressCodecSnappy() throws IOException, InterruptedException {
