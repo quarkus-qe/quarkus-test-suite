@@ -26,7 +26,9 @@ public class OpenShiftSpringWebOpenApiIT extends AbstractSpringWebOpenApiIT {
     private static final RestService app = new RestService()
             .withProperty("quarkus.datasource.username", database.getUser())
             .withProperty("quarkus.datasource.password", database.getPassword())
-            .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl);
+            .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl)
+            // set DB version as we use older version than default version configured at the build time
+            .withProperty("quarkus.datasource.db-version", "10.5");
 
     @Override
     public RestService getApp() {
