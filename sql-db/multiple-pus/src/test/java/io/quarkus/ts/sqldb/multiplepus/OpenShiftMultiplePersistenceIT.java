@@ -31,7 +31,9 @@ public class OpenShiftMultiplePersistenceIT extends AbstractMultiplePersistenceI
             .withProperty("MARIA_DB_JDBC_URL", mariadb::getJdbcUrl)
             .withProperty("POSTGRESQL_USERNAME", postgresql.getUser())
             .withProperty("POSTGRESQL_PASSWORD", postgresql.getPassword())
-            .withProperty("POSTGRESQL_JDBC_URL", postgresql::getJdbcUrl);
+            .withProperty("POSTGRESQL_JDBC_URL", postgresql::getJdbcUrl)
+            // set DB version as we use older version than default version configured at the build time
+            .withProperty("quarkus.datasource.\"fruits\".db-version", "10.3");
 
     @Override
     RestService getApp() {
