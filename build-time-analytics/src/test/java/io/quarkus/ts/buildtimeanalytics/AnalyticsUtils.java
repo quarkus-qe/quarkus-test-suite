@@ -11,8 +11,8 @@ public class AnalyticsUtils {
     // So for 999-SNAPSHOT, it can look like e.g. 999-20230718.203351-1091
     private static final String QUARKUS_EXTENSION_SNAPSHOT_VERSION_REGEX = "999-.*";
     // RHBQ artifacts may differ in the number suffix from a platform version.
-    // E.g.: 3.2.0.Final-redhat-00002 vs. 3.2.0.Final-redhat-00003
-    private static final String RHBQ_VERSION_REGEX_FORMAT = "%s-redhat-\\d{5}";
+    // E.g.: 3.8.0.redhat-00002 vs. 3.8.5.redhat-00003
+    private static final String RHBQ_VERSION_REGEX_FORMAT = "%s\\.redhat-\\d{5}";
     public static final Pattern QUARKUS_EXTENSION_VERSION_PATTERN = Pattern.compile(getExtensionVersionRegex());
 
     public static final String QUARKUS_ANALYTICS_DISABLED_PROPERTY = "quarkus.analytics.disabled";
