@@ -816,6 +816,8 @@
                                 </goals>
                                 <configuration>
                                     <systemPropertyVariables>
+                                        <!-- always set 'OpenShift' property as that's how detect OpenShift tests inside FW -->
+                                        <openshift>true</openshift>
                                         <ts.arm.missing.services.excludes>true</ts.arm.missing.services.excludes>
                                         <ts.redhat.registry.enabled>true</ts.redhat.registry.enabled>
                                         <!-- Product Services -->
@@ -869,6 +871,8 @@
                                 </goals>
                                 <configuration>
                                     <systemPropertyVariables>
+                                        <!-- always set 'OpenShift' property as that's how detect OpenShift tests inside FW -->
+                                        <openshift>true</openshift>
                                         <ts.ibm-z-p.missing.services.excludes>true</ts.ibm-z-p.missing.services.excludes>
                                         <ts.redhat.registry.enabled>true</ts.redhat.registry.enabled>
                                         <!-- Product Services -->
