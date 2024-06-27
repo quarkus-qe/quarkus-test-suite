@@ -79,13 +79,7 @@ public class QuarkusCliCreateJvmApplicationIT {
 
         // Start using DEV mode
         app.start();
-        if (OS.WINDOWS.isCurrentOs()) {
-            // there is empty page on Windows as we don't use registry prepared by prod team
-            // related to https://github.com/quarkusio/quarkus/issues/39909
-            app.given().get("/hello").then().statusCode(HttpStatus.SC_OK);
-        } else {
-            app.given().get().then().statusCode(HttpStatus.SC_OK);
-        }
+        app.given().get().then().statusCode(HttpStatus.SC_OK);
     }
 
     @Tag("QUARKUS-1472")
