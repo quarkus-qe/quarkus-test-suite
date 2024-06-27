@@ -8,7 +8,10 @@ import io.quarkus.test.services.QuarkusApplication;
 public class AbstractDbIT {
     static final int POSTGRESQL_PORT = 5432;
 
-    @Container(image = "${postgresql.latest.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
+    // FIXME: here PG image must not be hardcoded, we need to use ${postgresql.latest.image} system property;
+    //   however using Red Hat image here would require a lot of refactoring
+    //   we need to address https://github.com/quarkus-qe/quarkus-test-framework/issues/1183 first
+    @Container(image = "docker.io/postgres:16.1", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
     static final PostgresqlService database = new PostgresqlService()
             .withProperty("PGDATA", "/tmp/psql");
 

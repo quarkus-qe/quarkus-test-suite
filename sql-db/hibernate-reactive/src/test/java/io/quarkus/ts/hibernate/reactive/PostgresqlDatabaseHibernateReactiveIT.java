@@ -9,10 +9,10 @@ import io.quarkus.test.services.QuarkusApplication;
 @QuarkusScenario
 public class PostgresqlDatabaseHibernateReactiveIT extends AbstractDatabaseHibernateReactiveIT {
 
-    private static final String POSTGRES_USER = "quarkus_test";
-    private static final String POSTGRES_PASSWORD = "quarkus_test";
-    private static final String POSTGRES_DATABASE = "quarkus_test";
-    private static final int POSTGRES_PORT = 5432;
+    public static final String POSTGRES_USER = "quarkus_test";
+    public static final String POSTGRES_PASSWORD = "quarkus_test";
+    public static final String POSTGRES_DATABASE = "quarkus_test";
+    public static final int POSTGRES_PORT = 5432;
 
     @Container(image = "${postgresql.latest.image}", port = POSTGRES_PORT, expectedLog = "listening on IPv4 address")
     static PostgresqlService database = new PostgresqlService()
