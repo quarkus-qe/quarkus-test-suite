@@ -20,7 +20,8 @@ public class OpenShiftMultiplePersistenceIT extends AbstractMultiplePersistenceI
     @Container(image = "${mariadb.103.image}", port = MYSQL_PORT, expectedLog = "Only MySQL server logs after this point")
     static MariaDbService mariadb = new MariaDbService();
 
-    @Container(image = "${postgresql.latest.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
+    // FIXME: change expected log when https://github.com/quarkus-qe/quarkus-test-framework/issues/1183 is fixed
+    @Container(image = "${postgresql.latest.image}", port = POSTGRESQL_PORT, expectedLog = "Future log output will appear in directory")
     static PostgresqlService postgresql = new PostgresqlService()
             .withProperty("PGDATA", "/tmp/psql");
 
