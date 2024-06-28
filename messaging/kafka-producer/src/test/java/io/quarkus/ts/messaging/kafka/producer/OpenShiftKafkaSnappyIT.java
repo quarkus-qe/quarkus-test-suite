@@ -23,7 +23,7 @@ import io.vertx.mutiny.core.buffer.Buffer;
 public class OpenShiftKafkaSnappyIT {
 
     private static final int TIMEOUT_SEC = 5;
-    private static final String FILTER_COMMAND_LOG_CONTAINER = "/bin/bash -c \"./bin/kafka-run-class.sh kafka.tools.DumpLogSegments --deep-iteration --print-data-log --files /tmp/kafka-logs/test-0/00000000000000000000.log | head\"";
+    private static final String FILTER_COMMAND_LOG_CONTAINER = "/bin/bash -c \"./bin/kafka-run-class.sh kafka.tools.DumpLogSegments --deep-iteration --print-data-log --files /tmp/kraft-combined-logs/test-0/00000000000000000000.log | head\"";
 
     @KafkaContainer(vendor = KafkaVendor.STRIMZI)
     static final KafkaService kafka = new KafkaService().withProperty("auto.create.topics.enable", "false");
