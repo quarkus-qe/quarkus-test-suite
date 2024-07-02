@@ -1,0 +1,226 @@
+package io.quarkus.ts.quarkus.cli.update;
+
+import static io.quarkus.test.bootstrap.QuarkusCliClient.CreateApplicationRequest.defaults;
+import static io.quarkus.test.util.QuarkusCLIUtils.QuarkusDependency;
+import static io.quarkus.test.util.QuarkusCLIUtils.QuarkusPlugin;
+import static io.quarkus.test.util.QuarkusCLIUtils.addPluginsToPom;
+import static io.quarkus.test.util.QuarkusCLIUtils.checkRenamesInFile;
+import static io.quarkus.test.util.QuarkusCLIUtils.getPlugins;
+import static io.quarkus.test.util.QuarkusCLIUtils.getPom;
+import static io.quarkus.test.util.QuarkusCLIUtils.getProperties;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
+
+import org.apache.http.HttpStatus;
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Plugin;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.junit.jupiter.api.Test;
+import org.yaml.snakeyaml.Yaml;
+
+import io.quarkus.test.bootstrap.QuarkusCliRestService;
+
+/**
+ * Check updates from Quarkus 3.2 to 3.8
+ */
+public class Quarkus32to38CliUpdateIT extends AbstractQuarkusCliUpdateIT {
+    private static final DefaultArtifactVersion oldLts = new DefaultArtifactVersion("3.2");
+    private static final DefaultArtifactVersion newLts = new DefaultArtifactVersion("3.8");
+    private static final Path RENAME_APP = Paths.get("src/test/resources/quarkus32apps/renameApp");
+    private static final Path MULTI_MODULE_APP = Paths.get("src/test/resources/quarkus32apps/multiModuleApp");
+    private static final Path RUNNABLE_APP = Paths.get("src/test/resources/quarkus32apps/runnableApp");
+
+    public Quarkus32to38CliUpdateIT() {
+        super(oldLts, newLts);
+    }
+
+    @Test
+    public void propertiesUpdateTest() throws IOException {
+        Properties oldProperties = new Properties();
+        oldProperties.put("quarkus.hibernate-search-orm.automatic-indexing.synchronization.strategy", "sync");
+        oldProperties.put("quarkus.hibernate-search-orm.quarkusQE.automatic-indexing.synchronization.strategy", "sync");
+
+        Properties expectedNewProperties = new Properties();
+        expectedNewProperties.put("quarkus.hibernate-search-orm.indexing.plan.synchronization.strategy", "sync");
+        expectedNewProperties.put("quarkus.hibernate-search-orm.quarkusQE.indexing.plan.synchronization.strategy", "sync");
+
+        checkPropertiesUpdate(oldProperties, expectedNewProperties);
+    }
+
+    @Test
+    public void propertiesYamlUpdateTest() throws IOException {
+        Properties oldProperties = new Properties();
+        oldProperties.put("quarkus.hibernate-search-orm.automatic-indexing.synchronization.strategy", "sync");
+
+        Properties expectedNewProperties = new Properties();
+        expectedNewProperties.put("quarkus.hibernate-search-orm.indexing.plan.synchronization.strategy", "sync");
+
+        checkYamlPropertiesUpdate(oldProperties, expectedNewProperties);
+    }
+
+    @Test
+    public void dependencyUpdateTest() throws IOException, XmlPullParserException {
+        List<Dependency> oldDependencies = new ArrayList<>();
+        // Quarkus 3.3
+        oldDependencies.add(new QuarkusDependency("org.graalvm.nativeimage:svm:24.0.1"));
+        // Quarkus 3.6
+        oldDependencies.add(new QuarkusDependency("io.quarkus:quarkus-jaeger:3:12.2"));
+        // Disabled because of https://github.com/quarkusio/quarkus/issues/42201
+        // oldDependencies.add(new QuarkusDependency("io.quarkus:quarkus-smallrye-opentracing:3.12.3"));
+        // Quarkus 3.7
+        oldDependencies.add(new QuarkusDependency("io.quarkus:quarkus-hibernate-search-orm-coordination-outbox-polling"));
+        oldDependencies.add(new QuarkusDependency("io.quarkus:quarkus-rest-client"));
+        oldDependencies.add(new QuarkusDependency("io.quarkus:quarkus-rest-client-jackson"));
+        oldDependencies.add(new QuarkusDependency("io.quarkus:quarkus-rest-client-jaxb"));
+        oldDependencies.add(new QuarkusDependency("io.quarkus:quarkus-rest-client-jsonb"));
+        oldDependencies.add(new QuarkusDependency("io.quarkus:quarkus-rest-client-mutiny"));
+        // these two should be removed without replacement
+        oldDependencies.add(new QuarkusDependency("org.hibernate:hibernate-jpamodelgen:6.5.2.Final"));
+        oldDependencies.add(new QuarkusDependency("org.hibernate.orm:hibernate-jpamodelgen:6.5.2.Final"));
+        // Quarkus 3.8
+        oldDependencies.add(new QuarkusDependency("org.graalvm.sdk:graal-sdk:24.0.2"));
+
+        List<Dependency> newDependencies = new ArrayList<>();
+        // Quarkus 3.3
+        newDependencies.add(new QuarkusDependency("org.graalvm.sdk:graal-sdk:24.0.1"));
+        // Quarkus 3.6
+        newDependencies.add(new QuarkusDependency("io.quarkiverse.jaeger:quarkus-jaeger:1.0.0"));
+        // Disabled because of https://github.com/quarkusio/quarkus/issues/42201
+        // newDependencies.add(new QuarkusDependency("io.quarkiverse.opentracing:quarkus-smallrye-opentracing:1.0.0"));
+        // Quarkus 3.7
+        newDependencies.add(new QuarkusDependency("io.quarkus:quarkus-hibernate-search-orm-outbox-polling"));
+        newDependencies.add(new QuarkusDependency("io.quarkus:quarkus-resteasy-client"));
+        newDependencies.add(new QuarkusDependency("io.quarkus:quarkus-resteasy-client-jackson"));
+        newDependencies.add(new QuarkusDependency("io.quarkus:quarkus-resteasy-client-jaxb"));
+        newDependencies.add(new QuarkusDependency("io.quarkus:quarkus-resteasy-client-jsonb"));
+        newDependencies.add(new QuarkusDependency("io.quarkus:quarkus-resteasy-client-mutiny"));
+        // Quarkus 3.8
+        newDependencies.add(new QuarkusDependency("org.graalvm.sdk:nativeimage:24.0.2"));
+
+        checkDependenciesUpdate(oldDependencies, newDependencies);
+    }
+
+    @Test
+    public void pluginUpdateTest() throws XmlPullParserException, IOException {
+        List<Plugin> oldPlugins = new ArrayList<>();
+        // Quarkus 3.7
+        oldPlugins.add(new QuarkusPlugin("org.apache.maven.plugins:maven-compiler-plugin:3.10.0"));
+        oldPlugins.add(new QuarkusPlugin("org.apache.maven.plugins:maven-surefire-plugin:3.1.0"));
+
+        List<Plugin> newPlugins = new ArrayList<>();
+        // Quarkus 3.7
+        newPlugins.add(new QuarkusPlugin("org.apache.maven.plugins:maven-compiler-plugin:3.12.1"));
+        newPlugins.add(new QuarkusPlugin("org.apache.maven.plugins:maven-surefire-plugin:3.2.3"));
+
+        checkPluginUpdate(oldPlugins, newPlugins);
+    }
+
+    /**
+     * Updating maven-checkstyle is in separate test because it has version update,
+     * but target version is not fixed, it only specifies 3.x - and this does not fit in our framework
+     */
+    @Test
+    public void updateMavenCheckstylePluginTest() throws XmlPullParserException, IOException {
+        QuarkusCliRestService app = createAppBeforeUpdate();
+        addPluginsToPom(app, List.of(new QuarkusPlugin("org.apache.maven.plugins:maven-checkstyle-plugin:2.17")));
+
+        updateAppToNewStream(app);
+
+        Optional<Plugin> updatedCheckstylePlugin = getPlugins(app).stream()
+                .filter(plugin -> plugin.getGroupId().equals("org.apache.maven.plugins") &&
+                        plugin.getArtifactId().equals("maven-checkstyle-plugin"))
+                .findFirst();
+
+        assertTrue(updatedCheckstylePlugin.isPresent(),
+                "org.apache.maven.plugins:maven-checkstyle-plugin should be present after update");
+        assertTrue(updatedCheckstylePlugin.get().getVersion().startsWith("3."),
+                "org.apache.maven.plugins:maven-checkstyle-plugin should be in version 3.x");
+    }
+
+    /**
+     * Quarkus 3.7 update script enforces update java to 17 version
+     */
+    @Test
+    public void javaUpdateTest() throws XmlPullParserException, IOException {
+        // create app with java 11
+        QuarkusCliRestService app = cliClient.createApplication("app", defaults()
+                .withPlatformBom(null)
+                .withStream(oldVersion.toString())
+                .withExtraArgs("--java=11"));
+        assertEquals("11", getProperties(app).getProperty("maven.compiler.release"), "Java version should be 11 before update");
+
+        updateAppToNewStream(app);
+
+        assertEquals("17", getProperties(app).getProperty("maven.compiler.release"), "Java version should be 17 after update");
+    }
+
+    @Test
+    public void methodNameChangeTest() throws IOException {
+        QuarkusCliRestService app = cliClient.createApplicationFromExistingSources("app", null, RENAME_APP);
+        updateAppToNewStream(app);
+
+        Map<String, String> renames = new HashMap<>();
+        // Quarkus 3.5
+        renames.put("uniMemoize.atLeast", "uniMemoize.forFixedDuration");
+        renames.put("uniAndGroup.combinedWith", "uniAndGroup.with");
+
+        // Quarkus 3.7
+        renames.put("logRecord.getThreadID", "logRecord.getLongThreadID");
+        renames.put("logRecord.setThreadID", "logRecord.setLongThreadID");
+
+        checkRenamesInFile(app.getFileFromApplication("src/main/java/org/acme", "MethodChangeClass.java"), renames);
+    }
+
+    @Test
+    public void packageNameChangeTest() throws IOException {
+        QuarkusCliRestService app = cliClient.createApplicationFromExistingSources("app", null, RENAME_APP);
+        updateAppToNewStream(app);
+
+        Map<String, String> renames = new HashMap<>();
+        // Quarkus 3.5
+        renames.put("org.hibernate.search.mapper.orm.coordination.outboxpolling.OutboxPollingExtension",
+                "org.hibernate.search.mapper.orm.outboxpolling.OutboxPollingExtension");
+        renames.put("javax.security.cert.Certificate", "java.security.cert.Certificate");
+
+        checkRenamesInFile(app.getFileFromApplication("src/main/java/org/acme", "PackageChangeClass.java"), renames);
+    }
+
+    @Test
+    public void updateMultiModuleAppTest() throws XmlPullParserException, IOException {
+        QuarkusCliRestService app = cliClient.createApplicationFromExistingSources("app", null, MULTI_MODULE_APP);
+        updateAppToNewStream(app);
+
+        // parent
+        assertTrue(getPom(app).getProperties().getProperty("quarkus.platform.version").startsWith("3.8"),
+                "Parent project should be updated to quarkus 3.8.x");
+
+        // rest-client (module)
+        Dependency restClientDependency = new QuarkusDependency("io.quarkus:quarkus-resteasy-client-jackson");
+        assertTrue(getPom(app, "rest-client").getDependencies().contains(restClientDependency),
+                "quarkus-rest-client-jackson should be updated to quarkus-resteasy-client-jackson in child project");
+
+        // TODO: it would be good to actually run the updated app, but FW currently cannot run multi module app
+    }
+
+    @Test
+    public void updateAndRunApp() {
+        QuarkusCliRestService app = cliClient.createApplicationFromExistingSources("app", null, RUNNABLE_APP);
+        updateAppToNewStream(app);
+
+        app.start();
+
+        app.given().get("/book").then().statusCode(HttpStatus.SC_OK);
+    }
+}
