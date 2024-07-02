@@ -20,6 +20,7 @@ import io.quarkus.ts.reactive.db.clients.model.NoteBook;
 import io.quarkus.ts.reactive.db.clients.model.SoftCoverBook;
 import io.vertx.core.json.JsonObject;
 
+@Tag("fips-incompatible") // TODO: enable when https://github.com/quarkusio/quarkus/issues/40526 gets fixed
 @Tag("QUARKUS-1080")
 @Tag("QUARKUS-1408")
 @QuarkusScenario
