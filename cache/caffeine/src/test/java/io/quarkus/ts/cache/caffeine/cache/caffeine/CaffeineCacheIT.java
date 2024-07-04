@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -70,6 +72,32 @@ public class CaffeineCacheIT {
         // But different value using another prefix
         assertNotEquals(value, getValueFromPathUsingPrefix(path, PREFIX_TWO),
                 "Value was equal which means @CacheKey didn't work");
+    }
+
+    /**
+     * Ensure that failed unis are not cached
+     */
+    @Tag("QUARKUS-4541")
+    @Test
+    public void shouldNotbeTheFailureCached() {
+        String path = RESOURCE_REACTIVE_API_PATH + "/failing-value";
+        // First call to register the failure
+        given()
+                .queryParam("fail", true)
+                .when().get(path)
+                .then()
+                .statusCode(500);
+
+        // second call to be success
+        String value = given()
+                .queryParam("fail", false)
+                .when().get(path)
+                .then()
+                .statusCode(200)
+                .extract().asString();
+
+        assertEquals("Value 0", value, "Value should be 'Value 0' if not the failures is being cached");
+
     }
 
     /**

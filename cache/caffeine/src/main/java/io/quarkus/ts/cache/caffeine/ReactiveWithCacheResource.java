@@ -4,6 +4,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.QueryParam;
 
 import io.quarkus.cache.CacheInvalidate;
 import io.quarkus.cache.CacheInvalidateAll;
@@ -53,4 +54,16 @@ public class ReactiveWithCacheResource {
     public Uni<Void> invalidateAll() {
         return Uni.createFrom().nullItem();
     }
+
+    @GET
+    @Path("/failing-value")
+    @CacheResult(cacheName = CACHE_NAME)
+    public Uni<String> getFailingValue(@QueryParam("fail") boolean fail) {
+        if (fail) {
+            return Uni.createFrom().failure(new RuntimeException("Simulated error for cache"));
+        } else {
+            return Uni.createFrom().item("Value " + counter++);
+        }
+    }
+
 }
