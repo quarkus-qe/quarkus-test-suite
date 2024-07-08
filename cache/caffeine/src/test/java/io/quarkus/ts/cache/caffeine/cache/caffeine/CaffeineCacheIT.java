@@ -13,6 +13,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.restassured.response.Response;
 
 @QuarkusScenario
 public class CaffeineCacheIT {
@@ -79,24 +80,24 @@ public class CaffeineCacheIT {
      */
     @Tag("QUARKUS-4541")
     @Test
-    public void shouldNotbeTheFailureCached() {
-        String path = RESOURCE_REACTIVE_API_PATH + "/failing-value";
+    public void shouldNotCacheFailures() {
+        String path = RESOURCE_REACTIVE_API_PATH + "/failure/key-failure";
+
         // First call to register the failure
         given()
-                .queryParam("fail", true)
                 .when().get(path)
                 .then()
                 .statusCode(500);
 
-        // second call to be success
-        String value = given()
-                .queryParam("fail", false)
+        // second call should be success
+        Response response = given()
                 .when().get(path)
                 .then()
-                .statusCode(200)
-                .extract().asString();
+                .extract()
+                .response();
 
-        assertEquals("Value 0", value, "Value should be 'Value 0' if not the failures is being cached");
+        assertNotEquals(500, response.statusCode(), "The failure has been cached and should not be");
+        assertEquals("Success for key: key-failure", response.asString());
 
     }
 
