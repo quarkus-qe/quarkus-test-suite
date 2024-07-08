@@ -1,10 +1,12 @@
 package io.quarkus.ts.cache.caffeine;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.Response;
 
 import io.quarkus.cache.CacheInvalidate;
 import io.quarkus.cache.CacheInvalidateAll;
@@ -20,6 +22,7 @@ public class ReactiveWithCacheResource {
     private static final String CACHE_NAME = "api-reactive-cache";
 
     private static int counter = 0;
+    private AtomicInteger atomicCounter = new AtomicInteger(0);
 
     @GET
     @CacheResult(cacheName = CACHE_NAME)
@@ -56,14 +59,22 @@ public class ReactiveWithCacheResource {
     }
 
     @GET
-    @Path("/failing-value")
+    @Path("/failure/{key}")
     @CacheResult(cacheName = CACHE_NAME)
-    public Uni<String> getFailingValue(@QueryParam("fail") boolean fail) {
-        if (fail) {
-            return Uni.createFrom().failure(new RuntimeException("Simulated error for cache"));
+    public Uni<Response> getValueWithFailure(@PathParam("key") @CacheKey String key) {
+
+        int currentCounter = incrementCounter();
+
+        // Simulate a failure based on the key
+        if (currentCounter == 0) {
+            return Uni.createFrom().failure(new RuntimeException("Simulated failure for key: " + key));
         } else {
-            return Uni.createFrom().item("Value " + counter++);
+            return Uni.createFrom().item(Response.ok("Success for key: " + key).build());
         }
+    }
+
+    private int incrementCounter() {
+        return atomicCounter.getAndIncrement();
     }
 
 }
