@@ -3,6 +3,7 @@ package io.quarkus.ts.http.advanced;
 import static io.quarkus.test.utils.AwaitilityUtils.untilAsserted;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.function.Consumer;
@@ -32,14 +33,17 @@ public class DevModeGrpcIntegrationIT {
     private static final String NAME = "QE";
 
     /**
-     * Expect streaming service and hello service definition from 'helloworld.proto'
-     * as well as full generated service names and communication method type (UNARY, CLIENT_STREAMING, ...).
+     * Expect streaming service and hello service definition from 'helloworld.proto' and communication
+     * method type (UNARY, CLIENT_STREAMING, ...).
      */
     private static final String[] GRPC_SERVICE_VIEW_EXPECTED_CONTENT = {
-            "helloworld.InterceptedMessage", "io.quarkus.ts.http.advanced.GrpcInterceptorsService", "UNARY",
-            "helloworld.Greeter", "io.quarkus.ts.http.advanced.GrpcService", "SayHello", "SERVER_STREAMING",
-            "io.quarkus.ts.http.advanced.GrpcStreamingService", "BIDI_STREAMING", "CLIENT_STREAMING", "ServerStream",
-            "BidirectionalStream", "ClientStream"
+            "helloworld.InterceptedMessage", "UNARY", "helloworld.Greeter", "SayHello", "SERVER_STREAMING",
+            "BIDI_STREAMING", "CLIENT_STREAMING", "ServerStream", "BidirectionalStream", "ClientStream"
+    };
+
+    private static final String[] GRPC_SERVICE_IMPLEMENTATION_CLASSES = {
+            "io.quarkus.ts.http.advanced.GrpcInterceptorsService", "io.quarkus.ts.http.advanced.GrpcService",
+            "io.quarkus.ts.http.advanced.GrpcStreamingService"
     };
 
     @DevModeQuarkusApplication(grpc = true)
@@ -75,9 +79,18 @@ public class DevModeGrpcIntegrationIT {
     @Test
     public void testGrpcDevUIServicesView() {
         assertOnGrpcServicePage(page -> {
-            var grpcSvcView = page.waitForSelector("#page > qwc-grpc-services > vaadin-grid").innerText();
+            var grpcSvcViewGrid = page.waitForSelector("#page > qwc-grpc-services > vaadin-grid").innerText();
             for (String text : GRPC_SERVICE_VIEW_EXPECTED_CONTENT) {
-                assertTrue(grpcSvcView.contains(text), "DevUI gRPC services view is incomplete: " + grpcSvcView);
+                assertTrue(grpcSvcViewGrid.contains(text), "DevUI gRPC services view is incomplete: " + grpcSvcViewGrid);
+            }
+            // search for gRPC service implementation classes differently as they are in a shadow root and sometimes
+            // (like on Windows) they cannot be accessed
+            for (String implClass : GRPC_SERVICE_IMPLEMENTATION_CLASSES) {
+                var locator = page.getByText(implClass);
+                assertNotNull(locator, "DevUI gRPC services view is missing implementation class:" + implClass);
+                assertNotNull(locator.textContent(), "DevUI gRPC services view is missing implementation class:" + implClass);
+                assertTrue(locator.textContent().contains(implClass),
+                        "DevUI gRPC services view is missing implementation class:" + implClass);
             }
         });
     }
