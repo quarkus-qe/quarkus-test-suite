@@ -45,7 +45,7 @@ public class MySqlDatabaseTestResource implements QuarkusTestResourceLifecycleMa
         container.withEnv(DATABASE_PROPERTY, DEFAULT_SCHEMA);
         container.start();
 
-        var jdbcUrl = "jdbc:mysql://localhost:%d/%s".formatted(container.getMappedPort(3306), DEFAULT_SCHEMA);
+        var jdbcUrl = "jdbc:mysql://%s:%d/%s".formatted(container.getHost(), container.getMappedPort(3306), DEFAULT_SCHEMA);
         Map<String, String> config = new HashMap<>();
         config.put(defaultDataSource(QUARKUS_DB_JDBC_URL), jdbcUrl);
         config.put(defaultDataSource(QUARKUS_DB_USER), USER);
