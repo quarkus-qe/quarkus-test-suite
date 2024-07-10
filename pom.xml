@@ -19,7 +19,7 @@
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
         <quarkus.platform.version>3.8.5</quarkus.platform.version>
         <quarkus.ide.version>3.8.5</quarkus.ide.version>
-        <quarkus.qe.framework.version>1.4.7</quarkus.qe.framework.version>
+        <quarkus.qe.framework.version>1.4.8</quarkus.qe.framework.version>
         <quarkus-qpid-jms.version>2.5.0</quarkus-qpid-jms.version>
         <confluent.kafka-avro-serializer.version>7.5.1</confluent.kafka-avro-serializer.version>
         <formatter-maven-plugin.version>2.23.0</formatter-maven-plugin.version>
@@ -63,6 +63,7 @@
         <reruns>2</reruns>
         <oc.reruns>1</oc.reruns>
         <flaky-run-reporter.version>0.1.2.Beta1</flaky-run-reporter.version>
+        <strimzi.testcontainers.version>0.106.0</strimzi.testcontainers.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -172,6 +173,22 @@
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <!-- Quarkus BOM brings older version of this dependency, so we need to override it manually -->
+            <groupId>io.strimzi</groupId>
+            <artifactId>strimzi-test-container</artifactId>
+            <version>${strimzi.testcontainers.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
     <build>
