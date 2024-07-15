@@ -42,7 +42,7 @@ public class NonJsonPayLoadIT {
     @QuarkusApplication(classes = { YamlProvider.class, CityResource.class, City.class, CityListDTO.class,
             CityListWrapper.class,
             CityListWrapperSerializer.class,
-    }, properties = "nonjson.properties")
+    }, properties = "oidcdisable.properties")
     static RestService app = new RestService();
 
     private static File imageFile;
