@@ -32,7 +32,8 @@ public class ProdAmqpReactiveIT extends BaseAmqpReactiveIT {
     static RestService app = new RestService()
             .withProperty("amqp-host", amq::getAmqpHost)
             .withProperty("amqp-port", () -> "" + amq.getPort())
-            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl);
+            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.bsp.schedule.delay", "700ms");
 
     private Response resp;
 
