@@ -20,9 +20,9 @@ import io.restassured.response.Response;
 public class OpenAPITracingIT {
 
     private static final String SUPPRESS_NON_APPLICATION_URIS = "quarkus.otel.traces.suppress-non-application-uris";
-    private static final String HTTP_TARGET_TAG = "http.target";
-    private static final String HTTP_STATUS_CODE_TAG = "http.status_code";
-    private static final String HTTP_METHOD_TAG = "http.method";
+    private static final String URL_PATH_TAG = "url.path";
+    private static final String HTTP_RESPONSE_STATUS_CODE_TAG = "http.response.status_code";
+    private static final String HTTP_REQUEST_METHOD_TAG = "http.request.method";
     private static final String SPAN_KIND_TAG = "span.kind";
     private static final String OPEN_API_PATH = "/q/openapi";
     private static final String OPEN_API_OPERATION = "GET /openapi";
@@ -74,9 +74,9 @@ public class OpenAPITracingIT {
                     verifyDataSize(response, 1);
                     verifySpansSize(response);
                     verifySpanOperationName(response, operation);
-                    verifySpanTag(response, HTTP_TARGET_TAG, path);
-                    verifySpanTag(response, HTTP_STATUS_CODE_TAG, HttpStatus.SC_OK);
-                    verifySpanTag(response, HTTP_METHOD_TAG, "GET");
+                    verifySpanTag(response, URL_PATH_TAG, path);
+                    verifySpanTag(response, HTTP_RESPONSE_STATUS_CODE_TAG, HttpStatus.SC_OK);
+                    verifySpanTag(response, HTTP_REQUEST_METHOD_TAG, "GET");
                     verifySpanTag(response, SPAN_KIND_TAG, "server");
                 });
     }
