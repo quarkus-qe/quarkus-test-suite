@@ -15,6 +15,7 @@ public class ServiceResource {
     @Inject
     AgroalDataSource defaultDataSource;
 
+    // Dummy change
     @Path("/grant/{user}")
     @POST
     public Response grant(String user) throws SQLException {
