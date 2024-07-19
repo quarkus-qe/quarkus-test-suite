@@ -75,10 +75,13 @@ jobs:
           CHANGED=""
           MODULES_ARG=""
 
+          # If changed file have some special character, its path is surrounded with quotes which causing the if statement fail
+          CHANGED_FILE=$(echo ${{ steps.files.outputs.all_changed_and_modified_files }} | sed 's/\"/\\"/')
+
           for module in $MODULES
           do
-            if [[ "${{ steps.files.outputs.all_changed_and_modified_files }}" =~ ("$module") ]] ; then
-              CHANGED=$(echo $CHANGED" "$module)
+            if [[ $CHANGED_FILE =~ ("$module") ]] ; then
+                CHANGED=$(echo $CHANGED" "$module)
             fi
           done
 
