@@ -17,7 +17,6 @@ import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 
 import io.quarkus.test.scenarios.OpenShiftDeploymentStrategy;
 import io.quarkus.test.scenarios.OpenShiftScenario;
@@ -28,7 +27,6 @@ import io.quarkus.test.services.knative.eventing.OpenShiftExtensionFunqyKnativeE
 import io.quarkus.test.services.knative.eventing.spi.ForwardResponseDTO;
 import io.restassured.common.mapper.TypeRef;
 
-@DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/1142")
 @DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/37142")
 @Tag("use-quarkus-openshift-extension")
 @Tag("serverless")
