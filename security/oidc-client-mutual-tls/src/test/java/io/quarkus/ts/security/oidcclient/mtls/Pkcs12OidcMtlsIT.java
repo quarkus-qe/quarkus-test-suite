@@ -20,7 +20,7 @@ import io.quarkus.test.services.QuarkusApplication;
 public class Pkcs12OidcMtlsIT extends KeycloakMtlsAuthN {
 
     @KeycloakContainer(command = { "start-dev", "--import-realm", "--hostname-strict=false",
-            "--hostname-strict-https=false", "--features=token-exchange",
+            "--features=token-exchange",
             "--hostname=localhost", // required by LocalHostKeycloakContainerManagedResourceBuilder
             "--https-client-auth=required", "--https-key-store-file=/etc/server-keystore.p12",
             "--https-trust-store-file=/etc/server-truststore.p12",
