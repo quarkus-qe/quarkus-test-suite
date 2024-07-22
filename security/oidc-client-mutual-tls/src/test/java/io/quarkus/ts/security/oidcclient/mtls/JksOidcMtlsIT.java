@@ -17,7 +17,7 @@ public class JksOidcMtlsIT extends KeycloakMtlsAuthN {
 
     //TODO Remove workaround after Keycloak is fixed https://github.com/keycloak/keycloak/issues/9916
     @KeycloakContainer(command = { "start-dev", "--import-realm", "--hostname-strict=false",
-            "--hostname-strict-https=false", "--features=token-exchange",
+            "--features=token-exchange",
             "--hostname=localhost", // required by LocalHostKeycloakContainerManagedResourceBuilder
             "--https-client-auth=required", "--https-key-store-file=/etc/server-keystore.jks",
             "--https-trust-store-file=/etc/server-truststore.jks",

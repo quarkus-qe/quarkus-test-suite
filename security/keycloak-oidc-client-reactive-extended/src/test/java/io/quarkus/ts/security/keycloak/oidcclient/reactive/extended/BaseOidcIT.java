@@ -18,8 +18,7 @@ public abstract class BaseOidcIT {
     static final String CLIENT_SECRET_DEFAULT = "test-application-client-secret";
 
     //TODO Remove workaround after Keycloak is fixed https://github.com/keycloak/keycloak/issues/9916
-    @KeycloakContainer(command = { "start-dev", "--import-realm", "--hostname-strict-https=false",
-            "--features=token-exchange" })
+    @KeycloakContainer(command = { "start-dev", "--import-realm", "--features=token-exchange" })
     static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH)
             .withProperty("JAVA_OPTS", "-Dcom.redhat.fips=false");
 

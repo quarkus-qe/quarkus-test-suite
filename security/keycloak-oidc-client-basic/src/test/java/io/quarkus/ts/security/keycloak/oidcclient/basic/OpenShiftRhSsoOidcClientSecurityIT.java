@@ -18,8 +18,7 @@ import io.quarkus.test.services.QuarkusApplication;
 @EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
 public class OpenShiftRhSsoOidcClientSecurityIT extends BaseOidcClientSecurityIT {
 
-    @KeycloakContainer(command = { "start-dev", "--import-realm", "--hostname-strict-https=false",
-            "--features=token-exchange" }, image = "${rhbk.image}")
+    @KeycloakContainer(command = { "start-dev", "--import-realm", "--features=token-exchange" }, image = "${rhbk.image}")
     static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
 
     @QuarkusApplication
