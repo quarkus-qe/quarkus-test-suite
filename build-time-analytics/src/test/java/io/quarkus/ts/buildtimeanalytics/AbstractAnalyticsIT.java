@@ -141,12 +141,17 @@ public abstract class AbstractAnalyticsIT {
                 .map(payloadExtension -> mapToGA(payloadExtension.getGroupId(), payloadExtension.getArtifactId()))
                 .collect(Collectors.toList());
         assertEquals(pomDependencyGAs, payloadExtensionGAs);
-        List<PayloadExtension> extensionsWithMismatchedVersion = payloadExtensions.stream()
-                .filter(extension -> !QUARKUS_EXTENSION_VERSION_PATTERN.matcher(extension.getVersion()).matches())
-                .collect(Collectors.toList());
-        assertEquals(0, extensionsWithMismatchedVersion.size(),
-                String.format("All extensions versions must match pattern: '%s'. Offending extensions: %s",
-                        QUARKUS_EXTENSION_VERSION_PATTERN.pattern(), extensionsWithMismatchedVersion));
+
+        // RHBQ doesn't guarantee the same version of the platform and core extensions
+        boolean isRHBQ = QuarkusProperties.getVersion().contains("redhat");
+        if (!isRHBQ) {
+            List<PayloadExtension> extensionsWithMismatchedVersion = payloadExtensions.stream()
+                    .filter(extension -> !QUARKUS_EXTENSION_VERSION_PATTERN.matcher(extension.getVersion()).matches())
+                    .collect(Collectors.toList());
+            assertEquals(0, extensionsWithMismatchedVersion.size(),
+                    String.format("All extensions versions must match pattern: '%s'. Offending extensions: %s",
+                            QUARKUS_EXTENSION_VERSION_PATTERN.pattern(), extensionsWithMismatchedVersion));
+        }
     }
 
     private List<Dependency> getPomDependencies(QuarkusCliRestService app) {
