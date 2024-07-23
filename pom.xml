@@ -816,10 +816,9 @@
                                         <mysql.80.image>registry.redhat.io/rhel8/mysql-80</mysql.80.image>
                                         <mariadb.103.image>registry.redhat.io/rhel8/mariadb-103</mariadb.103.image>
                                         <mariadb.105.image>registry.redhat.io/rhel8/mariadb-105</mariadb.105.image>
+                                        <amqbroker.image>registry.redhat.io/amq7/amq-broker-rhel8:7.12</amqbroker.image>
                                         <amq-streams.image>registry.redhat.io/amq-streams/kafka-35-rhel8</amq-streams.image>
                                         <amq-streams.version>2.6.0</amq-streams.version>
-                                        <!-- run 'docker manifest inspect mongo:5.0' and use digest for architecture 'arm64', variant '8', os 'linux' -->
-                                        <mongodb.image>docker.io/library/mongo@sha256:6f851e31a1b317c6fa681b7dad5f94c622f1c3588477f3b769579dc5462ee659</mongodb.image>
                                     </systemPropertyVariables>
                                     <rerunFailingTestsCount>${oc.reruns}</rerunFailingTestsCount>
                                 </configuration>
