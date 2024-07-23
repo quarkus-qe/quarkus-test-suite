@@ -271,7 +271,7 @@
                                 <wiremock.image>docker.io/wiremock/wiremock:3.3.1</wiremock.image>
                                 <!-- TODO use official image when/if this fixed https://github.com/hashicorp/docker-consul/issues/184 -->
                                 <consul.image>docker.io/bitnami/consul:1.17.2</consul.image>
-                                <infinispan.image>quay.io/infinispan/server:14.0</infinispan.image>
+                                <infinispan.image>quay.io/infinispan/server:15.0</infinispan.image>
                                 <infinispan.expected-log>Infinispan Server.*started in</infinispan.expected-log>
                                 <spring.cloud.server.image>quay.io/quarkusqeteam/spring-cloud-config-server:4.1</spring.cloud.server.image>
                                 <keycloak.image>quay.io/keycloak/keycloak:25.0</keycloak.image>
