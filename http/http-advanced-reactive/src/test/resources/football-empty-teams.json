@@ -1,0 +1,47 @@
+[
+  {
+    "name": "Germany",
+    "colorTShirt": "White",
+    "euroCups": 3
+  },
+  {
+    "name": "",
+    "colorTShirt": "",
+    "euroCups": 3
+  },
+  {
+    "name": "France",
+    "colorTShirt": "Blue",
+    "euroCups": 2
+  },
+  {
+    "name": "Denmark",
+    "colorTShirt": "White",
+    "euroCups": 1
+  },
+  {
+    "name": "Italy",
+    "colorTShirt": "Blue",
+    "euroCups": 2
+  },
+  {
+    "name": "England",
+    "colorTShirt": "White",
+    "euroCups": 1
+  },
+  {
+    "name": "Netherlands",
+    "colorTShirt": "Orange",
+    "euroCups": 1
+  },
+  {
+    "name": "Portugal",
+    "colorTShirt": "Red",
+    "euroCups": 1
+  },
+  {
+    "name": "Czechia",
+    "colorTShirt": "",
+    "euroCups": 0
+  }
+]

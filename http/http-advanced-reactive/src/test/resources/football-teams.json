@@ -1,0 +1,210 @@
+[
+  {
+    "name": "Germany",
+    "colorTShirt": "White",
+    "euroCups": 3,
+    "foundationDate": "1900-01-01",
+    "stadium": "Olympiastadion",
+    "keyPlayers": ["Miroslav Klose", "Philipp Lahm", "Manuel Neuer"]
+  },
+  {
+    "name": "Spain",
+    "colorTShirt": "Red",
+    "euroCups": 3,
+    "foundationDate": "1913-03-29",
+    "stadium": "Santiago Bernabeu",
+    "keyPlayers": ["Xavi", "Iker Casillas", "Sergio Ramos"]
+  },
+  {
+    "name": "France",
+    "colorTShirt": "Blue",
+    "euroCups": 2,
+    "foundationDate": "1919-12-07",
+    "stadium": "Stade de France",
+    "keyPlayers": ["Zinedine Zidane", "Thierry Henry", "Michel Platini"]
+  },
+  {
+    "name": "Denmark",
+    "colorTShirt": "White",
+    "euroCups": 1,
+    "foundationDate": "1889-05-18",
+    "stadium": "Parken Stadium",
+    "keyPlayers": ["Peter Schmeichel", "Michael Laudrup", "Christian Eriksen"]
+  },
+  {
+    "name": "Italy",
+    "colorTShirt": "Blue",
+    "euroCups": 2,
+    "foundationDate": "1898-03-15",
+    "stadium": "San Siro",
+    "keyPlayers": ["Paolo Maldini", "Roberto Baggio", "Gianluigi Buffon"]
+  },
+  {
+    "name": "England",
+    "colorTShirt": "White",
+    "euroCups": 1,
+    "foundationDate": "1863-10-26",
+    "stadium": "Wembley Stadium",
+    "keyPlayers": ["David Beckham", "Wayne Rooney", "Bobby Charlton"]
+  },
+  {
+    "name": "Netherlands",
+    "colorTShirt": "Orange",
+    "euroCups": 1,
+    "foundationDate": "1889-12-08",
+    "stadium": "Johan Cruyff Arena",
+    "keyPlayers": ["Johan Cruyff", "Ruud Gullit", "Marco van Basten"]
+  },
+  {
+    "name": "Portugal",
+    "colorTShirt": "Red",
+    "euroCups": 1,
+    "foundationDate": "1914-12-31",
+    "stadium": "Estadio da Luz",
+    "keyPlayers": ["Cristiano Ronaldo", "Luis Figo", "Eusebio"]
+  },
+  {
+    "name": "Czechia",
+    "colorTShirt": "White",
+    "euroCups": 0,
+    "foundationDate": "1901-10-21",
+    "stadium": "Generali Arena",
+    "keyPlayers": ["Pavel Nedved", "Petr Cech", "Tomas Rosicky"]
+  },
+  {
+    "name": "Switzerland",
+    "colorTShirt": "Red",
+    "euroCups": 0,
+    "foundationDate": "1895-07-04",
+    "stadium": "St. Jakob-Park",
+    "keyPlayers": ["Xherdan Shaqiri", "Granit Xhaka", "Stephan Lichtsteiner"]
+  },
+  {
+    "name": "Sweden",
+    "colorTShirt": "Yellow",
+    "euroCups": 0,
+    "foundationDate": "1904-06-12",
+    "stadium": "Friends Arena",
+    "keyPlayers": ["Zlatan Ibrahimovic", "Henrik Larsson", "Freddie Ljungberg"]
+  },
+  {
+    "name": "Belgium",
+    "colorTShirt": "Red",
+    "euroCups": 0,
+    "foundationDate": "1895-09-01",
+    "stadium": "King Baudouin Stadium",
+    "keyPlayers": ["Eden Hazard", "Kevin De Bruyne", "Romelu Lukaku"]
+  },
+  {
+    "name": "Croatia",
+    "colorTShirt": "Red and White",
+    "euroCups": 0,
+    "foundationDate": "1912-08-20",
+    "stadium": "Maksimir Stadium",
+    "keyPlayers": ["Luka Modric", "Ivan Rakitic", "Davor Suker"]
+  },
+  {
+    "name": "Russia",
+    "colorTShirt": "Red",
+    "euroCups": 1,
+    "foundationDate": "1912-01-01",
+    "stadium": "Luzhniki Stadium",
+    "keyPlayers": ["Lev Yashin", "Andrey Arshavin", "Igor Akinfeev"]
+  },
+  {
+    "name": "Turkey",
+    "colorTShirt": "Red",
+    "euroCups": 0,
+    "foundationDate": "1923-04-01",
+    "stadium": "Ataturk Olympic Stadium",
+    "keyPlayers": ["Hakan Sukur", "Arda Turan", "Rustu Recber"]
+  },
+  {
+    "name": "Poland",
+    "colorTShirt": "White",
+    "euroCups": 0,
+    "foundationDate": "1919-12-20",
+    "stadium": "National Stadium",
+    "keyPlayers": ["Robert Lewandowski", "Zbigniew Boniek", "Jakub Blaszczykowski"]
+  },
+  {
+    "name": "Ukraine",
+    "colorTShirt": "Yellow",
+    "euroCups": 0,
+    "foundationDate": "1991-12-20",
+    "stadium": "Olympic Stadium",
+    "keyPlayers": ["Andriy Shevchenko", "Serhiy Rebrov", "Anatoliy Tymoshchuk"]
+  },
+  {
+    "name": "Romania",
+    "colorTShirt": "Yellow",
+    "euroCups": 0,
+    "foundationDate": "1909-05-06",
+    "stadium": "Arena Nationala",
+    "keyPlayers": ["Gheorghe Hagi", "Adrian Mutu", "Dan Petrescu"]
+  },
+  {
+    "name": "Austria",
+    "colorTShirt": "Red",
+    "euroCups": 0,
+    "foundationDate": "1904-03-01",
+    "stadium": "Ernst Happel Stadium",
+    "keyPlayers": ["David Alaba", "Herbert Prohaska", "Toni Polster"]
+  },
+  {
+    "name": "Hungary",
+    "colorTShirt": "Red",
+    "euroCups": 0,
+    "foundationDate": "1901-06-15",
+    "stadium": "Puskas Arena",
+    "keyPlayers": ["Ferenc Puskas", "Laszlo Kubala", "Sandor Kocsis"]
+  },
+  {
+    "name": "Serbia",
+    "colorTShirt": "Red",
+    "euroCups": 0,
+    "foundationDate": "1919-12-01",
+    "stadium": "Rajko Mitic Stadium",
+    "keyPlayers": ["Nemanja Vidic", "Dejan Stankovic", "Dragan Dzajic"]
+  },
+  {
+    "name": "Scotland",
+    "colorTShirt": "Blue",
+    "euroCups": 0,
+    "foundationDate": "1873-03-13",
+    "stadium": "Hampden Park",
+    "keyPlayers": ["Kenny Dalglish", "Denis Law", "Jim Baxter"]
+  },
+  {
+    "name": "Wales",
+    "colorTShirt": "Red",
+    "euroCups": 0,
+    "foundationDate": "1876-03-25",
+    "stadium": "Cardiff City Stadium",
+    "keyPlayers": ["Gareth Bale", "Ryan Giggs", "John Charles"]
+  },
+  {
+    "name": "Northern Ireland",
+    "colorTShirt": "Green",
+    "euroCups": 0,
+    "foundationDate": "1880-04-18",
+    "stadium": "Windsor Park",
+    "keyPlayers": ["George Best", "Pat Jennings", "David Healy"]
+  },
+  {
+    "name": "Republic of Ireland",
+    "colorTShirt": "Green",
+    "euroCups": 0,
+    "foundationDate": "1921-09-02",
+    "stadium": "Aviva Stadium",
+    "keyPlayers": ["Robbie Keane", "Roy Keane", "Damien Duff"]
+  },
+  {
+    "name": "Greece",
+    "colorTShirt": "Blue",
+    "euroCups": 1,
+    "foundationDate": "1926-11-15",
+    "stadium": "Olympic Stadium",
+    "keyPlayers": ["Theodoros Zagorakis", "Giorgos Karagounis", "Angelos Charisteas"]
+  }
+]
