@@ -32,4 +32,20 @@
             </properties>
         </profile>
     </profiles>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <!-- Skip unit tests as we only want to run ITs -->
+                <!-- This will allow us to have unit tests for apps created via CLI in src/test/java -->
+                <!-- Which makes them better maintainable from IDE than Java classes in resources -->
+                <!-- Also this way, compilation fails if some bump breaks them -->
+                <!-- See the 'io.quarkus.ts.quarkus.cli.config.surefire' package for respective unit tests -->
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
