@@ -36,6 +36,7 @@ public class QuarkusCliHelpIT {
         CREATE("create", "Create a new project."),
         CREATE_CLI("create cli", "Create a Quarkus command-line project."),
         CREATE_APP("create app", "Create a Quarkus application project."),
+        CONFIG("config", "Manage Quarkus configuration"),
         BUILD("build", "Build the current project."),
         DEV("dev", "Run the current project in dev (live coding) mode."),
         EXTENSION("extension", "List platforms and extensions."),
