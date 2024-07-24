@@ -26,8 +26,8 @@ public class MssqlTransactionGeneralUsageIT extends TransactionCommons {
             self
                     .<GenericContainer<?>> getPropertyFromContext(DOCKER_INNER_CONTAINER)
                     .execInContainer(
-                            "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", self.getUser(), "-P", self.getPassword(),
-                            "-Q", "EXEC sp_sqljdbc_xa_install");
+                            "/opt/mssql-tools18/bin/sqlcmd", "-C", "-S", "localhost", "-U", self.getUser(),
+                            "-P", self.getPassword(), "-Q", "EXEC sp_sqljdbc_xa_install");
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
