@@ -28,8 +28,10 @@ import io.quarkus.test.bootstrap.config.QuarkusEncryptConfigCommandBuilder.Encry
 import io.quarkus.test.bootstrap.config.QuarkusEncryptConfigCommandBuilder.EncryptionKeyOpt;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnNative;
+import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 import io.quarkus.ts.quarkus.cli.config.surefire.EncryptPropertyTest;
 
+@DisabledOnQuarkusVersion(version = "3\\.(9|10|11|12)\\..*", reason = "https://github.com/quarkusio/quarkus/pull/41203 merged in 3.13")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class) // remember, this is stateful test as well as stateful cmd builder
 @Tag("QUARKUS-3456")
 @Tag("quarkus-cli")
