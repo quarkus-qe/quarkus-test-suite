@@ -1,7 +1,9 @@
 package io.quarkus.ts.http.advanced.reactive;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
+
+import jakarta.json.bind.annotation.JsonbDateFormat;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
@@ -11,14 +13,15 @@ public class FootballTeam {
     private String name;
     private String colorTShirt;
     private int euroCups;
-    private Date foundationDate;
+    @JsonbDateFormat(value = "yyyy-MM-dd")
+    private LocalDate foundationDate;
     private String stadium;
     private List<String> keyPlayers;
 
     public FootballTeam() {
     }
 
-    public FootballTeam(String name, String colorTShirt, int euroCups, Date foundationDate, String stadium,
+    public FootballTeam(String name, String colorTShirt, int euroCups, LocalDate foundationDate, String stadium,
             List<String> keyPlayers) {
         this.name = name;
         this.colorTShirt = colorTShirt;
@@ -28,11 +31,11 @@ public class FootballTeam {
         this.keyPlayers = keyPlayers;
     }
 
-    public Date getFoundationDate() {
+    public LocalDate getFoundationDate() {
         return foundationDate;
     }
 
-    public void setFoundationDate(Date foundationDate) {
+    public void setFoundationDate(LocalDate foundationDate) {
         this.foundationDate = foundationDate;
     }
 
