@@ -1,5 +1,7 @@
 package io.quarkus.ts.external.applications;
 
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
+
 import io.quarkus.test.bootstrap.PostgresqlService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
@@ -8,6 +10,7 @@ import io.quarkus.test.services.Container;
 import io.quarkus.test.services.GitRepositoryQuarkusApplication;
 
 @DisabledOnNative(reason = "Native + s2i not supported")
+@DisabledIfSystemProperty(named = "ts.ibm-z-p.missing.services.excludes", matches = "true", disabledReason = "webbundler does not have supported for s390x & ppc64le.")
 @OpenShiftScenario
 public class OpenShiftTodoDemoIT extends AbstractTodoDemoIT {
 
