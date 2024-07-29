@@ -92,12 +92,12 @@ jobs:
       matrix:
         java: [ 17 ]
         image: [ "ubi-quarkus-graalvmce-builder-image:jdk-21", "ubi-quarkus-mandrel-builder-image:jdk-21" ]
-        profiles: [ "root-modules",
+        profiles: [ "root-modules,websockets-modules,test-tooling-modules,nosql-db-modules",
                    "http-modules,cache-modules",
                    "security-modules,spring-modules",
                     "sql-db-modules -pl env-info,sql-db/hibernate,sql-db/sql-app,sql-db/sql-app-compatibility,sql-db/multiple-pus,sql-db/panache-flyway,sql-db/hibernate-reactive",
                     "sql-db-modules -pl env-info,sql-db/reactive-rest-data-panache,sql-db/vertx-sql,sql-db/reactive-vanilla,sql-db/hibernate-fulltext-search,sql-db/narayana-transactions",
-                   "messaging-modules,websockets-modules,monitoring-modules,test-tooling-modules,nosql-db-modules"]
+                   "messaging-modules,monitoring-modules"]
     steps:
       - uses: actions/checkout@v4
       - name: Reclaim Disk Space
