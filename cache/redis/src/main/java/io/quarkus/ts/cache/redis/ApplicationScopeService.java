@@ -1,4 +1,4 @@
-package io.quarkus.ts.cache.caffeine;
+package io.quarkus.ts.cache.redis;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
