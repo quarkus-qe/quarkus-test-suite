@@ -456,6 +456,7 @@
                 <module>env-info</module>
                 <module>cache/caffeine</module>
                 <module>cache/redis</module>
+                <module>cache/infinispan</module>
                 <module>infinispan-client</module>
             </modules>
         </profile>
