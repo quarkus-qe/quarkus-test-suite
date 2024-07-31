@@ -1114,6 +1114,16 @@ It covers different usages:
 3. from a blocking endpoint
 4. from a reactive endpoint
 
+### `cache/infinispan`
+Verifies the `quarkus-infinispan-cache` extension using `@CacheResult`, `@CacheInvalidate`, `@CacheInvalidateAll` and `@CacheKey`.
+It covers different usages:
+1. from an application scoped service
+2. from a request scoped service
+3. from a blocking endpoint
+4. from a reactive endpoint
+
+Also test POJOs as cache value and cache expiration.
+
 ### `cache/redis`
 
 Verifies the `quarkus-redis-cache` extension using `@CacheResult`, `@CacheInvalidate`, `@CacheInvalidateAll` and `@CacheKey`.
