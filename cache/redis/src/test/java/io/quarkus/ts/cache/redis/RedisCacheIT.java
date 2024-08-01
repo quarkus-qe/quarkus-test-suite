@@ -1,7 +1,7 @@
 package io.quarkus.ts.cache.redis;
 
-import static io.quarkus.ts.cache.caffeine.ServiceWithCacheResource.APPLICATION_SCOPE_SERVICE_PATH;
-import static io.quarkus.ts.cache.caffeine.ServiceWithCacheResource.REQUEST_SCOPE_SERVICE_PATH;
+import static io.quarkus.ts.cache.redis.ServiceWithCacheResource.APPLICATION_SCOPE_SERVICE_PATH;
+import static io.quarkus.ts.cache.redis.ServiceWithCacheResource.REQUEST_SCOPE_SERVICE_PATH;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
