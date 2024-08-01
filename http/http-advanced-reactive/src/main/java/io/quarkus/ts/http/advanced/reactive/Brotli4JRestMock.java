@@ -58,7 +58,7 @@ public class Brotli4JRestMock {
         } catch (StreamReadException | DatabindException e) {
             LOGGER.error("Error occurred while deserializing JSON file: " + e.getMessage());
         } catch (IOException e) {
-            LOGGER.error("Error occurred while reading the JSON file: " + e.getMessage());
+            LOGGER.error("Error occsurred while reading the JSON file: " + e.getMessage());
         }
     }
 
