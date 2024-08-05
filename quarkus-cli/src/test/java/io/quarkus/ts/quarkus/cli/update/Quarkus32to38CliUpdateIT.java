@@ -8,10 +8,10 @@ import static io.quarkus.test.util.QuarkusCLIUtils.checkRenamesInFile;
 import static io.quarkus.test.util.QuarkusCLIUtils.getPlugins;
 import static io.quarkus.test.util.QuarkusCLIUtils.getPom;
 import static io.quarkus.test.util.QuarkusCLIUtils.getProperties;
+import static org.hamcrest.Matchers.contains;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -28,7 +28,6 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Plugin;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.junit.jupiter.api.Test;
-import org.yaml.snakeyaml.Yaml;
 
 import io.quarkus.test.bootstrap.QuarkusCliRestService;
 
@@ -41,6 +40,7 @@ public class Quarkus32to38CliUpdateIT extends AbstractQuarkusCliUpdateIT {
     private static final Path RENAME_APP = Paths.get("src/test/resources/quarkus32apps/renameApp");
     private static final Path MULTI_MODULE_APP = Paths.get("src/test/resources/quarkus32apps/multiModuleApp");
     private static final Path RUNNABLE_APP = Paths.get("src/test/resources/quarkus32apps/runnableApp");
+    private static final Path HIBERNATE_APP = Paths.get("src/test/resources/quarkus32apps/hibernate-search");
 
     public Quarkus32to38CliUpdateIT() {
         super(oldLts, newLts);
@@ -222,5 +222,24 @@ public class Quarkus32to38CliUpdateIT extends AbstractQuarkusCliUpdateIT {
         app.start();
 
         app.given().get("/book").then().statusCode(HttpStatus.SC_OK);
+    }
+
+    /**
+     * Test updating hibernate app, which has properties changed in Quarkus 3.3
+     */
+    @Test
+    public void hibernateUpdateTest() {
+        QuarkusCliRestService app = cliClient.createApplicationFromExistingSources("hibernate-search", null, HIBERNATE_APP);
+
+        updateAppToNewStream(app);
+        app.start();
+
+        // search for entity
+        app.given()
+                .get("/library/author/search?pattern=John")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body("firstName", contains("John"),
+                        "lastName", contains("Irving"));
     }
 }
