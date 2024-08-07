@@ -12,11 +12,11 @@ import io.quarkus.test.bootstrap.QuarkusCliRestService;
 import io.quarkus.test.logging.Log;
 import io.quarkus.test.utils.AwaitilityUtils;
 
-public class Quarkus213to3XCliUpdateIT extends AbstractQuarkusCliUpdateIT {
+public class Quarkus213to38CliUpdateIT extends AbstractQuarkusCliUpdateIT {
     private static final DefaultArtifactVersion oldVersion = new DefaultArtifactVersion("2.13");
-    private static final DefaultArtifactVersion newVersion = new DefaultArtifactVersion("3.13");
+    private static final DefaultArtifactVersion newVersion = new DefaultArtifactVersion("3.8");
 
-    public Quarkus213to3XCliUpdateIT() {
+    public Quarkus213to38CliUpdateIT() {
         super(oldVersion, newVersion);
     }
 
