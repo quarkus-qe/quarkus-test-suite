@@ -1,6 +1,5 @@
 package io.quarkus.ts.quarkus.cli.update;
 
-import static io.quarkus.test.bootstrap.QuarkusCliClient.UpdateApplicationRequest.defaultUpdate;
 import static io.quarkus.test.utils.AwaitilityUtils.untilAsserted;
 
 import java.time.Duration;
@@ -23,10 +22,10 @@ public class Quarkus213to3XCliUpdateIT extends AbstractQuarkusCliUpdateIT {
 
     @Test
     public void updateToLatestStream() {
-        QuarkusCliRestService app = createAppBeforeUpdate();
+        QuarkusCliRestService app = quarkusCLIAppManager.createApplication();
 
         // update to latest version
-        app.update(defaultUpdate());
+        quarkusCLIAppManager.updateApp(app);
 
         Log.info("Starting updated app");
         // start the updated app and verify that basic /hello endpoint works

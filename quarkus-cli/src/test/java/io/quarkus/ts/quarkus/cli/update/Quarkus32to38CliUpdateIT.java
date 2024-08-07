@@ -30,6 +30,7 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.QuarkusCliRestService;
+import io.quarkus.test.util.QuarkusCLIUtils;
 
 /**
  * Check updates from Quarkus 3.2 to 3.8
@@ -56,7 +57,7 @@ public class Quarkus32to38CliUpdateIT extends AbstractQuarkusCliUpdateIT {
         expectedNewProperties.put("quarkus.hibernate-search-orm.indexing.plan.synchronization.strategy", "sync");
         expectedNewProperties.put("quarkus.hibernate-search-orm.quarkusQE.indexing.plan.synchronization.strategy", "sync");
 
-        checkPropertiesUpdate(oldProperties, expectedNewProperties);
+        QuarkusCLIUtils.checkPropertiesUpdate(quarkusCLIAppManager, oldProperties, expectedNewProperties);
     }
 
     @Test
@@ -67,7 +68,7 @@ public class Quarkus32to38CliUpdateIT extends AbstractQuarkusCliUpdateIT {
         Properties expectedNewProperties = new Properties();
         expectedNewProperties.put("quarkus.hibernate-search-orm.indexing.plan.synchronization.strategy", "sync");
 
-        checkYamlPropertiesUpdate(oldProperties, expectedNewProperties);
+        QuarkusCLIUtils.checkYamlPropertiesUpdate(quarkusCLIAppManager, oldProperties, expectedNewProperties);
     }
 
     @Test
@@ -109,7 +110,7 @@ public class Quarkus32to38CliUpdateIT extends AbstractQuarkusCliUpdateIT {
         // Quarkus 3.8
         newDependencies.add(new QuarkusDependency("org.graalvm.sdk:nativeimage:24.0.2"));
 
-        checkDependenciesUpdate(oldDependencies, newDependencies);
+        QuarkusCLIUtils.checkDependenciesUpdate(quarkusCLIAppManager, oldDependencies, newDependencies);
     }
 
     @Test
@@ -124,7 +125,7 @@ public class Quarkus32to38CliUpdateIT extends AbstractQuarkusCliUpdateIT {
         newPlugins.add(new QuarkusPlugin("org.apache.maven.plugins:maven-compiler-plugin:3.12.1"));
         newPlugins.add(new QuarkusPlugin("org.apache.maven.plugins:maven-surefire-plugin:3.2.3"));
 
-        checkPluginUpdate(oldPlugins, newPlugins);
+        QuarkusCLIUtils.checkPluginUpdate(quarkusCLIAppManager, oldPlugins, newPlugins);
     }
 
     /**
@@ -133,10 +134,10 @@ public class Quarkus32to38CliUpdateIT extends AbstractQuarkusCliUpdateIT {
      */
     @Test
     public void updateMavenCheckstylePluginTest() throws XmlPullParserException, IOException {
-        QuarkusCliRestService app = createAppBeforeUpdate();
+        QuarkusCliRestService app = quarkusCLIAppManager.createApplication();
         addPluginsToPom(app, List.of(new QuarkusPlugin("org.apache.maven.plugins:maven-checkstyle-plugin:2.17")));
 
-        updateAppToNewStream(app);
+        quarkusCLIAppManager.updateApp(app);
 
         Optional<Plugin> updatedCheckstylePlugin = getPlugins(app).stream()
                 .filter(plugin -> plugin.getGroupId().equals("org.apache.maven.plugins") &&
@@ -161,7 +162,7 @@ public class Quarkus32to38CliUpdateIT extends AbstractQuarkusCliUpdateIT {
                 .withExtraArgs("--java=11"));
         assertEquals("11", getProperties(app).getProperty("maven.compiler.release"), "Java version should be 11 before update");
 
-        updateAppToNewStream(app);
+        quarkusCLIAppManager.updateApp(app);
 
         assertEquals("17", getProperties(app).getProperty("maven.compiler.release"), "Java version should be 17 after update");
     }
@@ -169,7 +170,7 @@ public class Quarkus32to38CliUpdateIT extends AbstractQuarkusCliUpdateIT {
     @Test
     public void methodNameChangeTest() throws IOException {
         QuarkusCliRestService app = cliClient.createApplicationFromExistingSources("app", null, RENAME_APP);
-        updateAppToNewStream(app);
+        quarkusCLIAppManager.updateApp(app);
 
         Map<String, String> renames = new HashMap<>();
         // Quarkus 3.5
@@ -186,7 +187,7 @@ public class Quarkus32to38CliUpdateIT extends AbstractQuarkusCliUpdateIT {
     @Test
     public void packageNameChangeTest() throws IOException {
         QuarkusCliRestService app = cliClient.createApplicationFromExistingSources("app", null, RENAME_APP);
-        updateAppToNewStream(app);
+        quarkusCLIAppManager.updateApp(app);
 
         Map<String, String> renames = new HashMap<>();
         // Quarkus 3.5
@@ -200,7 +201,7 @@ public class Quarkus32to38CliUpdateIT extends AbstractQuarkusCliUpdateIT {
     @Test
     public void updateMultiModuleAppTest() throws XmlPullParserException, IOException {
         QuarkusCliRestService app = cliClient.createApplicationFromExistingSources("app", null, MULTI_MODULE_APP);
-        updateAppToNewStream(app);
+        quarkusCLIAppManager.updateApp(app);
 
         // parent
         assertTrue(getPom(app).getProperties().getProperty("quarkus.platform.version").startsWith("3.8"),
@@ -217,7 +218,7 @@ public class Quarkus32to38CliUpdateIT extends AbstractQuarkusCliUpdateIT {
     @Test
     public void updateAndRunApp() {
         QuarkusCliRestService app = cliClient.createApplicationFromExistingSources("app", null, RUNNABLE_APP);
-        updateAppToNewStream(app);
+        quarkusCLIAppManager.updateApp(app);
 
         app.start();
 
@@ -231,7 +232,7 @@ public class Quarkus32to38CliUpdateIT extends AbstractQuarkusCliUpdateIT {
     public void hibernateUpdateTest() {
         QuarkusCliRestService app = cliClient.createApplicationFromExistingSources("hibernate-search", null, HIBERNATE_APP);
 
-        updateAppToNewStream(app);
+        quarkusCLIAppManager.updateApp(app);
         app.start();
 
         // search for entity
