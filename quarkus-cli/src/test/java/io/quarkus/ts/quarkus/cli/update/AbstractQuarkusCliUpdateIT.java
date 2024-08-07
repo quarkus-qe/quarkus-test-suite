@@ -19,6 +19,7 @@ import io.quarkus.test.bootstrap.QuarkusCliRestService;
 import io.quarkus.test.logging.Log;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnNative;
+import io.quarkus.test.services.quarkus.model.QuarkusProperties;
 import io.quarkus.test.util.DefaultQuarkusCLIAppManager;
 import io.quarkus.test.util.IQuarkusCLIAppManager;
 import io.quarkus.test.utils.AwaitilityUtils;
@@ -29,19 +30,35 @@ public abstract class AbstractQuarkusCliUpdateIT {
     @Inject
     static QuarkusCliClient cliClient;
 
-    protected final DefaultArtifactVersion oldVersion;
-    protected final DefaultArtifactVersion newVersion;
+    protected final DefaultArtifactVersion oldVersionStream;
+    protected final DefaultArtifactVersion newVersionStream;
+    protected final String newVersionFromProperties;
     protected final IQuarkusCLIAppManager quarkusCLIAppManager;
 
-    public AbstractQuarkusCliUpdateIT(DefaultArtifactVersion oldVersion, DefaultArtifactVersion newVersion) {
-        this(oldVersion, newVersion, new DefaultQuarkusCLIAppManager(cliClient, oldVersion, newVersion));
+    public AbstractQuarkusCliUpdateIT(DefaultArtifactVersion oldVersion, DefaultArtifactVersion defaultNewVersion) {
+        this(oldVersion, defaultNewVersion, null);
     }
 
-    public AbstractQuarkusCliUpdateIT(DefaultArtifactVersion oldVersion, DefaultArtifactVersion newVersion,
+    public AbstractQuarkusCliUpdateIT(DefaultArtifactVersion oldVersionStream, DefaultArtifactVersion newVersionStream,
             IQuarkusCLIAppManager quarkusCLIAppManager) {
-        this.oldVersion = oldVersion;
-        this.newVersion = newVersion;
-        this.quarkusCLIAppManager = quarkusCLIAppManager;
+        this.oldVersionStream = oldVersionStream;
+        this.newVersionStream = newVersionStream;
+
+        // takes quarkus.platform.version from maven parameters. If present, it will update to this exact BOM version
+        // otherwise it will default to update to stream
+        this.newVersionFromProperties = QuarkusProperties.getVersion();
+        this.quarkusCLIAppManager = createAppManager(quarkusCLIAppManager);
+    }
+
+    private IQuarkusCLIAppManager createAppManager(IQuarkusCLIAppManager providedAppManager) {
+        if (providedAppManager != null) {
+            return providedAppManager;
+        }
+        if (this.newVersionFromProperties != null && this.newVersionFromProperties.contains("redhat")) {
+            return new RHBQPlatformAppManager(cliClient, oldVersionStream, newVersionStream,
+                    new DefaultArtifactVersion(newVersionFromProperties));
+        }
+        return new DefaultQuarkusCLIAppManager(cliClient, oldVersionStream, newVersionStream);
     }
 
     /**
@@ -54,10 +71,10 @@ public abstract class AbstractQuarkusCliUpdateIT {
         quarkusCLIAppManager.updateApp(app);
 
         DefaultArtifactVersion updatedVersion = getQuarkusAppVersion(app);
-        assertEquals(newVersion.getMajorVersion(), updatedVersion.getMajorVersion(),
-                "Major version for app updated to " + newVersion + "should be " + newVersion.getMajorVersion());
-        assertEquals(newVersion.getMinorVersion(), updatedVersion.getMinorVersion(),
-                "Minor version for app updated to " + newVersion + " should be " + newVersion.getMinorVersion());
+        assertEquals(newVersionStream.getMajorVersion(), updatedVersion.getMajorVersion(),
+                "Major version for app updated to " + newVersionStream + "should be " + newVersionStream.getMajorVersion());
+        assertEquals(newVersionStream.getMinorVersion(), updatedVersion.getMinorVersion(),
+                "Minor version for app updated to " + newVersionStream + " should be " + newVersionStream.getMinorVersion());
 
         Log.info("Starting updated app");
         // start the updated app and verify that basic /hello endpoint works

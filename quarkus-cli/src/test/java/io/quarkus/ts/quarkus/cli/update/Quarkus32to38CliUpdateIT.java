@@ -30,21 +30,23 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.QuarkusCliRestService;
+import io.quarkus.test.scenarios.annotations.EnabledOnQuarkusVersion;
 import io.quarkus.test.util.QuarkusCLIUtils;
 
 /**
  * Check updates from Quarkus 3.2 to 3.8
  */
+@EnabledOnQuarkusVersion(version = "3.8.*", reason = "This class is testing only updates to 3.8.* versions")
 public class Quarkus32to38CliUpdateIT extends AbstractQuarkusCliUpdateIT {
-    private static final DefaultArtifactVersion oldLts = new DefaultArtifactVersion("3.2");
-    private static final DefaultArtifactVersion newLts = new DefaultArtifactVersion("3.8");
+    private static final DefaultArtifactVersion oldLtsStream = new DefaultArtifactVersion("3.2");
+    private static final DefaultArtifactVersion newLtsStream = new DefaultArtifactVersion("3.8");
     private static final Path RENAME_APP = Paths.get("src/test/resources/quarkus32apps/renameApp");
     private static final Path MULTI_MODULE_APP = Paths.get("src/test/resources/quarkus32apps/multiModuleApp");
     private static final Path RUNNABLE_APP = Paths.get("src/test/resources/quarkus32apps/runnableApp");
     private static final Path HIBERNATE_APP = Paths.get("src/test/resources/quarkus32apps/hibernate-search");
 
     public Quarkus32to38CliUpdateIT() {
-        super(oldLts, newLts);
+        super(oldLtsStream, newLtsStream);
     }
 
     @Test
@@ -158,7 +160,7 @@ public class Quarkus32to38CliUpdateIT extends AbstractQuarkusCliUpdateIT {
         // create app with java 11
         QuarkusCliRestService app = cliClient.createApplication("app", defaults()
                 .withPlatformBom(null)
-                .withStream(oldVersion.toString())
+                .withStream(oldVersionStream.toString())
                 .withExtraArgs("--java=11"));
         assertEquals("11", getProperties(app).getProperty("maven.compiler.release"), "Java version should be 11 before update");
 
