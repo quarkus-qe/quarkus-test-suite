@@ -408,6 +408,7 @@
                 <module>config</module>
                 <module>properties</module>
                 <module>build/docker</module>
+                <module>build/podman</module>
                 <module>javaee-like-getting-started</module>
                 <module>scaling</module>
                 <module>service-discovery/stork</module>

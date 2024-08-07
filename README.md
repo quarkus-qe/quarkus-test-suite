@@ -457,6 +457,10 @@ Also ensures proper integration of SmallRye Config [Secret Keys](https://smallry
 ### `build/docker-build`
 Checks that an application can generate a Docker image based on some configuration parameters.
 
+### `build/podman`
+Checks that an application can generate a Docker image using podman extension.
+
+
 ### `lifecycle-application`
 Verifies lifecycle application features like `@QuarkusMain` and `@CommandLineArguments`.
 Also ensures maven profile activation with properties and additional repository definition propagation into Quarkus maven plugin.
