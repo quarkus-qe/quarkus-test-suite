@@ -39,7 +39,8 @@ import io.quarkus.test.util.QuarkusCLIUtils;
 public class Quarkus32to38CliUpdateIT extends AbstractQuarkusCliUpdateIT {
     private static final DefaultArtifactVersion oldLtsStream = new DefaultArtifactVersion("3.2");
     private static final DefaultArtifactVersion newLtsStream = new DefaultArtifactVersion("3.8");
-    private static final Path RENAME_APP = Paths.get("src/test/resources/quarkus32apps/renameApp");
+    private static final Path RENAME_METHOD_APP = Paths.get("src/test/resources/quarkus32apps/renameMethodApp");
+    private static final Path RENAME_PACKAGE_APP = Paths.get("src/test/resources/quarkus32apps/renamePackageApp");
     private static final Path MULTI_MODULE_APP = Paths.get("src/test/resources/quarkus32apps/multiModuleApp");
     private static final Path RESTEASY_APP = Paths.get("src/test/resources/quarkus32apps/resteasyApp");
     private static final Path HIBERNATE_APP = Paths.get("src/test/resources/quarkus32apps/hibernate-search");
@@ -167,7 +168,7 @@ public class Quarkus32to38CliUpdateIT extends AbstractQuarkusCliUpdateIT {
 
     @Test
     public void methodNameChangeTest() throws IOException {
-        QuarkusCliRestService app = cliClient.createApplicationFromExistingSources("app", null, RENAME_APP);
+        QuarkusCliRestService app = cliClient.createApplicationFromExistingSources("app", null, RENAME_METHOD_APP);
         quarkusCLIAppManager.updateApp(app);
 
         Map<String, String> renames = new HashMap<>();
@@ -190,7 +191,7 @@ public class Quarkus32to38CliUpdateIT extends AbstractQuarkusCliUpdateIT {
 
     @Test
     public void packageNameChangeTest() throws IOException {
-        QuarkusCliRestService app = cliClient.createApplicationFromExistingSources("app", null, RENAME_APP);
+        QuarkusCliRestService app = cliClient.createApplicationFromExistingSources("app", null, RENAME_PACKAGE_APP);
         quarkusCLIAppManager.updateApp(app);
 
         Map<String, String> renames = new HashMap<>();
@@ -199,7 +200,12 @@ public class Quarkus32to38CliUpdateIT extends AbstractQuarkusCliUpdateIT {
                 "org.hibernate.search.mapper.orm.outboxpolling.OutboxPollingExtension");
         renames.put("javax.security.cert.Certificate", "java.security.cert.Certificate");
 
-        checkRenamesInFile(app.getFileFromApplication("src/main/java/org/acme", "PackageChangeClass.java"), renames);
+        checkRenamesInFile(app.getFileFromApplication("src/main/java/org/acme", "PackageChangeResource.java"), renames);
+
+        app.start();
+
+        assertEquals("Hello cert", app.given().get("/rename/cert").body().asString());
+        assertEquals("OutboxPollingExtension", app.given().get("/rename/extension").body().asString());
     }
 
     @Test
@@ -219,10 +225,17 @@ public class Quarkus32to38CliUpdateIT extends AbstractQuarkusCliUpdateIT {
         // TODO: it would be good to actually run the updated app, but FW currently cannot run multi module app
     }
 
+    /**
+     * Update resteasy app, while also upgrading it from java 11 to 17
+     */
     @Test
-    public void updateAndRunApp() {
+    public void updateAndRunApp() throws XmlPullParserException, IOException {
         QuarkusCliRestService app = cliClient.createApplicationFromExistingSources("app", null, RESTEASY_APP);
+        assertEquals("11", getProperties(app).getProperty("maven.compiler.release"), "Java version should be 11 before update");
+
         quarkusCLIAppManager.updateApp(app);
+
+        assertEquals("17", getProperties(app).getProperty("maven.compiler.release"), "Java version should be 17 after update");
 
         app.start();
 
