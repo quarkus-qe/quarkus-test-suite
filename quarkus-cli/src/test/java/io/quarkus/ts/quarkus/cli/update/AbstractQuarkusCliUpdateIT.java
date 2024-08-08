@@ -35,25 +35,17 @@ public abstract class AbstractQuarkusCliUpdateIT {
     protected final String newVersionFromProperties;
     protected final IQuarkusCLIAppManager quarkusCLIAppManager;
 
-    public AbstractQuarkusCliUpdateIT(DefaultArtifactVersion oldVersion, DefaultArtifactVersion defaultNewVersion) {
-        this(oldVersion, defaultNewVersion, null);
-    }
-
-    public AbstractQuarkusCliUpdateIT(DefaultArtifactVersion oldVersionStream, DefaultArtifactVersion newVersionStream,
-            IQuarkusCLIAppManager quarkusCLIAppManager) {
+    public AbstractQuarkusCliUpdateIT(DefaultArtifactVersion oldVersionStream, DefaultArtifactVersion newVersionStream) {
         this.oldVersionStream = oldVersionStream;
         this.newVersionStream = newVersionStream;
 
         // takes quarkus.platform.version from maven parameters. If present, it will update to this exact BOM version
         // otherwise it will default to update to stream
         this.newVersionFromProperties = QuarkusProperties.getVersion();
-        this.quarkusCLIAppManager = createAppManager(quarkusCLIAppManager);
+        this.quarkusCLIAppManager = createAppManager();
     }
 
-    private IQuarkusCLIAppManager createAppManager(IQuarkusCLIAppManager providedAppManager) {
-        if (providedAppManager != null) {
-            return providedAppManager;
-        }
+    protected IQuarkusCLIAppManager createAppManager() {
         if (this.newVersionFromProperties != null && this.newVersionFromProperties.contains("redhat")) {
             return new RHBQPlatformAppManager(cliClient, oldVersionStream, newVersionStream,
                     new DefaultArtifactVersion(newVersionFromProperties));

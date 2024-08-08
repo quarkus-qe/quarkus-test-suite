@@ -1,6 +1,5 @@
 package io.quarkus.ts.quarkus.cli.update;
 
-import static io.quarkus.test.bootstrap.QuarkusCliClient.CreateApplicationRequest.defaults;
 import static io.quarkus.test.util.QuarkusCLIUtils.QuarkusDependency;
 import static io.quarkus.test.util.QuarkusCLIUtils.QuarkusPlugin;
 import static io.quarkus.test.util.QuarkusCLIUtils.addPluginsToPom;
@@ -42,7 +41,7 @@ public class Quarkus32to38CliUpdateIT extends AbstractQuarkusCliUpdateIT {
     private static final DefaultArtifactVersion newLtsStream = new DefaultArtifactVersion("3.8");
     private static final Path RENAME_APP = Paths.get("src/test/resources/quarkus32apps/renameApp");
     private static final Path MULTI_MODULE_APP = Paths.get("src/test/resources/quarkus32apps/multiModuleApp");
-    private static final Path RUNNABLE_APP = Paths.get("src/test/resources/quarkus32apps/runnableApp");
+    private static final Path RESTEASY_APP = Paths.get("src/test/resources/quarkus32apps/resteasyApp");
     private static final Path HIBERNATE_APP = Paths.get("src/test/resources/quarkus32apps/hibernate-search");
 
     public Quarkus32to38CliUpdateIT() {
@@ -158,10 +157,7 @@ public class Quarkus32to38CliUpdateIT extends AbstractQuarkusCliUpdateIT {
     @Test
     public void javaUpdateTest() throws XmlPullParserException, IOException {
         // create app with java 11
-        QuarkusCliRestService app = cliClient.createApplication("app", defaults()
-                .withPlatformBom(null)
-                .withStream(oldVersionStream.toString())
-                .withExtraArgs("--java=11"));
+        QuarkusCliRestService app = quarkusCLIAppManager.createApplicationWithExtraArgs("--java=11");
         assertEquals("11", getProperties(app).getProperty("maven.compiler.release"), "Java version should be 11 before update");
 
         quarkusCLIAppManager.updateApp(app);
@@ -183,7 +179,13 @@ public class Quarkus32to38CliUpdateIT extends AbstractQuarkusCliUpdateIT {
         renames.put("logRecord.getThreadID", "logRecord.getLongThreadID");
         renames.put("logRecord.setThreadID", "logRecord.setLongThreadID");
 
-        checkRenamesInFile(app.getFileFromApplication("src/main/java/org/acme", "MethodChangeClass.java"), renames);
+        checkRenamesInFile(app.getFileFromApplication("src/main/java/org/acme", "MethodRenameResource.java"), renames);
+
+        app.start();
+
+        assertEquals("Hello Uni", app.given().get("/rename/uni/memoize").body().asString());
+        assertEquals("Hello group", app.given().get("/rename/uni/group").body().asString());
+        assertEquals("42", app.given().get("/rename/thread").body().asString());
     }
 
     @Test
@@ -219,7 +221,7 @@ public class Quarkus32to38CliUpdateIT extends AbstractQuarkusCliUpdateIT {
 
     @Test
     public void updateAndRunApp() {
-        QuarkusCliRestService app = cliClient.createApplicationFromExistingSources("app", null, RUNNABLE_APP);
+        QuarkusCliRestService app = cliClient.createApplicationFromExistingSources("app", null, RESTEASY_APP);
         quarkusCLIAppManager.updateApp(app);
 
         app.start();
