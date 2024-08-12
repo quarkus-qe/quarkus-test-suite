@@ -106,7 +106,7 @@ jobs:
             echo "JVM_MODULES_MAVEN_PARAM=[\" -pl ${MODULES_ARG} -Dall-modules\"]" >> $GITHUB_OUTPUT
             echo "NATIVE_MODULES_MAVEN_PARAM=[\" -pl ${MODULES_ARG} -Dall-modules\"]" >> $GITHUB_OUTPUT
           else
-            echo "JVM_MODULES_MAVEN_PARAM=[' -P root-modules,cache-modules,spring-modules,http-modules,test-tooling-modules,messaging-modules,monitoring-modules', ' -P security-modules,sql-db-modules,websockets-modules']" >> $GITHUB_OUTPUT
+            echo "JVM_MODULES_MAVEN_PARAM=[' -P root-modules,cache-modules,spring-modules,http-modules,test-tooling-modules,messaging-modules,monitoring-modules', ' -P security-modules,sql-db-modules,websockets-modules,nosql-db-modules']" >> $GITHUB_OUTPUT
             echo "NATIVE_MODULES_MAVEN_PARAM=[' -P root-modules,websockets-modules,test-tooling-modules,nosql-db-modules', ' -P http-modules,cache-modules', ' -P security-modules,spring-modules',
               ' -P sql-db-modules -pl env-info,sql-db/hibernate,sql-db/sql-app,sql-db/sql-app-compatibility,sql-db/multiple-pus,sql-db/panache-flyway,sql-db/hibernate-reactive',
               ' -P sql-db-modules -pl env-info,sql-db/reactive-rest-data-panache,sql-db/vertx-sql,sql-db/reactive-vanilla,sql-db/hibernate-fulltext-search,sql-db/narayana-transactions',
