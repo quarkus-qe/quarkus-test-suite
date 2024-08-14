@@ -43,7 +43,7 @@ jobs:
         java: [ 17, 21 ]
         profiles: [ "root-modules,http-modules,security-modules,spring-modules",
                    "sql-db-modules",
-                   "messaging-modules,websockets-modules,monitoring-modules,cache-modules,test-tooling-modules"]
+                   "messaging-modules,websockets-modules,monitoring-modules,cache-modules,test-tooling-modules,nosql-db-modules"]
     steps:
       - uses: actions/checkout@v4
       - name: Reclaim Disk Space
