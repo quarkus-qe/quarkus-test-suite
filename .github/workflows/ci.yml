@@ -71,7 +71,7 @@ jobs:
         continue-on-error: true
       - id: detect-changes
         run: |
-          MODULES=$(find -name pom.xml | sed -e 's|pom.xml| |' | sed -e 's|./| |' | grep -v " quarkus/")
+          MODULES=$(find -name pom.xml | sed -e 's|pom.xml| |' | sed -e 's|./| |' | grep -v " quarkus/" | grep -v resources)
           CHANGED=""
           MODULES_ARG=""
 
