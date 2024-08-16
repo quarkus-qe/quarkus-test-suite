@@ -31,7 +31,7 @@ jobs:
       - id: detect-changes
         run: |
           # FIXME: remove helm filter from following line when helm module is enabled
-          MODULES=$(find -name pom.xml | sed -e 's|pom.xml| |' | sed -e 's|./| |' | grep -v " quarkus/" | grep -v " helm/helm-minimum")
+          MODULES=$(find -name pom.xml | sed -e 's|pom.xml| |' | sed -e 's|./| |' | grep -v " quarkus/" | grep -v " helm/helm-minimum" | grep -v resources)
           CHANGED=""
           MODULES_ARG=""
 
