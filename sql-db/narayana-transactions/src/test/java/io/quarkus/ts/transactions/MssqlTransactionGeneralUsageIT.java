@@ -17,7 +17,6 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.bootstrap.SqlServerService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnFipsAndJava17;
-import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusSnapshot;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.services.SqlServerContainer;
 import io.quarkus.ts.transactions.recovery.TransactionExecutor;
@@ -76,7 +75,7 @@ public class MssqlTransactionGeneralUsageIT extends TransactionCommons {
     }
 
     @Test
-    @DisabledOnQuarkusSnapshot(reason = "The test is too long to run it on CI")
+    @Tag("long-running")
     @Tag("QUARKUS-4185")
     //on average, there is one leaking connection every 2 minutes
     void connectionLeak() throws InterruptedException {
