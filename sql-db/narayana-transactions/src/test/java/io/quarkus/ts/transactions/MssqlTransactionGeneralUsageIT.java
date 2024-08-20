@@ -3,7 +3,14 @@ package io.quarkus.ts.transactions;
 import static io.quarkus.test.services.containers.DockerContainerManagedResource.DOCKER_INNER_CONTAINER;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 
+import org.apache.http.HttpStatus;
+import org.jboss.logging.Logger;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -13,10 +20,12 @@ import io.quarkus.test.scenarios.annotations.DisabledOnFipsAndJava17;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.services.SqlServerContainer;
 import io.quarkus.ts.transactions.recovery.TransactionExecutor;
+import io.restassured.response.Response;
 
 @DisabledOnFipsAndJava17(reason = "https://github.com/quarkusio/quarkus/issues/40813")
 @QuarkusScenario
 public class MssqlTransactionGeneralUsageIT extends TransactionCommons {
+    private static final Logger LOG = Logger.getLogger(MssqlTransactionGeneralUsageIT.class);
 
     @SqlServerContainer
     static SqlServerService database = new SqlServerService().onPostStart(service -> {
@@ -61,4 +70,24 @@ public class MssqlTransactionGeneralUsageIT extends TransactionCommons {
         return new String[] { "SELECT msdb.account", "INSERT msdb.journal", "UPDATE msdb.account" };
     }
 
+    @Test
+    @Tag("long-running")
+    @Tag("QUARKUS-4185")
+    //on average, there is one leaking connection every 2 minutes
+    void connectionLeak() throws InterruptedException {
+        int before = getConnections();
+        Duration later = Duration.of(4L, ChronoUnit.MINUTES).plus(Duration.ofSeconds(15));
+        LOG.warn("Waiting for " + later.toSeconds() + " seconds to check for leaking connections");
+        Thread.sleep(later.toMillis());
+        int after = getConnections();
+        Assertions.assertFalse(after - before > 1, //single additional connection may be open temporary
+                "Connections are leaking, was: " + before + " now: " + after);
+
+    }
+
+    private int getConnections() {
+        Response response = getApp().given().get("/service/connections");
+        Assertions.assertEquals(HttpStatus.SC_OK, response.statusCode());
+        return Integer.parseInt(response.asString());
+    }
 }

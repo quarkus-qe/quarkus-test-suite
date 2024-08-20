@@ -107,7 +107,7 @@ jobs:
           ./quarkus-cli-${{ matrix.cli }}/bin/quarkus version
       - name: Build with Maven
         run: |
-          mvn -fae -V -B -s .github/mvn-settings.xml clean verify -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-cli-${{ matrix.cli }}/bin/quarkus"${{ matrix.module-mvn-args }} -am
+          mvn -fae -V -B -s .github/mvn-settings.xml clean verify -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-cli-${{ matrix.cli }}/bin/quarkus"${{ matrix.module-mvn-args }} -am -DexcludedGroups=long-running
       - name: Detect flaky tests
         id: flaky-test-detector
         if: ${{ hashFiles('**/flaky-run-report.json') != '' }}
@@ -155,7 +155,7 @@ jobs:
             mvn -fae -V -B -s .github/mvn-settings.xml -fae \
                         -Dquarkus.native.native-image-xmx=5g \
                         -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-cli-${{ matrix.cli }}/bin/quarkus" \
-                        ${{ matrix.module-mvn-args }} clean verify -Dnative -am
+                        ${{ matrix.module-mvn-args }} clean verify -Dnative -am -DexcludedGroups=long-running
       - name: Detect flaky tests
         id: flaky-test-detector
         if: ${{ hashFiles('**/flaky-run-report.json') != '' }}
@@ -198,7 +198,7 @@ jobs:
             MODULES_MAVEN_PARAM="-pl ${MODULES_ARG}"
           fi
 
-          mvn -B -fae -s .github/mvn-settings.xml clean verify -Dall-modules $MODULES_MAVEN_PARAM -am
+          mvn -B -fae -s .github/mvn-settings.xml clean verify -Dall-modules $MODULES_MAVEN_PARAM -am -DexcludedGroups=long-running
       - name: Detect flaky tests
         id: flaky-test-detector
         if: ${{ hashFiles('**/flaky-run-report.json') != '' }}
