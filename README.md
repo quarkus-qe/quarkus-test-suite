@@ -250,6 +250,7 @@ The suite uses `org.junit.jupiter.api.Tag` annotation to group similar tests tog
 - `serverless`: use Openshift Serverless to deploy the app
 - `quarkus-cli`: tests use Quarkus CLI, which needs to be installed ( see https://quarkus.io/guides/cli-tooling for details)
 - `podman-incompatible`: tests, which require Docker as a container engine and are not compatible with Podman.
+- `long-running`: tests, which run for a long time and therefore are disabled in PR CI
 
 ## Running against Red Hat build of Quarkus
 
