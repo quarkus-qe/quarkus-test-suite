@@ -24,7 +24,7 @@ public class QuarkusCliCreateExtensionIT {
         QuarkusCliDefaultService app = cliClient.createExtension("extension-abc");
 
         // Should build on Jvm
-        QuarkusCliClient.Result result = app.buildOnJvm();
+        QuarkusCliClient.Result result = app.buildOnJvm("-Dinsecure.repositories=WARN");
         assertTrue(result.isSuccessful(), "The extension build failed. Output: " + result.getOutput());
     }
 }
