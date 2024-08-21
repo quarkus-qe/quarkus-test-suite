@@ -454,8 +454,12 @@ Checks that the application can read configuration from a ConfigMap and a Secret
 The ConfigMap/Secret is exposed by mounting it into the container file system or the Kubernetes API server.
 Also ensures proper integration of SmallRye Config [Secret Keys](https://smallrye.io/smallrye-config/Main/config/secret-keys/) with Quarkus.
 
-### `docker-build`
+### `build/docker-build`
 Checks that an application can generate a Docker image based on some configuration parameters.
+
+### `build/podman`
+Checks that an application can generate a Docker image using podman extension.
+
 
 ### `lifecycle-application`
 Verifies lifecycle application features like `@QuarkusMain` and `@CommandLineArguments`.
