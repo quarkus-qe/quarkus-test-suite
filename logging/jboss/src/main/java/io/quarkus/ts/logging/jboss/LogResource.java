@@ -51,6 +51,10 @@ public class LogResource {
         LOG.info("Info log example");
         LOG.debug("Debug log example");
         LOG.trace("Trace log example");
+
+        for (int i = 0; i < 10; i++) {
+            LOG.info("Example log message: " + i);
+        }
     }
 
     private void addLogMessage(Logger logger, String level, String message) {
