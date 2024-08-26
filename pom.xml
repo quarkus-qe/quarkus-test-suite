@@ -29,7 +29,7 @@
         <jsoup.version>1.18.1</jsoup.version>
         <!-- TODO: uncomment Camel Quarkus BOM when Camel Quarkus 3 is released -->
         <!-- <camel-quarkus-bom.version>2.16.0</camel-quarkus-bom.version> -->
-        <quarkiverse.config.version>2.3.1</quarkiverse.config.version>
+        <quarkiverse.config.version>2.4.0</quarkiverse.config.version>
         <quarkiverse.pact.version>1.5.0</quarkiverse.pact.version>
         <smallrye-stork.version>2.6.1</smallrye-stork.version>
         <assertj.version>3.26.3</assertj.version>
