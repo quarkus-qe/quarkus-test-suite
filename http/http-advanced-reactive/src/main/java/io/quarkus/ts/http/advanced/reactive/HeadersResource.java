@@ -2,6 +2,8 @@ package io.quarkus.ts.http.advanced.reactive;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import io.smallrye.mutiny.Uni;
@@ -26,6 +28,13 @@ public class HeadersResource {
     public Uni<Response> headersOverride() {
         final Response response = Response.ok("ok").header("foo", "abc").build();
         return Uni.createFrom().item(response);
+    }
+
+    @GET
+    @Path("/no-accept")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Uni<String> okHeaders() {
+        return Uni.createFrom().item("ok headers");
     }
 
 }
