@@ -8,12 +8,10 @@ import java.util.zip.GZIPOutputStream;
 
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.QuarkusApplication;
 import io.restassured.response.Response;
 
@@ -59,8 +57,6 @@ public class GzipMaxInputIT {
                 "The response should be 200 OK because sending just 512 bytes");
     }
 
-    @DisabledOnNative
-    @Tag("Issue in native mode--> https://issues.redhat.com/browse/QUARKUS-4570")
     @Test
     void sendMaximumAllowedPayload() throws IOException {
         byte[] compressedData = generateCompressedData(LIMIT_PAYLOAD);
