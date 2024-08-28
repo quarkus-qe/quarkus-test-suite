@@ -17,7 +17,7 @@
         <failsafe-plugin.version>3.4.0</failsafe-plugin.version>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-        <quarkus.platform.version>999-SNAPSHOT</quarkus.platform.version>
+        <quarkus.platform.version>3.14.999-SNAPSHOT</quarkus.platform.version>
         <quarkus.ide.version>3.14.0</quarkus.ide.version>
         <quarkus.qe.framework.version>1.5.0</quarkus.qe.framework.version>
         <quarkus-qpid-jms.version>2.6.1</quarkus-qpid-jms.version>
