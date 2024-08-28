@@ -111,7 +111,13 @@ public abstract class BaseHttpAdvancedIT {
     @Test
     @DisplayName("GRPC Server test")
     public void testGrpc() {
-        getApp().given().when().get("/api/grpc/trinity").then().statusCode(HttpStatus.SC_OK).body(is("Hello trinity"));
+        getApp()
+                .given()
+                .when()
+                .get("/api/grpc/trinity")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body(is("Hello trinity"));
     }
 
     @Test
