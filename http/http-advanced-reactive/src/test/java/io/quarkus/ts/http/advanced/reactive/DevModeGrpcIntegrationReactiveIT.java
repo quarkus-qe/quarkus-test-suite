@@ -95,7 +95,12 @@ public class DevModeGrpcIntegrationReactiveIT {
 
     @Test
     public void testGrpcViaRest() {
-        app.given().when().get("/api/grpc/trinity").then().statusCode(HttpStatus.SC_OK).body(is("Hello trinity"));
+        app.given()
+                .when()
+                .get("/api/grpc/trinity")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body(is("Hello trinity"));
     }
 
     @Test

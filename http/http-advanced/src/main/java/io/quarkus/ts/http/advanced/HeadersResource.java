@@ -2,6 +2,8 @@ package io.quarkus.ts.http.advanced;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 @Path("/headers")
@@ -11,6 +13,13 @@ public class HeadersResource {
     @Path("/any")
     public String headers() {
         return "ok";
+    }
+
+    @GET
+    @Path("/no-accept")
+    @Produces(MediaType.TEXT_PLAIN)
+    public CustomHeaderResponse noAcceptheaders() {
+        return new CustomHeaderResponse("ok");
     }
 
     @GET
