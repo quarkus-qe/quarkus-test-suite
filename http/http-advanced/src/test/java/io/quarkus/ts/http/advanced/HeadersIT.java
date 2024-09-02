@@ -96,8 +96,10 @@ public class HeadersIT {
         cacheControlMatches(response, "max-age=1");
     }
 
+    /**
+     * Coverage for https://github.com/quarkusio/quarkus/issues/41354 in RESTEasy classic
+     */
     @Test
-    @Tag("https://github.com/quarkusio/quarkus/pull/41411")
     void testWithNoAcceptHeader() {
         Header header = new Header("Accept", null);
         given()
@@ -106,7 +108,7 @@ public class HeadersIT {
                 .get("/headers/no-accept")
                 .then()
                 .statusCode(200)
-                .body(is("Headers response: ok"));
+                .body(is("Headers response: ok headers"));
     }
 
     private ValidatableResponse whenGet(String path) {
