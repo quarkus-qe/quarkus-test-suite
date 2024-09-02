@@ -22,7 +22,7 @@ jobs:
           check-latest: true
       - name: Build Quarkus main
         run: |
-          git clone https://github.com/quarkusio/quarkus.git && cd quarkus && ./mvnw -B -s .github/mvn-settings.xml clean install -Dquickly -Dno-test-modules -Prelocations
+          git clone https://github.com/quarkusio/quarkus.git && cd quarkus && ./mvnw -B --no-transfer-progress -s .github/mvn-settings.xml clean install -Dquickly -Dno-test-modules -Prelocations
       - name: Tar Maven Repo
         shell: bash
         run: tar -I 'pigz -9' -cf maven-repo.tgz -C ~ .m2/repository
@@ -57,7 +57,7 @@ jobs:
         run: tar -xzf maven-repo.tgz -C ~
       - name: Build with Maven
         run: |
-          mvn -V -B -s .github/mvn-settings.xml verify -Dall-modules -Dvalidate-format -DskipTests -DskipITs -Dquarkus.container-image.build=false -Dquarkus.container-image.push=false
+          mvn -V -B --no-transfer-progress -s .github/mvn-settings.xml verify -Dall-modules -Dvalidate-format -DskipTests -DskipITs -Dquarkus.container-image.build=false -Dquarkus.container-image.push=false
   detect-test-suite-modules:
     name: Detect Modules in PR
     runs-on: ubuntu-latest
@@ -156,7 +156,7 @@ jobs:
           ./quarkus-dev-cli version
       - name: Build with Maven
         run: |
-          mvn -fae -V -B -s .github/mvn-settings.xml clean verify -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli"${{ matrix.module-mvn-args }} -am -DexcludedGroups=long-running
+          mvn -fae -V -B --no-transfer-progress -s .github/mvn-settings.xml clean verify -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli"${{ matrix.module-mvn-args }} -am -DexcludedGroups=long-running
       - name: Detect flaky tests
         id: flaky-test-detector
         if: ${{ hashFiles('**/flaky-run-report.json') != '' }}
@@ -210,7 +210,7 @@ jobs:
           ./quarkus-dev-cli version
       - name: Build with Maven
         run: |
-            mvn -fae -V -B -s .github/mvn-settings.xml -fae \
+            mvn -fae -V -B --no-transfer-progress -s .github/mvn-settings.xml -fae \
                         -Dquarkus.native.native-image-xmx=5g \
                         -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli" \
                         ${{ matrix.module-mvn-args }} clean verify -Dnative -am -DexcludedGroups=long-running
@@ -264,7 +264,7 @@ jobs:
             MODULES_MAVEN_PARAM="-pl ${MODULES_ARG}"
           fi
 
-          mvn -B -fae -s .github/mvn-settings.xml clean verify -Dall-modules $MODULES_MAVEN_PARAM -am -DexcludedGroups=long-running
+          mvn -B --no-transfer-progress -fae -s .github/mvn-settings.xml clean verify -Dall-modules $MODULES_MAVEN_PARAM -am -DexcludedGroups=long-running
       - name: Detect flaky tests
         id: flaky-test-detector
         if: ${{ hashFiles('**/flaky-run-report.json') != '' }}
