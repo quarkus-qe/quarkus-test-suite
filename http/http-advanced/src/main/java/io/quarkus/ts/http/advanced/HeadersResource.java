@@ -16,13 +16,6 @@ public class HeadersResource {
     }
 
     @GET
-    @Path("/no-accept")
-    @Produces(MediaType.TEXT_PLAIN)
-    public CustomHeaderResponse noAcceptheaders() {
-        return new CustomHeaderResponse("ok");
-    }
-
-    @GET
     @Path("/pragma")
     public String pragmaHeaderMustBeSet() {
         return "ok";
@@ -34,4 +27,10 @@ public class HeadersResource {
         return Response.ok("ok").header("foo", "abc").build();
     }
 
+    @GET
+    @Path("/no-accept")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response noAcceptHeaders() {
+        return Response.ok(new CustomHeaderResponse("ok headers")).build();
+    }
 }
