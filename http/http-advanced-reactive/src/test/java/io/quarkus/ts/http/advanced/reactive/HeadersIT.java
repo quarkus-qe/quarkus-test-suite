@@ -10,14 +10,13 @@ import static org.hamcrest.Matchers.not;
 
 import java.util.List;
 
-import io.restassured.http.Header;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.QuarkusApplication;
+import io.restassured.http.Header;
 import io.restassured.response.ValidatableResponse;
 
 @QuarkusScenario
@@ -104,7 +103,6 @@ public class HeadersIT {
                 .body(is("ok"));
     }
 
-    @Disabled("https://github.com/quarkusio/quarkus/issues/42854")
     @Test
     @Tag("https://github.com/quarkusio/quarkus/pull/41411")
     void testWithNoAcceptHeader() {

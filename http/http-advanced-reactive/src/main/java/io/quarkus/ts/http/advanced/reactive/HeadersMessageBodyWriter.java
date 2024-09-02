@@ -21,7 +21,7 @@ public class HeadersMessageBodyWriter implements MessageBodyWriter<CustomHeaderR
 
     @Override
     public void writeTo(CustomHeaderResponse customHeaderResponse, Class<?> aClass, Type type, Annotation[] annotations,
-                        MediaType mediaType, MultivaluedMap<String, Object> multivaluedMap, OutputStream outputStream)
+            MediaType mediaType, MultivaluedMap<String, Object> multivaluedMap, OutputStream outputStream)
             throws IOException, WebApplicationException {
         final String content = "Headers response: " + customHeaderResponse.getContent();
         outputStream.write(content.getBytes());
