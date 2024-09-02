@@ -78,6 +78,8 @@ jobs:
           # If changed file have some special character, its path is surrounded with quotes which causing the if statement fail
           CHANGED_FILE=$(echo ${{ steps.files.outputs.all_changed_and_modified_files }} | sed 's/\"/\\"/')
 
+          echo "CHANGED_FILE: $CHANGED_FILE"
+
           for module in $MODULES
           do
             if [[ $CHANGED_FILE =~ ("$module") ]] ; then
@@ -89,6 +91,10 @@ jobs:
           CHANGED="$(echo $CHANGED | xargs)"
 
           MODULES_ARG="${CHANGED// /,}"
+          
+          echo "CHANGED: $CHANGED"
+          echo "MODULES_ARG: MODULES_ARG"
+          
           echo "MODULES_ARG=$MODULES_ARG" >> $GITHUB_OUTPUT
     outputs:
       MODULES_ARG: ${{ steps.detect-changes.outputs.MODULES_ARG }}
@@ -106,6 +112,7 @@ jobs:
             echo "JVM_MODULES_MAVEN_PARAM=[\" -pl ${MODULES_ARG} -Dall-modules\"]" >> $GITHUB_OUTPUT
             echo "NATIVE_MODULES_MAVEN_PARAM=[\" -pl ${MODULES_ARG} -Dall-modules\"]" >> $GITHUB_OUTPUT
           else
+            echo "Running ALL modules because '${MODULES_ARG}' for MODULES_ARG"
             echo "JVM_MODULES_MAVEN_PARAM=[' -P root-modules,cache-modules,spring-modules,http-modules,test-tooling-modules,messaging-modules,monitoring-modules', ' -P security-modules,sql-db-modules,websockets-modules,nosql-db-modules']" >> $GITHUB_OUTPUT
             echo "NATIVE_MODULES_MAVEN_PARAM=[' -P root-modules,websockets-modules,test-tooling-modules,nosql-db-modules', ' -P http-modules,cache-modules', ' -P security-modules,spring-modules',
               ' -P sql-db-modules -pl env-info,sql-db/hibernate,sql-db/sql-app,sql-db/sql-app-compatibility,sql-db/multiple-pus,sql-db/panache-flyway,sql-db/hibernate-reactive',
