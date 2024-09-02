@@ -33,8 +33,8 @@ public class HeadersResource {
     @GET
     @Path("/no-accept")
     @Produces(MediaType.TEXT_PLAIN)
-    public Uni<String> okHeaders() {
-        return Uni.createFrom().item("ok headers");
+    public Uni<Response> noAcceptHeaders() {
+        return Uni.createFrom().item(Response.ok(new CustomHeaderResponse("ok headers")).build());
     }
 
 }
