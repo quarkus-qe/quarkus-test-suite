@@ -2,6 +2,7 @@ package io.quarkus.ts.micrometer.prometheus.kafka;
 
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
@@ -57,17 +58,15 @@ public class DLQMetricCountIT {
                     .statusCode(HttpStatus.SC_OK)
                     .extract().asString();
 
-            boolean matches = false;
             for (String line : response.split("[\r\n]+")) {
                 if (line.startsWith(name) && line.contains(key)) {
                     Double value = extractValueFromMetric(line);
                     assertTrue(valueMatcher.test(value), "Metric value is not expected. Found: " + value);
-                    matches = true;
-                    break;
+                    return;
                 }
             }
 
-            assertTrue(matches, "Metric " + name + " not found in " + response);
+            fail("Metric " + name + " not found in " + response);
         });
     }
 
