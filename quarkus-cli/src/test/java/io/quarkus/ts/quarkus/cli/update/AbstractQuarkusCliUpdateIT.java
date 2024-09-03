@@ -13,6 +13,7 @@ import jakarta.inject.Inject;
 import org.apache.http.HttpStatus;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.QuarkusCliClient;
@@ -27,6 +28,7 @@ import io.quarkus.test.utils.AwaitilityUtils;
 
 @QuarkusScenario
 @DisabledOnNative // Only for JVM verification
+@Tag("quarkus-cli")
 public abstract class AbstractQuarkusCliUpdateIT {
     @Inject
     static QuarkusCliClient cliClient;
@@ -68,9 +70,11 @@ public abstract class AbstractQuarkusCliUpdateIT {
                 "Major version for app updated to " + newVersionStream + "should be " + newVersionStream.getMajorVersion());
         assertEquals(newVersionStream.getMinorVersion(), updatedVersion.getMinorVersion(),
                 "Minor version for app updated to " + newVersionStream + " should be " + newVersionStream.getMinorVersion());
-        // check that updated app is using RHBQ
-        assertTrue(updatedVersion.toString().contains("redhat"),
-                "Updated app is not using \"redhat\" version. Found version: " + updatedVersion);
+        // check that updated app is using RHBQ, if we're testing with RHBQ
+        if (QuarkusProperties.getVersion().contains("redhat")) {
+            assertTrue(updatedVersion.toString().contains("redhat"),
+                    "Updated app is not using \"redhat\" version. Found version: " + updatedVersion);
+        }
 
         Log.info("Starting updated app");
         // start the updated app and verify that basic /hello endpoint works
