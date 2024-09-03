@@ -6,6 +6,7 @@ import java.time.Duration;
 
 import org.apache.http.HttpStatus;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.QuarkusCliRestService;
@@ -14,7 +15,8 @@ import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 import io.quarkus.test.scenarios.annotations.EnabledOnQuarkusVersion;
 import io.quarkus.test.utils.AwaitilityUtils;
 
-@EnabledOnQuarkusVersion(version = "3.8.*", reason = "This class is testing only updates to 3.8.* versions")
+@Tag("quarkus-cli")
+@EnabledOnQuarkusVersion(version = "3.8.*redhat.*", reason = "This class is testing only updates to 3.8.* RHBQ versions")
 @DisabledOnQuarkusVersion(version = "3.8.[0-5].*", reason = "https://github.com/quarkusio/quarkus/issues/42567")
 public class Quarkus213to38CliUpdateIT extends AbstractQuarkusCliUpdateIT {
     private static final DefaultArtifactVersion oldVersion = new DefaultArtifactVersion("2.13");

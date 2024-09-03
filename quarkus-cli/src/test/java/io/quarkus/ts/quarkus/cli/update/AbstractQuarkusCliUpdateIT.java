@@ -13,6 +13,7 @@ import jakarta.inject.Inject;
 import org.apache.http.HttpStatus;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.QuarkusCliClient;
@@ -27,6 +28,7 @@ import io.quarkus.test.utils.AwaitilityUtils;
 
 @QuarkusScenario
 @DisabledOnNative // Only for JVM verification
+@Tag("quarkus-cli")
 public abstract class AbstractQuarkusCliUpdateIT {
     @Inject
     static QuarkusCliClient cliClient;

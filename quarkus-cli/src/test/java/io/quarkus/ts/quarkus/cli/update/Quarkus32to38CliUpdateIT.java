@@ -26,6 +26,7 @@ import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Plugin;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.QuarkusCliRestService;
@@ -36,7 +37,8 @@ import io.quarkus.test.util.QuarkusCLIUtils;
 /**
  * Check updates from Quarkus 3.2 to 3.8
  */
-@EnabledOnQuarkusVersion(version = "3.8.*", reason = "This class is testing only updates to 3.8.* versions")
+@Tag("quarkus-cli")
+@EnabledOnQuarkusVersion(version = "3.8.*redhat.*", reason = "This class is testing only updates to 3.8.* RHBQ versions")
 @DisabledOnQuarkusVersion(version = "3.8.[0-5].*", reason = "https://github.com/quarkusio/quarkus/issues/42567")
 public class Quarkus32to38CliUpdateIT extends AbstractQuarkusCliUpdateIT {
     private static final DefaultArtifactVersion oldLtsStream = new DefaultArtifactVersion("3.2");
