@@ -16,12 +16,15 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.QuarkusApplication;
+import io.restassured.http.Header;
 import io.restassured.response.ValidatableResponse;
 
 @QuarkusScenario
 public class HeadersIT {
 
     @QuarkusApplication(classes = { PathSpecificHeadersResource.class,
+            HeadersMessageBodyWriter.class,
+            CustomHeaderResponse.class,
             HeadersResource.class }, properties = "headers.properties")
     static RestService app = new RestService();
 
@@ -91,6 +94,21 @@ public class HeadersIT {
     void testPathSpecificHeaderRulesOrder() {
         final ValidatableResponse response = whenGet("/filter/order");
         cacheControlMatches(response, "max-age=1");
+    }
+
+    /**
+     * Coverage for https://github.com/quarkusio/quarkus/issues/41354 in RESTEasy classic
+     */
+    @Test
+    void testWithNoAcceptHeader() {
+        Header header = new Header("Accept", null);
+        given()
+                .when()
+                .header(header)
+                .get("/headers/no-accept")
+                .then()
+                .statusCode(200)
+                .body(is("Headers response: ok headers"));
     }
 
     private ValidatableResponse whenGet(String path) {
