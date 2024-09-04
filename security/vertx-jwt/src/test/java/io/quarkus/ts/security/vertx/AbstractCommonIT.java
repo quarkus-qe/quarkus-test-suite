@@ -43,7 +43,7 @@ public abstract class AbstractCommonIT {
     static DefaultService redis = new DefaultService().withProperty("ALLOW_EMPTY_PASSWORD", "YES");
 
     @QuarkusApplication(certificates = {
-            @Certificate(format = Certificate.Format.PEM, prefix = VALID_PEM_PREFIX),
+            @Certificate(format = Certificate.Format.PEM, prefix = VALID_PEM_PREFIX, configureKeystore = true, configureTruststore = true),
             @Certificate(format = Certificate.Format.PEM, prefix = INVALID_PEM_PREFIX)
     })
     static RestService app = new RestService()
