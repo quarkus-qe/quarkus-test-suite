@@ -24,7 +24,7 @@ public class LocalOptionsIT {
     static final RestService custom = new RestService()
             .withProperty("quarkus.management.port", "9002");
 
-    @QuarkusApplication(certificates = @Certificate(configureKeystoreForManagementInterface = true))
+    @QuarkusApplication(certificates = @Certificate(configureManagementInterface = true, configureKeystore = true, useTlsRegistry = false))
     static final RestService tls = new RestService()
             .withProperty("quarkus.management.port", "9003");
 

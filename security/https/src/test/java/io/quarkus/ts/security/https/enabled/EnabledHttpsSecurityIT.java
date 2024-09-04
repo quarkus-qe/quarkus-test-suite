@@ -20,7 +20,7 @@ import io.quarkus.vertx.http.runtime.HttpConfiguration;
 public class EnabledHttpsSecurityIT {
 
     @QuarkusApplication(ssl = true, certificates = {
-            @Certificate(configureKeystore = true, configureTruststore = true, password = CLIENT_PASSWORD, clientCertificates = {
+            @Certificate(configureKeystore = true, configureTruststore = true, useTlsRegistry = false, configureHttpServer = true, password = CLIENT_PASSWORD, clientCertificates = {
                     @Certificate.ClientCertificate(cnAttribute = CLIENT_CN),
                     @Certificate.ClientCertificate(cnAttribute = UNKNOWN_CLIENT_CN, unknownToServer = true)
             })
