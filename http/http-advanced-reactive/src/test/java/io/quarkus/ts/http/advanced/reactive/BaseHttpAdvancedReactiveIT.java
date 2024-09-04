@@ -62,6 +62,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
+import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.scenarios.annotations.EnabledOnQuarkusVersion;
 import io.quarkus.test.security.certificate.CertificateBuilder;
 import io.restassured.http.Header;
@@ -79,6 +80,7 @@ public abstract class BaseHttpAdvancedReactiveIT {
 
     private static final String ROOT_PATH = "/api";
     private static final String HELLO_ENDPOINT = ROOT_PATH + "/hello";
+    private static final String GREETING_ENDPOINT = ROOT_PATH + "/greeting";
     private static final int TIMEOUT_SEC = 3;
     private static final int RETRY = 3;
     private static final String PASSWORD = "password";
@@ -93,6 +95,15 @@ public abstract class BaseHttpAdvancedReactiveIT {
         getApp().given().get(HELLO_ENDPOINT)
                 .then().statusLine("HTTP/1.1 200 OK").statusCode(SC_OK)
                 .body("content", is("Hello, World!"));
+    }
+
+    @Test
+    @DisplayName("Test Quarkus REST abstract resource with @Path")
+    @DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/42976")
+    public void abstractResourceWithPath() {
+        getApp().given().get(GREETING_ENDPOINT)
+                .then().statusCode(SC_OK)
+                .body(is("Hello from Quarkus REST"));
     }
 
     @Test
