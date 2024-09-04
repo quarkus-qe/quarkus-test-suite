@@ -1,10 +1,6 @@
 package io.quarkus.ts.http.grpc;
 
-import org.junit.jupiter.api.AfterAll;
-
-import io.grpc.Channel;
-import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
+import io.quarkus.test.bootstrap.CloseableManagedChannel;
 import io.quarkus.test.bootstrap.GrpcService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -15,18 +11,10 @@ public class SameServerIT implements GRPCIT, ReflectionHttpIT, StreamingHttpIT {
 
     @QuarkusApplication(grpc = true)
     static final GrpcService app = new GrpcService();
-    private static ManagedChannel channel;
 
     @Override
-    public Channel getChannel() {
-        if (channel == null) {
-            channel = ManagedChannelBuilder.forAddress(
-                    app.getURI().getHost(),
-                    app.getURI().getPort())
-                    .usePlaintext()
-                    .build();
-        }
-        return channel;
+    public CloseableManagedChannel getChannel() {
+        return app.grpcChannel();
     }
 
     @Override
@@ -34,8 +22,4 @@ public class SameServerIT implements GRPCIT, ReflectionHttpIT, StreamingHttpIT {
         return app;
     }
 
-    @AfterAll
-    static void afterAll() {
-        channel.shutdown();
-    }
 }

@@ -18,7 +18,7 @@ import io.vertx.ext.web.client.WebClientOptions;
 @QuarkusScenario
 public class RedirectHttpsSecurityIT {
 
-    @QuarkusApplication(ssl = true, certificates = @Certificate(configureKeystore = true, configureTruststore = true))
+    @QuarkusApplication(ssl = true, certificates = @Certificate(configureKeystore = true, configureTruststore = true, configureHttpServer = true, useTlsRegistry = false))
     static RestService app = new RestService()
             .withProperty("quarkus.http.insecure-requests", HttpConfiguration.InsecureRequests.REDIRECT.name());
 

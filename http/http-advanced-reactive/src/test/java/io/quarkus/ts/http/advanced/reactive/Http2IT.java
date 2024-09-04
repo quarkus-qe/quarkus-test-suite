@@ -43,7 +43,7 @@ import io.vertx.junit5.VertxTestContext;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class Http2IT {
     @QuarkusApplication(ssl = true, classes = { MorningResource.class,
-            CustomFramesResource.class }, properties = "http2.properties", certificates = @Certificate(configureKeystore = true))
+            CustomFramesResource.class }, properties = "http2.properties", certificates = @Certificate(configureKeystore = true, configureHttpServer = true, useTlsRegistry = false))
     static RestService app = new RestService();
 
     private static URILike baseUri;

@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import io.grpc.Channel;
 import io.grpc.reflection.v1.FileDescriptorResponse;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.ts.grpc.GreeterGrpc;
@@ -25,8 +24,6 @@ import io.quarkus.ts.grpc.StreamingGrpc;
 public interface ReflectionHttpIT {
 
     RestService app();
-
-    Channel getChannel();
 
     @Test
     default void testReflectionServices() {
