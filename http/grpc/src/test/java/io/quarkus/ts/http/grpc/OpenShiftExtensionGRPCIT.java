@@ -3,7 +3,7 @@ package io.quarkus.ts.http.grpc;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 
-import io.grpc.Channel;
+import io.quarkus.test.bootstrap.CloseableManagedChannel;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftDeploymentStrategy;
 import io.quarkus.test.scenarios.OpenShiftScenario;
@@ -19,7 +19,7 @@ public class OpenShiftExtensionGRPCIT implements GRPCIT, StreamingHttpIT, Reflec
     }
 
     @Override
-    public Channel getChannel() {
+    public CloseableManagedChannel getChannel() {
         return null;
     }
 }

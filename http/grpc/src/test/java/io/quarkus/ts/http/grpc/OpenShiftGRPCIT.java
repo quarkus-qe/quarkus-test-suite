@@ -2,7 +2,7 @@ package io.quarkus.ts.http.grpc;
 
 import org.junit.jupiter.api.Disabled;
 
-import io.grpc.Channel;
+import io.quarkus.test.bootstrap.CloseableManagedChannel;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
 
@@ -16,7 +16,7 @@ public class OpenShiftGRPCIT implements GRPCIT, StreamingHttpIT, ReflectionHttpI
     }
 
     @Override
-    public Channel getChannel() {
+    public CloseableManagedChannel getChannel() {
         return null;
     }
 }

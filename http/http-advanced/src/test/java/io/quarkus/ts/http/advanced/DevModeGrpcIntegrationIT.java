@@ -23,7 +23,6 @@ import io.quarkus.test.bootstrap.GrpcService;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.DevModeQuarkusApplication;
-import io.quarkus.test.services.URILike;
 
 @Tag("QUARKUS-1026")
 @Tag("QUARKUS-1094")
@@ -47,13 +46,7 @@ public class DevModeGrpcIntegrationIT {
     };
 
     @DevModeQuarkusApplication(grpc = true)
-    static final GrpcService app = (GrpcService) new GrpcService() {
-        @Override
-        public URILike getGrpcHost() {
-            // TODO: make app.grpcChannel() support gRPC on same HTTP server
-            return super.getGrpcHost().withPort(app.getURI().getPort());
-        }
-    }
+    static final GrpcService app = (GrpcService) new GrpcService()
             .withProperty("quarkus.oidc.enabled", "false")
             .withProperty("quarkus.keycloak.policy-enforcer.enable", "false")
             .withProperty("quarkus.keycloak.devservices.enabled", "false");
@@ -61,9 +54,11 @@ public class DevModeGrpcIntegrationIT {
     @Test
     public void testGrpcAsClient() {
         HelloRequest request = HelloRequest.newBuilder().setName(NAME).build();
-        HelloReply response = GreeterGrpc.newBlockingStub(app.grpcChannel()).sayHello(request);
+        try (var channel = app.grpcChannel()) {
+            HelloReply response = GreeterGrpc.newBlockingStub(channel).sayHello(request);
 
-        assertEquals("Hello " + NAME, response.getMessage());
+            assertEquals("Hello " + NAME, response.getMessage());
+        }
     }
 
     @Test

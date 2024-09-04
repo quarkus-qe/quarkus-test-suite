@@ -13,7 +13,7 @@ import io.quarkus.test.services.URILike;
 @QuarkusScenario
 public class DevModeHttpsIT extends AbstractDevModeIT {
 
-    @DevModeQuarkusApplication(ssl = true, certificates = @Certificate(configureKeystore = true))
+    @DevModeQuarkusApplication(ssl = true, certificates = @Certificate(configureKeystore = true, useTlsRegistry = false, configureHttpServer = true))
     static RestService app = new DevModeQuarkusService()
             .withProperty("quarkus.oidc.enabled", "false")
             .withProperty("quarkus.keycloak.policy-enforcer.enable", "false")

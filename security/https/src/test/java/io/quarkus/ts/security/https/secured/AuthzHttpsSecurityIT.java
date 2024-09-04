@@ -24,7 +24,7 @@ public class AuthzHttpsSecurityIT {
     private static final String SECURED_PATH = "/secured";
     private static final String HELLO_FULL_PATH = "/hello/full";
 
-    @QuarkusApplication(ssl = true, certificates = @Certificate(configureKeystore = true, configureTruststore = true, password = CLIENT_PASSWORD, clientCertificates = {
+    @QuarkusApplication(ssl = true, certificates = @Certificate(useTlsRegistry = false, configureHttpServer = true, configureKeystore = true, configureTruststore = true, password = CLIENT_PASSWORD, clientCertificates = {
             @Certificate.ClientCertificate(cnAttribute = CLIENT_CN),
             @Certificate.ClientCertificate(cnAttribute = GUEST_CLIENT_CN),
             @Certificate.ClientCertificate(cnAttribute = UNKNOWN_CLIENT_CN, unknownToServer = true)

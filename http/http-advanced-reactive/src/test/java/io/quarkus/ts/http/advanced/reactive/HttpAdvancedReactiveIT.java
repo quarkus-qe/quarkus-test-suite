@@ -19,7 +19,7 @@ public class HttpAdvancedReactiveIT extends BaseHttpAdvancedReactiveIT {
     static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH)
             .withProperty("JAVA_OPTS", "-Dcom.redhat.fips=false");
 
-    @QuarkusApplication(ssl = true, certificates = @Certificate(configureKeystore = true))
+    @QuarkusApplication(ssl = true, certificates = @Certificate(configureKeystore = true, configureHttpServer = true, useTlsRegistry = false))
     static RestService app = new RestService().withProperty("quarkus.oidc.auth-server-url",
             keycloak::getRealmUrl);
 
