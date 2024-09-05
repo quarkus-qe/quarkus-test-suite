@@ -57,9 +57,11 @@
         </profile>
         <profile>
             <id>openshift</id>
-            <properties>
-                <quarkus.container-image.build>false</quarkus.container-image.build>
-            </properties>
+            <activation>
+                <property>
+                    <name>openshift</name>
+                </property>
+            </activation>
             <build>
                 <plugins>
                     <plugin>
@@ -70,6 +72,14 @@
                     </plugin>
                     <plugin>
                         <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>${quarkus.platform.group-id}</groupId>
+                        <artifactId>quarkus-maven-plugin</artifactId>
+                        <version>${quarkus.platform.version}</version>
                         <configuration>
                             <skip>true</skip>
                         </configuration>
