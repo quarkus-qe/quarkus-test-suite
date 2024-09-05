@@ -1,6 +1,0 @@
-[req]
-req_extensions = v3_req
-
-[v3_req]
-basicConstraints = CA:true
-keyUsage = critical, keyCertSign
