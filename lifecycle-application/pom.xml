@@ -11,9 +11,9 @@
     <packaging>jar</packaging>
     <name>Quarkus QE TS: Lifecycle Application</name>
     <properties>
-        <!-- Using invalid Quarkus version to make sure the one defined in profile gets picked -->
+        <!-- Using invalid Quarkus BOM to make sure the one defined in profile gets picked -->
         <!-- Quarkus maven plugin had troubles to use stuff defined in profile -->
-        <quarkus.platform.version>9999999-SNAPSHOT</quarkus.platform.version>
+        <quarkus.platform.artifact-id>non-existing-bom</quarkus.platform.artifact-id>
     </properties>
     <dependencies>
         <dependency>
@@ -26,8 +26,8 @@
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-spring-di</artifactId>
-            <version>3.8.3.redhat-00003</version>
+            <artifactId>quarkus-spring-core-api</artifactId>
+            <version>5.2.0.SP7-redhat-00001</version>
         </dependency>
     </dependencies>
     <profiles>
@@ -39,8 +39,7 @@
                 </property>
             </activation>
             <properties>
-                <!-- please keep Mandrel and RHBQ version compatible -->
-                <quarkus.platform.version>3.8.3.redhat-00003</quarkus.platform.version>
+                <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
             </properties>
             <repositories>
                 <repository>
@@ -48,12 +47,6 @@
                     <url>https://maven.repository.redhat.com/ga/</url>
                 </repository>
             </repositories>
-            <pluginRepositories>
-                <pluginRepository>
-                    <id>red-hat-enterprise-repository</id>
-                    <url>https://maven.repository.redhat.com/ga/</url>
-                </pluginRepository>
-            </pluginRepositories>
         </profile>
     </profiles>
 </project>
