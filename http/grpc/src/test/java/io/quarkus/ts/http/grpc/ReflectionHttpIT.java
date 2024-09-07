@@ -1,38 +1,33 @@
 package io.quarkus.ts.http.grpc;
 
 import static org.apache.http.HttpStatus.SC_OK;
-import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import io.grpc.Channel;
 import io.grpc.reflection.v1.FileDescriptorResponse;
-import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.ts.grpc.GreeterGrpc;
 import io.quarkus.ts.grpc.HelloWorldProto;
 import io.quarkus.ts.grpc.StreamingGrpc;
+import io.vertx.mutiny.ext.web.client.WebClient;
 
 public interface ReflectionHttpIT {
 
-    RestService app();
-
-    Channel getChannel();
+    WebClient getWebClient();
 
     @Test
     default void testReflectionServices() {
-        GrpcReflectionResponse response = app().given().when().get("/http/reflection/service/info")
-                .then().statusCode(SC_OK).extract().response()
-                .jsonPath().getObject(".", GrpcReflectionResponse.class);
+        var httpResponse = getWebClient().get("/http/reflection/service/info").sendAndAwait();
+        assertEquals(SC_OK, httpResponse.statusCode());
+        GrpcReflectionResponse response = httpResponse.bodyAsJson(GrpcReflectionResponse.class);
 
         assertEquals(3, response.getServiceCount());
 
@@ -46,8 +41,9 @@ public interface ReflectionHttpIT {
 
     @Test
     default void testReflectionMethods() throws InvalidProtocolBufferException {
-        byte[] responseByteArray = app().given().when().get("/http/reflection/descriptor/greeting")
-                .then().statusCode(SC_OK).extract().body().asByteArray();
+        var httpResponse = getWebClient().get("/http/reflection/descriptor/greeting").sendAndAwait();
+        assertEquals(SC_OK, httpResponse.statusCode());
+        byte[] responseByteArray = httpResponse.body().getBytes();
 
         String fileDescriptor = FileDescriptorResponse.parseFrom(responseByteArray).toString();
 
@@ -75,8 +71,9 @@ public interface ReflectionHttpIT {
     @Test
     @DisplayName("GRPC reflection test - check service messages types")
     default void testReflectionMessages() throws InvalidProtocolBufferException {
-        byte[] responseByteArray = app().given().when().get("/http/reflection/descriptor/greeting")
-                .then().statusCode(SC_OK).extract().body().asByteArray();
+        var httpResponse = getWebClient().get("/http/reflection/descriptor/greeting").sendAndAwait();
+        assertEquals(SC_OK, httpResponse.statusCode());
+        byte[] responseByteArray = httpResponse.body().getBytes();
         String fileDescriptor = FileDescriptorResponse.parseFrom(responseByteArray).toString();
 
         var messageTypes = HelloWorldProto.getDescriptor().getMessageTypes();
@@ -90,8 +87,9 @@ public interface ReflectionHttpIT {
     @Test
     @DisplayName("GRPC reflection test - check method SayHello of Greeter service exists and then call it")
     default void testReflectionCallMethod() throws InvalidProtocolBufferException {
-        byte[] responseByteArray = app().given().when().get("/http/reflection/descriptor/greeting")
-                .then().statusCode(SC_OK).extract().body().asByteArray();
+        var httpResponse = getWebClient().get("/http/reflection/descriptor/greeting").sendAndAwait();
+        assertEquals(SC_OK, httpResponse.statusCode());
+        byte[] responseByteArray = httpResponse.body().getBytes();
 
         String fileDescriptor = FileDescriptorResponse.parseFrom(responseByteArray).toString();
 
@@ -114,6 +112,8 @@ public interface ReflectionHttpIT {
         assertTrue(fileDescriptor.contains("SayHello"));
 
         // Call sayHello method and compare context
-        app().given().when().get("/http/tester").then().statusCode(SC_OK).body(Matchers.is("Hello tester"));
+        httpResponse = getWebClient().get("/http/tester").sendAndAwait();
+        assertEquals(SC_OK, httpResponse.statusCode());
+        assertEquals("Hello tester", httpResponse.bodyAsString());
     }
 }

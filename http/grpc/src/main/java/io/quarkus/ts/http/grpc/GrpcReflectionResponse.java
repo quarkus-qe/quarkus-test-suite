@@ -3,8 +3,11 @@ package io.quarkus.ts.http.grpc;
 import java.util.List;
 
 public final class GrpcReflectionResponse {
-    private final int serviceCount;
-    private final List<String> serviceList;
+    private int serviceCount;
+    private List<String> serviceList;
+
+    public GrpcReflectionResponse() {
+    }
 
     public GrpcReflectionResponse(int serviceCount, List<String> serviceList) {
         this.serviceCount = serviceCount;
@@ -19,4 +22,11 @@ public final class GrpcReflectionResponse {
         return serviceCount;
     }
 
+    public void setServiceCount(int serviceCount) {
+        this.serviceCount = serviceCount;
+    }
+
+    public void setServiceList(List<String> serviceList) {
+        this.serviceList = serviceList;
+    }
 }

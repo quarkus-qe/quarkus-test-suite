@@ -43,8 +43,8 @@ public abstract class AbstractCommonIT {
     static DefaultService redis = new DefaultService().withProperty("ALLOW_EMPTY_PASSWORD", "YES");
 
     @QuarkusApplication(certificates = {
-            @Certificate(format = Certificate.Format.PEM, prefix = VALID_PEM_PREFIX),
-            @Certificate(format = Certificate.Format.PEM, prefix = INVALID_PEM_PREFIX)
+            @Certificate(format = Certificate.Format.PEM, prefix = VALID_PEM_PREFIX, useTlsRegistry = false, configureTruststore = true),
+            @Certificate(format = Certificate.Format.PEM, prefix = INVALID_PEM_PREFIX, useTlsRegistry = false, configureTruststore = true),
     })
     static RestService app = new RestService()
             .withProperty("quarkus.redis.hosts",
@@ -52,7 +52,7 @@ public abstract class AbstractCommonIT {
                         String redisHost = redis.getURI().withScheme("redis").getRestAssuredStyleUri();
                         return String.format("%s:%d", redisHost, redis.getURI().getPort());
                     })
-            .withProperty("authN.cert-path", AbstractCommonIT::getCertificatePath);
+            .withProperty("authN.cert-path", CertificateBuilder.INSTANCE_KEY, AbstractCommonIT::getValidClientCert);
 
     @BeforeEach
     public void setup() {
@@ -202,10 +202,6 @@ public abstract class AbstractCommonIT {
         return getPemCertificate(prefix).keyPath();
     }
 
-    private static String getCertificatePath() {
-        return getPemCertificate(VALID_PEM_PREFIX).certPath();
-    }
-
     private static String getPrivateKey(String prefix) {
         return CertUtils.loadKey(getPrivateKeyPath(prefix));
     }
@@ -220,5 +216,9 @@ public abstract class AbstractCommonIT {
 
     private static CertificateBuilder getCertBuilder() {
         return app.<CertificateBuilder> getPropertyFromContext(CertificateBuilder.INSTANCE_KEY);
+    }
+
+    private static String getValidClientCert(CertificateBuilder cb) {
+        return ((PemCertificate) cb.findCertificateByPrefix(VALID_PEM_PREFIX)).certPath();
     }
 }
