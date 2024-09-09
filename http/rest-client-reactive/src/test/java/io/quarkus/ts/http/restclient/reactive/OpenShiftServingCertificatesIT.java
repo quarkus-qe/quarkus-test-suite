@@ -74,6 +74,8 @@ public class OpenShiftServingCertificatesIT {
         } catch (Throwable t) {
             // FIXME: debug only, don't merge this
             runOcpCmd("oc", "get", "pod", "-o", "wide");
+            runOcpCmd("oc", "describe", "secret", "serving-certificates-secret");
+            runOcpCmd("oc", "describe", "configmap", "ca-bundle-configmap");
             ocp.podsInService(server).forEach(pod -> runOcpCmd("oc", "describe", "pod", pod.getMetadata().getName()));
             ocp.podsInService(client).forEach(pod -> runOcpCmd("oc", "describe", "pod", pod.getMetadata().getName()));
             throw t;

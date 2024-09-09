@@ -1,9 +1,13 @@
 package hero;
 
+import jakarta.enterprise.event.Observes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+
+import io.quarkus.runtime.StartupEvent;
+import io.quarkus.tls.TlsConfigurationRegistry;
 
 @Path("hero-client-resource")
 public class HeroClientResource {
@@ -16,4 +20,14 @@ public class HeroClientResource {
         return heroClient.getRandomHero();
     }
 
+    void observer(@Observes StartupEvent ev, TlsConfigurationRegistry registry) {
+        try {
+            var ts = registry.get("hero-client").get().getTrustStore();
+            ts.aliases().asIterator().forEachRemaining(alias -> {
+                System.out.println("hero client alias is " + alias);
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
