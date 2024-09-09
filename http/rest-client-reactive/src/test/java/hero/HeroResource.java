@@ -20,8 +20,12 @@ public class HeroResource {
 
     void observer(@Observes StartupEvent ev, TlsConfigurationRegistry registry) {
         try {
-            var ts = registry.get("cert-serving-test-server").get().getTrustStore();
-            ts.aliases().asIterator().forEachRemaining(alias -> {
+            var ks = registry.get("cert-serving-test-server").get().getKeyStore();
+            if (ks == null) {
+                System.out.println("ks is null .............");
+                return;
+            }
+            ks.aliases().asIterator().forEachRemaining(alias -> {
                 System.out.println("hero server alias is " + alias);
             });
         } catch (Exception e) {

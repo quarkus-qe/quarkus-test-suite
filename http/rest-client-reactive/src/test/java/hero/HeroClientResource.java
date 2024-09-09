@@ -23,6 +23,9 @@ public class HeroClientResource {
     void observer(@Observes StartupEvent ev, TlsConfigurationRegistry registry) {
         try {
             var ts = registry.get("hero-client").get().getTrustStore();
+            if (ts == null) {
+                System.out.println("ts is null...");
+            }
             ts.aliases().asIterator().forEachRemaining(alias -> {
                 System.out.println("hero client alias is " + alias);
             });
