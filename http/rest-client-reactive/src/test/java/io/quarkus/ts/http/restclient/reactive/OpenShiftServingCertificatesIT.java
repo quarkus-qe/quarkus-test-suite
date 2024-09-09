@@ -3,7 +3,9 @@ package io.quarkus.ts.http.restclient.reactive;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.time.Duration;
+import java.io.IOException;
+
+import jakarta.inject.Inject;
 
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -13,11 +15,12 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
+import io.quarkus.test.bootstrap.inject.OpenShiftClient;
 import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.services.Certificate;
 import io.quarkus.test.services.Certificate.ServingCertificates;
 import io.quarkus.test.services.QuarkusApplication;
-import io.quarkus.test.utils.AwaitilityUtils;
+import io.quarkus.test.utils.Command;
 
 import hero.Hero;
 import hero.HeroClient;
@@ -39,6 +42,9 @@ public class OpenShiftServingCertificatesIT {
     private static final String HERO_CLIENT = "hero-client";
     private static final String SERVER_TLS_CONFIG_NAME = "cert-serving-test-server";
 
+    @Inject
+    static OpenShiftClient ocp;
+
     @QuarkusApplication(ssl = true, certificates = @Certificate(tlsConfigName = SERVER_TLS_CONFIG_NAME, servingCertificates = {
             @ServingCertificates(addServiceCertificate = true)
     }), classes = { HeroResource.class, Hero.class, Villain.class,
@@ -54,17 +60,24 @@ public class OpenShiftServingCertificatesIT {
     @Order(1)
     @Test
     public void testSecuredCommunicationBetweenClientAndServer() {
+
         // REST client use OpenShift internal CA
         // server is configured with OpenShift serving certificates
         // ad "untilAsserted": we experienced unknown SAN, so to avoid flakiness I am adding here retry:
-        AwaitilityUtils.untilAsserted(() -> {
+        try {
             var hero = client.given().get("hero-client-resource").then().statusCode(200).extract().as(Hero.class);
             assertNotNull(hero);
             assertNotNull(hero.name());
             assertTrue(hero.name().startsWith("Name-"));
             assertNotNull(hero.otherName());
             assertTrue(hero.otherName().startsWith("Other-"));
-        }, AwaitilityUtils.AwaitilitySettings.usingTimeout(Duration.ofSeconds(50)));
+        } catch (Throwable t) {
+            // FIXME: debug only, don't merge this
+            runOcpCmd("oc", "get", "pod", "-o", "wide");
+            ocp.podsInService(server).forEach(pod -> runOcpCmd("oc", "describe", "pod", pod.getMetadata().getName()));
+            ocp.podsInService(client).forEach(pod -> runOcpCmd("oc", "describe", "pod", pod.getMetadata().getName()));
+            throw t;
+        }
     }
 
     @Order(2)
@@ -76,6 +89,14 @@ public class OpenShiftServingCertificatesIT {
         client.logs().assertDoesNotContain("Received fatal alert: protocol_version");
         client.given().get("villain-client-resource").then().statusCode(500);
         client.logs().assertContains("Received fatal alert: protocol_version");
+    }
+
+    private static void runOcpCmd(String... commands) {
+        try {
+            new Command(commands).outputToConsole().runAndWait();
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
