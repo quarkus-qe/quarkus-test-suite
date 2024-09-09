@@ -88,7 +88,7 @@ public class QuarkusCliExtensionsIT {
     public void shouldListExtensionsUsingStream() {
         var req = ListExtensionRequest.withSetStream();
         result = cliClient.listExtensions(req, "--origins");
-        if (QuarkusProperties.getVersion().contains("redhat")) {
+        if (QuarkusProperties.isRHBQ()) {
             assertTrue(result.getOutput().contains("com.redhat.quarkus.platform:quarkus-bom:" + req.stream()));
         } else {
             assertTrue(result.getOutput().contains("io.quarkus.platform:quarkus-bom:" + req.stream()));

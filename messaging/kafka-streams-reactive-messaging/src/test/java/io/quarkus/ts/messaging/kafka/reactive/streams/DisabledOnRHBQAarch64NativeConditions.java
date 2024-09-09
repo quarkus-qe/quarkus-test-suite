@@ -10,7 +10,7 @@ public class DisabledOnRHBQAarch64NativeConditions implements ExecutionCondition
 
     @Override
     public ConditionEvaluationResult evaluateExecutionCondition(ExtensionContext extensionContext) {
-        boolean isRHBQ = QuarkusProperties.getVersion().contains("redhat");
+        boolean isRHBQ = QuarkusProperties.isRHBQ();
         boolean isNative = QuarkusProperties.isNativeEnabled();
         boolean isAarch64 = "true".equals(System.getProperty("ts.arm.missing.services.excludes"));
         if (isRHBQ && isAarch64 && isNative) {

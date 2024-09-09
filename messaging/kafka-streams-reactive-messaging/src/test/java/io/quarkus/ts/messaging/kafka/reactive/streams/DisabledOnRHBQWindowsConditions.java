@@ -11,7 +11,7 @@ public class DisabledOnRHBQWindowsConditions implements ExecutionCondition {
 
     @Override
     public ConditionEvaluationResult evaluateExecutionCondition(ExtensionContext extensionContext) {
-        boolean isRHBQ = QuarkusProperties.getVersion().contains("redhat");
+        boolean isRHBQ = QuarkusProperties.isRHBQ();
         boolean isWindows = OS.current().equals(OS.WINDOWS);
         if (isRHBQ && isWindows) {
             return ConditionEvaluationResult.disabled("It is RHBQ on Windows");
