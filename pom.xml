@@ -775,24 +775,10 @@
             </build>
         </profile>
         <profile>
-            <!-- You need to be connected to an OpenShift instance to activate this
-                profile! -->
-            <id>openshift-arm</id>
+            <id>aarch64</id>
             <activation>
                 <property>
-                    <name>openshift-arm</name>
-                </property>
-            </activation>
-            <properties>
-                <include.tests>**/*OpenShift*IT.java</include.tests>
-                <exclude.openshift.tests>no</exclude.openshift.tests>
-            </properties>
-        </profile>
-        <profile>
-            <id>openshift-arm-containers</id>
-            <activation>
-                <property>
-                    <name>openshift-arm</name>
+                    <name>aarch64</name>
                 </property>
             </activation>
             <build>
@@ -809,7 +795,6 @@
                                 <configuration>
                                     <systemPropertyVariables>
                                         <!-- always set 'OpenShift' property as that's how detect OpenShift tests inside FW -->
-                                        <openshift>true</openshift>
                                         <ts.arm.missing.services.excludes>true</ts.arm.missing.services.excludes>
                                         <ts.redhat.registry.enabled>true</ts.redhat.registry.enabled>
                                         <!-- Product Services -->
