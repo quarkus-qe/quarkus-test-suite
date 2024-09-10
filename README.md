@@ -64,6 +64,7 @@ By default, all your tests are running on bare metal (JVM / Dev mode), but you c
 * Redhat-registry: use Redhat docker registry with official supported images instead of community images
 * Serverless: enable Knative or serverless scenarios
 * Operator-scenarios: enable operator scenarios, where the ecosystem of your test is going to be deployed by k8s/OCP operators
+* `aarch64`: profile using versions of containers for test services that work on aarch64
 
 All of these profiles are not mutual exclusive, indeed we encourage you to combine these profiles in order to run complex scenarios.
 
@@ -107,6 +108,16 @@ mvn clean verify -Dall-modules -Dopenshift -pl http/http-minimum
 ```
 
 **NOTE:** here we are combining two profiles, profile `openshift` in order to trigger OpenShift execution mode and property `all-modules` to enable `http-modules` profile, where `http/http-minimum` is located.
+
+#### OpenShift & Aarch64
+
+To run test services on OpenShift clusters installed on aarch64, make sure you enable aarch64 profile:
+
+```shell
+mvn clean verify -Dall-modules -Dopenshift -Daarch64 -pl http/http-minimum
+```
+
+**NOTE:** You can comine this with native profile also.
 
 ### OpenShift & Native
 
@@ -168,6 +179,15 @@ User: `Run http-minimum module.`
 
 ```shell
 mvn clean verify -Dall-modules -pl http/http-minimum
+```
+
+#### Bare metal & Aarch64
+
+To run tests on bare metal aarch64, make sure you enable aarch64 profile so that tests are able to launch test service 
+containers:
+
+```shell
+mvn clean verify -Dall-modules -Daarch64 -pl http/http-minimum
 ```
 
 #### Bare metal & Native
