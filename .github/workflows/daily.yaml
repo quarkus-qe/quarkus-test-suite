@@ -165,10 +165,15 @@ jobs:
       - name: Extract Maven Repo
         shell: bash
         run: tar -xzf maven-repo.tgz -C ~
+      - name: Install Quarkus CLI
+        run: |
+          echo "java -jar $home/.m2/repository/io/quarkus/quarkus-cli/999-SNAPSHOT/quarkus-cli-999-SNAPSHOT-runner.jar %*" > quarkus-dev-cli.bat
+          # Launches in powershell
+          .\quarkus-dev-cli.bat version
       - name: Build in JVM mode
         shell: bash
         run: |
-          mvn -B --no-transfer-progress -fae -s .github/mvn-settings.xml clean verify
+          mvn -B --no-transfer-progress -fae -s .github/mvn-settings.xml clean verify -D"include.quarkus-cli-tests" -D"ts.quarkus.cli.cmd=C:\cygwin\home\hudson\work\quarkus-dev-cli.bat" -D"all-modules"
       - name: Zip Artifacts
         shell: bash
         if: failure()

@@ -261,6 +261,11 @@ jobs:
       - name: Extract Maven Repo
         shell: bash
         run: tar -xzf maven-repo.tgz -C ~
+      - name: Install Quarkus CLI
+        run: |
+          echo "java -jar ~/.m2/repository/io/quarkus/quarkus-cli/999-SNAPSHOT/quarkus-cli-999-SNAPSHOT-runner.jar %*" > quarkus-dev-cli.bat
+          # Launches in powershell
+          .\quarkus-dev-cli.bat version
       - name: Build in JVM mode
         shell: bash
         run: |
@@ -270,7 +275,7 @@ jobs:
             MODULES_MAVEN_PARAM="-pl ${MODULES_ARG}"
           fi
 
-          mvn -B --no-transfer-progress -fae -s .github/mvn-settings.xml clean verify -Dall-modules $MODULES_MAVEN_PARAM -am -DexcludedGroups=long-running
+          mvn -B --no-transfer-progress -fae -s .github/mvn-settings.xml clean verify -Dall-modules $MODULES_MAVEN_PARAM -am -DexcludedGroups=long-running -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli"
       - name: Detect flaky tests
         id: flaky-test-detector
         if: ${{ hashFiles('**/flaky-run-report.json') != '' }}
