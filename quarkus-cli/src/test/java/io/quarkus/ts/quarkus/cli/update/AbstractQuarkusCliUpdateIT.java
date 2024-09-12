@@ -22,8 +22,8 @@ import io.quarkus.test.logging.Log;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.quarkus.model.QuarkusProperties;
-import io.quarkus.test.util.DefaultQuarkusCLIAppManager;
 import io.quarkus.test.util.IQuarkusCLIAppManager;
+import io.quarkus.test.util.QuarkusCLIUtils;
 import io.quarkus.test.utils.AwaitilityUtils;
 
 @QuarkusScenario
@@ -35,25 +35,13 @@ public abstract class AbstractQuarkusCliUpdateIT {
 
     protected final DefaultArtifactVersion oldVersionStream;
     protected final DefaultArtifactVersion newVersionStream;
-    protected final String newVersionFromProperties;
     protected final IQuarkusCLIAppManager quarkusCLIAppManager;
 
     public AbstractQuarkusCliUpdateIT(DefaultArtifactVersion oldVersionStream, DefaultArtifactVersion newVersionStream) {
         this.oldVersionStream = oldVersionStream;
         this.newVersionStream = newVersionStream;
 
-        // takes quarkus.platform.version from maven parameters. If present, it will update to this exact BOM version
-        // otherwise it will default to update to stream
-        this.newVersionFromProperties = QuarkusProperties.getVersion();
-        this.quarkusCLIAppManager = createAppManager();
-    }
-
-    protected IQuarkusCLIAppManager createAppManager() {
-        if (this.newVersionFromProperties != null && QuarkusProperties.isRHBQ()) {
-            return new RHBQPlatformAppManager(cliClient, oldVersionStream, newVersionStream,
-                    new DefaultArtifactVersion(newVersionFromProperties));
-        }
-        return new DefaultQuarkusCLIAppManager(cliClient, oldVersionStream, newVersionStream);
+        this.quarkusCLIAppManager = QuarkusCLIUtils.createAppManager(cliClient, oldVersionStream, newVersionStream);
     }
 
     /**
