@@ -143,8 +143,7 @@ public abstract class AbstractAnalyticsIT {
         assertEquals(pomDependencyGAs, payloadExtensionGAs);
 
         // RHBQ doesn't guarantee the same version of the platform and core extensions
-        boolean isRHBQ = QuarkusProperties.getVersion().contains("redhat");
-        if (!isRHBQ) {
+        if (!QuarkusProperties.isRHBQ()) {
             List<PayloadExtension> extensionsWithMismatchedVersion = payloadExtensions.stream()
                     .filter(extension -> !QUARKUS_EXTENSION_VERSION_PATTERN.matcher(extension.getVersion()).matches())
                     .collect(Collectors.toList());

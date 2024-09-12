@@ -49,7 +49,7 @@ public abstract class AbstractQuarkusCliUpdateIT {
     }
 
     protected IQuarkusCLIAppManager createAppManager() {
-        if (this.newVersionFromProperties != null && this.newVersionFromProperties.contains("redhat")) {
+        if (this.newVersionFromProperties != null && QuarkusProperties.isRHBQ()) {
             return new RHBQPlatformAppManager(cliClient, oldVersionStream, newVersionStream,
                     new DefaultArtifactVersion(newVersionFromProperties));
         }
@@ -71,7 +71,7 @@ public abstract class AbstractQuarkusCliUpdateIT {
         assertEquals(newVersionStream.getMinorVersion(), updatedVersion.getMinorVersion(),
                 "Minor version for app updated to " + newVersionStream + " should be " + newVersionStream.getMinorVersion());
         // check that updated app is using RHBQ, if we're testing with RHBQ
-        if (QuarkusProperties.getVersion().contains("redhat")) {
+        if (QuarkusProperties.isRHBQ()) {
             assertTrue(updatedVersion.toString().contains("redhat"),
                     "Updated app is not using \"redhat\" version. Found version: " + updatedVersion);
         }
