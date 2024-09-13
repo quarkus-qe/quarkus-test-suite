@@ -9,8 +9,7 @@ import io.quarkus.test.services.QuarkusApplication;
 @OpenShiftScenario
 public class OpenShiftPostgresqlTransactionGeneralUsageIT extends AbstractPostgresqlTransactionGeneralUsageIT {
 
-    // FIXME: change expected log when https://github.com/quarkus-qe/quarkus-test-framework/issues/1183 is fixed
-    @Container(image = "${postgresql.latest.image}", port = POSTGRESQL_PORT, expectedLog = "Future log output will appear in directory")
+    @Container(image = "${postgresql.latest.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
     static final PostgresqlService database = new PostgresqlService()
             // following env variable is accepted by PG images from Red Hat registry
             .withProperty("POSTGRESQL_MAX_PREPARED_TRANSACTIONS", "100")
