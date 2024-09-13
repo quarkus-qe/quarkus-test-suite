@@ -41,8 +41,7 @@ public class OpenShiftWorkshopHeroesIT {
 
     private static final int POSTGRESQL_PORT = 5432;
 
-    // FIXME: change expected log when https://github.com/quarkus-qe/quarkus-test-framework/issues/1183 is fixed
-    @Container(image = "${postgresql.latest.image}", port = POSTGRESQL_PORT, expectedLog = "Future log output will appear in directory")
+    @Container(image = "${postgresql.latest.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
     static PostgresqlService database = new PostgresqlService()
             .withProperty("PGDATA", "/tmp/psql");
 
