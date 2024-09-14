@@ -6,6 +6,7 @@ import static io.quarkus.test.utils.ImageUtil.getImageVersion;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 
 import com.github.dockerjava.api.model.Image;
 
@@ -16,6 +17,7 @@ import io.quarkus.test.services.DevModeQuarkusApplication;
 import io.quarkus.test.utils.DockerUtils;
 
 @DisabledOnFipsAndJava17(reason = "https://github.com/quarkusio/quarkus/issues/40813")
+@DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkusio/quarkus/issues/43375")
 @Tag("QUARKUS-1408")
 @QuarkusScenario
 public class DevModeReactiveMssqlDevServiceUserExperienceIT {

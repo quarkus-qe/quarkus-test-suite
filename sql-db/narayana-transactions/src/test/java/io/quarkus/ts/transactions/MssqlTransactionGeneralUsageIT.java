@@ -11,6 +11,7 @@ import org.jboss.logging.Logger;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.testcontainers.containers.GenericContainer;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -23,6 +24,7 @@ import io.quarkus.ts.transactions.recovery.TransactionExecutor;
 import io.restassured.response.Response;
 
 @DisabledOnFipsAndJava17(reason = "https://github.com/quarkusio/quarkus/issues/40813")
+@DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/2017")
 @QuarkusScenario
 public class MssqlTransactionGeneralUsageIT extends TransactionCommons {
     private static final Logger LOG = Logger.getLogger(MssqlTransactionGeneralUsageIT.class);
