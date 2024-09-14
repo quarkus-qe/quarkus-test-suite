@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.is;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -14,6 +15,7 @@ import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
+@DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/2025")
 public class SpringCloudConfigIT {
 
     @Container(image = "${spring.cloud.server.image}", port = 8888, expectedLog = "Started ConfigServer")
