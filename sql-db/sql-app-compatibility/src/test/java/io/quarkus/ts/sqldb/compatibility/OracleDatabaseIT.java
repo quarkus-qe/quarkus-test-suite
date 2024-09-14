@@ -1,5 +1,7 @@
 package io.quarkus.ts.sqldb.compatibility;
 
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
+
 import io.quarkus.test.bootstrap.OracleService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -9,6 +11,7 @@ import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
 @DisabledOnNative(reason = "Compatibility mode check in JVM mode is enough for this DB")
+@DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/2022")
 public class OracleDatabaseIT extends AbstractSqlDatabaseIT {
 
     static final int ORACLE_PORT = 1521;

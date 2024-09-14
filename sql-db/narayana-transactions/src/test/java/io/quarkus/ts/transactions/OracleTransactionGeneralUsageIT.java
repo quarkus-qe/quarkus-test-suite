@@ -1,5 +1,7 @@
 package io.quarkus.ts.transactions;
 
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
+
 import io.quarkus.test.bootstrap.OracleService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -8,6 +10,7 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.transactions.recovery.TransactionExecutor;
 
 @QuarkusScenario
+@DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/2022")
 public class OracleTransactionGeneralUsageIT extends TransactionCommons {
 
     static final int ORACLE_PORT = 1521;
