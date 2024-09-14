@@ -1,5 +1,7 @@
 package io.quarkus.ts.hibernate.reactive;
 
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
+
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.bootstrap.SqlServerService;
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -8,6 +10,7 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.services.SqlServerContainer;
 
 @DisabledOnFipsAndJava17(reason = "https://github.com/quarkusio/quarkus/issues/40813")
+@DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/2017")
 @QuarkusScenario
 public class MsSQLDatabaseHibernateReactiveIT extends AbstractDatabaseHibernateReactiveIT {
 
