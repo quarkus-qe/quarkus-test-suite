@@ -11,7 +11,7 @@
     <packaging>jar</packaging>
     <name>Quarkus QE TS: Java EE like Getting Started</name>
     <properties>
-        <org.mapstruct.version>1.6.0</org.mapstruct.version>
+        <org.mapstruct.version>1.6.2</org.mapstruct.version>
     </properties>
     <dependencies>
         <dependency>
