@@ -407,6 +407,7 @@
                 <module>scheduling/quartz</module>
                 <module>super-size/many-extensions</module>
                 <module>quarkus-cli</module>
+                <module>quarkus-picocli</module>
                 <module>logging/jboss</module>
                 <module>logging/thirdparty</module>
                 <module>qute/multimodule</module>
