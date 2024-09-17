@@ -67,55 +67,53 @@ public class QuarkusCli38to315UpdateIT extends AbstractQuarkusCliUpdateIT {
         // quarkus 3.9
         // https://github.com/quarkusio/quarkus/wiki/Migration-Guide-3.9#resteasy-reactive-extensions-renamed-to-quarkus-rest-gear-white_check_mark
         oldProperties.put("quarkus.resteasy-reactive.path", "/api");
-        oldProperties.put("quarkus.rest-client-reactive.extensions-api.url", "https://stage.code.quarkus.io/api");
-        oldProperties.put("quarkus.oidc-client-reactive-filter.enabled", "false");
-        oldProperties.put("quarkus.oidc-token-propagation-reactive.enabled", "true");
-        oldProperties.put("quarkus.csrf-reactive.cookie-name", "csrfToken");
-        oldProperties.put("quarkus.oidc-client-filter.enabled", "true");
-        oldProperties.put("quarkus.oidc-token-propagation.enabled", "true");
-
         expectedNewProperties.put("quarkus.rest.path", "/api");
+        oldProperties.put("quarkus.rest-client-reactive.extensions-api.url", "https://stage.code.quarkus.io/api");
         expectedNewProperties.put("quarkus.rest-client.extensions-api.url", "https://stage.code.quarkus.io/api");
+        oldProperties.put("quarkus.oidc-client-reactive-filter.enabled", "false");
         expectedNewProperties.put("quarkus.rest-client-oidc-filter.enabled", "false");
-        expectedNewProperties.put("quarkus.rest-client-oidc-token-propagation.enabled", "true");
+        oldProperties.put("quarkus.oidc-token-propagation-reactive.enabled", "true");
         expectedNewProperties.put("quarkus.rest-csrf.cookie-name", "csrfToken");
+        oldProperties.put("quarkus.csrf-reactive.cookie-name", "csrfToken");
+        expectedNewProperties.put("quarkus.rest-client-oidc-token-propagation.enabled", "true");
+        oldProperties.put("quarkus.oidc-client-filter.enabled", "true");
         expectedNewProperties.put("quarkus.resteasy-client-oidc-filter.enabled", "true");
+        oldProperties.put("quarkus.oidc-token-propagation.enabled", "true");
         expectedNewProperties.put("quarkus.resteasy-client-oidc-token-propagation.enabled", "true");
 
         // quarkus 3.10
         // https://github.com/quarkusio/quarkus/wiki/Migration-Guide-3.10#packaging-configuration-gear-white_check_mark
         oldProperties.put("quarkus.package.create-appcds", "false");
+        expectedNewProperties.put("quarkus.package.jar.appcds.enabled", "false");
         oldProperties.put("quarkus.package.appcds-builder-image", "docker://dontknow");
+        expectedNewProperties.put("quarkus.package.jar.appcds.builder-image", "docker://dontknow");
         oldProperties.put("quarkus.package.appcds-use-container", "false");
+        expectedNewProperties.put("quarkus.package.jar.appcds.use-container", "false");
         oldProperties.put("quarkus.package.compress-jar", "false");
+        expectedNewProperties.put("quarkus.package.jar.compress", "false");
         oldProperties.put("quarkus.package.filter-optional-dependencies", "false");
+        expectedNewProperties.put("quarkus.package.jar.filter-optional-dependencies", "false");
         oldProperties.put("quarkus.package.add-runner-suffix", "false");
+        expectedNewProperties.put("quarkus.package.jar.add-runner-suffix", "false");
         oldProperties.put("quarkus.package.user-configured-ignored-entries", "false");
+        expectedNewProperties.put("quarkus.package.jar.user-configured-ignored-entries", "false");
         oldProperties.put("quarkus.package.user-providers-directory", "true");
+        expectedNewProperties.put("quarkus.package.jar.user-providers-directory", "true");
         oldProperties.put("quarkus.package.included-optional-dependencies", "true");
+        expectedNewProperties.put("quarkus.package.jar.included-optional-dependencies", "true");
         oldProperties.put("quarkus.package.include-dependency-list", "true");
+        expectedNewProperties.put("quarkus.package.jar.include-dependency-list", "true");
         oldProperties.put("quarkus.package.decompiler.enabled", "true");
         oldProperties.put("quarkus.package.vineflower.enabled", "true");
+        expectedNewProperties.put("quarkus.package.jar.decompiler.enabled", "true");
         oldProperties.put("quarkus.package.decompiler.jar-directory", "/tmp");
         oldProperties.put("quarkus.package.vineflower.jar-directory", "/tmp");
-        oldProperties.put("quarkus.package.manifest.attributes.enabled", "true");
-        oldProperties.put("quarkus.package.manifest.sections.enabled", "true");
-        oldProperties.put("quarkus.package.manifest.add-implementation-entries", "true");
-
-        expectedNewProperties.put("quarkus.package.jar.appcds.enabled", "false");
-        expectedNewProperties.put("quarkus.package.jar.appcds.builder-image", "docker://dontknow");
-        expectedNewProperties.put("quarkus.package.jar.appcds.use-container", "false");
-        expectedNewProperties.put("quarkus.package.jar.compress", "false");
-        expectedNewProperties.put("quarkus.package.jar.filter-optional-dependencies", "false");
-        expectedNewProperties.put("quarkus.package.jar.add-runner-suffix", "false");
-        expectedNewProperties.put("quarkus.package.jar.user-configured-ignored-entries", "false");
-        expectedNewProperties.put("quarkus.package.jar.user-providers-directory", "true");
-        expectedNewProperties.put("quarkus.package.jar.included-optional-dependencies", "true");
-        expectedNewProperties.put("quarkus.package.jar.include-dependency-list", "true");
-        expectedNewProperties.put("quarkus.package.jar.decompiler.enabled", "true");
         expectedNewProperties.put("quarkus.package.jar.decompiler.jar-directory", "/tmp");
+        oldProperties.put("quarkus.package.manifest.attributes.enabled", "true");
         expectedNewProperties.put("quarkus.package.jar.manifest.attributes.enabled", "true");
+        oldProperties.put("quarkus.package.manifest.sections.enabled", "true");
         expectedNewProperties.put("quarkus.package.jar.manifest.sections.enabled", "true");
+        oldProperties.put("quarkus.package.manifest.add-implementation-entries", "true");
         expectedNewProperties.put("quarkus.package.jar.manifest.add-implementation-entries", "true");
 
         QuarkusCLIUtils.checkPropertiesUpdate(quarkusCLIAppManager, oldProperties, expectedNewProperties);
