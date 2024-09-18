@@ -31,8 +31,7 @@ public class LogoutSinglePageAppFlowIT {
     static final String REALM_DEFAULT = "quarkus";
 
     @KeycloakContainer(command = { "start-dev", "--import-realm" })
-    static KeycloakService keycloak = new KeycloakService("/kc-logout-realm.json", REALM_DEFAULT, DEFAULT_REALM_BASE_PATH)
-            .withProperty("JAVA_OPTS", "-Dcom.redhat.fips=false");
+    static KeycloakService keycloak = new KeycloakService("/kc-logout-realm.json", REALM_DEFAULT, DEFAULT_REALM_BASE_PATH);
 
     @QuarkusApplication(classes = { LogoutFlow.class, LogoutTenantResolver.class })
     static RestService app = new RestService()

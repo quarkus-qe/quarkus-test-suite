@@ -13,10 +13,8 @@ import io.quarkus.test.services.QuarkusApplication;
 @QuarkusScenario
 public class KeycloakOauth2SecurityIT extends BaseOauth2SecurityIT {
 
-    //TODO Remove workaround after Keycloak is fixed https://github.com/keycloak/keycloak/issues/9916
     @KeycloakContainer(command = { "start-dev", "--import-realm", "--hostname-strict=false" })
-    static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH)
-            .withProperty("JAVA_OPTS", "-Dcom.redhat.fips=false");
+    static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
 
     @QuarkusApplication
     static RestService app = new RestService()

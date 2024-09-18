@@ -22,7 +22,7 @@ import io.quarkus.test.services.QuarkusApplication;
 public class OpenShiftRhSsoOidcMtlsIT extends KeycloakMtlsAuthN {
 
     @KeycloakContainer(command = { "start-dev", "--import-realm" }, image = "${rhbk.image}")
-    static KeycloakService rhsso = newRhSsoInstance("/keycloak-realm.json", REALM_DEFAULT).withRedHatFipsDisabled();
+    static KeycloakService rhsso = newRhSsoInstance("/keycloak-realm.json", REALM_DEFAULT);
 
     /**
      * Keystore file type is automatically detected by file extension by quarkus-oidc.
