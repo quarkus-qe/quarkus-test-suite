@@ -27,11 +27,9 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.QuarkusCliRestService;
-import io.quarkus.test.scenarios.annotations.EnabledOnQuarkusVersion;
 import io.quarkus.test.util.QuarkusCLIUtils;
 
 @Tag("quarkus-cli")
-@EnabledOnQuarkusVersion(version = "3.15.*", reason = "This only works on 3.15")
 public class QuarkusCli38to315UpdateIT extends AbstractQuarkusCliUpdateIT {
     private static final DefaultArtifactVersion oldLtsStream = new DefaultArtifactVersion("3.8");
     private static final DefaultArtifactVersion newLtsStream = new DefaultArtifactVersion("3.15");
