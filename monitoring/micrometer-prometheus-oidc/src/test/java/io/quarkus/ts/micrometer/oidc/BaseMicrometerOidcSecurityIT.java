@@ -29,10 +29,8 @@ public abstract class BaseMicrometerOidcSecurityIT {
     static final String OK_HTTP_CALL_METRIC = HTTP_METRIC + "outcome=\"SUCCESS\",status=\"200\",uri=\"%s\"}";
     static final String UNAUTHORIZED_HTTP_CALL_METRIC = HTTP_METRIC + "outcome=\"CLIENT_ERROR\",status=\"401\",uri=\"%s\"}";
 
-    //TODO Remove workaround after Keycloak is fixed https://github.com/keycloak/keycloak/issues/9916
     @KeycloakContainer(command = { "start-dev", "--import-realm" })
-    static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH)
-            .withProperty("JAVA_OPTS", "-Dcom.redhat.fips=false");
+    static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
 
     private AuthzClient authzClient;
 

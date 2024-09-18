@@ -31,14 +31,6 @@ public class MutualTlsKeycloakService extends KeycloakService {
     }
 
     /**
-     * TODO Remove workaround after Keycloak is fixed https://github.com/keycloak/keycloak/issues/9916
-     */
-    public KeycloakService withRedHatFipsDisabled() {
-        withProperty("JAVA_OPTS", "-Dcom.redhat.fips=false");
-        return this;
-    }
-
-    /**
      * {@link KeycloakService#getRealmUrl()} provides {@link Protocol#HTTP}, but this suite requires
      * {@link Protocol#HTTPS}.
      */

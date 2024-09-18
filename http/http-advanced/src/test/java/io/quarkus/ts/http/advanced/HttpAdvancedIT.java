@@ -14,10 +14,8 @@ import io.quarkus.test.services.QuarkusApplication;
 @QuarkusScenario
 public class HttpAdvancedIT extends BaseHttpAdvancedIT {
 
-    //TODO Remove workaround after Keycloak is fixed https://github.com/keycloak/keycloak/issues/9916
     @KeycloakContainer(command = { "start-dev", "--import-realm", "--hostname-strict=false" })
-    static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH)
-            .withProperty("JAVA_OPTS", "-Dcom.redhat.fips=false");
+    static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
 
     @QuarkusApplication(ssl = true, certificates = @Certificate(configureKeystore = true, configureHttpServer = true, useTlsRegistry = false))
     static RestService app = new RestService().withProperty("quarkus.oidc.auth-server-url", keycloak::getRealmUrl);
