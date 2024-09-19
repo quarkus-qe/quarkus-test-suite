@@ -258,7 +258,7 @@
                                 <mongodb.image>docker.io/library/mongo:7.0</mongodb.image>
                                 <redis.image>docker.io/library/redis:7.2</redis.image>
                                 <wiremock.image>docker.io/wiremock/wiremock:3.3.1</wiremock.image>
-                                <!-- TODO use official image when/if this fixed https://github.com/hashicorp/docker-consul/issues/184 -->
+                                <!-- TODO use official image when/if this fixed https://github.com/hashicorp/consul/issues/21762 -->
                                 <consul.image>docker.io/bitnami/consul:1.19.1</consul.image>
                                 <infinispan.image>quay.io/infinispan/server:15.0</infinispan.image>
                                 <infinispan.expected-log>Infinispan Server.*started in</infinispan.expected-log>

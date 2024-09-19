@@ -7,7 +7,6 @@ import static io.restassured.RestAssured.given;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +18,6 @@ import io.restassured.response.Response;
 
 @QuarkusScenario
 @Tag("QUARKUS-2485")
-@Disabled("https://github.com/quarkus-qe/quarkus-test-framework/issues/1149")
 public class GraphQLDisabledGetIT {
 
     @QuarkusApplication

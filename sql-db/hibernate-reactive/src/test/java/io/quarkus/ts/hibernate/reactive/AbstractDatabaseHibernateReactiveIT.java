@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
@@ -291,11 +290,9 @@ public abstract class AbstractDatabaseHibernateReactiveIT {
     }
 
     @Test
-    @Disabled("https://github.com/quarkusio/quarkus/issues/31117")
     public void newLineInQuery() {
         Response author = getApp().given()
                 .get("/library/by-author/Dlugi");
-        System.out.println(author.body().asString());
         assertEquals(HttpStatus.SC_OK, author.statusCode());
         assertThat(author.body().asString(), containsString("Slovník"));
     }

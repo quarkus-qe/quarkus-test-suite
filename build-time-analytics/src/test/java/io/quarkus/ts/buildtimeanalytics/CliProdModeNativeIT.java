@@ -22,7 +22,7 @@ import io.quarkus.test.scenarios.annotations.EnabledWhenLinuxContainersAvailable
 @Tag("quarkus-cli")
 @QuarkusScenario
 @EnabledOnNative
-@DisabledOnNative(reason = "https://github.com/quarkus-qe/quarkus-test-suite/pull/1539")
+@DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/43360")
 public class CliProdModeNativeIT extends AbstractAnalyticsIT {
 
     private static final PropertyLookup NATIVE_IMG_XMX = new PropertyLookup("quarkus.native.native-image-xmx");
