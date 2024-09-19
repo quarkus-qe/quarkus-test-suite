@@ -10,7 +10,6 @@ import java.nio.file.Paths;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.yaml.snakeyaml.Yaml;
 
@@ -40,7 +39,6 @@ public class OpenShiftDefaultInitContainerIT {
             .withProperty("quarkus.flyway.schemas", database.getDatabase());
 
     @Test
-    @Disabled
     void migrated() {
         String userList = app.given()
                 .accept("application/hal+json")

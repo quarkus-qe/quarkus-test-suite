@@ -51,7 +51,10 @@ public class OpenShiftCustomMetricsIT {
     @QuarkusApplication
     static RestService app = new RestService()
             /*
-             * TODO use https when https://github.com/quarkusio/quarkus/issues/32225 is fixed
+             * TODO use https when https://github.com/quarkus-qe/quarkus-test-framework/issues/1052 is fixed
+             * It should be done either using server.keystore or `configureKeystoreForManagementInterface`
+             * both can be found here:
+             * https://github.com/quarkus-qe/quarkus-test-suite/commit/419e89549c38764e2e3baea834d1ab13bbf74ba4
              * .withProperty("quarkus.management.ssl.certificate.key-store-file", "META-INF/resources/server.keystore")
              * .withProperty("quarkus.management.ssl.certificate.key-store-password", "password")
              */

@@ -24,7 +24,6 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.utils.FileUtils;
 import io.restassured.response.Response;
 
-@DisabledOnNative(reason = "Because of https://github.com/quarkusio/quarkus/issues/40533")
 @Tag("QQE-378")
 @QuarkusScenario
 public class Brotli4JHttpIT {
@@ -83,16 +82,19 @@ public class Brotli4JHttpIT {
     }
 
     @Test
+    @DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/43392")
     public void checkCompressedAndDecompressedWithQuarkus() {
         testCompressedAndDecompressed("/compression/default/text", DEFAULT_TEXT_PLAIN);
     }
 
     @Test
+    @DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/43392")
     public void checkCompressedAndDecompressedJSONWithQuarkus() {
         testCompressedAndDecompressed("/compression/brotli/json", JSON_CONTENT);
     }
 
     @Test
+    @DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/43392")
     public void checkCompressedAndDecompressedXMLWithQuarkus() {
         testCompressedAndDecompressed("/compression/brotli/xml", "Bob Dylan");
     }

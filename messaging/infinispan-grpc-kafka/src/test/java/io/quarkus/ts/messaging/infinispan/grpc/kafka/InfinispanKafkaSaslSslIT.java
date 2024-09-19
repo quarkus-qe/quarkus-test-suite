@@ -26,7 +26,8 @@ public class InfinispanKafkaSaslSslIT {
     @Container(image = "${infinispan.image}", expectedLog = "${infinispan.expected-log}", port = 11222, command = "-c /infinispan-config.xml", portDockerHostToLocalhost = true)
     static final InfinispanService infinispan = new InfinispanService()
             .withConfigFile("infinispan-config.xml")
-            .withSecretFiles(CertUtils.KEYSTORE);
+            .withSecretFiles(CertUtils.KEYSTORE)
+            .onPreStart((action) -> CertUtils.prepareCerts());
 
     @KafkaContainer(vendor = KafkaVendor.STRIMZI, protocol = KafkaProtocol.SASL_SSL)
     static final KafkaService kafkaSaslSsl = new KafkaService();

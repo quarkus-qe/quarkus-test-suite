@@ -45,7 +45,7 @@ public class KafkaGratefulShutdownIT {
 
     /**
      * If topic is not created before the test, messages inside it will not be processed.
-     * for details and todo see https://github.com/quarkusio/quarkus/issues/41441
+     * for details and todo see https://github.com/quarkus-qe/quarkus-test-suite/issues/2016
      */
     private void createTopic(KafkaService service) throws InterruptedException {
         Properties properties = new Properties();
