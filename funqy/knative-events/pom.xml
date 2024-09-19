@@ -54,7 +54,7 @@
     <profiles>
         <profile>
             <!-- Disable native build on this module -->
-            <!--TODO https://github.com/quarkusio/quarkus/issues/37142-->
+            <!--TODO https://github.com/quarkusio/quarkus/issues/43360 -->
             <id>native</id>
             <activation>
                 <property>

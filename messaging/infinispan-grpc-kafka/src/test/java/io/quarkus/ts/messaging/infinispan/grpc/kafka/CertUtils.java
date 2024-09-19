@@ -16,12 +16,6 @@ public final class CertUtils {
     static final String TRUSTSTORE = "truststore.p12";
     static final String PASSWORD = "password";
 
-    static {
-        // TODO: move the next line to the test classes
-        //  when https://github.com/quarkus-qe/quarkus-test-framework/issues/1126 is fixed
-        prepareCerts();
-    }
-
     private CertUtils() {
         // UTIL CLASS
     }
@@ -31,7 +25,7 @@ public final class CertUtils {
         return TARGET.resolve(TRUSTSTORE).toAbsolutePath().toString();
     }
 
-    private static void prepareCerts() {
+    static void prepareCerts() {
         // generate certs
         var cert = Certificate.of("infinispan-test", PKCS12, PASSWORD);
 

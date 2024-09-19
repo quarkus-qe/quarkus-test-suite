@@ -10,8 +10,6 @@ import static io.quarkus.ts.http.advanced.reactive.MultipartResource.MULTIPART_F
 import static io.quarkus.ts.http.advanced.reactive.MultipartResource.TEXT;
 import static io.quarkus.ts.http.advanced.reactive.MultipleResponseSerializersResource.APPLY_RESPONSE_SERIALIZER_PARAM_FLAG;
 import static io.quarkus.ts.http.advanced.reactive.MultipleResponseSerializersResource.MULTIPLE_RESPONSE_SERIALIZERS_PATH;
-import static io.quarkus.ts.http.advanced.reactive.NinetyNineBottlesOfBeerResource.QUARKUS_PLATFORM_VERSION_LESS_THAN_2_8_3;
-import static io.quarkus.ts.http.advanced.reactive.NinetyNineBottlesOfBeerResource.QUARKUS_PLATFORM_VERSION_LESS_THAN_2_8_3_VAL;
 import static io.quarkus.ts.http.advanced.reactive.SseEventUpdateResource.DATA_VALUE;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_OCTET_STREAM;
@@ -44,7 +42,6 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 
@@ -53,7 +50,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -156,15 +152,6 @@ public abstract class BaseHttpAdvancedReactiveIT {
         assertEquals(HttpStatus.SC_OK, health.statusCode());
     }
 
-    /**
-     * This test use special characters in {@link Path#value()}, that previously caused a validation error and build failure.
-     * The bug was fixed in 2.8.3. Disable test in previous Quarkus versions with property
-     * {@link NinetyNineBottlesOfBeerResource#QUARKUS_PLATFORM_VERSION_LESS_THAN_2_8_3} set to
-     * {@link NinetyNineBottlesOfBeerResource#QUARKUS_PLATFORM_VERSION_LESS_THAN_2_8_3_VAL}.
-     *
-     * @see NinetyNineBottlesOfBeerResource for more information
-     */
-    @DisabledIfSystemProperty(matches = QUARKUS_PLATFORM_VERSION_LESS_THAN_2_8_3_VAL, named = QUARKUS_PLATFORM_VERSION_LESS_THAN_2_8_3, disabledReason = "Fixed in Quarkus 2.8.3.Final")
     @DisplayName("Jakarta REST URI path template test")
     @Test
     public void uriPathTemplate() {

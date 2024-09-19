@@ -15,7 +15,11 @@ import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.services.KeycloakContainer;
 import io.quarkus.test.services.QuarkusApplication;
 
-@Disabled("https://github.com/quarkusio/quarkus/issues/38803") //TODO mvavrik: fixing this will probably require fixing config map names created for resources
+/*
+See also https://github.com/quarkusio/quarkus/issues/38803
+Enabling this may require fixing config map names created for resources
+ */
+@Disabled("https://github.com/quarkus-qe/quarkus-test-framework/issues/1052")
 @OpenShiftScenario
 @DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/1145")
 @EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")

@@ -35,7 +35,8 @@ public class InfinispanKafkaIT {
     @Container(image = "${infinispan.image}", expectedLog = "${infinispan.expected-log}", port = 11222, command = "-c /infinispan-config.xml")
     static final InfinispanService infinispan = new InfinispanService()
             .withConfigFile("infinispan-config.xml")
-            .withSecretFiles(CertUtils.KEYSTORE);
+            .withSecretFiles(CertUtils.KEYSTORE)
+            .onPreStart((action) -> CertUtils.prepareCerts());
 
     @KafkaContainer(vendor = KafkaVendor.CONFLUENT)
     static final KafkaService kafka = new KafkaService();

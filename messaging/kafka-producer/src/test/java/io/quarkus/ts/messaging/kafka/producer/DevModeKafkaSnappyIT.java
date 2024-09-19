@@ -7,7 +7,7 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.DevModeQuarkusApplication;
 
-@Disabled("Needs refactoring to test Snappy in a DEV mode") // TODO: refactor to test snappy a DEV mode, not prod mode
+@Disabled("https://github.com/quarkus-qe/quarkus-test-suite/issues/2015")
 @QuarkusScenario
 public class DevModeKafkaSnappyIT extends SnappyCompressionIT {
 
