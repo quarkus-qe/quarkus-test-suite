@@ -8,9 +8,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.http.HttpStatus;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.restassured.http.ContentType;
 
 @QuarkusScenario
 public class JpaRepositoryRestResourceIT extends AbstractPagingAndSortingRepositoryRestResourceIT {
@@ -55,4 +58,21 @@ public class JpaRepositoryRestResourceIT extends AbstractPagingAndSortingReposit
         assertTrue(expectedItems.containsAll(actualItems));
     }
 
+    @Tag("QUARKUS-4958")
+    @Test
+    public void testJpaRepositoryGetReferencedById() {
+        app.given()
+                .accept(ContentType.JSON)
+                .auth().preemptive().basic("user", "user")
+                .when().get("magazine-resource/1")
+                .then()
+                .statusCode(HttpStatus.SC_FORBIDDEN);
+        app.given()
+                .accept(ContentType.JSON)
+                .auth().preemptive().basic("admin", "admin")
+                .when().get("magazine-resource/1")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body("name", Matchers.is("Vanity Fair"));
+    }
 }
