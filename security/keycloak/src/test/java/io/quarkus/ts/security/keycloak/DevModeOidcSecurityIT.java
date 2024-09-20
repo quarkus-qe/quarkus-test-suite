@@ -16,7 +16,7 @@ import io.quarkus.test.services.DevModeQuarkusApplication;
 public class DevModeOidcSecurityIT {
 
     @DevModeQuarkusApplication
-    static RestService app = new RestService().withProperty("JAVA_OPTS", "-Dcom.redhat.fips=false");
+    static RestService app = new RestService();
 
     @Test
     public void keycloakContainerShouldBeStarted() {

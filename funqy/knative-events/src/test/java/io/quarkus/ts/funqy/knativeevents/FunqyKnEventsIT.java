@@ -21,7 +21,7 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.restassured.RestAssured;
 
 @QuarkusScenario
-@DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/37142")
+@DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/43360")
 public class FunqyKnEventsIT {
 
     @QuarkusApplication

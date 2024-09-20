@@ -71,8 +71,7 @@ public class OpenShiftConfigSourcePriorityIT {
         Predicate<String> containsCommit = line -> line.contains("app.quarkus.io/commit-id");
         Predicate<String> containsTimestamp = line -> line.contains("app.quarkus.io/build-timestamp");
 
-        // todo change to custom path when https://github.com/quarkusio/quarkus/issues/34673 will be fixed
-        Path folder = app.getServiceFolder().resolve("target/kubernetes").toAbsolutePath();
+        Path folder = app.getServiceFolder().resolve("target/openshift").toAbsolutePath();
         assertTrue(Files.exists(folder), "Folder " + folder + " should exist!");
 
         // we do not use idempotent mode for kubernetes, so it should stay as before

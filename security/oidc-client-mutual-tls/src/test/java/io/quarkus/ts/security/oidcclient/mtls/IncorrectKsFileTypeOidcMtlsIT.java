@@ -22,7 +22,6 @@ public class IncorrectKsFileTypeOidcMtlsIT extends BaseOidcMtlsIT {
 
     static final String KEYSTORE_FILE_EXTENSION = "jks";
 
-    //TODO Remove workaround after Keycloak is fixed https://github.com/keycloak/keycloak/issues/9916
     @KeycloakContainer(command = { "start-dev", "--import-realm", "--hostname-strict=false",
             "--features=token-exchange",
             "--hostname=localhost", // required by LocalHostKeycloakContainerManagedResourceBuilder
@@ -30,7 +29,6 @@ public class IncorrectKsFileTypeOidcMtlsIT extends BaseOidcMtlsIT {
             "--https-trust-store-file=/etc/server-truststore.jks",
             "--https-trust-store-password=password" }, port = KEYCLOAK_PORT)
     static KeycloakService keycloak = newKeycloakInstance(DEFAULT_REALM_FILE, REALM_DEFAULT, "realms")
-            .withRedHatFipsDisabled()
             .withProperty("HTTPS_KEYSTORE", "resource_with_destination::/etc/|server-keystore." + KEYSTORE_FILE_EXTENSION)
             .withProperty("HTTPS_TRUSTSTORE", "resource_with_destination::/etc/|server-truststore." + KEYSTORE_FILE_EXTENSION);
 

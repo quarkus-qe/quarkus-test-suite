@@ -42,7 +42,6 @@ public class OpenShiftFlywayInitContainerIT {
             .withProperty("quarkus.flyway.schemas", database.getDatabase());
 
     @Test
-    @Disabled
     void migrated() {
         String userList = app.given()
                 .accept("application/hal+json")

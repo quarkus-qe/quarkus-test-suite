@@ -27,7 +27,7 @@ import io.quarkus.test.services.knative.eventing.OpenShiftExtensionFunqyKnativeE
 import io.quarkus.test.services.knative.eventing.spi.ForwardResponseDTO;
 import io.restassured.common.mapper.TypeRef;
 
-@DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/37142")
+@DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/43360")
 @Tag("use-quarkus-openshift-extension")
 @Tag("serverless")
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
