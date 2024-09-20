@@ -20,3 +20,10 @@ INSERT INTO article(name, author, library_id) VALUES ('Aeneid','Virgil', 1);
 INSERT INTO article(name, author, library_id) VALUES ('Beach House','James Patterson',1);
 INSERT INTO article(name, author) VALUES ('Cadillac Desert','Marc Reisner');
 INSERT INTO article(name, author) VALUES ('Dagon and Other Macabre Tales','H.P. Lovecraft ');
+
+INSERT INTO magazine(name, issued_in) VALUES ('Vanity Fair', 1990);
+INSERT INTO magazine(name, issued_in) VALUES ('The Economist', 1991);
+INSERT INTO magazine(name, issued_in) VALUES ('Witch Weekly', 1992);
+INSERT INTO magazine(name, issued_in) VALUES ('The New York Time Magazine', 1993);
+INSERT INTO magazine(name, issued_in) VALUES ('Time', 1994);
+INSERT INTO magazine(name, issued_in) VALUES ('Time', 1995);
