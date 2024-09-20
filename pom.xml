@@ -20,7 +20,7 @@
         <quarkus.platform.version>999-SNAPSHOT</quarkus.platform.version>
         <quarkus.ide.version>3.15.0</quarkus.ide.version>
         <quarkus.qe.framework.version>1.6.0.Beta6</quarkus.qe.framework.version>
-        <quarkus-qpid-jms.version>2.6.1</quarkus-qpid-jms.version>
+        <quarkus-qpid-jms.version>2.7.0</quarkus-qpid-jms.version>
         <confluent.kafka-avro-serializer.version>7.5.1</confluent.kafka-avro-serializer.version>
         <formatter-maven-plugin.version>2.24.1</formatter-maven-plugin.version>
         <impsort-maven-plugin.version>1.12.0</impsort-maven-plugin.version>
