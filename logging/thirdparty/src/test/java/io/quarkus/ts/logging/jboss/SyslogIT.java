@@ -1,5 +1,7 @@
 package io.quarkus.ts.logging.jboss;
 
+import java.nio.charset.StandardCharsets;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -13,6 +15,7 @@ import io.restassured.response.Response;
 @QuarkusScenario
 public class SyslogIT {
 
+    public static final Integer LENGTH_LIMIT = 128;
     /*
      * For manual testing:
      * podman run -p 8514:8514 -v $(pwd)/src/test/resources/syslog-ng.conf:/config/syslog-ng.conf:ro:z \
@@ -27,7 +30,7 @@ public class SyslogIT {
 
     @QuarkusApplication
     static RestService app = new RestService()
-            .withProperty("quarkus.log.syslog.max-length", "64")
+            .withProperty("quarkus.log.syslog.max-length", LENGTH_LIMIT.toString())
             .withProperty("quarkus.log.syslog.endpoint", () -> syslog.getURI().toString())
             .withProperty("quarkus.profile", "syslog");
 
@@ -60,13 +63,26 @@ public class SyslogIT {
     @Test
     @Tag("https://issues.redhat.com/browse/QUARKUS-4531")
     public void filterBigMessage() {
-        String longerMessage = "Message, which is very long and is not expected to fit into 64 bytes";
+        String shorterMessage = "You won't believe it, but this message is exactly 64 chars long!";
+        String longerMessage = shorterMessage.repeat(2);
+        Assertions.assertEquals(64, shorterMessage.getBytes(StandardCharsets.UTF_8).length);
+        Assertions.assertEquals(LENGTH_LIMIT, longerMessage.getBytes(StandardCharsets.UTF_8).length);
+
+        // the order below is important. We must make sure, that the shorter message is sent after the longer
         app.given().when()
                 .post("/log/static/info?message={message}",
                         longerMessage)
                 .then().statusCode(204);
+        app.given().when()
+                .post("/log/static/info?message={message}",
+                        shorterMessage)
+                .then().statusCode(204);
 
-        syslog.logs().assertDoesNotContain(longerMessage);
+        syslog.logs().assertContains(shorterMessage);
+        syslog.getLogs()
+                .forEach(line -> {
+                    Assertions.assertFalse(line.contains(longerMessage));
+                });
     }
 
 }
