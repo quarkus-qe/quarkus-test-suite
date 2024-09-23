@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.condition.OS;
 
 import io.quarkus.logging.Log;
 import io.quarkus.test.bootstrap.QuarkusCliCommandResult;
@@ -134,7 +135,16 @@ public class QuarkusCliTlsCommandIT {
             // add generated env vars also to application properties under test profile
             // so that we can also use them in TlsCommandTest
             var propertyValue = cmd.getPropertyValueFromEnvFile("%dev." + propertyKey);
-            return "%test." + propertyKey + "=" + propertyValue;
+            return "%test." + propertyKey + "=" + addEscapes(propertyValue);
         };
+    }
+
+    private static String addEscapes(String propertyValue) {
+        if (OS.WINDOWS.isCurrentOs()) {
+            // we need to quote back slashes passed as command lines in Windows as they have special meaning
+            // TODO: move this to the QE Test Framework as this is repeated a lot
+            return propertyValue.replace("\\", "\\\\");
+        }
+        return propertyValue;
     }
 }
