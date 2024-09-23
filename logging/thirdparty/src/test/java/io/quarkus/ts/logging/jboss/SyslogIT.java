@@ -1,37 +1,41 @@
 package io.quarkus.ts.logging.jboss;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
+import io.restassured.response.Response;
 
 @QuarkusScenario
-@DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/2024")
 public class SyslogIT {
 
     /*
      * For manual testing:
-     * podman run -p 8514:514 \
-     * -v $(pwd)/src/test/resources/syslog-ng.conf:/etc/syslog-ng/syslog-ng.conf:z --rm -it balabit/syslog-ng
+     * podman run -p 8514:8514 -v $(pwd)/src/test/resources/syslog-ng.conf:/config/syslog-ng.conf:ro:z \
+     * -e LOG_TO_STDOUT=true --name syslog --rm -it linuxserver/syslog-ng
+     *
+     * To manually check: echo "Hello syslog" | nc -w1 localhost 8514
      */
-    @Container(image = "balabit/syslog-ng", port = 514, expectedLog = "syslog-ng")
+    @Container(image = "linuxserver/syslog-ng", port = 8514, expectedLog = ".*syslog-ng starting up")
     static RestService syslog = new RestService()
-            .withProperty("_ignored", "resource_with_destination::/etc/syslog-ng/|syslog-ng.conf");
+            .withProperty("LOG_TO_STDOUT", "true") //https://github.com/linuxserver/docker-syslog-ng/pull/30
+            .withProperty("_ignored", "resource_with_destination::/config/|syslog-ng.conf");
 
     @QuarkusApplication
     static RestService app = new RestService()
-            .withProperty("quarkus.profile", "syslog")
             .withProperty("quarkus.log.syslog.max-length", "64")
-            .withProperty("quarkus.log.syslog.endpoint", () -> syslog.getURI().toString());
+            .withProperty("quarkus.log.syslog.endpoint", () -> syslog.getURI().toString())
+            .withProperty("quarkus.profile", "syslog");
 
     @Test
     public void checkDefaultLogMinLevel() {
-        app.given().when().get("/log").then().statusCode(204);
-
+        Response response = app.given().when().get("/log");
+        Assertions.assertEquals(200, response.getStatusCode());
+        Assertions.assertEquals("Logs sent!", response.getBody().asString());
         syslog.logs().assertContains("Fatal log example");
 
         syslog.logs().assertContains("Error log example");
