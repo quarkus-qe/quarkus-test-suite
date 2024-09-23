@@ -44,13 +44,14 @@ public class LogResource {
     }
 
     @GET
-    public void logExample() {
+    public String logExample() {
         LOG.fatal("Fatal log example");
         LOG.error("Error log example");
         LOG.warn("Warn log example");
         LOG.info("Info log example");
         LOG.debug("Debug log example");
         LOG.trace("Trace log example");
+        return "Logs sent!";
     }
 
     private void addLogMessage(Logger logger, String level, String message) {
