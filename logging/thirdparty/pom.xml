@@ -7,7 +7,7 @@
         <version>1.0.0-SNAPSHOT</version>
         <relativePath>../..</relativePath>
     </parent>
-    <artifactId>logging-thridparty</artifactId>
+    <artifactId>logging-thirdparty</artifactId>
     <packaging>jar</packaging>
     <name>Quarkus QE TS: Logging: Third party</name>
     <dependencies>
