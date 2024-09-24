@@ -4,12 +4,14 @@ import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.qe.command.CommonOptions;
 import io.quarkus.ts.qe.command.OtherCommand;
 import io.quarkus.ts.qe.command.OtherEntryCommand;
 import io.quarkus.ts.qe.configuration.Config;
 
+@DisabledOnNative(reason = "supporting only for JVM")
 @QuarkusScenario
 public class PicocliProdIT {
     @QuarkusApplication(classes = { OtherEntryCommand.class, Config.class, OtherCommand.class,
