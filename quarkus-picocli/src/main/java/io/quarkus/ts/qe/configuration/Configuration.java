@@ -9,19 +9,19 @@ import io.quarkus.ts.qe.command.EntryCommand;
 import io.quarkus.ts.qe.command.OtherEntryCommand;
 
 @ApplicationScoped
-public class Config {
+public class Configuration {
+
     @Produces
     @TopCommand
-    @IfBuildProfile("dev")
-    public Object devCommand() {
+    @IfBuildProfile("test")
+    public Class<EntryCommand> devCommand() {
         return EntryCommand.class;
     }
 
     @Produces
     @TopCommand
     @IfBuildProfile("prod")
-    public Object prodCommand() {
+    public Class<OtherEntryCommand> prodCommand() {
         return OtherEntryCommand.class;
     }
-
 }
