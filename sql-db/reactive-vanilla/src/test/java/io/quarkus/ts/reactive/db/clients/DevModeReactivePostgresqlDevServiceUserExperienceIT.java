@@ -28,6 +28,7 @@ public class DevModeReactivePostgresqlDevServiceUserExperienceIT {
     static RestService app = new RestService()
             .withProperty("quarkus.datasource.devservices.image-name", "${postgresql.latest.image}-bullseye")
             .withProperty("quarkus.datasource.mysql.devservices.enabled", "false")
+            .withProperty("quarkus.datasource.mariadb.devservices.enabled", "false")
             .withProperty("quarkus.datasource.mssql.devservices.enabled", "false")
             .onPreStart(s -> DockerUtils.removeImage(POSTGRES_NAME, POSTGRESQL_VERSION));
 
