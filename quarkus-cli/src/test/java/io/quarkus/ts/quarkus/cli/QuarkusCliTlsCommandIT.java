@@ -79,7 +79,7 @@ public class QuarkusCliTlsCommandIT {
                 .assertFileExistsStr(cmd -> cmd.getOutputLineRemainder("Key Store File:"))
                 .assertFileExistsStr(cmd -> cmd.getOutputLineRemainder("Trust Store File:"))
                 // save truststore path in application properties so that we can use it in TlsCommandTest
-                .addToAppProps(cmd -> TRUST_STORE_PATH + "=" + cmd.getOutputLineRemainder("Trust Store File:"))
+                .addToAppProps(cmd -> TRUST_STORE_PATH + "=" + addEscapes(cmd.getOutputLineRemainder("Trust Store File:")))
                 .assertCommandOutputContains(
                         "Signed Certificate generated successfully and exported into `%s-keystore.p12`".formatted(CERT_NAME))
                 // following properties are set by this tls command, and we want to use them TlsCommandTest as well
