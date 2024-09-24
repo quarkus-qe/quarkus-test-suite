@@ -26,7 +26,7 @@ import io.quarkus.test.services.QuarkusApplication;
 @Tag("QUARKUS-4592")
 @QuarkusScenario
 public class OpenTelemetryManagementIT {
-    @JaegerContainer(tls = true)
+    @JaegerContainer(tls = true, builder = JaegerLocalhostDockerManagerResource.class)
     static final JaegerService jaeger = new JaegerService();
 
     @QuarkusApplication
