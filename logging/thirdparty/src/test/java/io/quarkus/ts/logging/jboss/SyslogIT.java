@@ -63,22 +63,19 @@ public class SyslogIT {
     @Test
     @Tag("https://issues.redhat.com/browse/QUARKUS-4531")
     public void filterBigMessage() {
-        String shorterMessage = "You won't believe it, but this message is exactly 64 chars long!";
-        String longerMessage = shorterMessage.repeat(2);
-        Assertions.assertEquals(64, shorterMessage.getBytes(StandardCharsets.UTF_8).length);
+        String longerMessage = "You won't believe it, but this message is exactly 64 chars long!".repeat(2);
+        String control = "control";
         Assertions.assertEquals(LENGTH_LIMIT, longerMessage.getBytes(StandardCharsets.UTF_8).length);
 
         // the order below is important. We must make sure, that the shorter message is sent after the longer
         app.given().when()
-                .post("/log/static/info?message={message}",
-                        longerMessage)
+                .post("/log/static/info?message={message}", longerMessage)
                 .then().statusCode(204);
         app.given().when()
-                .post("/log/static/info?message={message}",
-                        shorterMessage)
+                .post("/log/static/info?message={message}", control)
                 .then().statusCode(204);
 
-        syslog.logs().assertContains(shorterMessage);
+        syslog.logs().assertContains(control);
         syslog.getLogs()
                 .forEach(line -> {
                     Assertions.assertFalse(line.contains(longerMessage));
