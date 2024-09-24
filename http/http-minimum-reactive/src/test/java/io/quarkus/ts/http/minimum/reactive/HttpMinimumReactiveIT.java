@@ -6,9 +6,14 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import jakarta.ws.rs.core.MediaType;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -18,6 +23,7 @@ import io.restassured.specification.RequestSpecification;
 @QuarkusScenario
 public class HttpMinimumReactiveIT {
 
+    private static final String fileName = "FLAKY";
     private RequestSpecification HTTP_CLIENT_SPEC = given();
 
     @Test
@@ -28,7 +34,14 @@ public class HttpMinimumReactiveIT {
 
     @Test
     @Tag("QUARKUS-2893")
-    public void pathParamNameWithDash() {
+    public void pathParamNameWithDash() throws IOException {
+        // FIXME: remove this, I am just playing to understand flakiness reportng
+        var filePath = Path.of("target").resolve(fileName);
+        if (!Files.exists(filePath)) {
+            filePath.toFile().createNewFile();
+            Assertions.fail("failing to test flakiness reporting");
+        }
+
         givenSpec().get("/api/hello/foo/AAAA").then().statusCode(HttpStatus.SC_NO_CONTENT);
         givenSpec().get("/api/hello/foo/AXY9").then().statusCode(HttpStatus.SC_NO_CONTENT);
         givenSpec().get("/api/hello/foo/ABCDFG").then().statusCode(HttpStatus.SC_NOT_FOUND);
