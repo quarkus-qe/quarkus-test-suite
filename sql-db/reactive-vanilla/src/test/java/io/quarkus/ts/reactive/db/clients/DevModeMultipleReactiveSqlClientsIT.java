@@ -31,8 +31,9 @@ public class DevModeMultipleReactiveSqlClientsIT {
     @DevModeQuarkusApplication
     static RestService app = new RestService()
             .withProperty("quarkus.datasource.devservices.init-script-path", "postgresql-init-script.sql")
+            .withProperty("quarkus.datasource.mariadb.devservices.init-script-path", "mariadb-init-script.sql")
             .withProperty("quarkus.datasource.mysql.devservices.init-script-path", "mysql-init-script.sql")
-            .withProperty("quarkus.datasource.mssql.devservices.init-script-path", "mssql-init-script.sql");
+            .withProperty("quarkus.datasource.mssql.devservices.enabled", "false");
 
     @Test
     public void verifyReactivePostgresqlRetrieveEntities() {
@@ -81,26 +82,26 @@ public class DevModeMultipleReactiveSqlClientsIT {
     }
 
     @Test
-    public void verifyReactiveMssqlRetrieveEntities() {
+    public void verifyReactiveMariaDbRetrieveEntities() {
         given()
-                .when().get("/book/mssql")
+                .when().get("/book/mariadb")
                 .then()
                 .statusCode(HttpStatus.SC_OK)
                 .body("$.size()", greaterThan(2));
     }
 
     @Test
-    public void verifyReactiveMssqlRetrieveById() {
+    public void verifyReactiveMariaDbRetrieveById() {
         given()
-                .when().get("/book/mssql/1")
+                .when().get("/book/mariadb/1")
                 .then()
                 .statusCode(HttpStatus.SC_OK);
     }
 
     @Test
-    public void verifyReactiveMssqlCreateEntity() {
+    public void verifyReactiveMariaDbCreateEntity() {
         HardCoverBook hardCoverBook = new HardCoverBook("Sin noticias de Gurb", "Eduardo Mendoza");
-        createRecord("/book/mssql", hardCoverBook);
+        createRecord("/book/mariadb", hardCoverBook);
     }
 
     private static void createRecord(String path, Book book) {
