@@ -161,6 +161,13 @@ jobs:
         id: flaky-test-detector
         if: ${{ hashFiles('**/flaky-run-report.json') != '' }}
         run: echo "has-flaky-tests=true" >> "$GITHUB_OUTPUT"
+      - name: Archive flaky run report
+        id: archive-flaky-run-report
+        if: ${{ hashFiles('**/flaky-run-report.json') != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: flaky-run-report-linux-jvm-latest
+          path: target/flaky-run-report.json
       - name: Zip Artifacts
         if: failure()
         run: |
@@ -218,6 +225,13 @@ jobs:
         id: flaky-test-detector
         if: ${{ hashFiles('**/flaky-run-report.json') != '' }}
         run: echo "has-flaky-tests=true" >> "$GITHUB_OUTPUT"
+      - name: Archive flaky run report
+        id: archive-flaky-run-report
+        if: ${{ hashFiles('**/flaky-run-report.json') != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: flaky-run-report-linux-native-latest
+          path: target/flaky-run-report.json
       - name: Zip Artifacts
         if: failure()
         run: |
@@ -270,6 +284,13 @@ jobs:
         if: ${{ hashFiles('**/flaky-run-report.json') != '' }}
         shell: bash
         run: echo "has-flaky-tests=true" >> "$GITHUB_OUTPUT"
+      - name: Archive flaky run report
+        id: archive-flaky-run-report
+        if: ${{ hashFiles('**/flaky-run-report.json') != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: flaky-run-report-windows-jvm-latest
+          path: target/flaky-run-report.json
       - name: Zip Artifacts
         shell: bash
         if: failure()
