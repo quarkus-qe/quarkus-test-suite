@@ -36,7 +36,6 @@ jobs:
           distribution: 'temurin'
           java-version: 21
           check-latest: true
-          cache: 'maven'
       - name: 'Comment on PR about flaky tests'
         if: ${{ hashFiles('**/pr-number') != '' }}
         run: |
