@@ -5,6 +5,7 @@
         <groupId>io.quarkus.ts.qe</groupId>
         <artifactId>parent</artifactId>
         <version>1.0.0-SNAPSHOT</version>
+        <relativePath>..</relativePath>
     </parent>
     <artifactId>quarkus-picocli</artifactId>
     <name>Quarkus QE TS: Quarkus Picocli</name>
