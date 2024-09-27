@@ -81,8 +81,16 @@ public class CompressionResource {
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/small/default_no_compression_json")
-    public Uni<String> defaultNoCompressionJson() {
+    @Path("/small/default_compression_json")
+    public Uni<String> defaultCompressionJson() {
+        return defaultSmallResponse();
+    }
+
+    @GET
+    @Consumes(MediaType.APPLICATION_XHTML_XML)
+    @Produces(MediaType.APPLICATION_XHTML_XML)
+    @Path("/small/default_compression_xhtml_xml")
+    public Uni<String> defaultCompressionXhtmlXml() {
         return defaultSmallResponse();
     }
 
@@ -103,8 +111,8 @@ public class CompressionResource {
     }
 
     @GET
-    @Consumes({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.TEXT_PLAIN })
+    @Produces({ MediaType.APPLICATION_XML, MediaType.TEXT_PLAIN })
     @Path("/small/mixing_types")
     public Uni<String> mixingContentTypes() {
         return defaultSmallResponse();

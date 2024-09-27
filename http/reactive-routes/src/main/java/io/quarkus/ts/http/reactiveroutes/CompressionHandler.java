@@ -56,9 +56,15 @@ public class CompressionHandler {
         defaultSmallResponse(rc);
     }
 
-    @Route(path = "/default_no_compression_json", consumes = { MediaType.APPLICATION_JSON }, produces = {
+    @Route(path = "/default_compression_json", consumes = { MediaType.APPLICATION_JSON }, produces = {
             MediaType.APPLICATION_JSON })
-    public void defaultNoCompressionJson(RoutingContext rc) {
+    public void defaultCompressionJson(RoutingContext rc) {
+        defaultSmallResponse(rc);
+    }
+
+    @Route(path = "/default_compression_xhtml_xml", consumes = { MediaType.APPLICATION_XHTML_XML }, produces = {
+            MediaType.APPLICATION_XHTML_XML })
+    public void defaultCompressionXhtmlXml(RoutingContext rc) {
         defaultSmallResponse(rc);
     }
 
@@ -74,8 +80,8 @@ public class CompressionHandler {
         defaultSmallResponse(rc);
     }
 
-    @Route(path = "/mixing_types", consumes = { MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN }, produces = {
-            MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
+    @Route(path = "/mixing_types", consumes = { MediaType.APPLICATION_XML, MediaType.TEXT_PLAIN }, produces = {
+            MediaType.APPLICATION_XML, MediaType.TEXT_PLAIN })
     public void mixingContentTypes(RoutingContext rc) {
         defaultSmallResponse(rc);
     }
