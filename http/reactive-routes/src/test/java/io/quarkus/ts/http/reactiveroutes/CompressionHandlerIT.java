@@ -37,12 +37,13 @@ public class CompressionHandlerIT {
             BASE_PATH + "/default_compression_text_plain", MediaType.TEXT_PLAIN,
             BASE_PATH + "/default_compression_text_html", MediaType.TEXT_HTML,
             BASE_PATH + "/default_compression_text_xml", MediaType.TEXT_XML,
+            BASE_PATH + "/default_compression_json", MediaType.APPLICATION_JSON,
+            BASE_PATH + "/default_compression_xhtml_xml", MediaType.APPLICATION_XHTML_XML,
             BASE_PATH + "/default_compression_text_css", "text/css",
             BASE_PATH + "/default_compression_text_js", "text/javascript",
             BASE_PATH + "/default_compression_app_js", "application/javascript");
 
     private static final Map<String, String> DEFAULT_SMALL_NO_GZIP_ENDPOINTS = Map.of(
-            BASE_PATH + "/default_no_compression_json", MediaType.APPLICATION_JSON,
             BASE_PATH + "/default_no_compression_xml", MediaType.APPLICATION_XML,
             BASE_PATH + "/default_no_compression_form_data", MediaType.MULTIPART_FORM_DATA);
 
@@ -77,7 +78,7 @@ public class CompressionHandlerIT {
 
     @Test
     public void mixingTypes() {
-        assertUnCompressed(BASE_PATH + "/mixing_types", MediaType.APPLICATION_JSON);
+        assertUnCompressed(BASE_PATH + "/mixing_types", MediaType.APPLICATION_XML);
         assertUnCompressed(BASE_PATH + "/mixing_types", MediaType.TEXT_PLAIN);
     }
 
