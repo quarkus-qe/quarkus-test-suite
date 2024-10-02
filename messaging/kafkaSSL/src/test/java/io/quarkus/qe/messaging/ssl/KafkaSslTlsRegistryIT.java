@@ -5,6 +5,7 @@ import static io.restassured.RestAssured.given;
 import static org.awaitility.Awaitility.await;
 
 import org.hamcrest.core.StringContains;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.KafkaService;
@@ -15,6 +16,7 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.services.containers.model.KafkaProtocol;
 import io.quarkus.test.services.containers.model.KafkaVendor;
 
+@Tag("QUARKUS-4592")
 @QuarkusScenario
 public class KafkaSslTlsRegistryIT {
 
