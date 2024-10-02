@@ -28,12 +28,8 @@
             <artifactId>quarkus-openshift</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.fabric8</groupId>
-            <artifactId>openshift-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.fabric8</groupId>
-            <artifactId>knative-client</artifactId>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-openshift-client</artifactId>
         </dependency>
         <dependency>
             <groupId>io.quarkus.qe</groupId>
@@ -51,20 +47,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <profiles>
-        <profile>
-            <!-- Disable native build on this module -->
-            <!--TODO https://github.com/quarkusio/quarkus/issues/43360 -->
-            <id>native</id>
-            <activation>
-                <property>
-                    <name>native</name>
-                </property>
-            </activation>
-            <properties>
-                <!-- To not build the module on Native -->
-                <quarkus.build.skip>true</quarkus.build.skip>
-            </properties>
-        </profile>
-    </profiles>
 </project>

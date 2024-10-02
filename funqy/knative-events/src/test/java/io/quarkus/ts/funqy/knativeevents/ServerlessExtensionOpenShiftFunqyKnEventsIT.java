@@ -20,14 +20,12 @@ import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.OpenShiftDeploymentStrategy;
 import io.quarkus.test.scenarios.OpenShiftScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.services.knative.eventing.FunqyKnativeEventsService;
 import io.quarkus.test.services.knative.eventing.OpenShiftExtensionFunqyKnativeEventsService;
 import io.quarkus.test.services.knative.eventing.spi.ForwardResponseDTO;
 import io.restassured.common.mapper.TypeRef;
 
-@DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/43360")
 @Tag("use-quarkus-openshift-extension")
 @Tag("serverless")
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
