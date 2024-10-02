@@ -16,9 +16,20 @@ public class SecuredResource {
     @Inject
     SecurityIdentity identity;
 
+    @GET // requires 'user' role
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getHttps() {
+        return getResponse();
+    }
+
+    @Path("mtls") // requires authentication
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public String get() {
+    public String getMtls() {
+        return getResponse();
+    }
+
+    private String getResponse() {
         X509Certificate certificate = identity.getCredential(CertificateCredential.class).getCertificate();
         return "Client certificate: " + certificate.getSubjectX500Principal().getName();
     }
