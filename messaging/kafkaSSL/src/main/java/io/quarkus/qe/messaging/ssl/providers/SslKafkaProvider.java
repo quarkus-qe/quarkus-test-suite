@@ -1,14 +1,14 @@
 package io.quarkus.qe.messaging.ssl.providers;
 
-import java.io.File;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Properties;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import jakarta.inject.Singleton;
 
-import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.KafkaAdminClient;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -16,21 +16,18 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.common.config.SslConfigs;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+import io.smallrye.common.annotation.Identifier;
+
 public class SslKafkaProvider extends KafkaProviders {
 
     @ConfigProperty(name = "kafka-client-ssl.bootstrap.servers", defaultValue = "localhost:9092")
     String sslKafkaBootStrap;
 
-    @ConfigProperty(name = "kafka.ssl.truststore.location", defaultValue = "server.jks")
-    String trustStoreFile;
+    @Inject
+    @Identifier("default-kafka-broker")
+    Map<String, Object> defaultKafkaBrokerConfig;
 
-    @ConfigProperty(name = "kafka.ssl.truststore.password", defaultValue = "top-secret")
-    String trustStorePassword;
-
-    @ConfigProperty(name = "kafka.ssl.truststore.type", defaultValue = "PKCS12")
-    String trustStoreType;
-
-    @Singleton
+    @ApplicationScoped // don't create bean when testing Kafka SASL SSL
     @Produces
     @Named("kafka-consumer-ssl")
     KafkaConsumer<String, String> getSslConsumer() {
@@ -41,7 +38,7 @@ public class SslKafkaProvider extends KafkaProviders {
         return consumer;
     }
 
-    @Singleton
+    @ApplicationScoped // don't create bean when testing Kafka SASL SSL
     @Produces
     @Named("kafka-producer-ssl")
     KafkaProducer<String, String> getSslProducer() {
@@ -50,7 +47,7 @@ public class SslKafkaProvider extends KafkaProviders {
         return new KafkaProducer<>(props);
     }
 
-    @Singleton
+    @ApplicationScoped // don't create bean when testing Kafka SASL SSL
     @Produces
     @Named("kafka-admin-ssl")
     AdminClient getSslAdmin() {
@@ -60,11 +57,7 @@ public class SslKafkaProvider extends KafkaProviders {
     }
 
     protected void sslSetup(Properties props) {
-        File tsFile = new File(trustStoreFile);
-        props.setProperty(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SSL");
-        props.setProperty(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, tsFile.getPath());
-        props.setProperty(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, trustStorePassword);
-        props.setProperty(SslConfigs.SSL_TRUSTSTORE_TYPE_CONFIG, trustStoreType);
+        props.putAll(defaultKafkaBrokerConfig);
         props.setProperty(SslConfigs.SSL_ENDPOINT_IDENTIFICATION_ALGORITHM_CONFIG, "");
     }
 }

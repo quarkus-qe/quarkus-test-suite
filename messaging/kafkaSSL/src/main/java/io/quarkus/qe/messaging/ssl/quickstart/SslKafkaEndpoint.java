@@ -41,8 +41,8 @@ public class SslKafkaEndpoint extends KafkaEndpoint {
     Provider<AdminClient> sslAdmin;
 
     public void initialize(@Observes StartupEvent ev,
-            @ConfigProperty(name = "kafka.ssl.enable", defaultValue = "false") Boolean sslEnabled) {
-        if (sslEnabled) {
+            @ConfigProperty(name = "kafka.security.protocol", defaultValue = "") String kafkaSecurityProtocol) {
+        if ("SSL".equals(kafkaSecurityProtocol)) {
             super.initialize(sslConsumer.get());
         }
     }
