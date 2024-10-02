@@ -19,6 +19,7 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.services.containers.model.KafkaProtocol;
 import io.quarkus.test.services.containers.model.KafkaVendor;
 
+@Tag("QUARKUS-4592")
 @Tag("QUARKUS-2036")
 @QuarkusScenario
 public class InfinispanKafkaSaslSslIT {
@@ -29,7 +30,7 @@ public class InfinispanKafkaSaslSslIT {
             .withSecretFiles(CertUtils.KEYSTORE)
             .onPreStart((action) -> CertUtils.prepareCerts());
 
-    @KafkaContainer(vendor = KafkaVendor.STRIMZI, protocol = KafkaProtocol.SASL_SSL)
+    @KafkaContainer(vendor = KafkaVendor.STRIMZI, protocol = KafkaProtocol.SASL_SSL, tlsRegistryEnabled = true, tlsConfigName = "kafka-sasl-ssl")
     static final KafkaService kafkaSaslSsl = new KafkaService();
 
     @QuarkusApplication
