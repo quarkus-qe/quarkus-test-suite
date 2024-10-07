@@ -5,5 +5,6 @@ import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 
 @DisabledOnNative(reason = "Native + s2i not supported")
 @OpenShiftScenario
+@DisabledOnAarch64Snapshot(reason = "S2I external repo not supported on aarch OCP yet")
 public class OpenShiftTodoDemoIT extends TodoDemoIT {
 }

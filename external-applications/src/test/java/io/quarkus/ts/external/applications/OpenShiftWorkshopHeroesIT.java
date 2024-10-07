@@ -22,6 +22,7 @@ import io.quarkus.test.services.GitRepositoryQuarkusApplication;
 import io.restassured.http.ContentType;
 
 @DisabledOnNative(reason = "Native + s2i not supported")
+@DisabledOnAarch64Snapshot(reason = "S2I external repo not supported on aarch OCP yet")
 @OpenShiftScenario
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
