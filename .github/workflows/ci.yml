@@ -20,9 +20,9 @@ jobs:
           distribution: 'temurin'
           java-version: ${{ matrix.java }}
           check-latest: true
-      - name: Build Quarkus 3.14
+      - name: Build Quarkus 3.15
         run: |
-          git clone -b 3.14 https://github.com/quarkusio/quarkus.git && cd quarkus && ./mvnw -B --no-transfer-progress -s .github/mvn-settings.xml clean install -Dquickly -Dno-test-modules -Prelocations
+          git clone -b 3.15 https://github.com/quarkusio/quarkus.git && cd quarkus && ./mvnw -B --no-transfer-progress -s .github/mvn-settings.xml clean install -Dquickly -Dno-test-modules -Prelocations
       - name: Tar Maven Repo
         shell: bash
         run: tar -I 'pigz -9' -cf maven-repo.tgz -C ~ .m2/repository
@@ -150,7 +150,7 @@ jobs:
         run: |
           cat <<EOF > ./quarkus-dev-cli
           #!/bin/bash
-          java -jar ~/.m2/repository/io/quarkus/quarkus-cli/3.14.999-SNAPSHOT/quarkus-cli-3.14.999-SNAPSHOT-runner.jar "\$@"
+          java -jar ~/.m2/repository/io/quarkus/quarkus-cli/3.15.999-SNAPSHOT/quarkus-cli-3.15.999-SNAPSHOT-runner.jar "\$@"
           EOF
           chmod +x ./quarkus-dev-cli
           ./quarkus-dev-cli version
@@ -211,7 +211,7 @@ jobs:
         run: |
           cat <<EOF > ./quarkus-dev-cli
           #!/bin/bash
-          java -jar ~/.m2/repository/io/quarkus/quarkus-cli/3.14.999-SNAPSHOT/quarkus-cli-3.14.999-SNAPSHOT-runner.jar "\$@"
+          java -jar ~/.m2/repository/io/quarkus/quarkus-cli/3.15.999-SNAPSHOT/quarkus-cli-3.15.999-SNAPSHOT-runner.jar "\$@"
           EOF
           chmod +x ./quarkus-dev-cli
           ./quarkus-dev-cli version
