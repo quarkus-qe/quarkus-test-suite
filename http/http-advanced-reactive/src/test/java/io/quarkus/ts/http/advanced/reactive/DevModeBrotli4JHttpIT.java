@@ -1,5 +1,17 @@
 package io.quarkus.ts.http.advanced.reactive;
 
+import static io.quarkus.ts.http.advanced.reactive.Brotli4JHttpIT.CONTENT_LENGTH_DEFAULT_TEXT_PLAIN;
+import static io.quarkus.ts.http.advanced.reactive.brotli4j.Brotli4JResource.DEFAULT_TEXT_PLAIN;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
+
+import org.junit.jupiter.api.Test;
+
 import io.quarkus.test.bootstrap.DevModeQuarkusService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.DevModeQuarkusApplication;
@@ -7,16 +19,6 @@ import io.quarkus.ts.http.advanced.reactive.brotli4j.Brotli4JHttpServerConfig;
 import io.quarkus.ts.http.advanced.reactive.brotli4j.Brotli4JResource;
 import io.quarkus.ts.http.advanced.reactive.brotli4j.Brotli4JRestMock;
 import io.restassured.response.Response;
-import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.MediaType;
-import org.junit.jupiter.api.Test;
-
-import static io.quarkus.ts.http.advanced.reactive.Brotli4JHttpIT.CONTENT_LENGTH_DEFAULT_TEXT_PLAIN;
-import static io.quarkus.ts.http.advanced.reactive.brotli4j.Brotli4JResource.DEFAULT_TEXT_PLAIN;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
 
 @QuarkusScenario
 public class DevModeBrotli4JHttpIT {
