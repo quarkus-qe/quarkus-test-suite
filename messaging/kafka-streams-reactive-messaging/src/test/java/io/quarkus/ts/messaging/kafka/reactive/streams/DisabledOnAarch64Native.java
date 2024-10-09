@@ -11,8 +11,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @Inherited
 @Target({ ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
-@ExtendWith(DisabledOnRHBQAarch64NativeConditions.class)
-public @interface DisabledOnRHBQAarch64Native {
+@ExtendWith(DisabledOnAarch64NativeConditions.class)
+public @interface DisabledOnAarch64Native {
 
     /**
      * Why is the annotated test class or test method disabled.
