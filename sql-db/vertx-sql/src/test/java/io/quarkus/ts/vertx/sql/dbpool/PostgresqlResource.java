@@ -17,9 +17,13 @@ public class PostgresqlResource implements QuarkusTestResourceLifecycleManager {
     @Override
     public Map<String, String> start() {
         postgresContainer = new GenericContainer<>(DockerImageName.parse(POSTGRESQL_IMAGE_NAME))
+                // Need to set POSTGRES and POSTGRESQL for usage with Docker hub and RH images
                 .withEnv("POSTGRES_USER", "test")
                 .withEnv("POSTGRES_PASSWORD", "test")
                 .withEnv("POSTGRES_DB", "amadeus")
+                .withEnv("POSTGRESQL_USER", "test")
+                .withEnv("POSTGRESQL_PASSWORD", "test")
+                .withEnv("POSTGRESQL_DATABASE", "amadeus")
                 .withExposedPorts(5432);
 
         postgresContainer.waitingFor(new HostPortWaitStrategy()).start();
