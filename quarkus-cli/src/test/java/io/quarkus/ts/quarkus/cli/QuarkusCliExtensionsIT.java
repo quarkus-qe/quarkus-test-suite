@@ -33,6 +33,7 @@ public class QuarkusCliExtensionsIT {
     static final String QUARKUS_BOM = "quarkus-bom";
     static final String AGROAL_EXTENSION_GUIDE = "https://quarkus.io/guides/datasource";
     static final List<String> EXPECTED_PLATFORM_VERSIONS = Arrays.asList("2.0.0.Final", "2.1.0.Final");
+    static final ListExtensionRequest NO_STREAM = new ListExtensionRequest(null); // --stream and --platform-bom are not compatible
 
     @Inject
     static QuarkusCliClient cliClient;
@@ -72,14 +73,16 @@ public class QuarkusCliExtensionsIT {
     @Test
     public void shouldListExtensionsUsingOtherPlatformVersions() {
         for (String expectedVersion : EXPECTED_PLATFORM_VERSIONS) {
-            result = cliClient.listExtensions("--origins", "--platform-bom=io.quarkus:quarkus-bom:" + expectedVersion);
+            result = cliClient.listExtensions(NO_STREAM, "--origins",
+                    "--platform-bom=io.quarkus:quarkus-bom:" + expectedVersion);
             assertListOriginsOptionOutput();
         }
     }
 
     @Test
     public void shouldListExtensionsUsingPlatformBom() {
-        result = cliClient.listExtensions("--platform-bom", "io.quarkus:quarkus-bom:" + Version.getVersion());
+        result = cliClient.listExtensions(NO_STREAM,
+                "--platform-bom", "io.quarkus:quarkus-bom:" + Version.getVersion());
         assertListDefaultOptionOutput();
     }
 
