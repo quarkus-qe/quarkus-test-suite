@@ -237,7 +237,9 @@ public class QuarkusCliCreateJvmApplicationIT {
     @Test
     public void shouldAddAndRemoveExtensions() {
         // Create application
-        QuarkusCliRestService app = cliClient.createApplication("app", defaults().withCurrentPlatformBom());
+        QuarkusCliRestService app = cliClient.createApplication("app", defaults()
+                .withStream(null) //stream and platform bom are not compatible
+                .withCurrentPlatformBom());
 
         // By default, it installs only "quarkus-resteasy"
         assertInstalledExtensions(app, REST_EXTENSION);
@@ -268,6 +270,7 @@ public class QuarkusCliCreateJvmApplicationIT {
     public void shouldKeepUsingTheSameQuarkusVersionAfterReload() {
         // Generate application using old community version
         QuarkusCliRestService app = cliClient.createApplication("app", defaults()
+                .withStream(null)
                 .withPlatformBom("io.quarkus:quarkus-bom:3.10.2")
                 .withExtensions(SMALLRYE_HEALTH_EXTENSION, REST_EXTENSION));
 
