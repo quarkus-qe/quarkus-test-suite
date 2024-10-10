@@ -10,6 +10,7 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.quarkus.test.scenarios.annotations.DisabledOnAarch64Native;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -32,6 +33,7 @@ import io.smallrye.mutiny.helpers.test.UniAssertSubscriber;
 import io.vertx.mutiny.core.buffer.Buffer;
 
 @QuarkusScenario
+@DisabledOnAarch64Native(reason = "https://github.com/quarkusio/quarkus/issues/43801")
 public class SnappyCompressionIT {
 
     private static final int TIMEOUT_SEC = 5;

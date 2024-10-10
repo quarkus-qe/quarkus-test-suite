@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.Duration;
 
+import io.quarkus.test.scenarios.annotations.DisabledOnAarch64Native;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -20,6 +21,7 @@ import io.smallrye.mutiny.helpers.test.UniAssertSubscriber;
 import io.vertx.mutiny.core.buffer.Buffer;
 
 @OpenShiftScenario
+@DisabledOnAarch64Native(reason = "https://github.com/quarkusio/quarkus/issues/43801")
 public class OpenShiftKafkaSnappyIT {
 
     private static final int TIMEOUT_SEC = 5;
