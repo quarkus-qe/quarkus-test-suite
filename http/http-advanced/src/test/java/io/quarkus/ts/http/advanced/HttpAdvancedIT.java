@@ -15,7 +15,8 @@ import io.quarkus.test.services.QuarkusApplication;
 public class HttpAdvancedIT extends BaseHttpAdvancedIT {
 
     @KeycloakContainer(command = { "start-dev", "--import-realm", "--hostname-strict=false" })
-    static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
+    static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH)
+            .withProperty("JAVA_OPTS", "-Xms512m -Xmx1g");
 
     @QuarkusApplication(ssl = true, certificates = @Certificate(configureKeystore = true, configureHttpServer = true, useTlsRegistry = false))
     static RestService app = new RestService().withProperty("quarkus.oidc.auth-server-url", keycloak::getRealmUrl);
