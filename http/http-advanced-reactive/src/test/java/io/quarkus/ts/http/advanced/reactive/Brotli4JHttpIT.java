@@ -20,15 +20,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnNative;
+import io.quarkus.test.services.Dependency;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.utils.FileUtils;
+import io.quarkus.ts.http.advanced.reactive.brotli4j.Brotli4JHttpServerConfig;
+import io.quarkus.ts.http.advanced.reactive.brotli4j.Brotli4JResource;
+import io.quarkus.ts.http.advanced.reactive.brotli4j.Brotli4JRestMock;
 import io.restassured.response.Response;
 
 @Tag("QQE-378")
 @QuarkusScenario
 public class Brotli4JHttpIT {
     @QuarkusApplication(classes = { Brotli4JHttpServerConfig.class, Brotli4JResource.class,
-            Brotli4JRestMock.class }, properties = "compression.properties")
+            Brotli4JRestMock.class }, dependencies = @Dependency(groupId = "com.aayushatharva.brotli4j", artifactId = "brotli4j"), properties = "compression.properties")
     static RestService app = new RestService();
 
     private final static String DEFAULT_TEXT_PLAIN = Brotli4JResource.DEFAULT_TEXT_PLAIN;
