@@ -61,6 +61,7 @@ public abstract class AbstractAnalyticsIT {
         String gav = QuarkusProperties.PLATFORM_GROUP_ID.get() + ":quarkus-bom:" + QuarkusProperties.getVersion();
         QuarkusCliClient.CreateApplicationRequest createApplicationRequest = defaults()
                 .withPlatformBom(gav)
+                .withStream(null)
                 .withExtraArgs("--no-code", "--no-wrapper")
                 .withExtensions(extensions);
         return cliClient.createApplication(appName, createApplicationRequest);
