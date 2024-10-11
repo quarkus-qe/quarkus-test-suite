@@ -2,9 +2,11 @@ package io.quarkus.ts.micrometer.prometheus.kafka;
 
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
@@ -41,6 +43,7 @@ public abstract class BaseOpenShiftAlertEventsIT {
     static final String PROMETHEUS_CONTAINER = "prometheus";
     static final int ASSERT_PROMETHEUS_TIMEOUT_MINUTES = 5;
     static final int ASSERT_SERVICE_TIMEOUT_MINUTES = 1;
+    static final String ALERTS_TOPIC = "alerts";
 
     static final int TIMEOUT_SEC = 25;
 
@@ -119,17 +122,15 @@ public abstract class BaseOpenShiftAlertEventsIT {
                     .statusCode(HttpStatus.SC_OK)
                     .extract().asString();
 
-            boolean matches = false;
-            for (String line : response.split("[\r\n]+")) {
-                if (line.startsWith(name)) {
-                    Double value = extractValueFromMetric(line);
-                    assertTrue(valueMatcher.test(value), "Metric value is not expected. Found: " + value);
-                    matches = true;
-                    break;
-                }
-            }
-
-            assertTrue(matches, "Metric " + name + " not found in " + response);
+            List<String> metrics = Arrays.stream(response.split("[\r\n]+"))
+                    .filter(line -> line.startsWith(name))
+                    .filter(line -> line.contains(ALERTS_TOPIC))
+                    .toList();
+            assertFalse(metrics.isEmpty(), "Metric " + name + " not found in " + response);
+            assertEquals(1, metrics.size(),
+                    "There should be only one metric " + name + " for alerts topic!");
+            Double value = extractValueFromMetric(metrics.get(0));
+            assertTrue(valueMatcher.test(value), "Value of " + name + " metric is not expected. Found: " + value);
         });
     }
 
