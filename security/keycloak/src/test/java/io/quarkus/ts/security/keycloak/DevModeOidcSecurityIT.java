@@ -8,11 +8,13 @@ import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 import io.quarkus.test.services.DevModeQuarkusApplication;
 
 @Tag("QUARKUS-959")
 @Tag("QUARKUS-1026")
 @QuarkusScenario
+@DisabledOnQuarkusVersion(version = "3\\.15\\.1\\..*", reason = "https://issues.redhat.com/browse/QUARKUS-5054")
 public class DevModeOidcSecurityIT {
 
     @DevModeQuarkusApplication
