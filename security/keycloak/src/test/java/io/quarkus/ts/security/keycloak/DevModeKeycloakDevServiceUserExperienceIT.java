@@ -11,11 +11,13 @@ import com.github.dockerjava.api.model.Image;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 import io.quarkus.test.services.DevModeQuarkusApplication;
 import io.quarkus.test.utils.DockerUtils;
 
 @Tag("QUARKUS-959")
 @QuarkusScenario
+@DisabledOnQuarkusVersion(version = "3\\.15\\.1\\..*", reason = "https://issues.redhat.com/browse/QUARKUS-5054")
 public class DevModeKeycloakDevServiceUserExperienceIT {
 
     private static final String KEYCLOAK_VERSION = getImageVersion("keycloak.image");
