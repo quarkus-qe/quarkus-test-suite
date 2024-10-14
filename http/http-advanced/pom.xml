@@ -10,6 +10,9 @@
     <artifactId>http-advanced</artifactId>
     <packaging>jar</packaging>
     <name>Quarkus QE TS: HTTP: advanced</name>
+    <properties>
+        <netty-transport-native-epoll.classifier>linux-x86_64</netty-transport-native-epoll.classifier>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -58,7 +61,7 @@
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-transport-native-epoll</artifactId>
-            <classifier>linux-x86_64</classifier>
+            <classifier>${netty-transport-native-epoll.classifier}</classifier>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>
@@ -91,4 +94,17 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <profiles>
+        <profile>
+            <id>aarch64</id>
+            <activation>
+                <property>
+                    <name>aarch64</name>
+                </property>
+            </activation>
+            <properties>
+                <netty-transport-native-epoll.classifier>linux-aarch_64</netty-transport-native-epoll.classifier>
+            </properties>
+        </profile>
+    </profiles>
 </project>
