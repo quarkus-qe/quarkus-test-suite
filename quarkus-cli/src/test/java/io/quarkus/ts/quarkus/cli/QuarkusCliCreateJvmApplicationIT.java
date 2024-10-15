@@ -36,12 +36,14 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.OS;
 
+import io.quarkus.logging.Log;
 import io.quarkus.test.bootstrap.QuarkusCliClient;
 import io.quarkus.test.bootstrap.QuarkusCliRestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 import io.quarkus.test.services.quarkus.model.QuarkusProperties;
+import io.quarkus.test.utils.FileUtils;
 
 @Tag("QUARKUS-960")
 @Tag("quarkus-cli")
@@ -119,6 +121,8 @@ public class QuarkusCliCreateJvmApplicationIT {
         // Create application
         QuarkusCliRestService app = cliClient.createApplication("app", defaults().withExtraArgs("--gradle"));
 
+        useQuarkusSnapshotFromSonatypeIfNeeded(app);
+
         // Run Gradle Daemon to avoid file lock on quarkus-cli-command.out when the daemon is started as part of 'app.buildOnJvm()'
         runGradleDaemon(app);
         // Should build on Jvm
@@ -141,12 +145,48 @@ public class QuarkusCliCreateJvmApplicationIT {
         stopGradleDaemon(app);
     }
 
+    private static void useQuarkusSnapshotFromSonatypeIfNeeded(QuarkusCliRestService app) {
+        // must match only the 'main' branch snapshot, not 999-SNAPSHOT in other branches as they are not published
+        boolean is999Snapshot = "999-SNAPSHOT".equals(QuarkusProperties.getVersion());
+        var localRepository = System.getProperty("localRepository");
+        if (is999Snapshot && localRepository != null) {
+            if (!doesQuarkusSnapshotExistInLocalRepo(localRepository)) { // not adding external repository when not needed
+                Log.info("Configuring Sonatype Maven Snapshots repository to make Quarkus 999-SNAPSHOT available");
+                configureGradleSnapshotRepository(app, "build.gradle"); // Maven repository
+                configureGradleSnapshotRepository(app, "settings.gradle"); // plugin Maven repository
+            }
+        }
+    }
+
+    private static boolean doesQuarkusSnapshotExistInLocalRepo(String localRepository) {
+        // this is a smoke check, we know we will need this plugin and if it is there,
+        // it is very likely Quarkus core dependencies in 999-SNAPSHOT version are available as wel
+        return Files.exists(Path.of(localRepository)
+                .resolve("io")
+                .resolve("quarkus")
+                .resolve("io.quarkus.gradle.plugin")
+                .resolve("999-SNAPSHOT")
+                .resolve("io.quarkus.gradle.plugin-999-SNAPSHOT.jar"));
+    }
+
     private void runGradleDaemon(QuarkusCliRestService app) {
         runGradleWrapper(app, "--daemon");
     }
 
     private void stopGradleDaemon(QuarkusCliRestService app) {
         runGradleWrapper(app, "--stop");
+    }
+
+    private static void configureGradleSnapshotRepository(QuarkusCliRestService app, String fileName) {
+        var file = app.getFileFromApplication(fileName);
+        var fileContent = FileUtils.loadFile(file);
+        var newFileContent = fileContent.replace("mavenCentral()", """
+                mavenCentral()
+                maven {
+                    url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+                }
+                """);
+        FileUtils.copyContentTo(newFileContent, file.toPath());
     }
 
     private static void runGradleWrapper(QuarkusCliRestService app, String command) {
