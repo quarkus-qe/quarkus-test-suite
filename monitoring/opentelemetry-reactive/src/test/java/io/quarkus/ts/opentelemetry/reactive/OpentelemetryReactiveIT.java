@@ -52,9 +52,7 @@ public class OpentelemetryReactiveIT {
             .withProperty("pongservice.port", () -> Integer.toString(pongservice.getURI(HTTP).getPort()))
             .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl)
             // verify OTEL service name has priority over default Quarkus application name
-            .withProperty("quarkus.otel.service.name", OTEL_PING_SERVICE_NAME)
-            // FIXME: change Quarkus app name when https://github.com/quarkusio/quarkus/issues/33317 is fixed
-            .withProperty("quarkus.application.name", OTEL_PING_SERVICE_NAME);
+            .withProperty("quarkus.otel.service.name", OTEL_PING_SERVICE_NAME);
 
     @Test
     public void testContextPropagation() {
