@@ -24,7 +24,6 @@ public class KStockPriceProducer {
 
     private static final Logger LOG = Logger.getLogger(KStockPriceProducer.class);
     private static final int BATCH_SIZE = 100;
-    // FIXME: remove EXECUTION_COUNT once https://github.com/quarkusio/quarkus/issues/28567 is resolved
     private static final AtomicInteger EXECUTION_COUNT = new AtomicInteger(4);
 
     @Inject
