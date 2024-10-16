@@ -14,7 +14,7 @@ import io.quarkus.test.services.DevModeQuarkusApplication;
 public class DevModeMssqlIT extends AbstractSqlDatabaseIT {
 
     @DevModeQuarkusApplication
-    static RestService app = new RestService().withProperties("mssql.properties");
+    static RestService app = new RestService().withProperties("dev-mode-mssql.properties");
 
     @Test
     public void mmsqlContainerShouldBeStarted() {

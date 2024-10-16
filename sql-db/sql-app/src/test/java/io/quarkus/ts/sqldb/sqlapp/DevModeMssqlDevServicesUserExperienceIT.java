@@ -13,12 +13,11 @@ import com.github.dockerjava.api.model.Image;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnFipsAndJava17;
 import io.quarkus.test.services.DevModeQuarkusApplication;
 import io.quarkus.test.utils.DockerUtils;
 import io.quarkus.test.utils.SocketUtils;
 
-@DisabledOnFipsAndJava17(reason = "https://github.com/quarkusio/quarkus/issues/40813")
+@Tag("fips-incompatible") // SQL Server JDBC driver requires secured communication in FIPS-enabled env, tested elsewhere
 @DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkusio/quarkus/issues/43375")
 @Tag("QUARKUS-959")
 @QuarkusScenario
