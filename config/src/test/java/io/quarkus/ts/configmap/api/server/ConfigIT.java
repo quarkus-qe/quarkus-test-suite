@@ -16,6 +16,7 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.QuarkusApplication;
 
+@DisabledOnFipsAndNative(reason = "https://issues.redhat.com/browse/MANDREL-245")
 @QuarkusScenario
 public class ConfigIT {
 

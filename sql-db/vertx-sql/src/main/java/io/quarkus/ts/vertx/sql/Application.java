@@ -13,7 +13,6 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.quarkus.arc.profile.IfBuildProfile;
 import io.quarkus.runtime.StartupEvent;
 import io.quarkus.runtime.configuration.ConfigUtils;
 import io.quarkus.ts.vertx.sql.services.DbPoolService;
@@ -47,17 +46,14 @@ public class Application {
 
     @Inject
     @Named("mysql")
-    @IfBuildProfile("mysql")
     MySQLPool mysql;
 
     @Inject
     @Named("mssql")
-    @IfBuildProfile("mssql")
     MSSQLPool mssql;
 
     @Inject
     @Named("oracle")
-    @IfBuildProfile("oracle")
     OraclePool oracle;
 
     void onStart(@Observes StartupEvent ev) {
