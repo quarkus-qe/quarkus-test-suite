@@ -12,6 +12,7 @@
     <name>Quarkus QE TS: Podman-build</name>
     <properties>
         <quarkus.container-image.build>true</quarkus.container-image.build>
+        <podman-disabled>true</podman-disabled>
         <quarkus.build.skip>${podman-disabled}</quarkus.build.skip>
     </properties>
     <dependencies>
