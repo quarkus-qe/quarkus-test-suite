@@ -13,6 +13,7 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.restassured.response.Response;
 
 @QuarkusScenario
+@DisabledOnAarch64(reason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/2111")
 public class ReactiveRestClientProxyIT {
     private static final String USER = "proxyuser";
     private static final String PASSWORD = "proxypassword";
