@@ -250,7 +250,7 @@
                                 <elastic.7x.image>docker.io/library/elasticsearch:7.17.17</elastic.7x.image>
                                 <mysql.upstream.80.image>docker.io/library/mysql:8.4</mysql.upstream.80.image>
                                 <mysql.80.image>${mysql.80.image}</mysql.80.image>
-                                <mariadb.10.image>docker.io/library/mariadb:10.11</mariadb.10.image>
+                                <mariadb.10.image>registry.redhat.io/rhel9/mariadb-1011</mariadb.10.image>
                                 <mssql.image>mcr.microsoft.com/mssql/rhel/server:2022-latest</mssql.image>
                                 <!-- Oracle image - we aim to use same version as Dev Services for Oracle so that we only download one image -->
                                 <oracle.image>docker.io/gvenzl/oracle-free:23-slim-faststart</oracle.image>
