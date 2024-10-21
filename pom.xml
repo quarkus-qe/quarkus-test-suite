@@ -51,7 +51,7 @@
         <exclude.quarkus.devmode.tests>no</exclude.quarkus.devmode.tests>
         <!-- Docker images used by both surefire and failsafe plugin -->
         <postgresql.latest.image>docker.io/library/postgres:16</postgresql.latest.image>
-        <mysql.80.image>registry.access.redhat.com/rhscl/mysql-80-rhel7</mysql.80.image>
+        <mysql.80.image>registry.access.redhat.com/rhscl/mysql-80-rhel7:latest</mysql.80.image>
         <rhbk.image>registry.redhat.io/rhbk/keycloak-rhel9:24</rhbk.image>
         <wiremock-jre8.version>2.35.2</wiremock-jre8.version>
         <build-reporter-maven-extension.version>3.9.1</build-reporter-maven-extension.version>
@@ -749,10 +749,11 @@
                                         <ts.redhat.registry.enabled>true</ts.redhat.registry.enabled>
                                         <!-- Product Services -->
                                         <rhbk.image>${rhbk.image}</rhbk.image>
-                                        <postgresql.10.image>registry.redhat.io/rhel8/postgresql-10</postgresql.10.image>
-                                        <postgresql.latest.image>registry.redhat.io/rhel9/postgresql-16</postgresql.latest.image>
-                                        <mariadb.103.image>registry.redhat.io/rhel8/mariadb-103</mariadb.103.image>
-                                        <mariadb.105.image>registry.redhat.io/rhel9/mariadb-105</mariadb.105.image>
+                                        <postgresql.10.image>registry.redhat.io/rhel8/postgresql-10:latest</postgresql.10.image>
+                                        <postgresql.latest.image>registry.redhat.io/rhel9/postgresql-16:latest</postgresql.latest.image>
+                                        <mariadb.103.image>registry.redhat.io/rhel8/mariadb-103:latest</mariadb.103.image>
+                                        <mariadb.105.image>registry.redhat.io/rhel9/mariadb-105:latest</mariadb.105.image>
+                                        <!-- Kafka  (amq-streams) requires separate properties for image and version -->
                                         <amq-streams.image>registry.redhat.io/amq-streams/kafka-35-rhel8</amq-streams.image>
                                         <amq-streams.version>2.6.0</amq-streams.version>
                                     </systemPropertyVariables>
@@ -798,12 +799,13 @@
                                         <ts.redhat.registry.enabled>true</ts.redhat.registry.enabled>
                                         <!-- Product Services -->
                                         <rhbk.image>${rhbk.image}</rhbk.image>
-                                        <postgresql.10.image>registry.redhat.io/rhel8/postgresql-10</postgresql.10.image>
-                                        <postgresql.latest.image>registry.redhat.io/rhel9/postgresql-16</postgresql.latest.image>
-                                        <mysql.80.image>registry.redhat.io/rhel8/mysql-80</mysql.80.image>
-                                        <mariadb.103.image>registry.redhat.io/rhel8/mariadb-103</mariadb.103.image>
-                                        <mariadb.105.image>registry.redhat.io/rhel8/mariadb-105</mariadb.105.image>
+                                        <postgresql.10.image>registry.redhat.io/rhel8/postgresql-10:latest</postgresql.10.image>
+                                        <postgresql.latest.image>registry.redhat.io/rhel9/postgresql-16:latest</postgresql.latest.image>
+                                        <mysql.80.image>registry.redhat.io/rhel8/mysql-80:latest</mysql.80.image>
+                                        <mariadb.103.image>registry.redhat.io/rhel8/mariadb-103:latest</mariadb.103.image>
+                                        <mariadb.105.image>registry.redhat.io/rhel8/mariadb-105:latest</mariadb.105.image>
                                         <amqbroker.image>registry.redhat.io/amq7/amq-broker-rhel8:7.12</amqbroker.image>
+                                        <!-- Kafka  (amq-streams) requires separate properties for image and version -->
                                         <amq-streams.image>registry.redhat.io/amq-streams/kafka-35-rhel8</amq-streams.image>
                                         <amq-streams.version>2.6.0</amq-streams.version>
                                     </systemPropertyVariables>
@@ -863,11 +865,12 @@
                                         <!-- Product Services -->
                                         <amqbroker.image>registry.redhat.io/amq7/amq-broker-rhel8:7.12</amqbroker.image>
                                         <rhbk.image>${rhbk.image}</rhbk.image>
-                                        <postgresql.10.image>registry.redhat.io/rhel8/postgresql-10</postgresql.10.image>
-                                        <postgresql.latest.image>registry.redhat.io/rhel9/postgresql-16</postgresql.latest.image>
-                                        <mysql.80.image>registry.redhat.io/rhel8/mysql-80</mysql.80.image>
-                                        <mariadb.103.image>registry.redhat.io/rhel8/mariadb-103</mariadb.103.image>
-                                        <mariadb.105.image>registry.redhat.io/rhel8/mariadb-105</mariadb.105.image>
+                                        <postgresql.10.image>registry.redhat.io/rhel8/postgresql-10:latest</postgresql.10.image>
+                                        <postgresql.latest.image>registry.redhat.io/rhel9/postgresql-16:latest</postgresql.latest.image>
+                                        <mysql.80.image>registry.redhat.io/rhel8/mysql-80:latest</mysql.80.image>
+                                        <mariadb.103.image>registry.redhat.io/rhel8/mariadb-103:latest</mariadb.103.image>
+                                        <mariadb.105.image>registry.redhat.io/rhel8/mariadb-105:latest</mariadb.105.image>
+                                        <!-- Kafka  (amq-streams) requires separate properties for image and version -->
                                         <amq-streams.image>registry.redhat.io/amq-streams/kafka-35-rhel8</amq-streams.image>
                                         <amq-streams.version>2.6.0</amq-streams.version>
                                         <mongodb.image>docker.io/library/mongo:4.4.6</mongodb.image>
