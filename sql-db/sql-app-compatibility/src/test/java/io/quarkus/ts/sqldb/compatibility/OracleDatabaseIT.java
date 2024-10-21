@@ -12,6 +12,7 @@ import io.quarkus.test.services.QuarkusApplication;
 @QuarkusScenario
 @DisabledOnNative(reason = "Compatibility mode check in JVM mode is enough for this DB")
 @DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/2022")
+@DisabledIfSystemProperty(named = "ts.ibm-z-p.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/2022")
 public class OracleDatabaseIT extends AbstractSqlDatabaseIT {
 
     static final int ORACLE_PORT = 1521;

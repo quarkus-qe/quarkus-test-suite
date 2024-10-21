@@ -10,6 +10,7 @@ import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
 @DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/2022")
+@DisabledIfSystemProperty(named = "ts.ibm-z-p.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/2022")
 public class OracleDatabaseIT extends AbstractDatabaseHibernateReactiveIT {
 
     private static final String ORACLE_USER = "quarkus_test";

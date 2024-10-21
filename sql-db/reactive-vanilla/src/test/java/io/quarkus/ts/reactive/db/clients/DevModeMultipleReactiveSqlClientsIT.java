@@ -25,6 +25,7 @@ import io.vertx.core.json.JsonObject;
 @Tag("QUARKUS-1080")
 @Tag("QUARKUS-1408")
 @DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/2018")
+@DisabledIfSystemProperty(named = "ts.ibm-z-p.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/2018")
 @QuarkusScenario
 public class DevModeMultipleReactiveSqlClientsIT {
 

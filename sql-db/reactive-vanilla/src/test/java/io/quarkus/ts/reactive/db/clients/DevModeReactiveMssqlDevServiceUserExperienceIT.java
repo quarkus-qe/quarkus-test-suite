@@ -17,6 +17,7 @@ import io.quarkus.test.utils.DockerUtils;
 
 @Tag("fips-incompatible") // MSSQL works with BC JSSE FIPS which is not native-compatible, we test FIPS elsewhere
 @DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkusio/quarkus/issues/43375")
+@DisabledIfSystemProperty(named = "ts.ibm-z-p.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkusio/quarkus/issues/43375.")
 @Tag("QUARKUS-1408")
 @QuarkusScenario
 public class DevModeReactiveMssqlDevServiceUserExperienceIT {
