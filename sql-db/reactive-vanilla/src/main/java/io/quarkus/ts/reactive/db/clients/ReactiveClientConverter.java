@@ -3,6 +3,7 @@ package io.quarkus.ts.reactive.db.clients;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
+import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.ws.rs.ext.ParamConverter;
@@ -18,11 +19,11 @@ public class ReactiveClientConverter implements ParamConverterProvider, ParamCon
 
     @Inject
     @Named("mssql")
-    MSSQLPool mssql;
+    Instance<MSSQLPool> mssql;
 
     @Inject
     @ReactiveDataSource("mariadb")
-    Pool mariadb;
+    Instance<Pool> mariadb;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -36,8 +37,8 @@ public class ReactiveClientConverter implements ParamConverterProvider, ParamCon
     @Override
     public Pool fromString(String reactiveClient) {
         return switch (reactiveClient) {
-            case "mariadb" -> mariadb;
-            case "mssql" -> mssql;
+            case "mariadb" -> mariadb.get();
+            case "mssql" -> mssql.get();
             default -> throw new IllegalStateException("Unexpected reactive client: " + reactiveClient);
         };
     }
