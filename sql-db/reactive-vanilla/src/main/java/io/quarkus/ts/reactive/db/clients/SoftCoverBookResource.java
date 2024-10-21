@@ -2,6 +2,7 @@ package io.quarkus.ts.reactive.db.clients;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
+import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -20,12 +21,12 @@ import io.vertx.mutiny.pgclient.PgPool;
 public class SoftCoverBookResource extends CommonResource {
 
     @Inject
-    PgPool postgresql;
+    Instance<PgPool> postgresql;
 
     @GET
     @Produces(APPLICATION_JSON)
     public Uni<Response> getAll() {
-        return SoftCoverBook.findAll(postgresql)
+        return SoftCoverBook.findAll(postgresql.get())
                 .onItem().transform(books -> Response.ok(Book.toJsonStringify(books)).build());
     }
 
@@ -33,13 +34,13 @@ public class SoftCoverBookResource extends CommonResource {
     @Path("/{id}")
     @Produces(APPLICATION_JSON)
     public Uni<Response> findById(@PathParam("id") Long id) {
-        return SoftCoverBook.findById(postgresql, id).onItem().transform(
+        return SoftCoverBook.findById(postgresql.get(), id).onItem().transform(
                 softCoverBook -> Response.ok(softCoverBook.toJsonStringify()).build());
     }
 
     @POST
     public Uni<Response> create(SoftCoverBook softCoverBook, UriInfo uriInfo) {
-        return softCoverBook.save(postgresql)
+        return softCoverBook.save(postgresql.get())
                 .onItem().transform(id -> fromId(id, uriInfo))
                 .onItem().transform(uri -> Response.created(uri).build());
     }

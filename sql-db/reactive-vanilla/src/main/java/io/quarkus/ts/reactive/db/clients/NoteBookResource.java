@@ -2,6 +2,7 @@ package io.quarkus.ts.reactive.db.clients;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
+import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.ws.rs.GET;
@@ -22,12 +23,12 @@ public class NoteBookResource extends CommonResource {
 
     @Inject
     @Named("mysql")
-    MySQLPool mysql;
+    Instance<MySQLPool> mysql;
 
     @GET
     @Produces(APPLICATION_JSON)
     public Uni<Response> getAll() {
-        return NoteBook.findAll(mysql)
+        return NoteBook.findAll(mysql.get())
                 .onItem().transform(books -> Response.ok(Book.toJsonStringify(books)).build());
     }
 
@@ -35,12 +36,13 @@ public class NoteBookResource extends CommonResource {
     @Path("/{id}")
     @Produces(APPLICATION_JSON)
     public Uni<Response> findById(@PathParam("id") Long id) {
-        return NoteBook.findById(mysql, id).onItem().transform(noteBook -> Response.ok(noteBook.toJsonStringify()).build());
+        return NoteBook.findById(mysql.get(), id).onItem()
+                .transform(noteBook -> Response.ok(noteBook.toJsonStringify()).build());
     }
 
     @POST
     public Uni<Response> create(NoteBook noteBook, UriInfo uriInfo) {
-        return noteBook.save(mysql)
+        return noteBook.save(mysql.get())
                 .onItem().transform(id -> fromId(id, uriInfo))
                 .onItem().transform(uri -> Response.created(uri).build());
     }
