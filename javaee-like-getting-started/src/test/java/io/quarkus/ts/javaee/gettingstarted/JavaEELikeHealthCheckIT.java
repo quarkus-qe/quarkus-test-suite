@@ -8,6 +8,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -15,6 +16,7 @@ import io.quarkus.test.scenarios.QuarkusScenario;
 @QuarkusScenario
 public class JavaEELikeHealthCheckIT {
 
+    @Disabled("https://github.com/quarkusio/quarkus/issues/43990")
     @Test
     public void testHealthEndpoint() {
         given()
@@ -42,6 +44,7 @@ public class JavaEELikeHealthCheckIT {
                         "checks.status", hasItem("UP"));
     }
 
+    @Disabled("https://github.com/quarkusio/quarkus/issues/43990")
     @Test
     public void testReadinessEndpoint() {
         given()
