@@ -24,6 +24,7 @@ import io.restassured.response.Response;
 
 @Tag("fips-incompatible") // MSSQL works with BC JSSE FIPS which is not native-compatible, we test FIPS elsewhere
 @DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/2017")
+@DisabledIfSystemProperty(named = "ts.ibm-z-p.missing.services.excludes", matches = "true", disabledReason = "MSSQL image is not available for IBM s390x and ppc64le")
 @QuarkusScenario
 public class MssqlTransactionGeneralUsageIT extends TransactionCommons {
     private static final Logger LOG = Logger.getLogger(MssqlTransactionGeneralUsageIT.class);

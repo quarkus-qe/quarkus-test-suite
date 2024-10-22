@@ -19,6 +19,7 @@ import io.quarkus.test.utils.SocketUtils;
 
 @Tag("fips-incompatible") // MSSQL works with BC JSSE FIPS which is not native-compatible, we test FIPS elsewhere
 @DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkusio/quarkus/issues/43375")
+@DisabledIfSystemProperty(named = "ts.ibm-z-p.missing.services.excludes", matches = "true", disabledReason = "Oracle image is not available for IBM s390x and ppc64le")
 @Tag("QUARKUS-959")
 @QuarkusScenario
 public class DevModeMssqlDevServicesUserExperienceIT {

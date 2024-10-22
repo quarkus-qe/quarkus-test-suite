@@ -850,9 +850,12 @@
                                         <mysql.80.image>registry.redhat.io/rhel8/mysql-80</mysql.80.image>
                                         <mariadb.103.image>registry.redhat.io/rhel8/mariadb-103</mariadb.103.image>
                                         <mariadb.105.image>registry.redhat.io/rhel8/mariadb-105</mariadb.105.image>
+                                        <mariadb.10.image>registry.redhat.io/rhel8/mariadb-1011:latest</mariadb.10.image>
                                         <amq-streams.image>registry.redhat.io/amq-streams/kafka-35-rhel8</amq-streams.image>
                                         <amq-streams.version>2.6.0</amq-streams.version>
                                         <mongodb.image>docker.io/library/mongo:7.0</mongodb.image>
+                                        <infinispan.image>registry.redhat.io/datagrid/datagrid-8-rhel9:latest</infinispan.image>
+                                        <infinispan.expected-log>Red Hat Data Grid.*started in</infinispan.expected-log>
                                     </systemPropertyVariables>
                                     <rerunFailingTestsCount>${oc.reruns}</rerunFailingTestsCount>
                                 </configuration>

@@ -11,6 +11,7 @@ import io.quarkus.test.services.DevModeQuarkusApplication;
 @QuarkusScenario
 @Tag("podman-incompatible") //TODO: https://github.com/quarkusio/quarkus/issues/38003
 @DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkusio/quarkus/issues/43375")
+@DisabledIfSystemProperty(named = "ts.ibm-z-p.missing.services.excludes", matches = "true", disabledReason = "Oracle image is not available for IBM s390x and ppc64le")
 public class DevModeOracleIT extends AbstractSqlDatabaseIT {
 
     @DevModeQuarkusApplication
