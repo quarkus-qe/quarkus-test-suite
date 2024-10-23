@@ -29,7 +29,8 @@ public class DefaultMinLogLevelIT {
     private static final String EXPECTED_LOG_MESSAGE = "Example log message";
 
     @QuarkusApplication
-    static RestService app = new RestService();
+    static RestService app = new RestService()
+            .withProperties("default.properties");
 
     @Test
     public void checkDefaultLogMinLevel() {

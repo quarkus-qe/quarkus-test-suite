@@ -17,7 +17,8 @@ public class LoggingInJsonIT {
     private static final String MESSAGE = "messageLog";
 
     @QuarkusApplication
-    static RestService app = new RestService();
+    static RestService app = new RestService()
+            .withProperties("default.properties");
 
     @BeforeEach
     public void setup() {
