@@ -852,7 +852,7 @@
                                         <mariadb.105.image>registry.redhat.io/rhel8/mariadb-105</mariadb.105.image>
                                         <amq-streams.image>registry.redhat.io/amq-streams/kafka-35-rhel8</amq-streams.image>
                                         <amq-streams.version>2.6.0</amq-streams.version>
-                                        <mongodb.image>docker.io/library/mongo:7.0</mongodb.image>
+                                        <mongodb.image>docker.io/library/mongo:4.4.6</mongodb.image>
                                     </systemPropertyVariables>
                                     <rerunFailingTestsCount>${oc.reruns}</rerunFailingTestsCount>
                                 </configuration>
