@@ -10,6 +10,7 @@ import io.quarkus.test.services.DevModeQuarkusApplication;
 
 @Tag("QUARKUS-959")
 @DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkusio/quarkus/issues/43375")
+@DisabledIfSystemProperty(named = "ts.ibm-z-p.missing.services.excludes", matches = "true", disabledReason = "Oracle image is not available for IBM s390x and ppc64le")
 @QuarkusScenario
 public class DevModeMssqlIT extends AbstractSqlDatabaseIT {
 
