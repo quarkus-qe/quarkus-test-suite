@@ -875,6 +875,8 @@
                                         <amq-streams.image>registry.redhat.io/amq-streams/kafka-35-rhel8</amq-streams.image>
                                         <amq-streams.version>2.6.0</amq-streams.version>
                                         <mongodb.image>docker.io/library/mongo:4.4.6</mongodb.image>
+                                        <infinispan.image>registry.redhat.io/datagrid/datagrid-8-rhel9:1.5-8.5.0.GA</infinispan.image>
+                                        <infinispan.expected-log>Red Hat Data Grid.*started in</infinispan.expected-log>
                                     </systemPropertyVariables>
                                     <rerunFailingTestsCount>${oc.reruns}</rerunFailingTestsCount>
                                 </configuration>
