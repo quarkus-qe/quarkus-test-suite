@@ -6,7 +6,7 @@ import jakarta.ws.rs.core.Response;
 
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-@RegisterRestClient
+@RegisterRestClient(configKey = "HealthClientService")
 public interface HealthClientService {
 
     @GET

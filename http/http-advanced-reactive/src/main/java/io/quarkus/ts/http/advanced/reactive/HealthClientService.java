@@ -8,7 +8,7 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import io.smallrye.mutiny.Uni;
 
-@RegisterRestClient
+@RegisterRestClient(configKey = "HealthClientService")
 public interface HealthClientService {
 
     @GET
