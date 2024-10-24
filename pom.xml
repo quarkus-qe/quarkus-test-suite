@@ -828,6 +828,16 @@
                 <include.tests>**/*OpenShift*IT.java</include.tests>
                 <exclude.openshift.tests>no</exclude.openshift.tests>
             </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <skipTests>true</skipTests>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
         <profile>
             <id>openshift-ibm-z-p-containers</id>
@@ -838,15 +848,6 @@
             </activation>
             <build>
                 <plugins>
-                    <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <systemPropertyVariables>
-                                <postgresql.latest.image>registry.redhat.io/rhel9/postgresql-16</postgresql.latest.image>
-                                <mysql.80.image>registry.redhat.io/rhel8/mysql-80</mysql.80.image>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>
