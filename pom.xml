@@ -778,8 +778,8 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <systemPropertyVariables>
-                                <postgresql.latest.image>registry.redhat.io/rhel9/postgresql-16</postgresql.latest.image>
-                                <mysql.80.image>registry.redhat.io/rhel8/mysql-80</mysql.80.image>
+                                <postgresql.latest.image>registry.redhat.io/rhel9/postgresql-16:latest</postgresql.latest.image>
+                                <mysql.80.image>registry.redhat.io/rhel8/mysql-80:latest</mysql.80.image>
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>
