@@ -23,6 +23,7 @@ import io.quarkus.test.services.QuarkusApplication;
 
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
 @DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/2071")
+@DisabledIfSystemProperty(named = "ts.ibm-z-p.missing.services.excludes", matches = "true", disabledReason = "Same reason as aarch64 https://github.com/quarkus-qe/quarkus-test-suite/issues/2071")
 public class OpenShiftDefaultInitContainerIT {
 
     private final Path openShiftYaml = Paths.get("target/", this.getClass().getSimpleName(),
