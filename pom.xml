@@ -802,6 +802,7 @@
                                         <!-- Product Services -->
                                         <rhbk.image>${rhbk.image}</rhbk.image>
                                         <postgresql.10.image>registry.redhat.io/rhel8/postgresql-10:latest</postgresql.10.image>
+                                        <postgresql.dev.svc.latest.image>${postgresql.latest.image}</postgresql.dev.svc.latest.image>
                                         <postgresql.latest.image>registry.redhat.io/rhel9/postgresql-16:latest</postgresql.latest.image>
                                         <mysql.80.image>registry.redhat.io/rhel8/mysql-80:latest</mysql.80.image>
                                         <mariadb.103.image>registry.redhat.io/rhel8/mariadb-103:latest</mariadb.103.image>
