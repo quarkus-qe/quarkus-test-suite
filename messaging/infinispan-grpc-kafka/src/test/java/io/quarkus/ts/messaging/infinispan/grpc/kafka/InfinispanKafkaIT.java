@@ -18,6 +18,7 @@ import io.quarkus.test.bootstrap.InfinispanService;
 import io.quarkus.test.bootstrap.KafkaService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnFipsAndNative;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.KafkaContainer;
 import io.quarkus.test.services.QuarkusApplication;
@@ -25,6 +26,7 @@ import io.quarkus.test.services.containers.model.KafkaVendor;
 import io.quarkus.ts.messaging.infinispan.grpc.kafka.books.Book;
 import io.restassured.http.ContentType;
 
+@DisabledOnFipsAndNative(reason = "QUARKUS-5233")
 @Tag("QUARKUS-2036")
 @QuarkusScenario
 public class InfinispanKafkaIT {
