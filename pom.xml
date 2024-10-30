@@ -811,6 +811,7 @@
                                         <!-- Kafka  (amq-streams) requires separate properties for image and version -->
                                         <amq-streams.image>registry.redhat.io/amq-streams/kafka-35-rhel8</amq-streams.image>
                                         <amq-streams.version>2.6.0</amq-streams.version>
+                                        <datagrid.image>registry.redhat.io/datagrid/datagrid-8-rhel9:latest</datagrid.image>
                                     </systemPropertyVariables>
                                     <rerunFailingTestsCount>${oc.reruns}</rerunFailingTestsCount>
                                 </configuration>
