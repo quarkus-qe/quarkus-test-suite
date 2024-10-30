@@ -13,12 +13,14 @@ import io.quarkus.test.bootstrap.InfinispanService;
 import io.quarkus.test.bootstrap.KafkaService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnFipsAndNative;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.KafkaContainer;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.services.containers.model.KafkaProtocol;
 import io.quarkus.test.services.containers.model.KafkaVendor;
 
+@DisabledOnFipsAndNative(reason = "QUARKUS-5233")
 @Tag("QUARKUS-4592")
 @Tag("QUARKUS-2036")
 @QuarkusScenario
