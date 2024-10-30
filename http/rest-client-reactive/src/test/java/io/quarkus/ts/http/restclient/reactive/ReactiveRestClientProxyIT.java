@@ -19,7 +19,9 @@ public class ReactiveRestClientProxyIT {
 
     @Container(image = "${nginx.image}", port = 8090, expectedLog = "Configuration complete; ready for start up")
     static RestService proxy = new RestService()
-            .withProperty("_whatever", "resource_with_destination::/etc/nginx/|nginx.conf");
+            .withProperty("FORWARD_PROXY_RESOLVER", System.getProperty("forward-proxy-resolver"))
+            .withProperty("NGINX_ENVSUBST_OUTPUT_DIR", "/etc/nginx")
+            .withProperty("_whatever", "resource_with_destination::/etc/nginx/templates/|nginx.conf.template");
 
     @QuarkusApplication
     static RestService proxyApp = new RestService()
