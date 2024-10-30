@@ -6,6 +6,7 @@ import static io.quarkus.test.utils.ImageUtil.getImageVersion;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 
 import com.github.dockerjava.api.model.Image;
 
@@ -14,6 +15,7 @@ import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.DevModeQuarkusApplication;
 import io.quarkus.test.utils.DockerUtils;
 
+@DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkusio/quarkus/issues/44196")
 @Tag("QUARKUS-1080")
 @QuarkusScenario
 public class DevModeReactivePostgresqlDevServiceUserExperienceIT {
