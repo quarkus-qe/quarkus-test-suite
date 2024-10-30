@@ -7,7 +7,7 @@ events {}
 http {
 	server {
 		listen 8090;
-			resolver 8.8.8.8;
+		resolver ${FORWARD_PROXY_RESOLVER};
 		location / {
 			proxy_pass http://$host;
 		}
