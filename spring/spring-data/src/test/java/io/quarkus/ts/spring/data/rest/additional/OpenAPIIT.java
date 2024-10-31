@@ -78,7 +78,7 @@ public class OpenAPIIT extends AbstractDbIT {
         assertEquals("#/components/schemas/Library", json.getString("library.$ref"));
 
         json.setRootPath("");
-        assertEquals("2022-03-10T12:15:50", json.getString("components.schemas.LocalDateTime.example"));
+        assertEquals("2022-03-10T12:15:50", json.getString("components.schemas.LocalDateTime.examples[0]"));
 
         assertEquals("http", json.getString("components.securitySchemes.SecurityScheme.type"));
         assertEquals("Authentication", json.getString("components.securitySchemes.SecurityScheme.description"));
