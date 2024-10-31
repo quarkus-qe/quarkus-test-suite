@@ -5,4 +5,4 @@ set -e
 mvn -fae -V -B -s .github/mvn-settings.xml -fae clean verify -P $MAVEN_PROFILES -Dts.quarkus.cli.cmd="${HOME}/.jbang/bin/quarkus"
 
 # run the tests on Native
-mvn -fae -V -B -s .github/mvn-settings.xml -fae clean verify -P $MAVEN_PROFILES -Dnative -Dquarkus.native.container-build=true -Dquarkus.native.native-image-xmx=5g -Dts.quarkus.cli.cmd="${HOME}/.jbang/bin/quarkus"
+mvn -fae -V -B -s .github/mvn-settings.xml -fae clean verify -P $MAVEN_PROFILES -Dnative -Dquarkus.native.container-build=true -Dts.quarkus.cli.cmd="${HOME}/.jbang/bin/quarkus"
