@@ -702,7 +702,7 @@
                 <profile.id>native</profile.id>
                 <quarkus.native.enabled>true</quarkus.native.enabled>
                 <quarkus.native.container-build>true</quarkus.native.container-build>
-                <quarkus.native.native-image-xmx>4g</quarkus.native.native-image-xmx>
+                <quarkus.native.native-image-xmx>5g</quarkus.native.native-image-xmx>
                 <quarkus.native.builder-image>quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-21</quarkus.native.builder-image>
                 <exclude.quarkus.devmode.tests>**/*DevMode*IT.java</exclude.quarkus.devmode.tests>
             </properties>
