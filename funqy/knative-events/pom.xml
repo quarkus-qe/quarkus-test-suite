@@ -10,6 +10,10 @@
     <artifactId>funqy-knative-events</artifactId>
     <packaging>jar</packaging>
     <name>Quarkus QE TS: Funqy - Knative Events</name>
+    <properties>
+        <!-- set to 7g after we experienced https://github.com/quarkusio/quarkus/issues/44216 in OpenShift -->
+        <quarkus.native.native-image-xmx>7g</quarkus.native.native-image-xmx>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>io.quarkus</groupId>
