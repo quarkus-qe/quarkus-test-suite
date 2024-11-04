@@ -12,6 +12,7 @@ import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 
@@ -23,6 +24,7 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.utils.AwaitilityUtils;
 import io.quarkus.test.utils.Command;
 
+@Disabled("https://github.com/quarkusio/quarkus/issues/44297")
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtensionAndDockerBuildStrategy)
 @DisabledIfSystemProperty(named = "ts.ibm-z-p.missing.services.excludes", matches = "true", disabledReason = "Crunchy Postgres operator not available on s390x & ppc64le.")
 @DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/1755")
