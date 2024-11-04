@@ -1,5 +1,6 @@
 package io.quarkus.ts.transactions;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import io.quarkus.test.bootstrap.MariaDbService;
@@ -37,4 +38,9 @@ public class OpenShiftMariaDbTransactionGeneralUsageIT extends TransactionCommon
         return TransactionExecutor.STATIC_TRANSACTION_MANAGER;
     }
 
+    @Disabled("https://github.com/quarkusio/quarkus/issues/44160")
+    @Override
+    public void testTransactionRecovery() {
+        // TODO: drop this method when https://github.com/quarkusio/quarkus/issues/44160 is fixed
+    }
 }
