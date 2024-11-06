@@ -15,7 +15,6 @@ import java.util.zip.ZipFile;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.OS;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -25,27 +24,12 @@ import io.quarkus.test.services.QuarkusApplication;
 @Tag("https://issues.redhat.com/browse/QUARKUS-4663")
 public class AccessLoggingIT {
     private static final String ACCESS_LOG_FILENAME = "appAccess.log";
-    private static final Path ACCESS_LOG_DIR;
-
-    static {
-        // keeps access log directory path short due to https://github.com/quarkusio/quarkus/issues/44346
-        // if this ever starts to fail on Windows, we need to do something similar, but for now
-        // this issue is only reproducible in Jenkins when file job name is quite long (like when testing FIPS & native)
-        if (OS.WINDOWS.isCurrentOs()) {
-            ACCESS_LOG_DIR = Path.of("target").resolve("AccessLoggingIT").resolve("app");
-        } else {
-            try {
-                ACCESS_LOG_DIR = Files.createTempDirectory("AccessLoggingIT");
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to create temporary directory for access log", e);
-            }
-        }
-    }
+    private static final Path ACCESS_LOG_DIR = Path.of("target/AccessLoggingIT/app");
 
     @QuarkusApplication
     static RestService app = new RestService()
             .withProperties("accessLogging.properties")
-            .withProperty("quarkus.log.handler.file.access-log.path", AccessLoggingIT::getAbsoluteLogPath);
+            .withProperty("quarkus.log.handler.file.access-log.path", ACCESS_LOG_FILENAME);
 
     /**
      * We want each test to start with no log files from previous tests, so remove them;
@@ -163,12 +147,8 @@ public class AccessLoggingIT {
                 .toList();
     }
 
-    private static Path accessLogPath() {
+    private Path accessLogPath() {
         return ACCESS_LOG_DIR.resolve(ACCESS_LOG_FILENAME);
-    }
-
-    private static String getAbsoluteLogPath() {
-        return accessLogPath().toAbsolutePath().toString();
     }
 
     /**
