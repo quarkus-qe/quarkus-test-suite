@@ -11,7 +11,6 @@ import java.nio.file.Paths;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.yaml.snakeyaml.Yaml;
 
 import io.quarkus.test.bootstrap.MySqlService;
@@ -22,13 +21,11 @@ import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
-@DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/2071")
-@DisabledIfSystemProperty(named = "ts.ibm-z-p.missing.services.excludes", matches = "true", disabledReason = "Same reason as aarch64 https://github.com/quarkus-qe/quarkus-test-suite/issues/2071")
 public class OpenShiftDefaultInitContainerIT {
 
     private final Path openShiftYaml = Paths.get("target/", this.getClass().getSimpleName(),
             "app/target/kubernetes/openshift.yml");
-    private static final String CUSTOM_IMAGE = "quay.io/quarkusqeteam/wait:0.0.2";
+    private static final String CUSTOM_IMAGE = "quay.io/quarkusqeteam/wait:0.0.4";
 
     @Container(image = "${mysql.80.image}", port = 3306, expectedLog = "Only MySQL server logs after this point")
     static MySqlService database = new MySqlService();
