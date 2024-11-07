@@ -77,7 +77,10 @@ public class AccessLoggingIT {
         assertEquals(3, logFileNames.size(), "There should be 3 log file - one active and two backups");
 
         // check main log file size, we have max 5KB configured
-        assertTrue(Files.size(accessLogPath()) <= 5120, "Main log size should be max 5KB");
+        // adding extra 420 because the max file is not actual maximum of the file size :-)
+        // it is just a limit after which Quarkus rotates (when logging finishes)
+        // see https://github.com/quarkusio/quarkus/issues/44346
+        assertTrue(Files.size(accessLogPath()) <= 5420, "Main log size should be max 5KB");
 
         // check that archive logs are valid zip files
         for (String filename : logFileNames) {
