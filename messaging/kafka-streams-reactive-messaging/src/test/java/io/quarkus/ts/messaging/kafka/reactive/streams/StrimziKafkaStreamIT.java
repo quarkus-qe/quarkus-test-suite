@@ -12,7 +12,7 @@ import io.quarkus.test.services.containers.model.KafkaVendor;
 
 @QuarkusScenario
 @DisabledOnRHBQandWindows(reason = "QUARKUS-3434")
-@DisabledOnAarch64Native(reason = "QUARKUS-4321")
+@DisabledOnAarch64Native(reason = "QUARKUS-5180")
 public class StrimziKafkaStreamIT extends BaseKafkaStreamTest {
 
     @KafkaContainer(vendor = KafkaVendor.STRIMZI)

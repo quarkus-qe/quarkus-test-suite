@@ -9,7 +9,7 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.services.operator.KafkaInstance;
 
 @OpenShiftScenario
-@DisabledOnAarch64Native(reason = "https://issues.redhat.com/browse/QUARKUS-4321")
+@DisabledOnAarch64Native(reason = "https://issues.redhat.com/browse/QUARKUS-5180")
 public class OperatorOpenShiftAmqStreamsKafkaStreamIT extends BaseKafkaStreamTest {
 
     @Operator(name = "amq-streams", source = "redhat-operators")
