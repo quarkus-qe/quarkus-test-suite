@@ -62,10 +62,10 @@ public class OpenAPIIT extends AbstractDbIT {
 
         // OpenAPI should generate per-scope security requirements only for OAuth2
         // more info: https://github.com/OAI/OpenAPI-Specification/blob/3.0.1/versions/3.0.1.md#patterned-fields-3
-        assertEquals(null, json.getString("paths.\"/secured/deny-all/{id}\".get.security[0].SecurityScheme[0]"));
-        assertEquals(null, json.getString("paths./secured/roles-allowed.get.security[0].SecurityScheme[0]"));
-        assertEquals(null, json.getString("paths.\"/secured/roles-allowed/{id}\".get.security[0].SecurityScheme[0]"));
-        assertEquals(null, json.getString("paths.\"/secured/roles-allowed/{id}\".delete.security[0].SecurityScheme[0]"));
+        assertEquals("admin", json.getString("paths.\"/secured/deny-all/{id}\".get.security[0].SecurityScheme[0]"));
+        assertEquals("admin", json.getString("paths./secured/roles-allowed.get.security[0].SecurityScheme[0]"));
+        assertEquals("admin", json.getString("paths.\"/secured/roles-allowed/{id}\".get.security[0].SecurityScheme[0]"));
+        assertEquals("user", json.getString("paths.\"/secured/roles-allowed/{id}\".delete.security[0].SecurityScheme[0]"));
 
         List<String> list = json.getList("components.schemas.Article.required");
         assertEquals(2, list.size());
