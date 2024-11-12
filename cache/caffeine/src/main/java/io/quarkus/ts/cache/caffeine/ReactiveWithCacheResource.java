@@ -22,7 +22,7 @@ public class ReactiveWithCacheResource {
     private static final String CACHE_NAME = "api-reactive-cache";
 
     private static int counter = 0;
-    private AtomicInteger atomicCounter = new AtomicInteger(0);
+    private final AtomicInteger atomicCounter = new AtomicInteger(0);
 
     @GET
     @CacheResult(cacheName = CACHE_NAME)

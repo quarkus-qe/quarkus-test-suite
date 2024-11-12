@@ -106,9 +106,9 @@ public class AnalyticsUtils {
 
     private static String getExtensionVersionRegex() {
         String version = QuarkusProperties.getVersion();
-        Matcher rhbqMacher = Pattern.compile(String.format(RHBQ_VERSION_REGEX_FORMAT, "(.*)")).matcher(version);
-        if (rhbqMacher.matches()) {
-            return String.format(RHBQ_VERSION_REGEX_FORMAT, rhbqMacher.group(1));
+        Matcher rhbqMatcher = Pattern.compile(String.format(RHBQ_VERSION_REGEX_FORMAT, "(.*)")).matcher(version);
+        if (rhbqMatcher.matches()) {
+            return String.format(RHBQ_VERSION_REGEX_FORMAT, rhbqMatcher.group(1));
         }
         if (version.equalsIgnoreCase(QUARKUS_SNAPSHOT_VERSION)) {
             return QUARKUS_EXTENSION_SNAPSHOT_VERSION_REGEX;

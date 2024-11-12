@@ -14,26 +14,28 @@ import java.util.stream.Collectors;
 
 public class OsJvmEnvInfoLogger {
     private static final Path REDHAT_RELEASE_PATH = Path.of("/etc/redhat-release");
-    private static final String OUTPUT_TEMPLATE = "<li>%s\n"
-            + "  <ul>\n"
-            + "    <li>Architecture\n"
-            + "      <ul>\n"
-            + "        <li>%s</li>\n"
-            + "      </ul>\n"
-            + "    </li>\n"
-            + "    <li>JVM\n"
-            + "      <ul>\n"
-            + "        <li>%s</li>\n"
-            + "        <li>%s</li>\n"
-            + "      </ul>\n"
-            + "    </li>\n"
-            + "    <li>MVN\n"
-            + "      <ul>\n"
-            + "        <li>%s</li>\n"
-            + "      </ul>\n"
-            + "    </li>\n"
-            + "  </ul>\n"
-            + "</li>\n";
+    private static final String OUTPUT_TEMPLATE = """
+            <li>%s
+              <ul>
+                <li>Architecture
+                  <ul>
+                    <li>%s</li>
+                  </ul>
+                </li>
+                <li>JVM
+                  <ul>
+                    <li>%s</li>
+                    <li>%s</li>
+                  </ul>
+                </li>
+                <li>MVN
+                  <ul>
+                    <li>%s</li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            """;
 
     private static final String VERSION_COMMAND = "--version";
 

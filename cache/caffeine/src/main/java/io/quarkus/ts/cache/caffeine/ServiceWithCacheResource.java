@@ -42,7 +42,8 @@ public class ServiceWithCacheResource {
     @GET
     @Path("/{service}/using-prefix/{prefix}")
     @Produces(MediaType.TEXT_PLAIN)
-    public String getValueUsingPrefixFromService(@PathParam("service") String service, @PathParam("prefix") String prefix) {
+    public String getValueUsingPrefixFromService(@PathParam("service") String service,
+            @PathParam("prefix") String prefix) {
         return lookupServiceByPathParam(service).getValueWithPrefix(prefix);
     }
 
