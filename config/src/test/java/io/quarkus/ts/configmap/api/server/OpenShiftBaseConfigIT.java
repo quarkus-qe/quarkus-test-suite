@@ -68,18 +68,16 @@ public abstract class OpenShiftBaseConfigIT {
         applyConfig(getConfigType() + "-update");
         getApp().restart();
 
-        await().atMost(ASSERT_TIMEOUT_MINUTES, TimeUnit.MINUTES).untilAsserted(() -> {
-            getApp().given().get("/hello/message").then().statusCode(HttpStatus.SC_OK)
-                    .body(containsString("Good morning World from an updated " + getConfigType()));
-        });
+        await().atMost(ASSERT_TIMEOUT_MINUTES, TimeUnit.MINUTES)
+                .untilAsserted(() -> getApp().given().get("/hello/message").then().statusCode(HttpStatus.SC_OK)
+                        .body(containsString("Good morning World from an updated " + getConfigType())));
 
         // Wrong config map
         applyConfig(getConfigType() + "-broken");
         getApp().restart();
 
-        await().atMost(ASSERT_TIMEOUT_MINUTES, TimeUnit.MINUTES).untilAsserted(() -> {
-            getApp().given().get("/hello/message").then().statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
-        });
+        await().atMost(ASSERT_TIMEOUT_MINUTES, TimeUnit.MINUTES).untilAsserted(
+                () -> getApp().given().get("/hello/message").then().statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR));
     }
 
     protected abstract RestService getApp();

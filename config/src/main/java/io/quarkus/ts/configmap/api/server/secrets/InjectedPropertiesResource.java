@@ -32,24 +32,21 @@ public class InjectedPropertiesResource extends SecretResource {
 
     @Override
     public String getProperty(String key) {
-        switch (key) {
-            case "secret.password":
-                return password;
-            case "the.answer":
-                return answer;
-            case "secret.ip":
-                return ip;
-            case "plain-keystore-config-key":
-                return plainKeystoreConfigValue;
-            default:
+        return switch (key) {
+            case "secret.password" -> password;
+            case "the.answer" -> answer;
+            case "secret.ip" -> ip;
+            case "plain-keystore-config-key" -> plainKeystoreConfigValue;
+            default -> {
                 if (key.startsWith(SECRETS_PREFIX)) {
                     var secretKey = key.substring(SECRETS_PREFIX.length());
                     if (secrets.secretKeyToValue().containsKey(secretKey)) {
-                        return secrets.secretKeyToValue().get(secretKey);
+                        yield secrets.secretKeyToValue().get(secretKey);
                     }
                 }
                 throw new IllegalStateException("Unexpected value: " + key);
-        }
+            }
+        };
     }
 
     @ConfigMapping(prefix = "secrets")

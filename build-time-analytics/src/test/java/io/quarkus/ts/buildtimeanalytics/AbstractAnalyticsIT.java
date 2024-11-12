@@ -147,7 +147,7 @@ public abstract class AbstractAnalyticsIT {
         if (!QuarkusProperties.isRHBQ()) {
             List<PayloadExtension> extensionsWithMismatchedVersion = payloadExtensions.stream()
                     .filter(extension -> !QUARKUS_EXTENSION_VERSION_PATTERN.matcher(extension.getVersion()).matches())
-                    .collect(Collectors.toList());
+                    .toList();
             assertEquals(0, extensionsWithMismatchedVersion.size(),
                     String.format("All extensions versions must match pattern: '%s'. Offending extensions: %s",
                             QUARKUS_EXTENSION_VERSION_PATTERN.pattern(), extensionsWithMismatchedVersion));
