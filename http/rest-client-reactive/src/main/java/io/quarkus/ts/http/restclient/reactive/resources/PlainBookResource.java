@@ -9,9 +9,12 @@ import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
@@ -161,6 +164,14 @@ public class PlainBookResource {
                 .build(BookClient.class)
                 .getBook("The Hobbit: An Unexpected Journey", "J. R. R. Tolkien")
                 .map(Book::getTitle);
+    }
+
+    @POST
+    @Path("/search")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Set<Book> searchBooks(@FormParam("author") String author) {
+        return Set.of(new Book("The Wind-Up Bird Chronicle", author));
     }
 
     private KeyStore trustStore() throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
