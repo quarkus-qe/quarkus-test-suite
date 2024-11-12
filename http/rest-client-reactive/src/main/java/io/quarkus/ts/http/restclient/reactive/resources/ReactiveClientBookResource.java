@@ -2,9 +2,11 @@ package io.quarkus.ts.http.restclient.reactive.resources;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -115,5 +117,11 @@ public class ReactiveClientBookResource {
             default:
                 throw new IllegalStateException("Unexpected value: " + type);
         }
+    }
+
+    @POST
+    @Path("/search")
+    public Set<Book> postFilter() {
+        return bookInterface.postFilter(Map.of("author", "Haruki Murakami"));
     }
 }
