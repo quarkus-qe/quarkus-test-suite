@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,7 +18,7 @@ public class HelloWorld extends HttpServlet {
     private static final String MESSAGE = "Hello World";
 
     @Override
-    protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws IOException {
         LOG.info(req.getSession().getId());
         PrintWriter writer = resp.getWriter();
         writer.write(MESSAGE);

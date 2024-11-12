@@ -50,7 +50,7 @@ public class MultipartResource {
     @Path("/echo")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.TEXT_PLAIN)
-    public String echo(String requestBody) throws Exception {
+    public String echo(String requestBody) {
         return requestBody;
     }
 }

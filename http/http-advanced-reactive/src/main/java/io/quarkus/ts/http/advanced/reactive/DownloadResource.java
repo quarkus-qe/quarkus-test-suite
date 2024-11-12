@@ -24,7 +24,7 @@ public class DownloadResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DownloadResource.class);
     private static final String TEST_FILE = System.getProperty("java.io.tmpdir") +
-            File.separator + "DownloadResource-" + UUID.randomUUID().toString() + "-test.txt";
+            File.separator + "DownloadResource-" + UUID.randomUUID() + "-test.txt";
     private static final OpenOptions READ_ONLY = new OpenOptions().setWrite(false).setCreate(false);
 
     @Inject

@@ -5,7 +5,6 @@ import java.io.PrintWriter;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.HttpConstraint;
 import jakarta.servlet.annotation.ServletSecurity;
 import jakarta.servlet.annotation.WebInitParam;
@@ -30,7 +29,7 @@ public class SecuredWorld extends HttpServlet {
     RoutingContext routingContext;
 
     @Override
-    protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws IOException {
         LOG.info(req.getSession().getId());
         PrintWriter writer = resp.getWriter();
         writer.write(routingContext.queryParam("secured-servlet-key").get(0));

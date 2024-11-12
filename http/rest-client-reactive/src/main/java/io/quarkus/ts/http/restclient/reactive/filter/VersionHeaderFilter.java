@@ -1,7 +1,5 @@
 package io.quarkus.ts.http.restclient.reactive.filter;
 
-import java.io.IOException;
-
 import jakarta.ws.rs.client.ClientRequestContext;
 import jakarta.ws.rs.client.ClientRequestFilter;
 import jakarta.ws.rs.container.ContainerRequestContext;
@@ -25,7 +23,7 @@ public class VersionHeaderFilter implements ContainerResponseFilter, ClientReque
     }
 
     @Override
-    public void filter(ClientRequestContext requestContext) throws IOException {
+    public void filter(ClientRequestContext requestContext) {
         requestContext.getHeaders().add("clientFilter", "clientFilterInvoked");
     }
 }

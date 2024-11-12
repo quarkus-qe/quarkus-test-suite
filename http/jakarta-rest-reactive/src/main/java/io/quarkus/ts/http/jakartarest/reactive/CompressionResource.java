@@ -131,7 +131,7 @@ public class CompressionResource {
     @Path("/big/payload")
     @Compressed
     public Uni<byte[]> bigCompression(@RestQuery("bodyCharSize") String bodyCharSize) {
-        byte[] payload = new byte[Integer.valueOf(bodyCharSize)];
+        byte[] payload = new byte[Integer.parseInt(bodyCharSize)];
         new Random().nextBytes(payload);
         LOG.info("Big compression payload generated.");
         return Uni.createFrom().item(payload);

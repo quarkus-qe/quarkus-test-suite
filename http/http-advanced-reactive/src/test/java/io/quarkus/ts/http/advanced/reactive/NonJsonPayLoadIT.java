@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import jakarta.ws.rs.core.MediaType;
-import jakarta.xml.bind.JAXBException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpStatus;
@@ -67,7 +66,7 @@ public class NonJsonPayLoadIT {
     }
 
     @Test
-    public void testXMLPayloadPostRequest() throws JAXBException {
+    public void testXMLPayloadPostRequest() {
 
         City city = new City("Paris", "France");
         List<City> cityList = new ArrayList<>();

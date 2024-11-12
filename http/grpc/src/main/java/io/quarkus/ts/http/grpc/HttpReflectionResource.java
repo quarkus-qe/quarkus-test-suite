@@ -33,13 +33,11 @@ public class HttpReflectionResource {
                 .setListServices("").build();
         Uni<ServerReflectionResponse> serverReflectionResponse = invoke(request);
 
-        Uni<GrpcReflectionResponse> grpcReflectionResponse = serverReflectionResponse.map(response -> {
+        return serverReflectionResponse.map(response -> {
             int serviceCount = response.getListServicesResponse().getServiceCount();
             List<String> reflectionServiceList = getReflectionServiceList(response);
             return new GrpcReflectionResponse(serviceCount, reflectionServiceList);
         });
-
-        return grpcReflectionResponse;
     }
 
     @GET

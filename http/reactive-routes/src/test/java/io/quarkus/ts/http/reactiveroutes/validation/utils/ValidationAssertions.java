@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ValidationAssertions {
@@ -31,7 +30,7 @@ public class ValidationAssertions {
 
     public static final void assertValidationErrorField(ValidationErrorResponse response, String fieldName, String message) {
         List<ValidationError> violations = Stream.of(response.getViolations()).filter(v -> fieldName.equals(v.getField()))
-                .collect(Collectors.toList());
+                .toList();
         assertFalse(violations.isEmpty(), "No violations found for field: " + fieldName);
         assertEquals(1, violations.size(), "More than one violation found for field: " + fieldName);
         assertEquals(message, violations.get(0).getMessage());

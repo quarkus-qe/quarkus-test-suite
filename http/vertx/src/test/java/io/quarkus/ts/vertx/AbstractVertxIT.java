@@ -24,6 +24,7 @@ import io.restassured.specification.RequestSpecification;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
+import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpVersion;
@@ -109,7 +110,7 @@ public abstract class AbstractVertxIT {
 
         httpClient.request(HttpMethod.GET, service.getPort(), service.getURI(Protocol.NONE).getHost(),
                 "/hello?name=" + jsonObject.getString("name"))
-                .compose(request -> request.send())
+                .compose(HttpClientRequest::send)
                 .compose(HttpClientResponse::body)
                 .onSuccess(body -> {
                     assertThat("Body response", body.toString().contains("Hello, Bender!"));

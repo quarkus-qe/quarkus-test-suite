@@ -70,9 +70,7 @@ public class CityResource {
                     .build().toString();
         }
 
-        String responseXML = serializer.toXML(cityListDTO);
-
-        return responseXML;
+        return serializer.toXML(cityListDTO);
     }
 
     @POST
@@ -94,13 +92,13 @@ public class CityResource {
     @GET
     @Path("/getYamlFile")
     @Produces("application/yaml")
-    public Response getYamlFile() throws IOException {
+    public Response getYamlFile() {
 
         try {
             CityListDTO cityListDTO = readYamlFile(YAML_FILE_PATH);
 
             if (cityListDTO != null) {
-                LOG.info("content ----! " + cityListDTO.toString());
+                LOG.info("content ----! " + cityListDTO);
                 return Response.ok(cityListDTO).build();
             } else {
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR)

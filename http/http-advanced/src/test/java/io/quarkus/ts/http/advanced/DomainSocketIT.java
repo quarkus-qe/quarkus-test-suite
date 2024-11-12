@@ -46,7 +46,7 @@ public class DomainSocketIT {
     }
 
     @Test
-    public void ensureApplicationProvidesContent() throws InterruptedException {
+    public void ensureApplicationProvidesContent() {
         Vertx vertx = Vertx.vertx(new VertxOptions().setPreferNativeTransport(true));
         WebClient client = WebClient.create(vertx, new WebClientOptions().setFollowRedirects(false));
         SocketAddress serverAddress = SocketAddress.domainSocketAddress("/tmp/io.quarkus.app.socket");

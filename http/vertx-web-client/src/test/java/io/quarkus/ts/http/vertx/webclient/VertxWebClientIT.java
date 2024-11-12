@@ -77,7 +77,7 @@ public class VertxWebClientIT {
 
     @Test
     @DisplayName("Vert.x WebClient [flavor: mutiny] -> Mapped json response by 'as' mutiny method.")
-    public void getChuckJokeByJsonBodyCodec() throws InterruptedException {
+    public void getChuckJokeByJsonBodyCodec() {
         setupMockHttpServer();
         vertx.given()
                 .when()

@@ -39,7 +39,7 @@ class GrpcClientInterceptors {
         public <ReqT, RespT> ClientCall<ReqT, RespT> interceptCall(MethodDescriptor<ReqT, RespT> method, CallOptions options,
                 Channel next) {
             String interceptedTarget = getClass().getName();
-            return new ForwardingClientCall.SimpleForwardingClientCall<ReqT, RespT>(next.newCall(method, options)) {
+            return new ForwardingClientCall.SimpleForwardingClientCall<>(next.newCall(method, options)) {
                 @Override
                 public void start(Listener<RespT> responseListener, Metadata headers) {
                     if (interceptedTarget.contains("MethodTarget")) {

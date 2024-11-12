@@ -1,13 +1,12 @@
 package io.quarkus.ts.http.advanced.reactive;
 
-import static io.restassured.RestAssured.given;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.stream.Collectors;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
@@ -52,7 +51,7 @@ class DownloadResourceIT {
                 .then()
                 .statusCode(204);
 
-        Assert.assertEquals("AsyncFile is not closed, details:\n" + lsofOutput + "\n", 0, lsofOutput.length());
+        assertEquals(0, lsofOutput.length(), "AsyncFile is not closed, details:\n" + lsofOutput + "\n");
     }
 
 }

@@ -1,6 +1,5 @@
 package io.quarkus.ts.http.restclient;
 
-import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 
 import org.apache.http.HttpStatus;

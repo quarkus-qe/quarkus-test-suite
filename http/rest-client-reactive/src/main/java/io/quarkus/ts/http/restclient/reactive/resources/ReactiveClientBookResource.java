@@ -101,19 +101,13 @@ public class ReactiveClientBookResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<String> getSuffixed(@QueryParam("content") String text,
             @PathParam("type") String type) {
-        switch (type) {
-            case "complete":
-                return bookInterface.getCompleteType(text);
-            case "subtype":
-                return bookInterface.getWithSubType(text);
-            case "suffix":
-                return bookInterface.getWithSuffix(text);
-            case "other":
-                return bookInterface.getUnrelated(text);
-            case "priority":
-                return bookInterface.getPriorities(text);
-            default:
-                throw new IllegalStateException("Unexpected value: " + type);
-        }
+        return switch (type) {
+            case "complete" -> bookInterface.getCompleteType(text);
+            case "subtype" -> bookInterface.getWithSubType(text);
+            case "suffix" -> bookInterface.getWithSuffix(text);
+            case "other" -> bookInterface.getUnrelated(text);
+            case "priority" -> bookInterface.getPriorities(text);
+            default -> throw new IllegalStateException("Unexpected value: " + type);
+        };
     }
 }

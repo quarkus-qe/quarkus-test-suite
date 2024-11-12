@@ -39,7 +39,7 @@ class GrpcServerInterceptors {
         @Override
         public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(ServerCall<ReqT, RespT> call, Metadata metadata,
                 ServerCallHandler<ReqT, RespT> next) {
-            Context ctx = null;
+            Context ctx;
             String interceptedTarget = getClass().getName();
             // Determine where was grpc call intercepted and put client side intercepted data to Context.
             if (interceptedTarget.contains("MethodTarget")) {

@@ -147,7 +147,7 @@ public abstract class BaseHttpAdvancedReactiveIT {
     }
 
     @Test
-    public void microprofileHttpClientRedirection() throws Exception {
+    public void microprofileHttpClientRedirection() {
         io.restassured.response.Response health = getApp().given().get("api/client");
         assertEquals(HttpStatus.SC_OK, health.statusCode());
     }

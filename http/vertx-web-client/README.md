@@ -12,7 +12,7 @@ To compile and run this demo you will need:
 
 ## Scope of the testing
 
-Vert.x Mutiny webClient exploratory test. 
+Vert.x Mutiny webClient exploratory test.
 * Vert.x WebClient
 * Quarkus Resteasy Mutiny / Jsonb
 * Quarkus configuration converters
