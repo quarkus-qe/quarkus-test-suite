@@ -1,6 +1,5 @@
 package io.quarkus.ts.http.grpc;
 
-import static io.quarkus.test.security.certificate.CertificateBuilder.INSTANCE_KEY;
 import static io.quarkus.test.services.Certificate.Format.PEM;
 
 import org.junit.jupiter.api.Tag;

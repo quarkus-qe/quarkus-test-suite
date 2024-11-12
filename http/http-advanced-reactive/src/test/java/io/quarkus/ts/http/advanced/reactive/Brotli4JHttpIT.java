@@ -58,17 +58,17 @@ public class Brotli4JHttpIT {
     }
 
     @Test
-    public void checkTextPlainWithtBrotli4J() {
-        int textPlainDataLenght = calculateTextLength("/sample.txt");
+    public void checkTextPlainWithBrotli4J() {
+        int textPlainDataLength = calculateTextLength("/sample.txt");
         assertBrotli4JCompression("/compression/text", MediaType.TEXT_PLAIN, BROTLI_ENCODING, BROTLI_ENCODING,
-                textPlainDataLenght);
+                textPlainDataLength);
     }
 
     @Test
-    public void checkBigTextPlainWithtBrotli4J() {
-        int textPlainDataLenght = calculateTextLength("/big_sample.txt");
+    public void checkBigTextPlainWithBrotli4J() {
+        int textPlainDataLength = calculateTextLength("/big_sample.txt");
         assertBrotli4JCompression("/compression/text/big", MediaType.TEXT_PLAIN, BROTLI_ENCODING, BROTLI_ENCODING,
-                textPlainDataLenght);
+                textPlainDataLength);
     }
 
     @Test

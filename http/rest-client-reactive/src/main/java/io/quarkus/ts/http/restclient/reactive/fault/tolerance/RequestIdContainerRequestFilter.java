@@ -33,7 +33,7 @@ public class RequestIdContainerRequestFilter implements ContainerRequestFilter {
     public void filter(ContainerRequestContext requestContext) {
         MultivaluedMap<String, String> headers = requestContext.getHeaders();
         if (headers.containsKey("REQUEST_ID")) {
-            int requestId = Integer.valueOf(headers.getFirst("REQUEST_ID"));
+            int requestId = Integer.parseInt(headers.getFirst("REQUEST_ID"));
             requestIdManagerImpl.overrideRequestId(requestId);
         }
 

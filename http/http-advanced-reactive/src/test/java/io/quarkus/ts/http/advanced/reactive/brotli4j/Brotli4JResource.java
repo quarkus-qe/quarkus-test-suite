@@ -38,8 +38,7 @@ public class Brotli4JResource {
     @Path("/decompression")
     @Produces(MediaType.TEXT_PLAIN)
     public String decompressionHttpResponse(byte[] compressedData) {
-        String decompressedData = new String(compressedData);
-        return decompressedData;
+        return new String(compressedData);
     }
 
     @GET

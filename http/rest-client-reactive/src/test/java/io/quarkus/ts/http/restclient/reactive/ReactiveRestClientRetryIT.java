@@ -56,7 +56,7 @@ public class ReactiveRestClientRetryIT {
                 .statusCode(500);
 
         // Check number of server events, one failing call plus 3 retries by default
-        Assertions.assertEquals(4, mockServer.getServeEvents().getServeEvents().stream().count());
+        Assertions.assertEquals(4, (long) mockServer.getServeEvents().getServeEvents().size());
 
         List<Map<String, String>> headers = app.given()
                 .get("/fault/headers")

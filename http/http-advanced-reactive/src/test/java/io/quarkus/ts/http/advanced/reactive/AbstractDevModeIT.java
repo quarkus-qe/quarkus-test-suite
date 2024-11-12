@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.htmlunit.WebClient;
@@ -67,7 +66,7 @@ public abstract class AbstractDevModeIT {
                 .lines(app.getServiceFolder().resolve("src/main/resources/application.properties"))) {
             List<String> properties = lines
                     .filter(line -> line.contains(PROPERTY))
-                    .collect(Collectors.toList());
+                    .toList();
             if (properties.size() != 1) {
                 LOG.warn("There should be only one property with name " + PROPERTY + ", but found these " + properties);
             }

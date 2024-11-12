@@ -74,7 +74,7 @@ public class GzipMaxInputIT {
     }
 
     @Test
-    void sendZeroBytesPayload() throws IOException {
+    void sendZeroBytesPayload() {
         ByteArrayInputStream compressedData = generateCompressedDataStream(0);
         Response response = sendDataToGzipEndpoint(compressedData);
         assertEquals(HttpStatus.SC_OK, response.statusCode(),
@@ -82,7 +82,7 @@ public class GzipMaxInputIT {
     }
 
     @Test
-    void sendPayloadBelowMaxInputLimit() throws IOException {
+    void sendPayloadBelowMaxInputLimit() {
         ByteArrayInputStream compressedData = generateCompressedDataStream(SMALL_PAYLOAD);
         Response response = sendDataToGzipEndpoint(compressedData);
         assertEquals(HttpStatus.SC_OK, response.statusCode(),
@@ -91,7 +91,7 @@ public class GzipMaxInputIT {
 
     @Tag("https://github.com/quarkusio/quarkus/issues/39636")
     @Test
-    void sendMaximumAllowedPayload() throws IOException {
+    void sendMaximumAllowedPayload() {
         ByteArrayInputStream compressedData = generateCompressedDataStream(LIMIT_PAYLOAD);
         Response response = sendDataToGzipEndpoint(compressedData);
         assertEquals(HttpStatus.SC_OK, response.statusCode(),
@@ -101,7 +101,7 @@ public class GzipMaxInputIT {
     }
 
     @Test
-    void sendMoreThanMaximumAllowedPayload() throws IOException {
+    void sendMoreThanMaximumAllowedPayload() {
         ByteArrayInputStream compressedData = generateCompressedDataStream(OVER_LIMIT_PAYLOAD);
         Response response = sendDataToGzipEndpoint(compressedData);
         assertEquals(HttpStatus.SC_REQUEST_TOO_LONG, response.statusCode(),

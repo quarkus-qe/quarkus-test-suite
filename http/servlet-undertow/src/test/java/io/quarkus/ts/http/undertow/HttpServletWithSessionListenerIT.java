@@ -83,22 +83,20 @@ public class HttpServletWithSessionListenerIT {
                 .setProtocolVersion(HttpVersion.HTTP_2);
         httpClient = vertx.createHttpClient(options);
         vertxTestContext
-                .verify(() -> {
-                    httpClient
-                            .request(HttpMethod.GET, app.getURI(Protocol.HTTPS).getPort(), app.getURI().getHost(),
-                                    "/app/servlet/hello")
-                            .compose(request -> request.send()
-                                    .compose(httpClientResponse -> {
-                                        requestCheckpoint.flag();
-                                        assertEquals(HttpStatus.SC_OK, httpClientResponse.statusCode());
-                                        assertEquals(HttpVersion.HTTP_2, httpClientResponse.version());
-                                        return httpClientResponse.body();
-                                    }))
-                            .onSuccess(body -> {
-                                assertThat("Body response", body.toString().contains("Hello World"));
-                                requestCheckpoint.flag();
-                            }).onFailure(throwable -> vertxTestContext.failNow(throwable.getMessage()));
-                });
+                .verify(() -> httpClient
+                        .request(HttpMethod.GET, app.getURI(Protocol.HTTPS).getPort(), app.getURI().getHost(),
+                                "/app/servlet/hello")
+                        .compose(request -> request.send()
+                                .compose(httpClientResponse -> {
+                                    requestCheckpoint.flag();
+                                    assertEquals(HttpStatus.SC_OK, httpClientResponse.statusCode());
+                                    assertEquals(HttpVersion.HTTP_2, httpClientResponse.version());
+                                    return httpClientResponse.body();
+                                }))
+                        .onSuccess(body -> {
+                            assertThat("Body response", body.toString().contains("Hello World"));
+                            requestCheckpoint.flag();
+                        }).onFailure(throwable -> vertxTestContext.failNow(throwable.getMessage())));
     }
 
     private double getActiveSessions() {
