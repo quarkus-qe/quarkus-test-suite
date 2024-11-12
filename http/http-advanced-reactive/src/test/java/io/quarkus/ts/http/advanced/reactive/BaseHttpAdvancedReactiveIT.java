@@ -25,6 +25,8 @@ import static org.apache.http.HttpStatus.SC_INTERNAL_SERVER_ERROR;
 import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.in;
@@ -100,6 +102,64 @@ public abstract class BaseHttpAdvancedReactiveIT {
         getApp().given().get(GREETING_ENDPOINT)
                 .then().statusCode(SC_OK)
                 .body(is("Hello from Quarkus REST"));
+    }
+
+    @Test
+    @DisplayName("Test Quarkus REST using CDI getting the sub-resource")
+    void cdiSubResourceGetRequest() {
+        getApp().given()
+                .when()
+                .get(GREETING_ENDPOINT + "/cdi-sub-resource")
+                .then()
+                .statusCode(SC_OK)
+                .body(is("Greeting from sub-resource using GET"));
+    }
+
+    @Test
+    @DisplayName("Test Quarkus REST using CDI getting the sub-resource")
+    void cdiSubResourcePostRequest() {
+        getApp().given()
+                .when()
+                .post(GREETING_ENDPOINT + "/cdi-sub-resource")
+                .then()
+                .statusCode(SC_OK)
+                .body(is("Greeting from sub-resource using POST"));
+    }
+
+    @Test
+    @DisplayName("Test Quarkus REST interface resource with @Path")
+    void interfaceResourceWithPath() {
+        getApp().given()
+                .when()
+                .get(GREETING_ENDPOINT + "/interface-greeting")
+                .then()
+                .statusCode(SC_OK)
+                .body(is("Greeting from interface"));
+    }
+
+    @Test
+    @Tag("https://github.com/quarkusio/quarkus/issues/43422")
+    @DisplayName("Test Quarkus REST abstract resource with @Path using OPTION and HEAD request")
+    @DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/42976")
+    void optionAndHeadRequestUsingAbstractResourceWithPath() {
+        testOptionRequest(GREETING_ENDPOINT);
+        testHeadRequest(GREETING_ENDPOINT);
+    }
+
+    @Test
+    @Tag("https://github.com/quarkusio/quarkus/issues/43422")
+    @DisplayName("Test Quarkus REST interface resource with @Path using OPTION and HEAD request")
+    void optionAndHeadRequestUsingInterfaceResourceWithPath() {
+        testOptionRequest(GREETING_ENDPOINT + "/interface-greeting");
+        testHeadRequest(GREETING_ENDPOINT + "/interface-greeting");
+    }
+
+    @Test
+    @Tag("https://github.com/quarkusio/quarkus/issues/43422")
+    @DisplayName("Test Quarkus REST using CDI getting the sub-resource for OPTION and HEAD request")
+    void cdiSubResourceOptionAndHeadRequest() {
+        testOptionRequest(GREETING_ENDPOINT + "/cdi-sub-resource");
+        testHeadRequest(GREETING_ENDPOINT + "/cdi-sub-resource");
     }
 
     @Test
@@ -352,6 +412,24 @@ public abstract class BaseHttpAdvancedReactiveIT {
                 .accept(acceptedContentType)
                 .get(ROOT_PATH + MEDIA_TYPE_PATH)
                 .then().header(CONTENT_TYPE, expectedContentType);
+    }
+
+    private void testOptionRequest(String path) {
+        getApp().given()
+                .when()
+                .options(path)
+                .then()
+                .statusCode(SC_OK)
+                .header(HttpHeaders.ALLOW, allOf(containsString("HEAD"),
+                        containsString("OPTIONS"), containsString("GET")));
+    }
+
+    private void testHeadRequest(String path) {
+        getApp().given()
+                .when()
+                .head(path)
+                .then()
+                .statusCode(SC_OK);
     }
 
     private ValidatableResponse req99BottlesOfBeer(int bottleNumber, int httpStatusCode) {
