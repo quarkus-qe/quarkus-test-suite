@@ -7,7 +7,10 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.List;
 import java.util.UUID;
+
+import jakarta.ws.rs.core.MediaType;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.AfterAll;
@@ -58,6 +61,23 @@ public class ReactiveRestClientIT {
                 .get("/client/book/{id}/json");
         assertEquals(HttpStatus.SC_OK, response.statusCode());
         assertEquals("Title in Json: 123", response.jsonPath().getString("title"));
+    }
+
+    @Tag("https://github.com/quarkusio/quarkus/issues/43784")
+    @Test
+    public void shouldPostBook() {
+        Response response = app.given()
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .when()
+                .post("/client/book/search");
+        assertEquals(HttpStatus.SC_OK, response.statusCode());
+        List<Book> books = response.jsonPath().getList(".", Book.class);
+        assertEquals(1, books.size());
+
+        Book book = books.iterator().next();
+
+        assertEquals("The Wind-Up Bird Chronicle", book.getTitle());
+        assertEquals("Haruki Murakami", book.getAuthor());
     }
 
     @Tag("QUARKUS-1568")
