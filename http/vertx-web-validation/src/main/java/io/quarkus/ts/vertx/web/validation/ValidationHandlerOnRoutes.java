@@ -39,6 +39,7 @@ import io.vertx.json.schema.common.dsl.ObjectSchemaBuilder;
 
 public class ValidationHandlerOnRoutes {
     //TODO when Quarkus use vert.x version 4.4.6 we can use SchemaRepository instead of SchemaParser with SchemaRouter
+    // https://github.com/quarkus-qe/quarkus-test-suite/issues/2192
     //private SchemaRepository schemaRepository =SchemaRepository.create(new JsonSchemaOptions().setDraft(Draft.DRAFT7).setBaseUri(BASEURI));
     private SchemaParser schemaParser;
     private SchemaRouter schemaRouter;

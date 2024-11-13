@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.Dependency;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.utils.FileUtils;
@@ -86,19 +85,16 @@ public class Brotli4JHttpIT {
     }
 
     @Test
-    @DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/43392")
     public void checkCompressedAndDecompressedWithQuarkus() {
         testCompressedAndDecompressed("/compression/default/text", DEFAULT_TEXT_PLAIN);
     }
 
     @Test
-    @DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/43392")
     public void checkCompressedAndDecompressedJSONWithQuarkus() {
         testCompressedAndDecompressed("/compression/brotli/json", JSON_CONTENT);
     }
 
     @Test
-    @DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/43392")
     public void checkCompressedAndDecompressedXMLWithQuarkus() {
         testCompressedAndDecompressed("/compression/brotli/xml", "Bob Dylan");
     }

@@ -10,7 +10,6 @@ import jakarta.ws.rs.core.MediaType;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -24,7 +23,6 @@ import io.vertx.core.json.JsonObject;
 @Tag("fips-incompatible") // TODO: enable when https://github.com/quarkusio/quarkus/issues/40526 gets fixed
 @Tag("QUARKUS-1080")
 @Tag("QUARKUS-1408")
-@DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/2018")
 @QuarkusScenario
 public class DevModeMultipleReactiveSqlClientsIT {
 

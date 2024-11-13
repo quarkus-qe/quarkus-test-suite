@@ -3,13 +3,11 @@ package io.quarkus.ts.messaging.kafka.reactive.streams;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnAarch64Native;
 import io.quarkus.test.services.Operator;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.services.operator.KafkaInstance;
 
 @OpenShiftScenario
-@DisabledOnAarch64Native(reason = "https://issues.redhat.com/browse/QUARKUS-5180")
 public class OperatorOpenShiftAmqStreamsKafkaStreamIT extends BaseKafkaStreamTest {
 
     @Operator(name = "amq-streams", source = "redhat-operators")
