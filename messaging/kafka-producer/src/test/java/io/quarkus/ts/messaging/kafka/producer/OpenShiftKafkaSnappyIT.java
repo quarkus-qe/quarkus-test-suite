@@ -12,7 +12,6 @@ import io.quarkus.test.bootstrap.KafkaService;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnAarch64Native;
 import io.quarkus.test.services.KafkaContainer;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.services.containers.model.KafkaVendor;
@@ -21,7 +20,6 @@ import io.smallrye.mutiny.helpers.test.UniAssertSubscriber;
 import io.vertx.mutiny.core.buffer.Buffer;
 
 @OpenShiftScenario
-@DisabledOnAarch64Native(reason = "https://github.com/quarkusio/quarkus/issues/43801")
 public class OpenShiftKafkaSnappyIT {
 
     private static final int TIMEOUT_SEC = 5;

@@ -23,7 +23,6 @@ import io.quarkus.test.bootstrap.KafkaService;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnAarch64Native;
 import io.quarkus.test.scenarios.annotations.DisabledOnRHBQandWindows;
 import io.quarkus.test.services.KafkaContainer;
 import io.quarkus.test.services.QuarkusApplication;
@@ -34,7 +33,6 @@ import io.smallrye.mutiny.helpers.test.UniAssertSubscriber;
 import io.vertx.mutiny.core.buffer.Buffer;
 
 @QuarkusScenario
-@DisabledOnAarch64Native(reason = "https://github.com/quarkusio/quarkus/issues/43801")
 @DisabledOnRHBQandWindows(reason = "https://issues.redhat.com/browse/QUARKUS-5214")
 public class SnappyCompressionIT {
 
