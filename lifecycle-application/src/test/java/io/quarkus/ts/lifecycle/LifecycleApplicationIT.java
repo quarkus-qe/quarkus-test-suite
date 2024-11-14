@@ -2,8 +2,6 @@ package io.quarkus.ts.lifecycle;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import java.util.stream.Collectors;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
@@ -31,7 +29,7 @@ public class LifecycleApplicationIT {
 
     @Test
     public void shouldPrintMessagesFromQuarkusMain() {
-        String argumentsLine = app.getLogs().stream().collect(Collectors.joining());
+        String argumentsLine = String.join("", app.getLogs());
         assertFalse(argumentsLine.contains(LOGGING_PROPERTY),
                 "Pod log contain unexpected properties. Actual content: " + argumentsLine);
     }

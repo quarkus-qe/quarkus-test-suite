@@ -30,17 +30,17 @@ public class SeriousTalkDTO {
         }
 
         public Builder end(SeriousTalkDTO.DataDTO endData) {
-            this.end = endData.getInnerData();
+            this.end = endData.innerData();
             return this;
         }
 
         public Builder start(SeriousTalkDTO.DataDTO startData) {
-            this.start = startData.getInnerData();
+            this.start = startData.innerData();
             return this;
         }
 
         public Builder middle(SeriousTalkDTO.DataDTO middleData) {
-            this.middle = middleData.getInnerData();
+            this.middle = middleData.innerData();
             return this;
         }
 
@@ -64,16 +64,7 @@ public class SeriousTalkDTO {
         }
     }
 
-    public static class DataDTO {
-        private final String innerData;
-
-        public DataDTO(String innerData) {
-            this.innerData = innerData;
-        }
-
-        public String getInnerData() {
-            return innerData;
-        }
+    public record DataDTO(String innerData) {
     }
 
     public interface Ignored {

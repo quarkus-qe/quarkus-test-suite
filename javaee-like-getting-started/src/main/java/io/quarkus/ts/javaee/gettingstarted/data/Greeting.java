@@ -24,28 +24,10 @@ public class Greeting {
         return to;
     }
 
-    public static class From {
-        private final String data;
-
-        public From(String data) {
-            this.data = data;
-        }
-
-        public String getData() {
-            return data;
-        }
+    public record From(String data) {
     }
 
-    public static class To {
-        private final String data;
-
-        public To(String data) {
-            this.data = data;
-        }
-
-        public String getData() {
-            return data;
-        }
+    public record To(String data) {
     }
 
 }

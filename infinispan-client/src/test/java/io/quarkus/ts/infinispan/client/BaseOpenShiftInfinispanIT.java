@@ -43,9 +43,9 @@ public abstract class BaseOpenShiftInfinispanIT {
             Path yamlPath = Paths.get(TARGET_RESOURCES + yamlFile);
             Charset charset = StandardCharsets.UTF_8;
 
-            String yamlContent = new String(Files.readAllBytes(yamlPath), charset);
+            String yamlContent = Files.readString(yamlPath, charset);
             yamlContent = yamlContent.replace(originString, newString);
-            Files.write(yamlPath, yamlContent.getBytes(charset));
+            Files.writeString(yamlPath, yamlContent, charset);
         } catch (IOException ex) {
             Assertions.fail("Fail to adjust YAML file. Caused by: " + ex.getMessage());
         }

@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Disabled;
@@ -26,7 +25,7 @@ public class OpenShiftLifecycleApplicationIT extends LifecycleApplicationIT {
         // From endpoint
         assertExpectedArguments(actualArguments);
         // From logs
-        assertExpectedArguments(app.getLogs().stream().collect(Collectors.joining()));
+        assertExpectedArguments(String.join("", app.getLogs()));
     }
 
     private void assertExpectedArguments(String actualArguments) {

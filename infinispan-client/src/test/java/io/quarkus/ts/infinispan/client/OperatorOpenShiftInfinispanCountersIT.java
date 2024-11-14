@@ -116,7 +116,7 @@ public class OperatorOpenShiftInfinispanCountersIT extends BaseOpenShiftInfinisp
         one.stop();
 
         // wait for app to actually be down
-        AwaitilityUtils.untilIsTrue(() -> ocClient.podsInService(one).size() == 0);
+        AwaitilityUtils.untilIsTrue(() -> ocClient.podsInService(one).isEmpty());
 
         // try to invoke the cache
         one.given()
@@ -136,8 +136,8 @@ public class OperatorOpenShiftInfinispanCountersIT extends BaseOpenShiftInfinisp
 
     /**
      * Infinispan fail-over test. Testing restart the infinispan cluster in DataGrid operator and wait the Quarkus
-     * application connects back. The restart is done by reducing the number of infinispan cluster replicas to 0 and it waits
-     * for the shutdown condition. Then the number of replicas is changed back to 1.
+     * application connects back. The restart is done by reducing the number of infinispan cluster replicas to 0,
+     * and it waits for the shutdown condition. Then the number of replicas is changed back to 1.
      *
      * We don't have cache backup in this test case, so the cache is deleted by the restart of infinispan cluster.
      * The cache definition "mycache" remains, but the "counter" cache in it is deleted.
@@ -172,7 +172,7 @@ public class OperatorOpenShiftInfinispanCountersIT extends BaseOpenShiftInfinisp
      * again. It is done by 'cache.put("counter", 0)'. Then it could be incremented.
      *
      * Cache newly created after the restart and incremented by 1 so it should be only 1.
-     * Client counter should remain the same during the restart and after the counter incrementing should by increased by 1.
+     * Client counter should remain the same during the restart and after the counter incrementing should be increased by 1.
      */
     @Test
     @Order(6)
@@ -285,7 +285,7 @@ public class OperatorOpenShiftInfinispanCountersIT extends BaseOpenShiftInfinisp
         assertEquals("10", secondClientAppCounter);
 
         // sum of both client counters
-        String cacheValue = String.valueOf(Integer.valueOf(firstClientAppCounter) + Integer.valueOf(secondClientAppCounter));
+        String cacheValue = String.valueOf(Integer.parseInt(firstClientAppCounter) + Integer.parseInt(secondClientAppCounter));
         assertEquals(cacheValue, firstClientCacheCounter);
         assertEquals(cacheValue, secondClientCacheCounter);
     }
@@ -294,7 +294,7 @@ public class OperatorOpenShiftInfinispanCountersIT extends BaseOpenShiftInfinisp
      * Multiple client Infinispan fail-over test. Testing restart the infinispan cluster and increment/change counters values
      * of both client applications after the restart.
      *
-     * Cache newly created after the restart and incremented by 1 by each client so it should by on value 2.
+     * Cache newly created after the restart and incremented by 1 by each client so it should be on value 2.
      * Client counters should remain the same during the restart and after the counters incrementing both are increased by 1.
      */
     @Test
@@ -399,12 +399,10 @@ public class OperatorOpenShiftInfinispanCountersIT extends BaseOpenShiftInfinisp
      * Increasing cache and client counters by 1 from the provided url address.
      */
     private String fillTheCache(RestService node, String url) {
-        String actualResponse = node.given()
+        return node.given()
                 .put(url)
                 .then().statusCode(HttpStatus.SC_OK)
                 .extract().asString();
-
-        return actualResponse;
     }
 
     /**

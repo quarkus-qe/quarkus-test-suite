@@ -74,6 +74,7 @@ public class DefaultMinLogLevelIT {
                     return fileContent.contains(EXPECTED_LOG_MESSAGE);
                 });
 
-        assertTrue(allFilesContainMessage, "Rotated log files do not contain the expected message " + EXPECTED_LOG_MESSAGE);
+        assertTrue(allFilesContainMessage,
+                "Rotated log files do not contain the expected message " + EXPECTED_LOG_MESSAGE);
     }
 }

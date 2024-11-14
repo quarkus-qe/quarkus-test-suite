@@ -90,7 +90,8 @@ public class AccessLoggingIT {
             }
 
             assertTrue(filename.endsWith(".zip"), "Archived logs should have suffix \".zip\"");
-            assertTrue(isValidZipFile(ACCESS_LOG_DIR.resolve(filename)), "Log file " + filename + " is not a valid zip");
+            assertTrue(isValidZipFile(ACCESS_LOG_DIR.resolve(filename)),
+                    "Log file " + filename + " is not a valid zip");
         }
     }
 
@@ -113,7 +114,8 @@ public class AccessLoggingIT {
             }
 
             assertTrue(filename.endsWith(".gz"), "Archived logs should have suffix \".gz\"");
-            assertTrue(isValidGzipFile(ACCESS_LOG_DIR.resolve(filename)), "Log file " + filename + " is not a valid zip");
+            assertTrue(isValidGzipFile(ACCESS_LOG_DIR.resolve(filename)),
+                    "Log file " + filename + " is not a valid zip");
         }
     }
 
