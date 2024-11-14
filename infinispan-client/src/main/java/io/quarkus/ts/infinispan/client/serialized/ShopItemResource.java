@@ -33,10 +33,10 @@ public class ShopItemResource {
             String key = item.getTitle().replaceAll("\\s+", "").toLowerCase();
             if (lifespan != null && maxIdleTime != null) {
                 cache_items.put(key, item,
-                        Integer.valueOf(lifespan), TimeUnit.SECONDS, Integer.valueOf(maxIdleTime), TimeUnit.SECONDS);
+                        Integer.parseInt(lifespan), TimeUnit.SECONDS, Integer.parseInt(maxIdleTime), TimeUnit.SECONDS);
             } else if (lifespan != null && maxIdleTime == null) {
                 cache_items.put(key, item,
-                        Integer.valueOf(lifespan), TimeUnit.SECONDS);
+                        Integer.parseInt(lifespan), TimeUnit.SECONDS);
             } else {
                 cache_items.put(key, item);
             }

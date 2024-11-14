@@ -36,7 +36,7 @@ public class OperatorOpenShiftInfinispanObjectsIT extends BaseOpenShiftInfinispa
 
     private Response response;
 
-    private List<ShopItem> maxThresholdItemList = Arrays.asList(
+    private final List<ShopItem> maxThresholdItemList = Arrays.asList(
             new ShopItem("Item 1", 100, ShopItem.Type.ELECTRONIC),
             new ShopItem("Item 2", 200, ShopItem.Type.ELECTRONIC),
             new ShopItem("Item 3", 300, ShopItem.Type.ELECTRONIC),
@@ -60,7 +60,7 @@ public class OperatorOpenShiftInfinispanObjectsIT extends BaseOpenShiftInfinispa
     public void testCacheSizeEviction() {
         ShopItem additionalItem = new ShopItem("Item 6", 600, ShopItem.Type.MECHANICAL);
         whenAddCacheItems(maxThresholdItemList);
-        whenAddCacheItems(Arrays.asList(additionalItem));
+        whenAddCacheItems(List.of(additionalItem));
         whenQueryCachedItems(ALL);
         thenCacheSizeMustBe(is(CACHE_ENTRY_MAX));
         thenCacheBodyMust(containsString("Item 6"));

@@ -77,9 +77,7 @@ public class SyslogIT {
 
         syslog.logs().assertContains(control);
         syslog.getLogs()
-                .forEach(line -> {
-                    Assertions.assertFalse(line.contains(longerMessage));
-                });
+                .forEach(line -> Assertions.assertFalse(line.contains(longerMessage)));
     }
 
 }

@@ -16,9 +16,7 @@ public final class Main {
 
     public static void main(String... args) {
         LOG.info(ARGUMENTS_FROM_MAIN + String.join(",", args));
-        if (args.length > 0 && "cli".equals(args[0])) {
-            return;
-        } else {
+        if (!(args.length > 0 && "cli".equals(args[0]))) {
             Quarkus.run(args);
         }
     }

@@ -1,8 +1,5 @@
 package io.quarkus.ts.lifecycle;
 
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -20,6 +17,6 @@ public class ArgsResource {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String get() {
-        return Stream.of(args).collect(Collectors.joining(","));
+        return String.join(",", args);
     }
 }
