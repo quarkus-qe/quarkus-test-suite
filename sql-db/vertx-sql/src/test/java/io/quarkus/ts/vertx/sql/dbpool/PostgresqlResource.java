@@ -16,6 +16,9 @@ public class PostgresqlResource implements QuarkusTestResourceLifecycleManager {
 
     @Override
     public Map<String, String> start() {
+        // on Aarch64 we use PostgreSQL from Red Hat container registry
+        // this image is difficult to run with `org.testcontainers.containers.PostgreSQLContainer`
+        // see comments in the https://github.com/quarkusio/quarkus/issues/44196 for more info
         postgresContainer = new GenericContainer<>(DockerImageName.parse(POSTGRESQL_IMAGE_NAME))
                 // Need to set POSTGRES and POSTGRESQL for usage with Docker hub and RH images
                 .withEnv("POSTGRES_USER", "test")
