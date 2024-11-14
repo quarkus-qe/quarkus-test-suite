@@ -10,17 +10,17 @@ import java.util.stream.Stream;
 
 import jakarta.inject.Inject;
 
-import io.quarkus.redis.client.reactive.ReactiveRedisClient;
 import io.quarkus.ts.security.vertx.exceptions.NotFoundException;
 import io.quarkus.ts.security.vertx.model.Record;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
+import io.vertx.mutiny.redis.client.RedisAPI;
 import io.vertx.mutiny.redis.client.Response;
 
 public abstract class AbstractRedisDao<E extends Record> {
 
     @Inject
-    ReactiveRedisClient redisClient;
+    RedisAPI redisClient;
 
     Class<E> type;
 

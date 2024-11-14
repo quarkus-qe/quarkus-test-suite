@@ -116,7 +116,7 @@ public class OpenApiStoreSchemaIT extends BaseOidcIT {
                 .getJsonObject(0)
                 .getJsonArray("SecurityScheme");
 
-        if (securityScheme.size() == 0) {
+        if (securityScheme.isEmpty()) {
             LOGGER.infof("There are no roles for path '%s': %s", path, content);
             return null;
         }

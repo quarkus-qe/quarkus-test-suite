@@ -1,5 +1,6 @@
 package io.quarkus.ts.security.bouncycastle.fips.jsse;
 
+import java.security.Provider;
 import java.security.Security;
 import java.security.Signature;
 import java.util.Arrays;
@@ -13,8 +14,8 @@ public class BouncyCastleFipsJsseEndpoint {
     @GET
     @Path("/listProviders")
     public String listProviders() {
-        return Arrays.asList(Security.getProviders()).stream()
-                .map(p -> p.getName()).collect(Collectors.joining(","));
+        return Arrays.stream(Security.getProviders())
+                .map(Provider::getName).collect(Collectors.joining(","));
     }
 
     @GET

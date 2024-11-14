@@ -2,7 +2,6 @@ package io.quarkus.ts.security.oidcclient.mtls;
 
 import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_FILE;
 import static io.quarkus.ts.security.oidcclient.mtls.MutualTlsKeycloakService.newKeycloakInstance;
-import static io.restassured.RestAssured.given;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;

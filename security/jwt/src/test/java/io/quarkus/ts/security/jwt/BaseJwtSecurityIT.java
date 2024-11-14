@@ -170,7 +170,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void mixedConstrained() throws Exception {
+    public void mixedConstrained() {
         givenWithToken(createToken(EMPTY_GROUP))
                 .get("/mixed/constrained")
                 .then()
@@ -179,7 +179,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void mixedUnconstrained() throws Exception {
+    public void mixedUnconstrained() {
         givenWithToken(createToken(EMPTY_GROUP))
                 .get("/mixed/unconstrained")
                 .then()
@@ -187,7 +187,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void contentTypesPlainPlainGroup() throws Exception {
+    public void contentTypesPlainPlainGroup() {
         givenWithToken(createToken("plain"))
                 .accept(ContentType.TEXT)
                 .get("/content-types")
@@ -197,7 +197,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void contentTypesPlainWebGroup() throws Exception {
+    public void contentTypesPlainWebGroup() {
         givenWithToken(createToken("web"))
                 .accept(ContentType.TEXT)
                 .get("/content-types")
@@ -206,7 +206,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void contentTypesWebWebGroup() throws Exception {
+    public void contentTypesWebWebGroup() {
         givenWithToken(createToken("web"))
                 .accept(ContentType.HTML)
                 .get("/content-types")
@@ -216,7 +216,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void contentTypesWebPlainGroup() throws Exception {
+    public void contentTypesWebPlainGroup() {
         givenWithToken(createToken("plain"))
                 .accept(ContentType.HTML)
                 .get("/content-types")
@@ -225,7 +225,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void parameterizedPathsAdminAdminGroup() throws Exception {
+    public void parameterizedPathsAdminAdminGroup() {
         givenWithToken(createToken("admin"))
                 .get("/parameterized-paths/my/foo/admin")
                 .then()
@@ -234,7 +234,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void parameterizedPathsAdminViewGroup() throws Exception {
+    public void parameterizedPathsAdminViewGroup() {
         givenWithToken(createToken("view"))
                 .get("/parameterized-paths/my/foo/admin")
                 .then()
@@ -242,7 +242,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void parameterizedPathsViewViewGroup() throws Exception {
+    public void parameterizedPathsViewViewGroup() {
         givenWithToken(createToken("view"))
                 .get("/parameterized-paths/my/foo/view")
                 .then()
@@ -251,7 +251,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void parameterizedPathsViewAdminGroup() throws Exception {
+    public void parameterizedPathsViewAdminGroup() {
         givenWithToken(createToken("admin"))
                 .get("/parameterized-paths/my/foo/view")
                 .then()
@@ -259,7 +259,7 @@ public abstract class BaseJwtSecurityIT {
     }
 
     @Test
-    public void tokenExpirationGracePeriod() throws Exception {
+    public void tokenExpirationGracePeriod() {
         givenWithToken(createToken("admin"))
                 .get("/secured/admin")
                 .then()

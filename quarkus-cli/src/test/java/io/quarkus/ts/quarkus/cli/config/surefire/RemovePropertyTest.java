@@ -15,7 +15,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 public class RemovePropertyTest {
 
-    public static String TODO_PROPERTY_NAME = "todo";
+    public static final String TODO_PROPERTY_NAME = "todo";
 
     @Inject
     Config config;

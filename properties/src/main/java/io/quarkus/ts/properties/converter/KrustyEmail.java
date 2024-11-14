@@ -1,14 +1,5 @@
 package io.quarkus.ts.properties.converter;
 
-public class KrustyEmail {
+public record KrustyEmail(String email) {
 
-    private String email;
-
-    public KrustyEmail(String email) {
-        this.email = email;
-    }
-
-    public String getEmail() {
-        return email;
-    }
 }

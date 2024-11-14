@@ -40,7 +40,7 @@ public abstract class AbstractWebAuthnTest {
 
     enum User {
         USER,
-        ADMIN;
+        ADMIN
     }
 
     @BeforeAll

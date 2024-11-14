@@ -8,10 +8,9 @@ import java.util.Set;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
-import io.quarkus.hibernate.reactive.panache.common.runtime.ReactiveTransactional;
+import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.quarkus.security.webauthn.WebAuthnUserProvider;
 import io.quarkus.ts.security.webauthn.model.User;
-import io.quarkus.ts.security.webauthn.model.WebAuthnCertificate;
 import io.quarkus.ts.security.webauthn.model.WebAuthnCredential;
 import io.smallrye.mutiny.Uni;
 import io.vertx.ext.auth.webauthn.AttestationCertificates;
@@ -20,21 +19,21 @@ import io.vertx.ext.auth.webauthn.Authenticator;
 @ApplicationScoped
 public class MyWebAuthnSetup implements WebAuthnUserProvider {
 
-    @ReactiveTransactional
+    @WithTransaction
     @Override
     public Uni<List<Authenticator>> findWebAuthnCredentialsByUserName(String userName) {
         return WebAuthnCredential.findByUserName(userName)
                 .flatMap(MyWebAuthnSetup::toAuthenticators);
     }
 
-    @ReactiveTransactional
+    @WithTransaction
     @Override
     public Uni<List<Authenticator>> findWebAuthnCredentialsByCredID(String credID) {
         return WebAuthnCredential.findByCredID(credID)
                 .flatMap(MyWebAuthnSetup::toAuthenticators);
     }
 
-    @ReactiveTransactional
+    @WithTransaction
     @Override
     public Uni<Void> updateOrStoreWebAuthnCredentials(Authenticator authenticator) {
         return User.findByUserName(authenticator.getUserName())
@@ -64,7 +63,7 @@ public class MyWebAuthnSetup implements WebAuthnUserProvider {
         for (WebAuthnCredential db : dbs) {
             ret.add(toAuthenticator(db));
         }
-        return Uni.combine().all().unis(ret).combinedWith(f -> (List) f);
+        return Uni.combine().all().unis(ret).with(f -> (List) f);
     }
 
     private static Uni<Authenticator> toAuthenticator(WebAuthnCredential credential) {
@@ -74,10 +73,6 @@ public class MyWebAuthnSetup implements WebAuthnUserProvider {
                     ret.setAaguid(credential.aaguid);
                     AttestationCertificates attestationCertificates = new AttestationCertificates();
                     attestationCertificates.setAlg(credential.alg);
-                    List<String> x509CertificatesList = new ArrayList<>(x5c.size());
-                    for (WebAuthnCertificate webAuthnCertificate : x5c) {
-                        x509CertificatesList.add(webAuthnCertificate.base64X509Certificate);
-                    }
                     ret.setAttestationCertificates(attestationCertificates);
                     ret.setCounter(credential.counter);
                     ret.setCredID(credential.credID);

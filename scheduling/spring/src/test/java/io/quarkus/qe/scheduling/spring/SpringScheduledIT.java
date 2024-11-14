@@ -25,7 +25,7 @@ public class SpringScheduledIT {
                 .then().statusCode(HttpStatus.SC_OK)
                 .extract().asString();
 
-        int actualCounter = Integer.valueOf(body);
+        int actualCounter = Integer.parseInt(body);
 
         assertTrue(actualCounter > expectedCount,
                 "Actual counter '" + actualCounter + "' must be greater than the expected '" + expectedCount + "'");

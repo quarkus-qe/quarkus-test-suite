@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import jakarta.ws.rs.core.MediaType;
@@ -222,7 +221,7 @@ public class QuteIT {
                 .flatMap(Arrays::stream)
                 .filter(string -> !string.isEmpty())
                 .filter(string -> !string.isEmpty())
-                .collect(Collectors.toList());
+                .toList();
         assertEquals(9, updatedContent.size());
         assertEquals("<head><title>Auguries of Innocence</title></head>", updatedContent.get(2).stripLeading());
         assertEquals("Every Morn and every Night<br>", updatedContent.get(4).stripLeading());

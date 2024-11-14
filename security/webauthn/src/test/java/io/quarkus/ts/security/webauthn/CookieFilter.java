@@ -74,7 +74,7 @@ public class CookieFilter implements Filter {
 
     private List<Cookie> extractResponseCookies(Response response, CookieOrigin cookieOrigin) {
 
-        List<Cookie> cookies = new ArrayList<Cookie>();
+        List<Cookie> cookies = new ArrayList<>();
         for (String cookieValue : response.getHeaders().getValues("Set-Cookie")) {
             Header setCookieHeader = new BasicHeader("Set-Cookie", cookieValue);
             try {

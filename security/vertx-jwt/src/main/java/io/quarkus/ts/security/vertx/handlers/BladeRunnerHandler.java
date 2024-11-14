@@ -18,7 +18,7 @@ public class BladeRunnerHandler {
     BladeRunnerService bladeRunnerService;
 
     public void upsertBladeRunner(final RoutingContext context) {
-        BladeRunner bladeRunner = context.getBodyAsJson().mapTo(BladeRunner.class);
+        BladeRunner bladeRunner = context.body().asJsonObject().mapTo(BladeRunner.class);
         bladeRunnerService.upsert(bladeRunner)
                 .onFailure().invoke(context::fail)
                 .subscribe().with(success -> context.response()

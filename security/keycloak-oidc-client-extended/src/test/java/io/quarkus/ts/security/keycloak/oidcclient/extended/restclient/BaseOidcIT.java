@@ -4,7 +4,6 @@ import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM;
 import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_BASE_PATH;
 import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_FILE;
 
-import org.apache.http.NoHttpResponseException;
 import org.jboss.logging.Logger;
 
 import io.quarkus.test.bootstrap.KeycloakService;
