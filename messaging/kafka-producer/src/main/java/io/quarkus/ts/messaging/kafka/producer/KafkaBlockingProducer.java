@@ -45,7 +45,7 @@ public class KafkaBlockingProducer {
     }
 
     public void pushMessageEvent(final RoutingContext routingContext) {
-        String message = routingContext.getBodyAsString();
+        String message = routingContext.body().asString();
         emitter.send(message)
                 .onFailure().invoke(exception -> {
                     routingContext.response()
@@ -73,7 +73,7 @@ public class KafkaBlockingProducer {
                 .withNack(handlerError(context, startMs))
                 .addMetadata(metadata);
 
-        emitter.send(msg);
+        emitter.sendMessageAndForget(msg);
     }
 
     private Function<Throwable, CompletionStage<Void>> handlerError(RoutingContext context, Long startMs) {

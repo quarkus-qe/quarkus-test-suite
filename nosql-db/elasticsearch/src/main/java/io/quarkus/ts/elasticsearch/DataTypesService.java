@@ -31,7 +31,6 @@ public class DataTypesService {
         String responseBody = EntityUtils.toString(response.getEntity());
 
         JsonObject json = new JsonObject(responseBody);
-        DataTypes dataTypesRet = json.getJsonObject("_source").mapTo(DataTypes.class);
-        return dataTypesRet;
+        return json.getJsonObject("_source").mapTo(DataTypes.class);
     }
 }

@@ -91,7 +91,7 @@ public abstract class BaseOpenShiftAlertEventsIT {
         thenMetricIsExposedInPrometheus(KAFKA_CONSUMER_COUNT_METRIC, any());
     }
 
-    private void thenMetricIsExposedInPrometheus(String name, Predicate<String> valueMatcher) throws Exception {
+    private void thenMetricIsExposedInPrometheus(String name, Predicate<String> valueMatcher) {
         await().ignoreExceptions().atMost(ASSERT_PROMETHEUS_TIMEOUT_MINUTES, TimeUnit.MINUTES).untilAsserted(() -> {
             String output = runPrometheusCommandInPod(PROMETHEUS_POD, name);
             assertTrue(output.contains("\"status\":\"success\""), "Verify the status was ok");

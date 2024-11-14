@@ -33,14 +33,14 @@ public class OpenTelemetryGrpcIT {
     private static final String SAY_PONG_PROTO = "SayPong";
 
     @Test
-    public void testServerClientTrace() throws InterruptedException {
+    public void testServerClientTrace() {
         // When calling ping, the rest will invoke also the pong rest endpoint.
         given()
                 .when().get(PING_ENDPOINT)
                 .then().statusCode(HttpStatus.SC_OK)
                 .body(containsString("ping pong"));
 
-        // Then both ping and pong rest endpoints should have the same trace Id.
+        // Then both ping and pong rest endpoints should have the same trace ID.
         String pingTraceId = given()
                 .when().get(PING_ENDPOINT + "/lastTraceId")
                 .then().statusCode(HttpStatus.SC_OK).and().extract().asString();

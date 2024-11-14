@@ -13,8 +13,7 @@ public class FailureHandler {
     public void handler(final RoutingContext ctx) {
         JsonObject error = defaultError(ctx.normalizedPath());
 
-        if (ctx.failure() instanceof HttpException) {
-            HttpException httpExp = (HttpException) ctx.failure();
+        if (ctx.failure() instanceof HttpException httpExp) {
             error.put("status", httpExp.getStatusCode());
         }
 
