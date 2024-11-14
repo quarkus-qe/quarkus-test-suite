@@ -1,6 +1,7 @@
 package io.quarkus.ts.transactions;
 
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.MariaDbService;
 import io.quarkus.test.bootstrap.RestService;
@@ -35,6 +36,7 @@ public class MariaDbTransactionGeneralUsageIT extends TransactionCommons {
         return TransactionExecutor.QUARKUS_TRANSACTION;
     }
 
+    @Test
     @Disabled("https://github.com/quarkusio/quarkus/issues/44160")
     @Override
     public void testTransactionRecovery() {

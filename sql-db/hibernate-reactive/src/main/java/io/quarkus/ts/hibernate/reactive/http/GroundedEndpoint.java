@@ -49,23 +49,20 @@ public class GroundedEndpoint {
     @GET
     @Path("books/author/{authorId}")
     public Uni<Response> findFirstBooksByAuthor(Integer authorId) {
-        return factory.withSession(session -> {
-            return session.createNativeQuery("Select * from books where author='" + authorId + "'", Book.class)
-                    .setMaxResults(1)
-                    .getResultList()
-                    .map(books -> Response.ok(books).build());
-        });
+        return factory.withSession(
+                session -> session.createNativeQuery("Select * from books where author='" + authorId + "'", Book.class)
+                        .setMaxResults(1)
+                        .getResultList()
+                        .map(books -> Response.ok(books).build()));
     }
 
     @GET
     @Path("books/starts_with/{prefix}")
     public Uni<Response> findByPrefix(String prefix) {
-        return factory.withSession(session -> {
-            return session.createNamedQuery("find_by_title_prefix", Book.class)
-                    .setParameter("prefix", prefix + "%")
-                    .getResultList()
-                    .map(books -> Response.ok(books).build());
-        });
+        return factory.withSession(session -> session.createNamedQuery("find_by_title_prefix", Book.class)
+                .setParameter("prefix", prefix + "%")
+                .getResultList()
+                .map(books -> Response.ok(books).build()));
     }
 
     @POST
@@ -124,10 +121,8 @@ public class GroundedEndpoint {
     @GET
     @Path("isbn/{id}")
     public Uni<Response> getRawISBN(Integer id) {
-        return factory.withSession(session -> {
-            return session.createNativeQuery("SELECT isbn FROM books WHERE id = " + id, String.class)
-                    .getSingleResult()
-                    .map(books -> Response.ok(books).build());
-        });
+        return factory.withSession(session -> session.createNativeQuery("SELECT isbn FROM books WHERE id = " + id, String.class)
+                .getSingleResult()
+                .map(books -> Response.ok(books).build()));
     }
 }

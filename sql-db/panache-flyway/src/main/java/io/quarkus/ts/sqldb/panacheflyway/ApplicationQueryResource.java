@@ -37,6 +37,6 @@ public class ApplicationQueryResource {
 
         return map.entrySet().stream()
                 .collect(Collectors.toMap(Entry::getKey,
-                        e -> e.getValue().stream().collect(Collectors.joining(","))));
+                        e -> String.join(",", e.getValue())));
     }
 }

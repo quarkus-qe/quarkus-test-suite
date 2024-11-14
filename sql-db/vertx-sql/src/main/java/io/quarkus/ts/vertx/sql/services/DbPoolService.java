@@ -33,16 +33,12 @@ public class DbPoolService extends Pool {
     }
 
     public Uni<Long> save(String tableName, List<String> fieldsNames, List<Object> fieldsValues) {
-        switch (selectedDb) {
-            case "mysql":
-                return saveMysql(tableName, fieldsNames, fieldsValues);
-            case "mssql":
-                return saveMS(tableName, fieldsNames, fieldsValues);
-            case "oracle":
-                return saveOracle(tableName, fieldsNames, fieldsValues);
-            default:
-                return savePg(tableName, fieldsNames, fieldsValues);
-        }
+        return switch (selectedDb) {
+            case "mysql" -> saveMysql(tableName, fieldsNames, fieldsValues);
+            case "mssql" -> saveMS(tableName, fieldsNames, fieldsValues);
+            case "oracle" -> saveOracle(tableName, fieldsNames, fieldsValues);
+            default -> savePg(tableName, fieldsNames, fieldsValues);
+        };
     }
 
     private Uni<Long> saveMS(String tableName, List<String> fieldsNames, List<Object> fieldsValues) {

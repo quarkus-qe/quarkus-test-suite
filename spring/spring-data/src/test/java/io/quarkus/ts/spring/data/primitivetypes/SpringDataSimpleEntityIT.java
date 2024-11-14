@@ -38,6 +38,6 @@ public class SpringDataSimpleEntityIT extends AbstractDbIT {
                 .contentType(ContentType.JSON).extract().response();
 
         List<Cat> cats = Arrays.asList(response.getBody().as(Cat[].class));
-        cats.stream().forEach(cat -> assertThat(cat.getDeathReason(), is("covid19")));
+        cats.forEach(cat -> assertThat(cat.getDeathReason(), is("covid19")));
     }
 }

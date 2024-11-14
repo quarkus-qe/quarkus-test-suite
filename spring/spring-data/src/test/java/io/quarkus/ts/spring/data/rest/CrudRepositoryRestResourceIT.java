@@ -59,7 +59,7 @@ public class CrudRepositoryRestResourceIT extends AbstractRepositoryRestResource
 
     @Test
     void createWithEntityConstraintViolation() {
-        //Try to add a article with invalid constraints
+        //Try to add an article with invalid constraints
         app.given()
                 .contentType("application/json")
                 .body("{\"name\": \"\"}")

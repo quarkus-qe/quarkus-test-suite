@@ -95,7 +95,7 @@ public abstract class AbstractSqlDatabaseIT {
     @Order(6)
     public void createBadPayload() {
         Book book = new Book();
-        book.id = Long.valueOf(INVALID_ID);
+        book.id = (long) INVALID_ID;
         book.title = "foo";
         book.author = "bar";
 
@@ -113,7 +113,7 @@ public abstract class AbstractSqlDatabaseIT {
     @Order(7)
     public void update() {
         Book book = new Book();
-        book.id = Long.valueOf(VALID_ID);
+        book.id = (long) VALID_ID;
         book.title = "Schismatrix";
         book.author = "Bruce Sterling";
 

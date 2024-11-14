@@ -28,9 +28,7 @@ public class ConsumerPactTest {
 
     @Pact(consumer = "TheConsumer")
     public V4Pact createPact(MessagePactBuilder builder) {
-        var body = LambdaDsl.newJsonBody((it) -> {
-            it.stringType("payload", "Hello there");
-        }).build();
+        var body = LambdaDsl.newJsonBody((it) -> it.stringType("payload", "Hello there")).build();
 
         return builder
                 .expectsToReceive("a message with a payload")
