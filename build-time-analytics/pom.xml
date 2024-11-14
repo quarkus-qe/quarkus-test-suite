@@ -10,6 +10,9 @@
     <artifactId>build-time-analytics</artifactId>
     <packaging>jar</packaging>
     <name>Quarkus QE TS: Build Time Analytics</name>
+    <properties>
+        <quarkus.native.native-image-xmx>6g</quarkus.native.native-image-xmx>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>io.quarkus.qe</groupId>
