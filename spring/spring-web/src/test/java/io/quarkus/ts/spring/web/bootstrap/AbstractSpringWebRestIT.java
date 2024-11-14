@@ -1,9 +1,8 @@
 package io.quarkus.ts.spring.web.bootstrap;
 
-import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
-import static org.apache.commons.lang3.RandomStringUtils.randomNumeric;
+import static org.apache.commons.lang3.RandomStringUtils.insecure;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.List;
 
@@ -33,8 +32,7 @@ public abstract class AbstractSpringWebRestIT {
 
         final Response response = getApp().given().get(API_ROOT + "/title/" + book.getTitle());
         assertEquals(HttpStatus.OK.value(), response.getStatusCode());
-        assertTrue(response.as(List.class)
-                .size() > 0);
+        assertFalse(response.as(List.class).isEmpty());
     }
 
     @Test
@@ -50,7 +48,7 @@ public abstract class AbstractSpringWebRestIT {
 
     @Test
     public void whenGetNotExistBookById_thenNotFound() {
-        final Response response = getApp().given().get(API_ROOT + "/" + randomNumeric(4));
+        final Response response = getApp().given().get(API_ROOT + "/" + insecure().nextNumeric(4));
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode());
     }
 
@@ -113,8 +111,8 @@ public abstract class AbstractSpringWebRestIT {
 
     private Book createRandomBook() {
         final Book book = new Book();
-        book.setTitle(randomAlphabetic(10));
-        book.setAuthor(randomAlphabetic(15));
+        book.setTitle(insecure().nextAlphabetic(10));
+        book.setAuthor(insecure().nextAlphabetic((15)));
         return book;
     }
 

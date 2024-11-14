@@ -20,7 +20,7 @@ public class MysqlMultitenantHibernateSearchIT extends AbstractMultitenantHibern
     static MySqlService company1 = new MySqlService().withDatabase("company1");
 
     @Container(image = "${mysql.upstream.80.image}", port = MYSQL_PORT, expectedLog = "ready for connections")
-    static MySqlService company2 = new MySqlService().withDatabase("company2");;
+    static MySqlService company2 = new MySqlService().withDatabase("company2");
 
     @Container(image = "${elastic.7x.image}", port = ELASTIC_PORT, expectedLog = "started")
     static DefaultService elastic = new DefaultService()

@@ -67,15 +67,11 @@ public class Application {
     @Produces
     @Named("sqlClient")
     synchronized DbPoolService pool() {
-        switch (selectedDB) {
-            case "mysql":
-                return new DbPoolService(mysql, mysqlDbName, selectedDB);
-            case "mssql":
-                return new DbPoolService(mssql, null, selectedDB);
-            case "oracle":
-                return new DbPoolService(oracle, null, selectedDB);
-            default:
-                return new DbPoolService(postgresql, postgresqlDbName, selectedDB);
-        }
+        return switch (selectedDB) {
+            case "mysql" -> new DbPoolService(mysql, mysqlDbName, selectedDB);
+            case "mssql" -> new DbPoolService(mssql, null, selectedDB);
+            case "oracle" -> new DbPoolService(oracle, null, selectedDB);
+            default -> new DbPoolService(postgresql, postgresqlDbName, selectedDB);
+        };
     }
 }

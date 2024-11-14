@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 import io.quarkus.hibernate.reactive.panache.Panache;
 import io.quarkus.hibernate.reactive.panache.common.WithSession;
 import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
-import io.quarkus.hibernate.reactive.panache.common.runtime.ReactiveTransactional;
 import io.quarkus.ts.spring.web.reactive.bootstrap.persistence.model.Book;
 import io.quarkus.ts.spring.web.reactive.bootstrap.persistence.repo.BookRepository;
 import io.quarkus.ts.spring.web.reactive.bootstrap.web.exception.BookIdMismatchException;
@@ -86,7 +85,7 @@ public class BookController {
     }
 
     @PutMapping("/{id}")
-    @ReactiveTransactional
+    @WithTransaction
     public Uni<Book> update(@RequestBody Book book, @PathVariable long id) {
         if (book.getId() != id) {
             throw new BookIdMismatchException();

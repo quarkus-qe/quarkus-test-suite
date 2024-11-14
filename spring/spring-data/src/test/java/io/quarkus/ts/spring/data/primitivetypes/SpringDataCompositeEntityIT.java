@@ -73,7 +73,7 @@ public class SpringDataCompositeEntityIT extends AbstractDbIT {
     @Test
     void testFindBooksByPublisherZipCode() {
         List<Book> books = retrieveBooksByZipcode();
-        books.stream().forEach(book -> assertThat(book.getPublisherAddress().getZipCode(), is("28080")));
+        books.forEach(book -> assertThat(book.getPublisherAddress().getZipCode(), is("28080")));
     }
 
     //This is for regression test for https://github.com/quarkusio/quarkus/issues/13234

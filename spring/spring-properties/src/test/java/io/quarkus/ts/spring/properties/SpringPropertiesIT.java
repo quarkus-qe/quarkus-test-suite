@@ -57,7 +57,7 @@ public class SpringPropertiesIT {
 
     @Test
     public void shouldInjectListsOfStringFromConfigurationProperties() {
-        // These values comes from the application.properties
+        // These values come from the application.properties
         assertEquals("Value 1", get("/collections/list/strings"));
 
         setApplicationProperty("lists.strings[1]", "Value 2");

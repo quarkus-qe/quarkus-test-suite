@@ -1,7 +1,5 @@
 package io.quarkus.ts.spring.properties;
 
-import java.util.stream.Collectors;
-
 import jakarta.inject.Inject;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +15,6 @@ public class CollectionsController {
 
     @GetMapping("/list/strings")
     public String listOfStrings() {
-        return listProperties.strings.stream().collect(Collectors.joining(", "));
+        return String.join(", ", listProperties.strings);
     }
 }

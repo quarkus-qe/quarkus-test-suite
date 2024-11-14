@@ -124,9 +124,8 @@ public class PanacheEndpoint {
     public Uni<Response> createAuthor(String name) {
         return authors.create(name)
                 .map(ignored -> Response.status(Response.Status.CREATED))
-                .onFailure().recoverWithItem(throwable -> {
-                    return Response.status(Response.Status.BAD_REQUEST).entity(throwable.getMessage());
-                })
+                .onFailure()
+                .recoverWithItem(throwable -> Response.status(Response.Status.BAD_REQUEST).entity(throwable.getMessage()))
                 .map(Response.ResponseBuilder::build);
     }
 
@@ -148,9 +147,7 @@ public class PanacheEndpoint {
                 .map(books -> books.isEmpty()
                         ? Response.status(Response.Status.NOT_FOUND)
                         : Response.ok(books))
-                .onFailure().recoverWithItem(error -> {
-                    return Response.status(Response.Status.BAD_REQUEST).entity(error.getMessage());
-                })
+                .onFailure().recoverWithItem(error -> Response.status(Response.Status.BAD_REQUEST).entity(error.getMessage()))
                 .map(Response.ResponseBuilder::build);
     }
 
@@ -164,9 +161,7 @@ public class PanacheEndpoint {
                 .map(books -> books.isEmpty()
                         ? Response.status(Response.Status.NOT_FOUND)
                         : Response.ok(books))
-                .onFailure().recoverWithItem(error -> {
-                    return Response.status(Response.Status.BAD_REQUEST).entity(error.getMessage());
-                })
+                .onFailure().recoverWithItem(error -> Response.status(Response.Status.BAD_REQUEST).entity(error.getMessage()))
                 .map(Response.ResponseBuilder::build);
     }
 }

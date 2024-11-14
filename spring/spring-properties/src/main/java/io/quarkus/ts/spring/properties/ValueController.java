@@ -1,8 +1,5 @@
 package io.quarkus.ts.spring.properties;
 
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +22,7 @@ public class ValueController {
 
     @GetMapping("/fieldUsingArray")
     public String fieldUsingArray() {
-        return Stream.of(fieldUsingArray).collect(Collectors.joining(", "));
+        return String.join(", ", fieldUsingArray);
     }
 
 }

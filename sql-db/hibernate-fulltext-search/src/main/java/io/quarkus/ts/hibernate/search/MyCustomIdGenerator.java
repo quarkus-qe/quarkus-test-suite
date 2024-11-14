@@ -14,7 +14,7 @@ import org.hibernate.id.IdentifierGenerator;
  */
 public class MyCustomIdGenerator implements IdentifierGenerator {
 
-    private Random rand;
+    private volatile Random rand;
     private Set<Integer> ids = new HashSet<>();
 
     @Override
