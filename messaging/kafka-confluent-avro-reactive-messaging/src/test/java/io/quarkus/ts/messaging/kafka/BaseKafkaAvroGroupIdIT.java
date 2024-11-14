@@ -3,10 +3,8 @@ package io.quarkus.ts.messaging.kafka;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
 import java.util.Random;
 import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -30,12 +28,11 @@ abstract class BaseKafkaAvroGroupIdIT {
 
     private String endpoint;
     private Client client = ClientBuilder.newClient();
-    private List<String> receive = new CopyOnWriteArrayList<>();
     private boolean completed;
     private Random rand = new Random();
 
     @Test
-    public void testAlertMonitorEventStream() throws InterruptedException {
+    public void testAlertMonitorEventStream() {
         GivenSomeStockPrices(getAppA(), EVENTS_AMOUNT);
         AndApplicationEndpoint(getEndpoint(getAppA()) + "/stock-price/stream");
         whenRequestSomeEvents(EVENTS_AMOUNT);
@@ -73,7 +70,6 @@ abstract class BaseKafkaAvroGroupIdIT {
             SseEventSource source = SseEventSource.target(target).build();
             source.register(inboundSseEvent -> {
                 final var data = inboundSseEvent.readData(String.class, MediaType.APPLICATION_JSON_TYPE);
-                receive.add(data);
                 totalAmountReceived.incrementAndGet();
             });
 

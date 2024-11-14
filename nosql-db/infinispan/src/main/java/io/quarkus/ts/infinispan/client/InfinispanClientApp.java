@@ -13,7 +13,7 @@ import org.infinispan.client.hotrod.annotation.ClientListener;
 import org.infinispan.client.hotrod.event.ClientCacheEntryCreatedEvent;
 import org.infinispan.client.hotrod.event.ClientCacheEntryModifiedEvent;
 import org.infinispan.client.hotrod.event.ClientCacheEntryRemovedEvent;
-import org.infinispan.commons.configuration.XMLStringConfiguration;
+import org.infinispan.commons.configuration.StringConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +34,7 @@ public class InfinispanClientApp {
     void onStart(@Observes StartupEvent ev) {
         LOGGER.info("Create or get cache named mycache with the default configuration");
         RemoteCache<Object, Object> cache = cacheManager.administration().getOrCreateCache("mycache",
-                new XMLStringConfiguration(String.format(MYCACHE_CACHE_CONFIG, "mycache")));
+                new StringConfiguration(String.format(MYCACHE_CACHE_CONFIG, "mycache")));
         cache.addClientListener(new EventPrintListener());
         if (cache.isEmpty()) {
             cache.put("counter", 0);

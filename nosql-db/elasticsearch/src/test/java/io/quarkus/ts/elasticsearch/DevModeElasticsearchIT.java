@@ -1,6 +1,5 @@
 package io.quarkus.ts.elasticsearch;
 
-import static io.restassured.RestAssured.given;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.containsString;
 

@@ -37,7 +37,7 @@ public class OpenTelemetrySseIT {
     private static final String PONG_ENDPOINT = "/server-sent-events-pong";
 
     @Test
-    public void testServerClientTrace() throws InterruptedException {
+    public void testServerClientTrace() {
         // When calling ping, the rest will invoke also the pong rest endpoint.
         given()
                 .when().get(PING_ENDPOINT)
@@ -45,7 +45,7 @@ public class OpenTelemetrySseIT {
                 .contentType(MediaType.SERVER_SENT_EVENTS)
                 .body(containsString("ping pong"));
 
-        // Then both ping and pong rest endpoints should have the same trace Id.
+        // Then both ping and pong rest endpoints should have the same trace ID.
         String pingTraceId = given()
                 .when().get(PING_ENDPOINT + "/lastTraceId")
                 .then().statusCode(HttpStatus.SC_OK).and().extract().asString();

@@ -10,7 +10,7 @@ import org.eclipse.microprofile.reactive.messaging.Outgoing;
 import io.smallrye.mutiny.Multi;
 
 /**
- * A bean producing random prices every 1 seconds.
+ * A bean producing random prices every 1 second.
  * The prices are written to a Kafka topic (prices). The Kafka configuration is specified in the application configuration.
  */
 @ApplicationScoped

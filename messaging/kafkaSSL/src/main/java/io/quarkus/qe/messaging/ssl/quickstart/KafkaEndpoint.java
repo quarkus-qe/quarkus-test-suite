@@ -24,7 +24,7 @@ public abstract class KafkaEndpoint {
     protected void initialize(KafkaConsumer<String, String> consumer) {
         consumer.subscribe(Collections.singleton(TOPIC));
         new Thread(() -> {
-            try {
+            try (consumer) {
                 while (true) {
                     final ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofSeconds(1));
 
@@ -38,8 +38,6 @@ public abstract class KafkaEndpoint {
                 }
             } catch (Exception e) {
                 LOG.error(e.getMessage());
-            } finally {
-                consumer.close();
             }
         }).start();
     }

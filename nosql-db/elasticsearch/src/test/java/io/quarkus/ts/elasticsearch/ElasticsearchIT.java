@@ -4,6 +4,7 @@ import static io.restassured.RestAssured.given;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Date;
 import java.util.List;
@@ -11,7 +12,6 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.http.HttpStatus;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.DefaultService;
@@ -106,7 +106,7 @@ public class ElasticsearchIT {
                 .statusCode(HttpStatus.SC_OK);
 
         DataTypes returnedFooDataTypes = response.getBody().as(DataTypes.class);
-        Assert.assertEquals(fooDataTypes, returnedFooDataTypes);
+        assertEquals(fooDataTypes, returnedFooDataTypes);
     }
 
     @Test

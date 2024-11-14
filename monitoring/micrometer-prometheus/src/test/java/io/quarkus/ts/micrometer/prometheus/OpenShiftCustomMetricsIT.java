@@ -91,7 +91,7 @@ public class OpenShiftCustomMetricsIT {
         app.given().get("/check/" + number).then().statusCode(HttpStatus.SC_OK);
     }
 
-    private void thenMetricIsExposedInPrometheus(String name, Integer expected) throws Exception {
+    private void thenMetricIsExposedInPrometheus(String name, Integer expected) {
         await().ignoreExceptions().atMost(ASSERT_PROMETHEUS_TIMEOUT_MINUTES, TimeUnit.MINUTES).untilAsserted(() -> {
             String output = runPrometheusCommandInPod(PROMETHEUS_POD, primeNumberCustomMetricName(name));
 

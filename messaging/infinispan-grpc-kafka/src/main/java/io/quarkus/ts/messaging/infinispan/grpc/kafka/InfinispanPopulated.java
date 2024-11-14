@@ -6,7 +6,7 @@ import jakarta.inject.Inject;
 
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
-import org.infinispan.commons.configuration.XMLStringConfiguration;
+import org.infinispan.commons.configuration.StringConfiguration;
 import org.jboss.logging.Logger;
 
 import io.quarkus.runtime.StartupEvent;
@@ -26,7 +26,7 @@ public class InfinispanPopulated {
     void onStart(@Observes StartupEvent ev) {
         LOGGER.info("Create or get cache named mycache with the default configuration");
         RemoteCache<Object, Object> cache = cacheManager.administration().getOrCreateCache("mycache",
-                new XMLStringConfiguration(CACHE_CONFIG));
+                new StringConfiguration(CACHE_CONFIG));
         cache.put("hello", "Hello World, Infinispan is up!");
     }
 }

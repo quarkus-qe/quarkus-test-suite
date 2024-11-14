@@ -1,6 +1,5 @@
 package io.quarkus.ts.micrometer.prometheus.kafka.reactive;
 
-import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
