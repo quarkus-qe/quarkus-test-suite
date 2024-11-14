@@ -314,6 +314,28 @@ public class ReactiveRestClientIT {
                 .body(containsString("visitor of this page"));
     }
 
+    @Test
+    @Tag("https://github.com/quarkusio/quarkus/issues/43364")
+    public void testUploadFileWithoutMediaType() {
+        app.given()
+                .get("/client/upload/without-media-type")
+                .then()
+                .statusCode(200)
+                .body(containsString("File received: fileTest.txt content: This is sample test content without media type"));
+
+    }
+
+    @Test
+    @Tag("https://github.com/quarkusio/quarkus/issues/43364")
+    public void testUploadFileWithMediaType() {
+        app.given()
+                .get("/client/upload/with-media-type")
+                .then()
+                .statusCode(200)
+                .body(containsString("File received: fileTest.txt content: This is sample test content with media type"));
+
+    }
+
     @AfterAll
     static void afterAll() {
         mockServer.stop();
