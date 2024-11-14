@@ -4,7 +4,6 @@ import static org.hamcrest.Matchers.is;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
@@ -58,9 +57,9 @@ public class BladeRunnerHandlerIT extends AbstractCommonIT {
         List<String> actualLogs = app.getLogs();
         List<String> helloEvents = actualLogs.stream()
                 .filter(l -> l.contains("Consuming generated HelloEvent at starting point"))
-                .collect(Collectors.toList());
+                .toList();
 
-        Assertions.assertTrue(new HashSet<>(helloEvents).size() == helloEvents.size(),
+        Assertions.assertEquals(new HashSet<>(helloEvents).size(), helloEvents.size(),
                 "@ConsumeEvent annotation should be invoked once per event");
     }
 }

@@ -33,12 +33,7 @@ abstract public class AbstractSecurityCallbackTest {
     protected static final SecurityIdentity MOCK_SECURITY_IDENTITY = new SecurityIdentity() {
         @Override
         public Principal getPrincipal() {
-            return new Principal() {
-                @Override
-                public String getName() {
-                    return "";
-                }
-            };
+            return () -> "";
         }
 
         @Override

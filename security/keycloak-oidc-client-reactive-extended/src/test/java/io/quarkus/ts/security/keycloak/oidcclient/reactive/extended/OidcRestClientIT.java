@@ -135,7 +135,7 @@ public class OidcRestClientIT extends BaseOidcIT {
                 .body(score)
                 .when()
                 .post(pingEndpoint + "/withBody")
-                .then().statusCode(HttpStatus.SC_OK).body(containsString("ping -> " + score.toString()));
+                .then().statusCode(HttpStatus.SC_OK).body(containsString("ping -> " + score));
     }
 
     private void assertPingPongUpdate(String pingEndpoint) {
@@ -145,14 +145,14 @@ public class OidcRestClientIT extends BaseOidcIT {
                 .body(score)
                 .when()
                 .put(pingEndpoint + "/withBody")
-                .then().statusCode(HttpStatus.SC_OK).body(containsString("ping -> " + score.toString()));
+                .then().statusCode(HttpStatus.SC_OK).body(containsString("ping -> " + score));
     }
 
     private void assertPingPongDelete(String pingEndpoint) {
         given().auth().oauth2(createToken())
                 .contentType(ContentType.JSON)
                 .when()
-                .delete(pingEndpoint + "/" + UUID.randomUUID().toString())
+                .delete(pingEndpoint + "/" + UUID.randomUUID())
                 .then().statusCode(HttpStatus.SC_OK).body(containsString("ping -> true"));
     }
 

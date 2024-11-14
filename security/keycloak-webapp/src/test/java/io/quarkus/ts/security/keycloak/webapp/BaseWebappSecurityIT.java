@@ -2,6 +2,7 @@ package io.quarkus.ts.security.keycloak.webapp;
 
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -140,7 +141,7 @@ public abstract class BaseWebappSecurityIT {
     }
 
     private void whenLoginAs(String user) throws Exception {
-        assertTrue(page instanceof HtmlPage, "Should be in an HTML page");
+        assertInstanceOf(HtmlPage.class, page, "Should be in an HTML page");
         HtmlForm loginForm = ((HtmlPage) page).getForms().get(0);
 
         loginForm.getInputByName("username").setValue(user);
@@ -154,13 +155,13 @@ public abstract class BaseWebappSecurityIT {
     }
 
     private void thenRedirectToLoginPage() {
-        assertTrue(page instanceof HtmlPage, "Should be in the Login page");
+        assertInstanceOf(HtmlPage.class, page, "Should be in the Login page");
         assertTrue(((HtmlPage) page).getTitleText().matches(LOGIN_REALM_REGEXP),
                 "Login page title should display application realm");
     }
 
     private void thenPageReturns(String expectedMessage) {
-        assertTrue(page instanceof TextPage, "Should be in a text content page");
+        assertInstanceOf(TextPage.class, page, "Should be in a text content page");
         String content = ((TextPage) page).getContent();
         assertTrue(content.startsWith(expectedMessage),
                 "Page content should match with " + expectedMessage + " but was: " + content);

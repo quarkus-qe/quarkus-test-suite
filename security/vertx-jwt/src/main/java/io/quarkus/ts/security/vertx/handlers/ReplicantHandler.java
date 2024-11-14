@@ -18,7 +18,7 @@ public class ReplicantHandler {
     ReplicantService replicantService;
 
     public void upsertReplicant(final RoutingContext context) {
-        Replicant replicant = context.getBodyAsJson().mapTo(Replicant.class);
+        Replicant replicant = context.body().asJsonObject().mapTo(Replicant.class);
         replicantService.upsert(replicant)
                 .onFailure().invoke(context::fail)
                 .subscribe().with(success -> context.response()

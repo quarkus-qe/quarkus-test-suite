@@ -70,7 +70,7 @@ public class GreetingResource {
     @Produces(MediaType.TEXT_PLAIN)
     public List<String> printEmails() {
         return employeesEmails.stream()
-                .map(employee -> employee.getEmail())
+                .map(KrustyEmail::email)
                 .collect(Collectors.toList());
     }
 }

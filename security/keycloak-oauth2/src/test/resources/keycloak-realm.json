@@ -86,9 +86,7 @@
             "claim.name": "preferred_username",
             "jsonType.label": "String"
           }
-        }
-      ],
-      "protocolMappers": [
+        },
         {
           "id": "12c7ffdd-f1bc-4e98-a625-20002527e1f4",
           "name": "add-roles-to-claim",

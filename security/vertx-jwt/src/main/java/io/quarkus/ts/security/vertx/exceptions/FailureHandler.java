@@ -12,18 +12,16 @@ import io.vertx.ext.web.handler.HttpException;
 public class FailureHandler {
 
     public void handler(final RoutingContext ctx) {
-        JsonObject error = defaultError(ctx.normalisedPath());
+        JsonObject error = defaultError(ctx.normalizedPath());
 
-        if (ctx.failure() instanceof NotFoundException) {
-            NotFoundException notFoundExp = (NotFoundException) ctx.failure();
+        if (ctx.failure() instanceof NotFoundException notFoundExp) {
             error.put("status", notFoundExp.getHttpErrorCode())
                     .put("error", HttpResponseStatus.valueOf(notFoundExp.getHttpErrorCode()).reasonPhrase());
 
             ctx.response().setStatusCode(notFoundExp.getHttpErrorCode());
         }
 
-        if (ctx.failure() instanceof HttpException) {
-            HttpException httpExp = (HttpException) ctx.failure();
+        if (ctx.failure() instanceof HttpException httpExp) {
             error.put("status", httpExp.getStatusCode());
         }
 

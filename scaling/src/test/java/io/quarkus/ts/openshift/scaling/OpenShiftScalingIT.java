@@ -99,12 +99,10 @@ public class OpenShiftScalingIT {
     private void givenResourcePath(String path) {
         with().pollInterval(Duration.ofMillis(POLL_INTERVAL_MS))
                 .await().atMost(TIMEOUT_SEC, TimeUnit.SECONDS)
-                .untilAsserted(() -> {
-                    app.given()
-                            .when().get("/scaling")
-                            .then()
-                            .statusCode(OK.getStatusCode());
-                });
+                .untilAsserted(() -> app.given()
+                        .when().get(path)
+                        .then()
+                        .statusCode(OK.getStatusCode()));
     }
 
     private void whenScaleTo(int amount) {

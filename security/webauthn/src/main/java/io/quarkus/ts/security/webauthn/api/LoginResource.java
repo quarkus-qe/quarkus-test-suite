@@ -8,7 +8,7 @@ import jakarta.ws.rs.core.Response;
 
 import org.jboss.resteasy.reactive.RestForm;
 
-import io.quarkus.hibernate.reactive.panache.common.runtime.ReactiveTransactional;
+import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.quarkus.security.webauthn.WebAuthnLoginResponse;
 import io.quarkus.security.webauthn.WebAuthnRegisterResponse;
 import io.quarkus.security.webauthn.WebAuthnSecurity;
@@ -26,7 +26,7 @@ public class LoginResource {
 
     @Path("/login")
     @POST
-    @ReactiveTransactional
+    @WithTransaction
     public Uni<Response> login(@RestForm String userName,
             @BeanParam WebAuthnLoginResponse webAuthnResponse,
             RoutingContext ctx) {
@@ -64,7 +64,7 @@ public class LoginResource {
 
     @Path("/register")
     @POST
-    @ReactiveTransactional
+    @WithTransaction
     public Uni<Response> register(@RestForm String userName,
             @BeanParam WebAuthnRegisterResponse webAuthnResponse,
             RoutingContext ctx) {

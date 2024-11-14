@@ -54,8 +54,7 @@ public class CustomError {
         }
 
         public CustomError build() {
-            CustomError customError = new CustomError(this);
-            return customError;
+            return new CustomError(this);
         }
     }
 

@@ -1,6 +1,6 @@
 package io.quarkus.ts.security.vertx.auth;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
@@ -41,7 +41,7 @@ public class AuthN {
         return new JWTOptions()
                 .setIgnoreExpiration(false)
                 .setIssuer(authNConf.claims().iss())
-                .setAudience(Arrays.asList((authNConf.claims().aud())))
+                .setAudience(Collections.singletonList((authNConf.claims().aud())))
                 .setSubject(authNConf.claims().sub())
                 .setExpiresInMinutes(authNConf.liveSpan())
                 .setAlgorithm(authNConf.alg());
