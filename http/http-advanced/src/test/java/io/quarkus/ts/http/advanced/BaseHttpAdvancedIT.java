@@ -144,24 +144,6 @@ public abstract class BaseHttpAdvancedIT {
     }
 
     @Test
-    @DisplayName("Non-application endpoint move to /q/")
-    @EnabledOnQuarkusVersion(version = "1\\..*", reason = "Redirection is no longer supported in 2.x")
-    public void nonAppRedirections() {
-        List<String> endpoints = Arrays.asList("/openapi", "/swagger-ui", "/metrics/base", "/metrics/application",
-                "/metrics/vendor", "/metrics", "/health/group", "/health/well", "/health/ready", "/health/live",
-                "/health");
-
-        for (String endpoint : endpoints) {
-            getApp().given().redirects().follow(false).get(ROOT_PATH + endpoint)
-                    .then().statusCode(HttpStatus.SC_MOVED_PERMANENTLY)
-                    .and().header("Location", containsString("/q" + endpoint));
-
-            getApp().given().get(ROOT_PATH + endpoint)
-                    .then().statusCode(in(Arrays.asList(HttpStatus.SC_OK, HttpStatus.SC_NO_CONTENT)));
-        }
-    }
-
-    @Test
     public void microprofileHttpClientRedirection() {
         io.restassured.response.Response health = getApp().given().get("api/client");
         assertEquals(HttpStatus.SC_OK, health.statusCode());
