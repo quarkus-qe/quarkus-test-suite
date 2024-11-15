@@ -19,7 +19,6 @@ public class ReactiveRestClientProxyIT {
 
     @Container(image = "${nginx.image}", port = 8090, expectedLog = "Configuration complete; ready for start up")
     static RestService proxy = new RestService()
-            .withProperty("FORWARD_PROXY_RESOLVER", System.getProperty("forward-proxy-resolver"))
             .withProperty("NGINX_ENVSUBST_OUTPUT_DIR", "/etc/nginx")
             .withProperty("_whatever", "resource_with_destination::/etc/nginx/templates/|nginx.conf.template");
 
@@ -36,7 +35,7 @@ public class ReactiveRestClientProxyIT {
     void sendRequestThroughProxy() {
         Response proxied = proxyApp.given().with().get("/proxied/");
         Assertions.assertEquals(HttpStatus.SC_OK, proxied.statusCode());
-        Assertions.assertTrue(proxied.body().asString().contains("Example Domain"));
+        Assertions.assertTrue(proxied.body().asString().contains("Example Domain example.fake"));
     }
 
     @Test
