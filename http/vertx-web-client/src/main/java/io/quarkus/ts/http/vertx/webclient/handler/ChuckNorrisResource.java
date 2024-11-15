@@ -71,7 +71,7 @@ public class ChuckNorrisResource {
         return Uni.combine()
                 .all()
                 .unis(jokeOne, jokeTwo)
-                .combinedWith((BiFunction<Joke, Joke, List<Joke>>) Arrays::asList);
+                .with((BiFunction<Joke, Joke, List<Joke>>) Arrays::asList);
     }
 
     @Route(methods = HttpMethod.GET, path = "/pong", produces = "application/json", order = 3)

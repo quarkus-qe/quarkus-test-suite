@@ -16,7 +16,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.jboss.resteasy.reactive.MultipartForm;
 import org.jboss.resteasy.reactive.RestResponse;
 
 import io.quarkus.logging.Log;
@@ -61,7 +60,7 @@ public class FileResource {
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/upload-multipart")
     @Blocking
-    public String uploadMultipart(@MultipartForm FileWrapper body) {
+    public String uploadMultipart(FileWrapper body) {
         deathRow.add(body.file);
         return utils.getSum(body.file.getAbsoluteFile().toPath());
     }
