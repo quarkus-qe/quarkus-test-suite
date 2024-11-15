@@ -7,9 +7,8 @@ events {}
 http {
 	server {
 		listen 8090;
-		resolver ${FORWARD_PROXY_RESOLVER};
 		location / {
-			proxy_pass http://$host;
+			return 200 "Example Domain $host";
 		}
 		location ~ \.(txt)$ {
 			return 403 "Reading is prohibited by corporate policy!";

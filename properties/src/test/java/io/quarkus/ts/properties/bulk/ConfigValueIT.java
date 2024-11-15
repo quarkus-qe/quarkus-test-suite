@@ -16,7 +16,7 @@ public class ConfigValueIT {
     @Test
     public void shouldInjectConfigValueServerHost() {
         assertResponseIs("/serverUrl/name", "server.url");
-        assertResponseIs("/serverUrl/value", "http://example.org/endpoint");
+        assertResponseIs("/serverUrl/value", "http://example.fake/endpoint");
         assertResponseContains("/serverUrl/sourceName", getExpectedSourceNameValue());
         assertResponseIs("/serverUrl/rawValue", "http://${server.host}/endpoint");
     }

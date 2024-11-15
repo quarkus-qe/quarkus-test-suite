@@ -36,7 +36,7 @@ public class Producer {
                 .map(price -> {
                     OutgoingCloudEventMetadata<Integer> metadata = OutgoingCloudEventMetadata.<Integer> builder()
                             .withType("price")
-                            .withSource(URI.create("http://example.com"))
+                            .withSource(URI.create("http://example.fake"))
                             .withSubject("This is a price")
                             .build();
                     String message = String.valueOf(price);

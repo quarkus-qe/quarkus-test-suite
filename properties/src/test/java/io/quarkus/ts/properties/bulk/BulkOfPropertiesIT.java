@@ -12,8 +12,8 @@ import io.quarkus.test.scenarios.QuarkusScenario;
 public class BulkOfPropertiesIT {
 
     private static final String HTTP = "http://";
-    private static final String EXPECTED_EXAMPLE_HOST = "example.org";
-    private static final String EXPECTED_DEFAULT_HOST = "default.org";
+    private static final String EXPECTED_EXAMPLE_HOST = "example.fake";
+    private static final String EXPECTED_DEFAULT_HOST = "default.fake";
     private static final String EXPECTED_ENDPOINT_PATH = "/endpoint";
     private static final String EXPECTED_CUSTOM_PATH = "/mypath";
     private static final String EXPECTED_PORT = ":8080";

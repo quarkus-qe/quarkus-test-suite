@@ -27,7 +27,7 @@ public abstract class BaseBinaryCloudEventsOverAmqpIT {
                 .atMost(ASSERT_TIMEOUT_SECONDS, TimeUnit.SECONDS).untilAsserted(() -> {
                     HashMap response = given().get("/result")
                             .then().statusCode(HttpStatus.SC_OK).extract().as(HashMap.class);
-                    assertEquals("http://example.com", response.get("source"));
+                    assertEquals("http://example.fake", response.get("source"));
                     assertTrue(EXPECTED_PRICES.contains(response.get("value")));
                     assertEquals("This is a price", response.get("subject"));
                 });

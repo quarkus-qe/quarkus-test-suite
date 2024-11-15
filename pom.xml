@@ -58,7 +58,6 @@
         <reruns>2</reruns>
         <oc.reruns>1</oc.reruns>
         <flaky-run-reporter.version>0.1.4</flaky-run-reporter.version>
-        <forward-proxy-resolver>8.8.8.8</forward-proxy-resolver>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -267,7 +266,6 @@
                                 <keycloak.image>quay.io/keycloak/keycloak:25.0</keycloak.image>
                                 <bouncycastle.bctls-fips.version>1.0.12.2</bouncycastle.bctls-fips.version>
                                 <rhbk.image>${rhbk.image}</rhbk.image>
-                                <forward-proxy-resolver>${forward-proxy-resolver}</forward-proxy-resolver>
                             </systemPropertyVariables>
                         </configuration>
                     </execution>

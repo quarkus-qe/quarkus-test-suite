@@ -201,10 +201,10 @@ public class VertxWebClientIT {
                         .withHeader("Accept", "application/json")
                         .withBody(String.format("{\"categories\":[]," +
                                 "\"created_at\":\"2020-01-05 13:42:19.576875\"," +
-                                "\"icon_url\":\"https://assets.chucknorris.host/img/avatar/chuck-norris.png\"," +
+                                "\"icon_url\":\"https://assets.chucknorris.fake/img/avatar/chuck-norris.png\"," +
                                 "\"id\":\"%s\"," +
                                 "\"updated_at\":\"2020-01-05 13:42:19.576875\"," +
-                                "\"url\":\"https://api.chucknorris.io/jokes/sC09X1xQQymE4SciIjyV0g\"," +
+                                "\"url\":\"https://api.chucknorris.fake/jokes/sC09X1xQQymE4SciIjyV0g\"," +
                                 "\"value\":\"%s\"}", EXPECTED_ID, EXPECTED_VALUE))));
     }
 
