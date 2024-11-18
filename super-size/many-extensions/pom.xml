@@ -9,10 +9,6 @@
     </parent>
     <artifactId>many-extensions</artifactId>
     <name>Quarkus QE TS: Many extensions</name>
-    <properties>
-        <!-- set to 7g after we experienced https://github.com/quarkusio/quarkus/issues/44216 -->
-        <quarkus.native.native-image-xmx>10g</quarkus.native.native-image-xmx>
-    </properties>
     <dependencies>
         <dependency>
             <groupId>io.quarkus</groupId>
