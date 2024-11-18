@@ -9,12 +9,18 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
       - id: fetch-latest-target-branch-commits # makes sure that latest target branch HEAD commit is available locally
-        # fetching the latest 2 commits, one should be enough but 2 could avoid race (diff between GH PR event base sha and actual remote base sha)
+        # fetching the latest 15 commits as we want to rebase the PR to target branch to ensure just changed file are parsed.
+        # If someone have outdated branch (16+ commits) the job fail
         name: 'Fetch the latest 2 target (base) branch commits'
         run: |
           git remote add quarkus_qe_target_repo https://github.com/quarkus-qe/quarkus-test-suite.git
-          git fetch quarkus_qe_target_repo ${GITHUB_BASE_REF} --depth=2
+          git fetch quarkus_qe_target_repo ${GITHUB_BASE_REF} --depth=15
+          git config user.email "qe@quarkus"
+          git config user.name "Quarkus QE"
+          git rebase quarkus_qe_target_repo/${GITHUB_BASE_REF}
       - id: files
         uses: tj-actions/changed-files@v45
         continue-on-error: true
