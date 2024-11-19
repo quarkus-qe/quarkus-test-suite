@@ -6,13 +6,11 @@ import io.quarkus.test.bootstrap.KafkaService;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnAarch64Native;
 import io.quarkus.test.services.KafkaContainer;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.services.containers.model.KafkaVendor;
 
 @OpenShiftScenario
-@DisabledOnAarch64Native(reason = "https://issues.redhat.com/browse/QUARKUS-4321")
 @EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
 public class OpenShiftAmqStreamsKafkaStreamIT extends BaseKafkaStreamTest {
 
