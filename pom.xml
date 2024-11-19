@@ -459,6 +459,7 @@
             <modules>
                 <module>env-info</module>
                 <module>cache/caffeine</module>
+                <module>cache/caffeine-resteasy</module>
                 <module>cache/redis</module>
                 <module>cache/infinispan</module>
                 <module>infinispan-client</module>
