@@ -4,6 +4,8 @@ import static org.hamcrest.Matchers.is;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 
 import io.quarkus.test.bootstrap.PostgresqlService;
 import io.quarkus.test.bootstrap.RestService;
@@ -14,6 +16,7 @@ import io.quarkus.test.services.GitRepositoryQuarkusApplication;
 import io.restassured.http.ContentType;
 
 @DisabledOnNative(reason = "This scenario is using uber-jar, so it's incompatible with Native")
+@DisabledOnOs(value = OS.WINDOWS, disabledReason = "Tested app fails to build into uber-jar on windows. See https://github.com/quarkusio/todo-demo-app/issues/36")
 @QuarkusScenario
 public class TodoDemoIT {
     private static final String TODO_REPO = "https://github.com/quarkusio/todo-demo-app.git";
