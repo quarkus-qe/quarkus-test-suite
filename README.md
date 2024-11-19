@@ -1139,6 +1139,12 @@ It covers different usages:
 3. from a blocking endpoint
 4. from a reactive endpoint
 
+### `cache/caffeine-resteasy`
+
+Verifies the `quarkus-cache` extension with RESTEasy.
+It covers different usages:
+1. `@CacheResult`, `@CacheInvalidate` and `@CacheInvalidateAll` set in RESTEasy client
+
 ### `cache/infinispan`
 Verifies the `quarkus-infinispan-cache` extension using `@CacheResult`, `@CacheInvalidate`, `@CacheInvalidateAll` and `@CacheKey`.
 It covers different usages:
