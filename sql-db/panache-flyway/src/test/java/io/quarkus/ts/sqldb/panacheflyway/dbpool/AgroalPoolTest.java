@@ -12,6 +12,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import jakarta.inject.Inject;
@@ -23,7 +27,10 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import io.agroal.api.AgroalDataSource;
 import io.quarkus.test.common.http.TestHTTPResource;
@@ -44,13 +51,14 @@ import io.vertx.mutiny.ext.web.client.WebClient;
  * The aim of these tests is verified agroal and entityManager pool management
  * Some of these tests required some extra load, in order to reproduce concurrency issues.
  */
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class) // enforce order to run 'connectionConcurrencyTest' last
 @EnabledWhenLinuxContainersAvailable
 @QuarkusTest
 @TestProfile(AgroalTestProfile.class)
 public class AgroalPoolTest {
 
-    private final int CONCURRENCY_LEVEL = 20;
-    private final int SAFETY_INTERVAL = 200;
+    private static final int CONCURRENCY_LEVEL = 20;
+    private static final int SAFETY_INTERVAL = 200;
 
     @Inject
     EntityManager em;
@@ -68,10 +76,7 @@ public class AgroalPoolTest {
     Vertx vertx;
 
     @ConfigProperty(name = "quarkus.datasource.jdbc.idle-removal-interval")
-    String idleSec;
-
-    @ConfigProperty(name = "quarkus.datasource.jdbc.background-validation-interval")
-    String idleBackgroundValidationSec;
+    Duration idleSec;
 
     @ConfigProperty(name = "quarkus.datasource.jdbc.max-size")
     int datasourceMaxSize;
@@ -95,13 +100,15 @@ public class AgroalPoolTest {
         }
     }
 
+    @Order(1)
     @Test
     public void idleTimeoutTest() throws InterruptedException {
         makeApplicationQuery();
-        Thread.sleep(getIdleMs() + getIdleBackgroundValidationMs() + SAFETY_INTERVAL);
+        Thread.sleep(getIdleMs() + SAFETY_INTERVAL);
         assertEquals(1, activeConnections(), "agroalCheckIdleTimeout: Expected " + datasourceMinSize + " active connections");
     }
 
+    @Order(2)
     @Test
     public void poolTurnoverTest() {
         final int events = 500;
@@ -116,11 +123,16 @@ public class AgroalPoolTest {
             if (max.intValue() < activeCon) {
                 max.set(activeCon.intValue());
             }
-            assertTrue(datasourceMaxSize >= activeCon, "More SQL connections than pool max-size");
-            assertTrue(datasourceMinSize <= activeCon, "Less SQL connections than pool min-size");
+            assertTrue(datasourceMaxSize >= activeCon,
+                    "More SQL connections '%d' than pool max-size '%d'".formatted(activeCon, datasourceMaxSize));
+            assertTrue(datasourceMinSize <= activeCon,
+                    "Less SQL connections '%d' than pool min-size '%d'".formatted(activeCon, datasourceMinSize));
         });
+
+        subscriber.cancel();
     }
 
+    @Order(3)
     @Test
     public void borderConditionBetweenIdleAndGetConnectionTest() {
         final int events = 500;
@@ -137,23 +149,36 @@ public class AgroalPoolTest {
             subscriber
                     .awaitItems(CONCURRENCY_LEVEL)
                     .getItems()
-                    .forEach(statusCode -> assertEquals(statusCode, HttpStatus.SC_OK, "Unexpected Application response"));
+                    .forEach(statusCode -> assertEquals(HttpStatus.SC_OK, statusCode,
+                            "Unexpected response status: " + statusCode));
+
+            subscriber.cancel();
         }
     }
 
+    @Order(4)
     @Test
-    public void concurrentLoadTest() {
+    public void concurrentLoadTest() throws InterruptedException {
         final int events = 100;
+        final CountDownLatch latch = new CountDownLatch(events * CONCURRENCY_LEVEL);
         for (int i = 0; i < events; i++) {
             Multi.createFrom()
                     .range(0, CONCURRENCY_LEVEL).subscribe()
-                    .with(n -> assertEquals(2, users.count(), "UnexpectedUser Amount"));
+                    .with(n -> {
+                        assertEquals(2, users.count(), "UnexpectedUser Amount");
+                        latch.countDown();
+                    });
         }
+        boolean allUserCountsDone = latch.await(2, TimeUnit.SECONDS);
+        Assertions.assertTrue(allUserCountsDone, "At least one call to 'users.count()' didn't finish within "
+                + "2 second timeout, either we need to raise the timeout or we detected issue");
     }
 
+    @Order(5)
     @Test
     public void connectionConcurrencyTest() {
         final int events = 500;
+        List<AssertSubscriber<String>> subscribers = new ArrayList<>();
         for (int k = 0; k < events; k++) {
             AssertSubscriber<String> subscriber = Multi.createFrom().range(0, CONCURRENCY_LEVEL).flatMap(n -> Multi
                     .createFrom().ticks()
@@ -168,17 +193,20 @@ public class AgroalPoolTest {
                     .awaitItems(CONCURRENCY_LEVEL)
                     .getItems()
                     .forEach(currentTime -> assertFalse(currentTime.isEmpty(), "Unexpected Application response"));
+
+            subscribers.add(subscriber);
         }
+        // at this moment, database is still queried
+        Assertions.assertEquals(3, activeConnections());
+        for (AssertSubscriber<String> subscriber : subscribers) {
+            subscriber.cancel();
+        }
+        // subscriber's 'cancel' method does not guarantee that queries are stopped immediately, the process is async
+        // it doesn't really matter if this method is the last to run; if one day this test is not the last, add waiting
     }
 
     private long getIdleMs() {
-        float idle = Float.parseFloat(idleSec.replaceAll("[A-Z]", ""));
-        return Duration.ofMillis(Math.round(1000 * idle)).toMillis();
-    }
-
-    private long getIdleBackgroundValidationMs() {
-        float idleBg = Float.parseFloat(idleBackgroundValidationSec.replaceAll("[A-Z]", ""));
-        return Duration.ofMillis(Math.round(1000 * idleBg)).toMillis();
+        return idleSec.toMillis();
     }
 
     private Multi<Long> activeConnectionsAsync(int events) {
@@ -192,9 +220,9 @@ public class AgroalPoolTest {
         });
     }
 
-    private Long activeConnections() {
+    private long activeConnections() {
         Query query = em.createNativeQuery("select * from INFORMATION_SCHEMA.PROCESSLIST;");
-        return (long) query.getResultList().size();
+        return query.getResultList().size();
     }
 
     private int makeApplicationQuery() {
