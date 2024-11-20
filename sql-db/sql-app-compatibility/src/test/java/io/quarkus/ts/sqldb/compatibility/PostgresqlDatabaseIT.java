@@ -14,8 +14,8 @@ public class PostgresqlDatabaseIT extends AbstractSqlDatabaseIT {
     @Container(image = "${postgresql.latest.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
     static PostgresqlService database = new PostgresqlService();
 
-    @QuarkusApplication
-    static RestService app = new RestService().withProperties("postgresql.properties")
+    @QuarkusApplication(properties = "postgresql.properties")
+    static RestService app = new RestService()
             .withProperty("quarkus.datasource.username", database.getUser())
             .withProperty("quarkus.datasource.password", database.getPassword())
             .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl);

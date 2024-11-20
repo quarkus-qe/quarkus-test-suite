@@ -1,7 +1,5 @@
 package io.quarkus.ts.stork;
 
-import static io.quarkus.ts.stork.PongResource.PONG_SERVICE_NAME;
-
 import jakarta.enterprise.event.Observes;
 import jakarta.ws.rs.core.MediaType;
 
@@ -19,6 +17,7 @@ import io.vertx.mutiny.ext.consul.ConsulClient;
 @RouteBase(path = "/pong", produces = MediaType.TEXT_PLAIN)
 public class PongReplicaResource {
 
+    private static final String PONG_SERVICE_NAME = "pong";
     private static final String DEFAULT_PONG_REPLICA_RESPONSE = "pongReplica";
 
     @ConfigProperty(name = "quarkus.stork.pong-replica.service-discovery.consul-host", defaultValue = "localhost")

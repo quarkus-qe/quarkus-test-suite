@@ -17,9 +17,8 @@ public class MssqlDatabaseIT extends AbstractSqlDatabaseIT {
     @SqlServerContainer
     static SqlServerService database = new SqlServerService();
 
-    @QuarkusApplication
+    @QuarkusApplication(properties = "mssql.properties")
     static final RestService app = new RestService()
-            .withProperties("mssql.properties")
             .withProperty("quarkus.datasource.username", database.getUser())
             .withProperty("quarkus.datasource.password", database.getPassword())
             .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl);

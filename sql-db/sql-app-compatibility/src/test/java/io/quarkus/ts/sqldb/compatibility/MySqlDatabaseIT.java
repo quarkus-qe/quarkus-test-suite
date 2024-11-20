@@ -16,8 +16,8 @@ public class MySqlDatabaseIT extends AbstractSqlDatabaseIT {
     @Container(image = "${mysql.80.image}", port = MYSQL_PORT, expectedLog = "port: " + MYSQL_PORT)
     static MySqlService database = new MySqlService();
 
-    @QuarkusApplication
-    static RestService app = new RestService().withProperties("mysql.properties")
+    @QuarkusApplication(properties = "mysql.properties")
+    static RestService app = new RestService()
             .withProperty("quarkus.datasource.username", database.getUser())
             .withProperty("quarkus.datasource.password", database.getPassword())
             .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl);
