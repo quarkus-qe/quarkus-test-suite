@@ -29,18 +29,29 @@ jobs:
           MODULES=$(find -name pom.xml | sed -e 's|pom.xml| |' | sed -e 's|./| |' | grep -v " quarkus/" | grep -v resources)
           CHANGED=""
           MODULES_ARG=""
+          EXCLUDE_LONG_RUNS="-DexcludedGroups=long-running"
 
           # If changed file have some special character, its path is surrounded with quotes which causing the if statement fail
           CHANGED_FILE=$(echo ${{ steps.files.outputs.all_changed_and_modified_files }} | sed 's/\"/\\"/')
 
           for module in $MODULES
           do
-            # Check if files contains main pom.xml as we want to run all modules here.
-            if [[ $CHANGED_FILE =~ [^\/]pom\.xml|^pom\.xml ]]; then
+            # Check if files contains main pom.xml or changes github workflows as we want to run all modules here.
+            if [[ $CHANGED_FILE =~ [^\/]pom\.xml|^pom\.xml|^\.github/ ]]; then
                 CHANGED=""
+                EXCLUDE_LONG_RUNS=""
                 break
             fi
+          
             if [[ $CHANGED_FILE =~ ("$module") ]] ; then
+                # Check if module contains tests with @Tag("long-running")
+                for file in $(find "$module" -type f -name "*.java"); do
+                  if grep -q '@Tag("long-running")' "$file"; then
+                    EXCLUDE_LONG_RUNS=""
+                    break
+                  fi
+                done
+          
                 CHANGED=$(echo $CHANGED" "$module)
             fi
           done
@@ -50,27 +61,46 @@ jobs:
 
           MODULES_ARG="${CHANGED// /,}"
           echo "MODULES_ARG=$MODULES_ARG" >> $GITHUB_OUTPUT
+          echo "EXCLUDE_LONG_RUNS=$EXCLUDE_LONG_RUNS" >> $GITHUB_OUTPUT
     outputs:
       MODULES_ARG: ${{ steps.detect-changes.outputs.MODULES_ARG }}
+      EXCLUDE_LONG_RUNS: ${{ steps.detect-changes.outputs.EXCLUDE_LONG_RUNS }}
   prepare-jvm-native-latest-modules-mvn-param:
     name: Prepare Maven Params For Linux JVM and native Build
     runs-on: ubuntu-latest
     needs: detect-test-suite-modules
     env:
       MODULES_ARG: ${{ needs.detect-test-suite-modules.outputs.MODULES_ARG }}
+      EXCLUDE_LONG_RUNS: ${{ needs.detect-test-suite-modules.outputs.EXCLUDE_LONG_RUNS }}
     steps:
       - id: prepare-modules-mvn-param
         run: |
           if [[ -n ${MODULES_ARG} ]]; then
             echo "Running modules: ${MODULES_ARG}"
-            echo "JVM_MODULES_MAVEN_PARAM=[\" -pl ${MODULES_ARG} -Dall-modules\"]" >> $GITHUB_OUTPUT
-            echo "NATIVE_MODULES_MAVEN_PARAM=[\" -pl ${MODULES_ARG} -Dall-modules\"]" >> $GITHUB_OUTPUT
+            echo "JVM_MODULES_MAVEN_PARAM=[\" -pl ${MODULES_ARG} -Dall-modules ${EXCLUDE_LONG_RUNS}\"]" >> $GITHUB_OUTPUT
+            echo "NATIVE_MODULES_MAVEN_PARAM=[\" -pl ${MODULES_ARG} -Dall-modules ${EXCLUDE_LONG_RUNS}\"]" >> $GITHUB_OUTPUT
           else
-            echo "JVM_MODULES_MAVEN_PARAM=[' -P root-modules,cache-modules,spring-modules,http-modules,test-tooling-modules,messaging-modules,monitoring-modules', ' -P security-modules,sql-db-modules,websockets-modules,nosql-db-modules']" >> $GITHUB_OUTPUT
-            echo "NATIVE_MODULES_MAVEN_PARAM=[' -P root-modules,websockets-modules,test-tooling-modules,nosql-db-modules', ' -P http-modules,cache-modules', ' -P security-modules,spring-modules',
-              ' -P sql-db-modules -pl env-info,sql-db/hibernate,sql-db/sql-app,sql-db/sql-app-compatibility,sql-db/multiple-pus,sql-db/panache-flyway,sql-db/hibernate-reactive',
-              ' -P sql-db-modules -pl env-info,sql-db/reactive-rest-data-panache,sql-db/vertx-sql,sql-db/reactive-vanilla,sql-db/hibernate-fulltext-search,sql-db/narayana-transactions',
-              ' -P messaging-modules,monitoring-modules']" | tr -d -s '\n' ' ' >> $GITHUB_OUTPUT
+            JVM_MODULES_GROUPS=(
+              " -P root-modules,cache-modules,spring-modules,http-modules,test-tooling-modules,messaging-modules,monitoring-modules"
+              " -P security-modules,sql-db-modules,websockets-modules,nosql-db-modules"
+            )
+          
+            NATIVE_MODULES_GROUPS=(
+              " -P root-modules,websockets-modules,test-tooling-modules,nosql-db-modules"
+              " -P http-modules,cache-modules"
+              " -P security-modules,spring-modules"
+              " -P sql-db-modules -pl env-info,sql-db/hibernate,sql-db/sql-app,sql-db/sql-app-compatibility,sql-db/multiple-pus,sql-db/panache-flyway,sql-db/hibernate-reactive"
+              " -P sql-db-modules -pl env-info,sql-db/reactive-rest-data-panache,sql-db/vertx-sql,sql-db/reactive-vanilla,sql-db/hibernate-fulltext-search,sql-db/narayana-transactions"
+              " -P messaging-modules,monitoring-modules"
+            )
+          
+            JVM_PARAMS=$(printf "'%s ${EXCLUDE_LONG_RUNS}', " "${JVM_MODULES_GROUPS[@]}")
+            JVM_PARAMS="[${JVM_PARAMS%, }]"
+            echo "JVM_MODULES_MAVEN_PARAM=${JVM_PARAMS}" >> $GITHUB_OUTPUT
+          
+            NATIVE_PARAMS=$(printf "'%s ${EXCLUDE_LONG_RUNS}', " "${NATIVE_MODULES_GROUPS[@]}")
+            NATIVE_PARAMS="[${NATIVE_PARAMS%, }]"
+            echo "NATIVE_MODULES_MAVEN_PARAM=${NATIVE_PARAMS}" >> $GITHUB_OUTPUT
           fi
     outputs:
       JVM_MODULES_MAVEN_PARAM: ${{ steps.prepare-modules-mvn-param.outputs.JVM_MODULES_MAVEN_PARAM }}
@@ -130,7 +160,7 @@ jobs:
           ./quarkus-dev-cli version
       - name: Build with Maven
         run: |
-          mvn -fae -V -B --no-transfer-progress clean verify -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli"${{ matrix.module-mvn-args }} -am -DexcludedGroups=long-running
+          mvn -fae -V -B --no-transfer-progress clean verify -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli" ${{ matrix.module-mvn-args }} -am
       - name: Detect flaky tests
         id: flaky-test-detector
         if: ${{ hashFiles('**/flaky-run-report.json') != '' }}
@@ -192,9 +222,9 @@ jobs:
           ./quarkus-dev-cli version
       - name: Build with Maven
         run: |
-            mvn -fae -V -B --no-transfer-progress -fae \
-                        -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli" \
-                        ${{ matrix.module-mvn-args }} clean verify -Dnative -am -DexcludedGroups=long-running
+          mvn -fae -V -B --no-transfer-progress \
+                      -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli" \
+                      ${{ matrix.module-mvn-args }} clean verify -Dnative -am
       - name: Detect flaky tests
         id: flaky-test-detector
         if: ${{ hashFiles('**/flaky-run-report.json') != '' }}
@@ -223,12 +253,11 @@ jobs:
   windows-build-jvm-latest:
     name: PR - Windows - JVM build - Latest Version
     runs-on: windows-latest
-    needs: [detect-test-suite-modules, linux-validate-format]
-    env:
-      MODULES_ARG: ${{ needs.detect-test-suite-modules.outputs.MODULES_ARG }}
+    needs: [linux-validate-format, prepare-jvm-native-latest-modules-mvn-param]
     strategy:
       matrix:
         java: [ 17 ]
+        module-mvn-args: ${{ fromJSON(needs.prepare-jvm-native-latest-modules-mvn-param.outputs.JVM_MODULES_MAVEN_PARAM) }}
     outputs:
       has-flaky-tests: ${{steps.flaky-test-detector.outputs.has-flaky-tests}}
     steps:
@@ -243,13 +272,7 @@ jobs:
       - name: Build in JVM mode
         shell: bash
         run: |
-          MODULES_MAVEN_PARAM=""
-          if [[ -n ${MODULES_ARG} ]]; then
-            echo "Running modules: ${MODULES_ARG}"
-            MODULES_MAVEN_PARAM="-pl ${MODULES_ARG}"
-          fi
-
-          mvn -B --no-transfer-progress -fae -s .github/quarkus-snapshots-mvn-settings.xml clean verify -Dall-modules $MODULES_MAVEN_PARAM -am -DexcludedGroups=long-running
+          mvn -B --no-transfer-progress -fae -s .github/quarkus-snapshots-mvn-settings.xml clean verify ${{ matrix.module-mvn-args }} -am
       - name: Detect flaky tests
         id: flaky-test-detector
         if: ${{ hashFiles('**/flaky-run-report.json') != '' }}
