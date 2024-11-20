@@ -4,12 +4,9 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
-import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
-import org.apache.kafka.clients.admin.AdminClient;
-import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.logging.log4j.util.Strings;
 import org.jboss.logmanager.Level;
 import org.junit.jupiter.api.MethodOrderer;
@@ -26,6 +23,7 @@ import io.quarkus.test.scenarios.annotations.DisabledOnRHBQandWindows;
 import io.quarkus.test.services.KafkaContainer;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.services.containers.model.KafkaVendor;
+import io.quarkus.ts.messaging.kafka.reactive.streams.shutdown.ReadinessObserver;
 import io.quarkus.ts.messaging.kafka.reactive.streams.shutdown.SlowTopicConsumer;
 import io.quarkus.ts.messaging.kafka.reactive.streams.shutdown.SlowTopicResource;
 
@@ -44,21 +42,8 @@ public class KafkaGratefulShutdownIT {
     @KafkaContainer(vendor = KafkaVendor.STRIMZI)
     static KafkaService kafka = new KafkaService();
 
-    /**
-     * If topic is not created before the test, messages inside it will not be processed.
-     * for details and todo see https://github.com/quarkus-qe/quarkus-test-suite/issues/2016
-     */
-    private void createTopic(KafkaService service) throws InterruptedException {
-        Properties properties = new Properties();
-        properties.put("bootstrap.servers", service.getBootstrapUrl());
-        try (AdminClient client = AdminClient.create(properties)) {
-            client.createTopics(List.of(new NewTopic("slow", 1, (short) 1)));
-        }
-        Thread.sleep(1000);
-    }
-
     @QuarkusApplication(classes = { SlowTopicConsumer.class,
-            SlowTopicResource.class }, properties = "kafka.grateful.shutdown.application.properties")
+            SlowTopicResource.class, ReadinessObserver.class }, properties = "kafka.grateful.shutdown.application.properties")
     static RestService app = new RestService()
             .withProperty("kafka.bootstrap.servers", kafka::getBootstrapUrl)
             .withProperty("quarkus.kafka-streams.bootstrap-servers", kafka::getBootstrapUrl)
@@ -66,8 +51,7 @@ public class KafkaGratefulShutdownIT {
 
     @Order(1)
     @Test
-    public void testConnection() throws InterruptedException {
-        createTopic(kafka);
+    public void testConnection() {
         app.given().post("/slow-topic/sendMessage/ave").then().statusCode(200);
         app.logs().assertContains("ave");
     }
