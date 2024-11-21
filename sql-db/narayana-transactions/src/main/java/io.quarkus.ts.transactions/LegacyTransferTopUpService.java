@@ -9,6 +9,7 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.narayana.jta.RunOptions;
 
+@SuppressWarnings("deprecation") //  this class intentionally uses deprecated apis
 @ApplicationScoped
 @Named("LegacyTransferTopUpService")
 public class LegacyTransferTopUpService extends TransferProcessor {

@@ -4,6 +4,7 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.net.HttpURLConnection;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -22,7 +23,6 @@ import io.vertx.core.http.HttpMethod;
 import io.vertx.core.net.SocketAddress;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
-import io.vertx.ext.web.client.predicate.ResponsePredicate;
 import io.vertx.ext.web.codec.BodyCodec;
 
 @QuarkusScenario
@@ -59,9 +59,14 @@ public class DomainSocketIT {
                         8080,
                         "localhost",
                         "/api/hello")
-                .expect(ResponsePredicate.SC_OK)
                 .as(BodyCodec.jsonObject())
                 .send()
+                .map(res -> {
+                    if (res.statusCode() != HttpURLConnection.HTTP_OK) {
+                        throw new AssertionError("Unexpected HTTP status: " + res.statusCode());
+                    }
+                    return res;
+                })
                 .onSuccess(res -> response.set(res.body().toString()))
                 .onFailure(err -> response.set(err.getMessage()));
 

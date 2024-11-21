@@ -12,7 +12,6 @@ import io.smallrye.mutiny.Uni;
 import io.vertx.mutiny.core.Vertx;
 import io.vertx.mutiny.ext.web.client.HttpResponse;
 import io.vertx.mutiny.ext.web.client.WebClient;
-import io.vertx.mutiny.ext.web.client.predicate.ResponsePredicate;
 
 @ApplicationScoped
 public class PongService {
@@ -35,8 +34,13 @@ public class PongService {
     public Uni<String> pong() {
         return client.getAbs(basePath + "/chuck/pong")
                 .putHeader("Accept", "application/json")
-                .expect(ResponsePredicate.status(HttpURLConnection.HTTP_OK))
                 .send()
+                .map(res -> {
+                    if (res.statusCode() != HttpURLConnection.HTTP_OK) {
+                        throw new AssertionError("Unexpected HTTP status: " + res.statusCode());
+                    }
+                    return res;
+                })
                 .map(HttpResponse::bodyAsString);
     }
 }

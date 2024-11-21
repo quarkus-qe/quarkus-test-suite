@@ -22,7 +22,6 @@ import io.smallrye.mutiny.Uni;
 import io.vertx.mutiny.core.Vertx;
 import io.vertx.mutiny.ext.web.client.HttpResponse;
 import io.vertx.mutiny.ext.web.client.WebClient;
-import io.vertx.mutiny.ext.web.client.predicate.ResponsePredicate;
 import io.vertx.mutiny.ext.web.codec.BodyCodec;
 
 @RouteBase(path = "/chuck")
@@ -56,8 +55,13 @@ public class ChuckNorrisResource {
         return client.getAbs(chuckNorrisQuote.getValue())
                 .as(BodyCodec.json(Joke.class))
                 .putHeader("Accept", "application/json")
-                .expect(ResponsePredicate.status(HttpURLConnection.HTTP_OK))
                 .send()
+                .map(response -> {
+                    if (response.statusCode() != HttpURLConnection.HTTP_OK) {
+                        throw new AssertionError("Unexpected HTTP status: " + response.statusCode());
+                    }
+                    return response;
+                })
                 .map(HttpResponse::body)
                 .ifNoItem().after(Duration.ofSeconds(httpClientConf.timeout())).fail()
                 .onFailure().retry().atMost(httpClientConf.retries());
@@ -82,8 +86,13 @@ public class ChuckNorrisResource {
     private Uni<Joke> getChuckQuoteAsJoke() {
         return client.getAbs(chuckNorrisQuote.getValue())
                 .putHeader("Accept", "application/json")
-                .expect(ResponsePredicate.status(HttpURLConnection.HTTP_OK))
                 .send()
+                .map(response -> {
+                    if (response.statusCode() != HttpURLConnection.HTTP_OK) {
+                        throw new AssertionError("Unexpected HTTP status: " + response.statusCode());
+                    }
+                    return response;
+                })
                 .map(resp -> resp.bodyAsJsonObject().mapTo(Joke.class));
     }
 }

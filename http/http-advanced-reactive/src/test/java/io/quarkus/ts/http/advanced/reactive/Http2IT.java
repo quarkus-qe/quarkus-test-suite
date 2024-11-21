@@ -222,7 +222,7 @@ public class Http2IT {
                 .setVerifyHost(false);
         httpClient = vertx.httpClientBuilder().with(options).build();
 
-        httpClient.request(HttpMethod.GET, app.getPort(Protocol.HTTPS), baseUri.getHost(), "/ping")
+        httpClient.request(HttpMethod.GET, app.getURI(Protocol.HTTPS).getPort(), baseUri.getHost(), "/ping")
                 .onFailure(context::failNow)
                 .flatMap(request -> request.send().flatMap(HttpClientResponse::body))
                 .onSuccess(buffer -> {
