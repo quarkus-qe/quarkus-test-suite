@@ -79,8 +79,8 @@ public class OpentelemetryReactiveIT {
         int pageLimit = 10;
         String serviceName = "pingservice";
         String operationName = "GET /admin";
+        doSecurityEndpointRequest();
         await().atMost(30, TimeUnit.SECONDS).pollInterval(Duration.ofSeconds(1)).untilAsserted(() -> {
-            doSecurityEndpointRequest();
             thenRetrieveTraces(pageLimit, "1h", serviceName, operationName);
             assertSecurityEventsAndLogsPresent();
         });
@@ -143,7 +143,7 @@ public class OpentelemetryReactiveIT {
 
     private void assertSecurityEventsAndLogsPresent() {
         resp.then().body(
-                "data[0].spans.findAll { span -> span.operationName == 'GET /admin' }[0].logs.flatten().findAll { log -> log.fields.find { field -> field.key == 'event' && field.value == 'quarkus.security.authorization.success' } }",
+                "data.flatten().spans.flatten().findAll { span -> span.operationName == 'GET /admin' }.logs.flatten().findAll { log -> log.fields.find { field -> field.key == 'event' && field.value == 'quarkus.security.authorization.success' } }",
                 is(not(empty())));
     }
 
