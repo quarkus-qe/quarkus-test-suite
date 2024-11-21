@@ -2,6 +2,7 @@ package io.quarkus.ts.http.vertx.webclient;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -15,7 +16,6 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.vertx.ext.web.client.WebClientOptions;
 import io.vertx.mutiny.core.Vertx;
 import io.vertx.mutiny.ext.web.client.WebClient;
-import io.vertx.mutiny.ext.web.client.predicate.ResponsePredicate;
 
 @QuarkusTest
 public class PureVertxHttpClientTest {
@@ -36,8 +36,14 @@ public class PureVertxHttpClientTest {
 
             for (int i = 0; i < EXPECTED_EVENTS; i++) {
                 webClient.getAbs(url.toString() + "/chuck/pong")
-                        .expect(ResponsePredicate.status(200))
-                        .send().subscribe().with(resp -> done.countDown());
+                        .send()
+                        .map(res -> {
+                            if (res.statusCode() != HttpURLConnection.HTTP_OK) {
+                                throw new AssertionError("Unexpected HTTP status: " + res.statusCode());
+                            }
+                            return res;
+                        })
+                        .subscribe().with(resp -> done.countDown());
             }
 
             done.await(TIMEOUT_SEC, TimeUnit.SECONDS);

@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.test.services.URILike;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.vertx.core.Vertx;
@@ -63,8 +64,8 @@ public abstract class AbstractVertxIT {
         assertNotNull(vertx);
         HttpClient httpClient = vertx.createHttpClient();
         assertNotNull(httpClient);
-
-        httpClient.request(HttpMethod.GET, service.getPort(), service.getURI(Protocol.NONE).getHost(), "/hello")
+        URILike uri = service.getURI();
+        httpClient.request(HttpMethod.GET, uri.getPort(), uri.getHost(), "/hello")
                 .compose(request -> request.send()
                         .compose(httpClientResponse -> {
                             assertEquals(HttpStatus.SC_OK, httpClientResponse.statusCode());
@@ -86,7 +87,8 @@ public abstract class AbstractVertxIT {
         HttpClient httpClient = vertx.createHttpClient(httpClientOptions);
         assertNotNull(httpClient);
 
-        httpClient.request(HttpMethod.GET, service.getPort(), service.getURI(Protocol.NONE).getHost(), "/hello")
+        URILike uri = service.getURI(Protocol.NONE);
+        httpClient.request(HttpMethod.GET, uri.getPort(), uri.getHost(), "/hello")
                 .compose(httpClientRequest -> httpClientRequest.send()
                         .compose(httpClientResponse -> {
                             assertEquals(HttpVersion.HTTP_2, httpClientResponse.version());
@@ -108,7 +110,8 @@ public abstract class AbstractVertxIT {
         HttpClient httpClient = vertx.createHttpClient();
         assertNotNull(httpClient);
 
-        httpClient.request(HttpMethod.GET, service.getPort(), service.getURI(Protocol.NONE).getHost(),
+        URILike uri = service.getURI();
+        httpClient.request(HttpMethod.GET, uri.getPort(), uri.getHost(),
                 "/hello?name=" + jsonObject.getString("name"))
                 .compose(HttpClientRequest::send)
                 .compose(HttpClientResponse::body)

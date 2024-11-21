@@ -40,8 +40,6 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.core.net.JksOptions;
 import io.vertx.ext.web.client.WebClientOptions;
 import io.vertx.mutiny.ext.web.client.HttpResponse;
-import io.vertx.mutiny.ext.web.client.predicate.ResponsePredicate;
-import io.vertx.mutiny.ext.web.client.predicate.ResponsePredicateResult;
 
 public abstract class BaseHttpAdvancedIT {
 
@@ -125,8 +123,15 @@ public abstract class BaseHttpAdvancedIT {
         CountDownLatch done = new CountDownLatch(1);
         Uni<JsonObject> content = getApp().mutiny(defaultVertxHttpClientOptions())
                 .getAbs(getAppEndpoint() + "/hello")
-                .expect(ResponsePredicate.create(this::isHttp2x))
-                .expect(ResponsePredicate.status(Response.Status.OK.getStatusCode())).send()
+                .send()
+                .map(response -> {
+                    if (response.statusCode() != 200) {
+                        throw new AssertionError("Wrong status code: " + response.statusCode());
+                    } else if (response.version().compareTo(HttpVersion.HTTP_2) != 0) {
+                        throw new AssertionError("Expected HTTP/2, but found " + response.version());
+                    }
+                    return response;
+                })
                 .map(HttpResponse::bodyAsJsonObject).ifNoItem().after(Duration.ofSeconds(TIMEOUT_SEC)).fail()
                 .onFailure().retry().atMost(RETRY);
 
@@ -212,11 +217,6 @@ public abstract class BaseHttpAdvancedIT {
 
     private String getAppEndpoint() {
         return getApp().getURI(getProtocol()).withPath(ROOT_PATH).toString();
-    }
-
-    private ResponsePredicateResult isHttp2x(HttpResponse<Void> resp) {
-        return (resp.version().compareTo(HttpVersion.HTTP_2) == 0) ? ResponsePredicateResult.success()
-                : ResponsePredicateResult.failure("Expected HTTP/2");
     }
 
     private WebClientOptions defaultVertxHttpClientOptions() {

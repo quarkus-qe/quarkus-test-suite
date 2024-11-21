@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
+import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.restassured.RestAssured;
 import io.restassured.filter.Filter;
@@ -220,7 +221,8 @@ public abstract class AbstractWebAuthnTest {
                 .get(USER_API_URL)
                 .then()
                 .statusCode(302)
-                .header("Location", Matchers.matchesRegex(getApp().getHost() + "(:\\d+)?/login.html"));
+                .header("Location",
+                        Matchers.matchesRegex(getApp().getURI(Protocol.HTTP).getRestAssuredStyleUri() + "(:\\d+)?/login.html"));
 
     }
 
