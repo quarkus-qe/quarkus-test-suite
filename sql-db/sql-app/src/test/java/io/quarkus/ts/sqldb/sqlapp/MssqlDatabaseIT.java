@@ -23,10 +23,9 @@ public class MssqlDatabaseIT extends AbstractSqlDatabaseIT {
             @Dependency(groupId = "io.quarkus", artifactId = "quarkus-security"),
             @Dependency(groupId = "org.bouncycastle", artifactId = "bctls-fips"),
             @Dependency(groupId = "org.bouncycastle", artifactId = "bc-fips")
-    })
+    }, properties = "mssql.properties")
     static final RestService app = new RestService()
             .withProperties(database::getTlsProperties)
-            .withProperties("mssql.properties")
             .withProperty("quarkus.security.security-providers", "BCFIPSJSSE")
             .withProperty("quarkus.datasource.username", database.getUser())
             .withProperty("quarkus.datasource.password", database.getPassword())
