@@ -81,6 +81,7 @@ public class MssqlTransactionGeneralUsageIT extends TransactionCommons {
     //on average, there is one leaking connection every 2 minutes
     void connectionLeak() throws InterruptedException {
         int before = getConnections();
+        System.out.println("Monday");
         Duration later = Duration.of(4L, ChronoUnit.MINUTES).plus(Duration.ofSeconds(15));
         LOG.warn("Waiting for " + later.toSeconds() + " seconds to check for leaking connections");
         Thread.sleep(later.toMillis());

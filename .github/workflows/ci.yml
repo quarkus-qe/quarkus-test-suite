@@ -54,8 +54,10 @@ jobs:
           LONG_RUNNING_TESTS_CHANGED="$(echo $LONG_RUNNING_TESTS_CHANGED | xargs)"
 
           MODULES_ARG="${CHANGED// /,}"
+          echo "MODULES_ARG=$MODULES_ARG"
           echo "MODULES_ARG=$MODULES_ARG" >> $GITHUB_OUTPUT
           MODULES_LONG_RUNS_ARG="${LONG_RUNNING_TESTS_CHANGED// /,}"
+          echo "MODULES_LONG_RUNS_ARG=$MODULES_LONG_RUNS_ARG"
           echo "MODULES_LONG_RUNS_ARG=$MODULES_LONG_RUNS_ARG" >> $GITHUB_OUTPUT
     outputs:
       MODULES_ARG: ${{ steps.detect-changes.outputs.MODULES_ARG }}
