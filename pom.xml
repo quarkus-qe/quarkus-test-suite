@@ -531,6 +531,7 @@
                 <module>env-info</module>
                 <module>messaging/amqp-reactive</module>
                 <module>messaging/qpid</module>
+                <module>messaging/kafka-processor</module>
                 <module>messaging/kafka-streams-reactive-messaging</module>
                 <module>messaging/kafka-confluent-avro-reactive-messaging</module>
                 <module>messaging/kafka-strimzi-avro-reactive-messaging</module>
