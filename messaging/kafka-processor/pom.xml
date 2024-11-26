@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.quarkus.ts.qe</groupId>
+        <artifactId>parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../..</relativePath>
+    </parent>
+    <properties>
+        <!-- Need to be this version, I wasn't able to reproduce QUARKUS-5178 on newer versions-->
+        <quarkus-kafka-streams-processor.version>2.0.1</quarkus-kafka-streams-processor.version>
+    </properties>
+    <artifactId>kafka-processor</artifactId>
+    <name>Quarkus QE TS: Messaging: Reactive Processor Quarkiverse</name>
+    <dependencies>
+        <dependency>
+            <groupId>io.quarkiverse.kafkastreamsprocessor</groupId>
+            <artifactId>quarkus-kafka-streams-processor-api</artifactId>
+            <version>${quarkus-kafka-streams-processor.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkiverse.kafkastreamsprocessor</groupId>
+            <artifactId>quarkus-kafka-streams-processor-impl</artifactId>
+            <version>${quarkus-kafka-streams-processor.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkiverse.kafkastreamsprocessor</groupId>
+            <artifactId>quarkus-kafka-streams-processor</artifactId>
+            <version>${quarkus-kafka-streams-processor.version}</version>
+        </dependency>
+    </dependencies>
+</project>

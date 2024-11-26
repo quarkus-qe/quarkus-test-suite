@@ -974,6 +974,11 @@ There is an EventsProducer that generate stock prices events every 1s. The event
 A Kafka consumer will read these events serialized by AVRO and change an `status` property to `COMPLETED`.
 The streams of completed events will be exposed through an SSE endpoint.
 
+### `messaging/kafka-processor`
+
+This module verify the [QUARKUS-5178](https://issues.redhat.com/browse/QUARKUS-5178), which using Quarkiverse extension.
+This is tested only in dev mode only as it's not happening in prod mode.
+
 ### `messaging/kafka-strimzi-avro-reactive-messaging`
 
 - Verifies that `Quarkus Kafka` + `Apicurio Kakfa Registry`(AVRO) and `Quarkus SmallRye Reactive Messaging` extensions work as expected.
