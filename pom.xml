@@ -19,7 +19,7 @@
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
         <quarkus.platform.version>999-SNAPSHOT</quarkus.platform.version>
         <quarkus.ide.version>3.17.0</quarkus.ide.version>
-        <quarkus.qe.framework.version>1.6.0.Beta15</quarkus.qe.framework.version>
+        <quarkus.qe.framework.version>999-SNAPSHOT</quarkus.qe.framework.version>
         <quarkus-qpid-jms.version>2.7.1</quarkus-qpid-jms.version>
         <confluent.kafka-avro-serializer.version>7.5.1</confluent.kafka-avro-serializer.version>
         <formatter-maven-plugin.version>2.24.1</formatter-maven-plugin.version>
@@ -149,6 +149,19 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <repositories>
+        <!-- repository where framework snapshots are deployed -->
+        <repository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
     <build>
         <extensions>
             <!-- Build Reporter collects and generates build reports analyzed by Jenkins jobs using AWS EC2 Windows-->
