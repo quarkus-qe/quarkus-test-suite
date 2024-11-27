@@ -17,16 +17,17 @@ import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
 public class UndertowMissingServletClassIT {
+
+    // if you rename the field 'missingServletTest', please also adjust test.properties
     @QuarkusApplication(builder = WithMissingServlet.class)
-    static RestService app = new RestService()
-            .setAutoStart(false);
+    static RestService missingServletTest = new RestService().setAutoStart(false);
 
     @Tag("https://github.com/quarkusio/quarkus/issues/44063")
     @Test
     void verifyUndertowIgnoreServletClassMissing() {
-        assertDoesNotThrow(() -> app.start(),
+        assertDoesNotThrow(() -> missingServletTest.start(),
                 "The app should start without any issue");
-        app.logs().assertDoesNotContain("Local name must not be null");
+        missingServletTest.logs().assertDoesNotContain("Local name must not be null");
     }
 
     public static void replaceForInvalidXML(Service service) {
