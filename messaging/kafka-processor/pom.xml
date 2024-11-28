@@ -9,7 +9,7 @@
     </parent>
     <properties>
         <!-- Need to be this version, I wasn't able to reproduce QUARKUS-5178 on newer versions-->
-        <quarkus-kafka-streams-processor.version>2.0.1</quarkus-kafka-streams-processor.version>
+        <quarkus-kafka-streams-processor.version>4.0.2</quarkus-kafka-streams-processor.version>
     </properties>
     <artifactId>kafka-processor</artifactId>
     <name>Quarkus QE TS: Messaging: Reactive Processor Quarkiverse</name>
