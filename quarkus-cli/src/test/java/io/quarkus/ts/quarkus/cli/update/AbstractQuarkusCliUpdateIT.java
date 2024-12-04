@@ -55,11 +55,7 @@ public abstract class AbstractQuarkusCliUpdateIT {
         this.oldVersionStream = oldVersionStream;
         this.newVersionStream = newVersionStream;
 
-        this.quarkusCLIAppManager = createQuarkusCLIAppManager();
-    }
-
-    protected IQuarkusCLIAppManager createQuarkusCLIAppManager() {
-        return QuarkusCLIUtils.createAppManager(cliClient, oldVersionStream, newVersionStream);
+        this.quarkusCLIAppManager = QuarkusCLIUtils.createAppManager(cliClient, oldVersionStream, newVersionStream);
     }
 
     /**

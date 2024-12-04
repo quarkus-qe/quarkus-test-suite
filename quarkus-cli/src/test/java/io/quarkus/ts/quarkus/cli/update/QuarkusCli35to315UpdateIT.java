@@ -14,25 +14,18 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.QuarkusCliRestService;
-import io.quarkus.test.util.DefaultQuarkusCLIAppManager;
-import io.quarkus.test.util.IQuarkusCLIAppManager;
 
 @Tag("quarkus-cli")
 public class QuarkusCli35to315UpdateIT extends AbstractQuarkusCliUpdateIT {
-    private static final DefaultArtifactVersion oldVersion = new DefaultArtifactVersion("3.8");
+    private static final DefaultArtifactVersion oldVersion = new DefaultArtifactVersion("3.2");
     private static final DefaultArtifactVersion newVersion = new DefaultArtifactVersion("3.15");
 
     public QuarkusCli35to315UpdateIT() {
         super(oldVersion, newVersion);
     }
 
-    @Override
-    protected IQuarkusCLIAppManager createQuarkusCLIAppManager() {
-        return new DefaultQuarkusCLIAppManager(cliClient, oldVersionStream, newVersionStream);
-    }
-
     /**
-     * Test that updating from Quarkus 3.8 to 3.15 correctly transforms
+     * Test that updating from Quarkus 3.2 to 3.15 correctly transforms
      * the 'quarkus-rest-client-reactive-jackson' extension to 'quarkus-rest-client-jackson',
      * and does not incorrectly transform it to 'quarkus-resteasy-client-jackson'.
      * This test addresses a specific issue where the update recipes could apply in the wrong order,
