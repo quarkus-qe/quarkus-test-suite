@@ -14,21 +14,13 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.QuarkusCliRestService;
-import io.quarkus.test.util.DefaultQuarkusCLIAppManager;
-import io.quarkus.test.util.IQuarkusCLIAppManager;
 
-@Tag("quarkus-cli")
 public class QuarkusCli35to315UpdateIT extends AbstractQuarkusCliUpdateIT {
     private static final DefaultArtifactVersion oldVersion = new DefaultArtifactVersion("3.5");
     private static final DefaultArtifactVersion newVersion = new DefaultArtifactVersion("3.15");
 
     public QuarkusCli35to315UpdateIT() {
         super(oldVersion, newVersion);
-    }
-
-    @Override
-    protected IQuarkusCLIAppManager createQuarkusCLIAppManager() {
-        return new DefaultQuarkusCLIAppManager(cliClient, oldVersionStream, newVersionStream);
     }
 
     /**
