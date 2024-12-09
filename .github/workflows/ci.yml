@@ -19,17 +19,23 @@ jobs:
           java-version: ${{ matrix.java }}
           check-latest: true
           cache: 'maven'
-      - name: Quarkus CLI
-        shell: bash
+      - name: Build Quarkus CLI
+        shell: pwsh
         run: |
-          curl -Ls https://sh.jbang.dev | bash -s - trust add https://repo1.maven.org/maven2/io/quarkus/quarkus-cli/
-          curl -Ls https://sh.jbang.dev | bash -s - app install --fresh --force quarkus@quarkusio
-          exec $SHELL
+          Invoke-WebRequest https://s01.oss.sonatype.org/content/repositories/snapshots/io/quarkus/quarkus-cli/999-SNAPSHOT/quarkus-cli-999-20241209.023002-1284-runner.jar -OutFile "$env:USERPROFILE/quarkus-cli-999-SNAPSHOT-runner.jar"
+      - name: Install Quarkus CLI
+        shell: pwsh
+        run: |
+          ls "$env:USERPROFILE"
+          cat <<EOF > ./quarkus-dev-cli.ps1
+          java -jar "\$env:USERPROFILE/quarkus-cli-999-SNAPSHOT-runner.jar" "\$args"
+          EOF
+          cat ./quarkus-dev-cli.ps1
+          ./quarkus-dev-cli.ps1 version
       - name: Build in JVM mode
-        shell: bash
+        shell: pwsh
         run: |
-          quarkus --version
-          mvn -B --no-transfer-progress -fae -s .github/quarkus-snapshots-mvn-settings.xml clean verify -am -Dinclude.quarkus-cli-tests -f quarkus-cli
+          mvn -B --no-transfer-progress -fae -s .github/quarkus-snapshots-mvn-settings.xml clean verify -am -Dinclude.quarkus-cli-tests -f quarkus-cli -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli.ps1"
       - name: Detect flaky tests
         id: flaky-test-detector
         if: ${{ hashFiles('**/flaky-run-report.json') != '' }}
