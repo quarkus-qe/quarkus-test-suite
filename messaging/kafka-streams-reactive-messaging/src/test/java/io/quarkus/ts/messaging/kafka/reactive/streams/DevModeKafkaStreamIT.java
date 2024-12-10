@@ -28,6 +28,6 @@ public class DevModeKafkaStreamIT extends BaseKafkaStreamTest {
 
     @Test
     public void kafkaContainerShouldBeStarted() {
-        app.logs().assertContains("Creating container for image: docker.io/vectorized/redpanda");
+        app.logs().assertContains("Creating container for image: docker.io/redpandadata/redpanda");
     }
 }
