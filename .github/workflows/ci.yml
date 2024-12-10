@@ -26,15 +26,15 @@ jobs:
       - name: Install Quarkus CLI
         shell: pwsh
         run: |
-          New-Item -Path "$env:USERPROFILE\quarkus-dev-cli.ps1" -ItemType File
-          Set-Content -Path "$env:USERPROFILE\quarkus-dev-cli.ps1" -Value 'java -jar "$env:USERPROFILE\quarkus-cli-999-SNAPSHOT-runner.jar" $args'
-          get-content "$env:USERPROFILE\quarkus-dev-cli.ps1"
+          New-Item -Path "$env:USERPROFILE\quarkus-dev-cli.bat" -ItemType File
+          Set-Content -Path "$env:USERPROFILE\quarkus-dev-cli.bat" -Value 'java -jar "%homedrive%%homepath%\quarkus-cli-999-SNAPSHOT-runner.jar" %*'
+          get-content "$env:USERPROFILE\quarkus-dev-cli.bat"
           cd "$env:USERPROFILE"
-          ./quarkus-dev-cli.ps1 version "-Dquarkus.analytics.disabled=true"
+          ./quarkus-dev-cli.bat version "-Dquarkus.analytics.disabled=true"
       - name: Build in JVM mode
-        shell: pwsh
+        shell: bash
         run: |
-          mvn -B --no-transfer-progress -fae -s .github/quarkus-snapshots-mvn-settings.xml clean verify -am "-Dinclude.quarkus-cli-tests" -f quarkus-cli "-Dts.quarkus.cli.cmd=$env:USERPROFILE\quarkus-dev-cli.ps1"
+          mvn -B --no-transfer-progress -fae -s .github/quarkus-snapshots-mvn-settings.xml clean verify -am "-Dinclude.quarkus-cli-tests" -f quarkus-cli "-Dts.quarkus.cli.cmd=C:\Users\runneradmin\quarkus-dev-cli.bat"
       - name: Detect flaky tests
         id: flaky-test-detector
         if: ${{ hashFiles('**/flaky-run-report.json') != '' }}
