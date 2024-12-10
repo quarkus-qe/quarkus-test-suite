@@ -6,6 +6,7 @@ import jakarta.inject.Inject;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.condition.OS;
@@ -46,16 +47,19 @@ public class QuarkusCliSpecialCharsIT {
     }
 
     @Test
+    @DisabledIfSystemProperty(named = "gh-action-disable-on-win", matches = "true", disabledReason = "Some windows don't have all language pack/locales so it causing it fail")
     public void shouldCreateApplicationOnJvmWithDiacritics() {
         assertCreateJavaApplicationAtFolder(FOLDER_WITH_DIACRITICS);
     }
 
     @Test
+    @DisabledIfSystemProperty(named = "gh-action-disable-on-win", matches = "true", disabledReason = "Some windows don't have all language pack/locales so it causing it fail")
     public void shouldCreateApplicationOnJvmWithJapanese() {
         assertCreateJavaApplicationAtFolder(FOLDER_WITH_JAPANESE);
     }
 
     @Test
+    @DisabledIfSystemProperty(named = "gh-action-disable-on-win", matches = "true", disabledReason = "Some windows don't have all language pack/locales so it causing it fail")
     public void shouldCreateApplicationOnJvmWithInternationalization() {
         assertCreateJavaApplicationAtFolder(FOLDER_WITH_INTERNATIONALIZATION);
     }
