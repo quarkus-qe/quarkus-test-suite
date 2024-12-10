@@ -17,7 +17,7 @@ public class DevModeKafkaSnappyIT extends SnappyCompressionIT {
 
     @Test
     public void kafkaContainerShouldBeStarted() {
-        app.logs().assertContains("Creating container for image: docker.io/vectorized/redpanda");
+        app.logs().assertContains("Creating container for image: docker.io/redpandadata/redpanda");
     }
 
 }
