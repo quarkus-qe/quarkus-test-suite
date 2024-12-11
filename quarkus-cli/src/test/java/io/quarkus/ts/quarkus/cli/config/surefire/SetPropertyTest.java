@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import jakarta.inject.Inject;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 
 import io.quarkus.test.junit.QuarkusTest;
 import io.smallrye.config.SmallRyeConfig;
@@ -18,6 +19,7 @@ import io.smallrye.config.SmallRyeConfig;
  * This test is only support to run inside QuarkusCliConfigSetIT.
  */
 @QuarkusTest
+@DisabledIfSystemProperty(named = "gh-action-disable-on-win", matches = "true", disabledReason = "Some windows don't have all language pack/locales so it causing it fail")
 public class SetPropertyTest {
 
     @Inject
