@@ -9,12 +9,11 @@ import static org.jboss.resteasy.spi.HttpResponseCodes.SC_OK;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -98,18 +97,21 @@ public class SpringDataCompositeEntityIT extends AbstractDbIT {
     }
 
     @Test
-    @Tag("QUARKUS-1521")
-    @Disabled("https://github.com/quarkusio/quarkus/issues/41292")
-    void ensureFieldPageableIsSerialized() {
+    void ensureFieldPageableContainsInfoAboutPage() {
+        int size = 2;
+        int page = 1;
         Response response = app.given()
                 .accept("application/json")
-                .queryParam("size", "2")
-                .queryParam("page", "1")
+                .queryParam("size", size)
+                .queryParam("page", page)
                 .when().get("/book/paged");
         Assertions.assertEquals(200, response.statusCode());
-        String pageable = response.body().jsonPath().get("pageable");
-        Assertions.assertNotNull(pageable,
-                "Field 'pageable' of org.springframework.data.domain.PageImpl was not serialized");
+        LinkedHashMap<String, Object> pageable = response.body().jsonPath().get("pageable");
+        Assertions.assertNotNull(pageable, "Field 'pageable' should not be null");
+        Assertions.assertEquals(true, pageable.get("paged"),
+                "The part of pageable response should contain paged equals to true");
+        Assertions.assertEquals(size, pageable.get("pageSize"), "Element pageSize should be " + size);
+        Assertions.assertEquals(page, pageable.get("pageNumber"), "Element pageNumber should be " + page);
     }
 
     private Book updateBook(Book book) {
