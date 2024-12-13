@@ -1,6 +1,5 @@
 package io.quarkus.ts.security.webauthn.security;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -9,79 +8,46 @@ import java.util.Set;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
+import io.quarkus.security.webauthn.WebAuthnCredentialRecord;
 import io.quarkus.security.webauthn.WebAuthnUserProvider;
 import io.quarkus.ts.security.webauthn.model.User;
 import io.quarkus.ts.security.webauthn.model.WebAuthnCredential;
 import io.smallrye.mutiny.Uni;
-import io.vertx.ext.auth.webauthn.AttestationCertificates;
-import io.vertx.ext.auth.webauthn.Authenticator;
 
 @ApplicationScoped
 public class MyWebAuthnSetup implements WebAuthnUserProvider {
 
     @WithTransaction
     @Override
-    public Uni<List<Authenticator>> findWebAuthnCredentialsByUserName(String userName) {
+    public Uni<List<WebAuthnCredentialRecord>> findByUserName(String userName) {
         return WebAuthnCredential.findByUserName(userName)
-                .flatMap(MyWebAuthnSetup::toAuthenticators);
+                .map(list -> list.stream().map(WebAuthnCredential::toWebAuthnCredentialRecord).toList());
     }
 
     @WithTransaction
     @Override
-    public Uni<List<Authenticator>> findWebAuthnCredentialsByCredID(String credID) {
-        return WebAuthnCredential.findByCredID(credID)
-                .flatMap(MyWebAuthnSetup::toAuthenticators);
+    public Uni<WebAuthnCredentialRecord> findByCredentialId(String credentialId) {
+        return WebAuthnCredential.findByCredentialId(credentialId)
+                .onItem().ifNull().failWith(() -> new RuntimeException("No such credentials"))
+                .map(WebAuthnCredential::toWebAuthnCredentialRecord);
     }
 
     @WithTransaction
     @Override
-    public Uni<Void> updateOrStoreWebAuthnCredentials(Authenticator authenticator) {
-        return User.findByUserName(authenticator.getUserName())
-                .flatMap(user -> {
-                    // new user
-                    if (user == null) {
-                        User newUser = new User();
-                        newUser.userName = authenticator.getUserName();
-                        WebAuthnCredential credential = new WebAuthnCredential(authenticator, newUser);
-                        return credential.persist()
-                                .flatMap(c -> newUser.persist())
-                                .onItem().ignore().andContinueWithNull();
-                    } else {
-
-                        // existing user
-                        user.webAuthnCredential.counter = authenticator.getCounter();
-                        return Uni.createFrom().nullItem();
-                    }
-                });
+    public Uni<Void> store(WebAuthnCredentialRecord credentialRecord) {
+        User newUser = new User();
+        newUser.userName = credentialRecord.getUserName();
+        WebAuthnCredential credential = new WebAuthnCredential(credentialRecord, newUser);
+        return credential.persist()
+                .flatMap(c -> newUser.persist())
+                .onItem().ignore().andContinueWithNull();
     }
 
-    private static Uni<List<Authenticator>> toAuthenticators(List<WebAuthnCredential> dbs) {
-        // can't call combine/uni on empty list
-        if (dbs.isEmpty())
-            return Uni.createFrom().item(Collections.emptyList());
-        List<Uni<Authenticator>> ret = new ArrayList<>(dbs.size());
-        for (WebAuthnCredential db : dbs) {
-            ret.add(toAuthenticator(db));
-        }
-        return Uni.combine().all().unis(ret).with(f -> (List) f);
-    }
-
-    private static Uni<Authenticator> toAuthenticator(WebAuthnCredential credential) {
-        return credential.fetch(credential.webAuthnx509Certificates)
-                .map(x5c -> {
-                    Authenticator ret = new Authenticator();
-                    ret.setAaguid(credential.aaguid);
-                    AttestationCertificates attestationCertificates = new AttestationCertificates();
-                    attestationCertificates.setAlg(credential.alg);
-                    ret.setAttestationCertificates(attestationCertificates);
-                    ret.setCounter(credential.counter);
-                    ret.setCredID(credential.credID);
-                    ret.setFmt(credential.fmt);
-                    ret.setPublicKey(credential.publicKey);
-                    ret.setType(credential.type);
-                    ret.setUserName(credential.userName);
-                    return ret;
-                });
+    @WithTransaction
+    @Override
+    public Uni<Void> update(String credentialId, long counter) {
+        return WebAuthnCredential.findByCredentialId(credentialId)
+                .onItem().ignore().andContinueWithNull();
     }
 
     @Override

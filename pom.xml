@@ -551,8 +551,7 @@
                 <module>security/keycloak-oidc-client-reactive-extended</module>
                 <module>security/vertx-jwt</module>
                 <module>security/oidc-client-mutual-tls</module>
-                <!-- FIXME: mvavrik deal with this ASAP! -->
-                <!-- <module>security/webauthn</module> -->
+                <module>security/webauthn</module>
             </modules>
         </profile>
         <profile>

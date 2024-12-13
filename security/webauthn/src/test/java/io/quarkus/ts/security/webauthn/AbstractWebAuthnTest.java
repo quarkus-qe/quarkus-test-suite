@@ -3,9 +3,13 @@ package io.quarkus.ts.security.webauthn;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -23,10 +27,13 @@ import io.vertx.core.json.JsonObject;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public abstract class AbstractWebAuthnTest {
 
+    private URL url;
+
     protected abstract RestService getApp();
 
+    private static final String REGISTER_CHALLENGE_OPTIONS_URL = "/q/webauthn/register-options-challenge";
     private static final String REGISTER_URL = "/q/webauthn/register";
-    private static final String REGISTER_CALLBACK_URL = "/q/webauthn/callback";
+    private static final String LOGIN_CHALLENGE_OPTIONS_URL = "/q/webauthn/login-options-challenge";
     private static final String LOGIN_URL = "/q/webauthn/login";
     private static final String LOGOUT_URL = "/q/webauthn/logout";
 
@@ -47,7 +54,11 @@ public abstract class AbstractWebAuthnTest {
     @BeforeAll
     public static void setup() {
         cookieFilter = new CookieFilter();
+    }
 
+    @BeforeEach
+    public void setupUrl() throws MalformedURLException {
+        url = new URL(getApp().getURI(Protocol.HTTP).toString());
     }
 
     @Test
@@ -89,10 +100,10 @@ public abstract class AbstractWebAuthnTest {
     @Test
     @Order(5)
     public void testRegisterWebAuthnUser() {
-        MyWebAuthnHardware myWebAuthnHardware = new MyWebAuthnHardware();
-        String challenge = getChallenge(USERNAME, cookieFilter);
+        MyWebAuthnHardware myWebAuthnHardware = new MyWebAuthnHardware(url);
+        String challenge = getRegistrationChallenge(USERNAME, cookieFilter);
         JsonObject registrationJson = myWebAuthnHardware.makeRegistrationJson(challenge);
-        invokeCallback(registrationJson, cookieFilter);
+        invokeRegisteration(USERNAME, registrationJson, cookieFilter);
         verifyLoggedIn(cookieFilter, USERNAME, User.USER);
         invokeUserLogout();
 
@@ -101,23 +112,35 @@ public abstract class AbstractWebAuthnTest {
     @Test
     @Order(6)
     public void testRegisterSameUserName() {
-        MyWebAuthnHardware myWebAuthnHardware = new MyWebAuthnHardware();
-        String challenge = getChallenge(USERNAME, cookieFilter);
+        MyWebAuthnHardware myWebAuthnHardware = new MyWebAuthnHardware(url);
+        String challenge = getRegistrationChallenge(USERNAME, cookieFilter);
         JsonObject registrationJson = myWebAuthnHardware.makeRegistrationJson(challenge);
-        invokeCallback(registrationJson, cookieFilter);
-        verifyLoggedIn(cookieFilter, USERNAME, User.USER);
+        ExtractableResponse<Response> response = RestAssured
+                .given()
+                .queryParam("userName", USERNAME)
+                .body(registrationJson.encode())
+                .filter(cookieFilter)
+                .contentType(ContentType.JSON)
+                .log().ifValidationFails()
+                .post(REGISTER_URL)
+                .then()
+                .statusCode(400)
+                .log().ifValidationFails()
+                .cookie("_quarkus_webauthn_challenge", Matchers.is(""))
+                .extract();
+        Assertions.assertNull(response.cookie("quarkus-credential"));
 
+        verifyLoggedOut(cookieFilter);
     }
 
     @Test
     @Order(7)
     public void testFailLoginWithFakeRegisterUser() {
-        invokeUserLogout();
         String newUserName = "Kipchoge";
         ExtractableResponse<Response> response = given().filter(cookieFilter)
                 .contentType(ContentType.JSON)
                 .body("{\"name\": \"" + newUserName + "\"}")
-                .post(REGISTER_URL)
+                .post(REGISTER_CHALLENGE_OPTIONS_URL)
                 .then()
                 .statusCode(is(200)).extract();
 
@@ -134,26 +157,33 @@ public abstract class AbstractWebAuthnTest {
                 .statusCode(404);
     }
 
-    public static void invokeCallback(JsonObject registration, Filter cookieFilter) {
+    public static void invokeRegisteration(String userName, JsonObject registration, Filter cookieFilter) {
         RestAssured
-                .given().body(registration.encode()).filter(cookieFilter).contentType(ContentType.JSON).log()
-                .ifValidationFails().post(REGISTER_CALLBACK_URL, new Object[0]).then().statusCode(204).log()
-                .ifValidationFails().cookie("_quarkus_webauthn_challenge", Matchers.is(""))
-                .cookie("_quarkus_webauthn_username", Matchers.is("")).cookie("quarkus-credential", Matchers.notNullValue());
+                .given()
+                .queryParam("userName", userName)
+                .body(registration.encode())
+                .filter(cookieFilter)
+                .contentType(ContentType.JSON)
+                .log().ifValidationFails()
+                .post(REGISTER_URL)
+                .then()
+                .statusCode(204)
+                .log().ifValidationFails()
+                .cookie("_quarkus_webauthn_challenge", Matchers.is(""))
+                .cookie("quarkus-credential", Matchers.notNullValue());
 
     }
 
-    public static String getChallenge(String userName, Filter cookieFilter) {
+    public static String getRegistrationChallenge(String userName, Filter cookieFilter) {
         JsonObject registerJson = new JsonObject().put("name", userName);
         ExtractableResponse<Response> response = given()
                 .body(registerJson.encode())
                 .contentType(ContentType.JSON)
                 .filter(cookieFilter)
-                .post(REGISTER_URL)
+                .post(REGISTER_CHALLENGE_OPTIONS_URL)
                 .then()
                 .statusCode(200)
-                .cookie("_quarkus_webauthn_challenge", Matchers.notNullValue())
-                .cookie("_quarkus_webauthn_username", Matchers.notNullValue()).extract();
+                .cookie("_quarkus_webauthn_challenge", Matchers.notNullValue()).extract();
         JsonObject responseJson = new JsonObject(response.asString());
         String challenge = responseJson.getString("challenge");
         Assertions.assertNotNull(challenge);
@@ -233,6 +263,7 @@ public abstract class AbstractWebAuthnTest {
                 .follow(false)
                 .get(LOGOUT_URL)
                 .then()
+                .log().ifValidationFails()
                 .statusCode(302)
                 .cookie("quarkus-credential", Matchers.is(""));
     }
