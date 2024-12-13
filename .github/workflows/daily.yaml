@@ -95,7 +95,7 @@ jobs:
       - name: Build in JVM mode
         shell: bash
         run: |
-          mvn -B --no-transfer-progress -fae -s .github/quarkus-snapshots-mvn-settings.xml clean verify
+          mvn -B --no-transfer-progress -fae -s .github/mvn-settings.xml clean verify
       - name: Zip Artifacts
         shell: bash
         if: failure()
@@ -140,7 +140,7 @@ jobs:
         shell: bash
         run: |
           # Running only http/http-minimum as after some time, it gives disk full in Windows when running on Native.
-          mvn -B --no-transfer-progress -fae -s .github/quarkus-snapshots-mvn-settings.xml clean verify -Dall-modules -Dnative -Dquarkus.native.container-build=false -pl http/http-minimum
+          mvn -B --no-transfer-progress -fae -s .github/mvn-settings.xml clean verify -Dall-modules -Dnative -Dquarkus.native.container-build=false -pl http/http-minimum
       - name: Zip Artifacts
         shell: bash
         if: failure()
