@@ -5,6 +5,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
 
 import jakarta.ws.rs.core.MediaType;
 
@@ -12,13 +15,18 @@ import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.services.QuarkusApplication;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
 @QuarkusScenario
 public class HttpMinimumReactiveIT {
 
-    private RequestSpecification HTTP_CLIENT_SPEC = given();
+    @QuarkusApplication
+    static RestService app = new RestService();
 
     @Test
     public void httpServer() {
@@ -78,7 +86,28 @@ public class HttpMinimumReactiveIT {
                 .body("data", is("ok"));
     }
 
+    @Test
+    @Tag("https://github.com/quarkusio/quarkus/issues/44564")
+    void interceptedMethodFound() {
+        Response operator = givenSpec()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(new Operator("operator"))
+                .post("/api/operator");
+
+        assertEquals(200, operator.statusCode(), "Intercepted request was not processed");
+        assertEquals("Hello operator", operator.body().asString(), "Intercepted request was not processed properly");
+        List<String> logs = app.getLogs();
+        boolean startFlag = false;
+        boolean endFlag = false;
+        for (String line : logs) {
+            startFlag = startFlag || line.contains("Before reading ");
+            endFlag = endFlag || line.contains("After reading ");
+        }
+        assertTrue(startFlag && endFlag, "The message was not intercepted, full logs: " + logs);
+    }
+
     protected RequestSpecification givenSpec() {
-        return HTTP_CLIENT_SPEC;
+        return app.given();
     }
 }
