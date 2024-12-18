@@ -111,13 +111,13 @@ public abstract class AbstractWebAuthnTest {
 
     @Test
     @Order(6)
-    public void testRegisterSameUserName() {
+    public void testRegisterSameUsername() {
         MyWebAuthnHardware myWebAuthnHardware = new MyWebAuthnHardware(url);
         String challenge = getRegistrationChallenge(USERNAME, cookieFilter);
         JsonObject registrationJson = myWebAuthnHardware.makeRegistrationJson(challenge);
         ExtractableResponse<Response> response = RestAssured
                 .given()
-                .queryParam("userName", USERNAME)
+                .queryParam("username", USERNAME)
                 .body(registrationJson.encode())
                 .filter(cookieFilter)
                 .contentType(ContentType.JSON)
@@ -136,11 +136,11 @@ public abstract class AbstractWebAuthnTest {
     @Test
     @Order(7)
     public void testFailLoginWithFakeRegisterUser() {
-        String newUserName = "Kipchoge";
+        String newUsername = "Kipchoge";
         ExtractableResponse<Response> response = given().filter(cookieFilter)
                 .contentType(ContentType.JSON)
-                .body("{\"name\": \"" + newUserName + "\"}")
-                .post(REGISTER_CHALLENGE_OPTIONS_URL)
+                .queryParam("username", newUsername)
+                .get(REGISTER_CHALLENGE_OPTIONS_URL)
                 .then()
                 .statusCode(is(200)).extract();
 
@@ -157,10 +157,10 @@ public abstract class AbstractWebAuthnTest {
                 .statusCode(404);
     }
 
-    public static void invokeRegisteration(String userName, JsonObject registration, Filter cookieFilter) {
+    public static void invokeRegisteration(String username, JsonObject registration, Filter cookieFilter) {
         RestAssured
                 .given()
-                .queryParam("userName", userName)
+                .queryParam("username", username)
                 .body(registration.encode())
                 .filter(cookieFilter)
                 .contentType(ContentType.JSON)
@@ -174,13 +174,12 @@ public abstract class AbstractWebAuthnTest {
 
     }
 
-    public static String getRegistrationChallenge(String userName, Filter cookieFilter) {
-        JsonObject registerJson = new JsonObject().put("name", userName);
+    public static String getRegistrationChallenge(String username, Filter cookieFilter) {
         ExtractableResponse<Response> response = given()
-                .body(registerJson.encode())
                 .contentType(ContentType.JSON)
                 .filter(cookieFilter)
-                .post(REGISTER_CHALLENGE_OPTIONS_URL)
+                .queryParam("username", username)
+                .get(REGISTER_CHALLENGE_OPTIONS_URL)
                 .then()
                 .statusCode(200)
                 .cookie("_quarkus_webauthn_challenge", Matchers.notNullValue()).extract();
@@ -190,7 +189,7 @@ public abstract class AbstractWebAuthnTest {
         return challenge;
     }
 
-    private void verifyLoggedIn(Filter cookieFilter, String userName, User user) {
+    private void verifyLoggedIn(Filter cookieFilter, String username, User user) {
 
         // public API still good
         given().filter(cookieFilter)
@@ -203,14 +202,14 @@ public abstract class AbstractWebAuthnTest {
                 .get(PUBLIC_ME_API_URL)
                 .then()
                 .statusCode(200)
-                .body(Matchers.is(userName));
+                .body(Matchers.is(username));
 
         // user API accessible
         given().filter(cookieFilter)
                 .get(USER_API_URL)
                 .then()
                 .statusCode(200)
-                .body(Matchers.is(userName));
+                .body(Matchers.is(username));
 
         //admin API
         if (user == User.ADMIN) {
