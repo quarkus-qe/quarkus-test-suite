@@ -28,7 +28,8 @@ public class HttpCommonsHeaders implements ContainerResponseFilter {
     public void filter(ContainerRequestContext requestCtx, ContainerResponseContext responseCtx) {
         MultivaluedMap<String, Object> headers = responseCtx.getHeaders();
         headers.add("x-count", AppConfiguration.getAndIncIndex());
-        headers.add("x-session", sessionIdBean.getSessionId());
+        // TODO enable the session header after the https://github.com/quarkusio/quarkus/issues/45191 is fixed
+        //headers.add("x-session", sessionIdBean.getSessionId());
         headers.add("x-request", requestIdBean.getRequestId());
         headers.add("x-instance", instanceId.getInstanceId());
     }
