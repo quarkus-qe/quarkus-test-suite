@@ -9,6 +9,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.net.URI;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.http.HttpStatus;
 import org.htmlunit.FailingHttpStatusCodeException;
@@ -41,6 +43,7 @@ public abstract class BaseWebappSecurityIT {
     public void setup() {
         webClient = new WebClient();
         webClient.setCssErrorHandler(new SilentCssErrorHandler());
+        Logger.getLogger("org.htmlunit.css").setLevel(Level.OFF);
         webClient.getOptions().setRedirectEnabled(true);
     }
 

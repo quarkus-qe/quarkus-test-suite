@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.htmlunit.SilentCssErrorHandler;
 import org.htmlunit.WebClient;
@@ -53,7 +55,6 @@ public class LogoutSinglePageAppFlowIT {
     @Test
     public void singlePageAppLogoutFlow() throws IOException {
         try (final WebClient webClient = createWebClient()) {
-            webClient.getOptions().setRedirectEnabled(true);
             String content = makeHttpPostFormLogin(webClient, "/code-flow", "alice", "alice")
                     .getContentAsString();
 
@@ -91,6 +92,8 @@ public class LogoutSinglePageAppFlowIT {
     private WebClient createWebClient() {
         WebClient webClient = new WebClient();
         webClient.setCssErrorHandler(new SilentCssErrorHandler());
+        Logger.getLogger("org.htmlunit.css").setLevel(Level.OFF);
+        webClient.getOptions().setRedirectEnabled(true);
         return webClient;
     }
 
