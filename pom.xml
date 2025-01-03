@@ -30,7 +30,7 @@
         <quarkiverse.config.version>2.4.0</quarkiverse.config.version>
         <quarkiverse.pact.version>1.5.0</quarkiverse.pact.version>
         <smallrye-stork.version>2.7.1</smallrye-stork.version>
-        <assertj.version>3.26.3</assertj.version>
+        <assertj.version>3.27.1</assertj.version>
         <profile.id>jvm</profile.id>
         <htmlunit.version>4.7.0</htmlunit.version>
         <!-- Faster build when using -DskipTests -->
