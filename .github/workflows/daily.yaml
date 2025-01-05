@@ -112,7 +112,7 @@ jobs:
           # Need to set UTF-8 as otherwise the cp1252 is used on GH windows runner
           # TODO revisit this with Windows 2025 when available or when we move testing to JDK 21+ only
           export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF8"
-          mvn -B --no-transfer-progress -fae clean verify -D"include.quarkus-cli-tests" -D"ts.quarkus.cli.cmd=$(pwd)\quarkus-dev-cli.bat" -D"gh-action-disable-on-win"
+          mvn -B --no-transfer-progress -fae clean verify -D"all-modules" -D"include.quarkus-cli-tests" -D"ts.quarkus.cli.cmd=$(pwd)\quarkus-dev-cli.bat" -D"gh-action-disable-on-win"
       - name: Zip Artifacts
         shell: bash
         if: failure()
