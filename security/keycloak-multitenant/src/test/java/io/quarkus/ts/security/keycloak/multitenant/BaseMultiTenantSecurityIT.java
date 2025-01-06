@@ -111,7 +111,7 @@ public abstract class BaseMultiTenantSecurityIT {
 
         loginForm.getInputByName("username").setValue(USER);
         loginForm.getInputByName("password").setValue(USER);
-        return loginForm.getInputByName("login").click();
+        return loginForm.getButtonByName("login").click();
     }
 
     private void assertEndpointMessage(Tenant tenant, String actualResponse) {
