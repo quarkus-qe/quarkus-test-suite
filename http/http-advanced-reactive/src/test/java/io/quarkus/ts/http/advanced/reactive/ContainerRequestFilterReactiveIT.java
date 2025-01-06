@@ -14,7 +14,7 @@ import io.restassured.RestAssured;
 @Tag("QUARKUS-1546")
 @QuarkusScenario
 public class ContainerRequestFilterReactiveIT {
-// DROPME just to check latest framework is really used
+    // DROPME just to check latest framework is really used
     @QuarkusApplication
     static RestService app = new RestService()
             .withProperty("quarkus.oidc.enabled", "false")
