@@ -49,7 +49,7 @@ public class LogoutSinglePageAppFlowIT {
             form.getInputByName("username").type("alice");
             form.getInputByName("password").type("alice");
 
-            page = form.getInputByName("login").click();
+            page = form.getButtonByName("login").click();
 
             assertEquals("alice, cache size: 0", page.getBody().asNormalizedText());
             assertTrue(isCodeFlowCookiePresent(webClient));

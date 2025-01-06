@@ -86,7 +86,7 @@ public class LogoutSinglePageAppFlowIT {
         form.getInputByName("username").type(user);
         form.getInputByName("password").type(pwd);
 
-        return form.getInputByName("login").click().getWebResponse();
+        return form.getButtonByName("login").click().getWebResponse();
     }
 
     private WebClient createWebClient() {

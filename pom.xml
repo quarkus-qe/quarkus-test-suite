@@ -300,7 +300,7 @@
                                 <infinispan.image>quay.io/infinispan/server:15.0</infinispan.image>
                                 <infinispan.expected-log>Infinispan Server.*started in</infinispan.expected-log>
                                 <spring.cloud.server.image>quay.io/quarkusqeteam/spring-cloud-config-server:4.1</spring.cloud.server.image>
-                                <keycloak.image>quay.io/keycloak/keycloak:25.0</keycloak.image>
+                                <keycloak.image>quay.io/keycloak/keycloak:26.0</keycloak.image>
                                 <bouncycastle.bctls-fips.version>1.0.12.2</bouncycastle.bctls-fips.version>
                                 <rhbk.image>${rhbk.image}</rhbk.image>
                             </systemPropertyVariables>

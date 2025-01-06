@@ -150,7 +150,7 @@ public abstract class BaseWebappSecurityIT {
         loginForm.getInputByName("username").setValue(user);
         loginForm.getInputByName("password").setValue(user);
 
-        page = loginForm.getInputByName("login").click();
+        page = loginForm.getButtonByName("login").click();
     }
 
     private void whenGoTo(String path) throws Exception {
