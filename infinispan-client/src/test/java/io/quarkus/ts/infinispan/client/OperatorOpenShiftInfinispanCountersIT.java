@@ -5,8 +5,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
@@ -28,16 +29,8 @@ import io.restassured.response.Response;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class OperatorOpenShiftInfinispanCountersIT extends BaseOpenShiftInfinispanIT {
 
-    private static final AtomicBoolean CLUSTER_CREATED = new AtomicBoolean(false);
-
     @QuarkusApplication
-    static RestService one = new RestService()
-            .onPreStart(s -> {
-                // prevent attempting to create cluster on restart
-                if (CLUSTER_CREATED.compareAndSet(false, true)) {
-                    createInfinispanCluster();
-                }
-            });
+    static RestService one = new RestService();
 
     @QuarkusApplication
     static RestService two = new RestService();
@@ -151,8 +144,7 @@ public class OperatorOpenShiftInfinispanCountersIT extends BaseOpenShiftInfinisp
 
         incrementCountersOnValue(one, "/first-counter/increment-counters", 10);
 
-        killInfinispanCluster();
-        restartInfinispanCluster();
+        dataGridInfinispan.restart();
 
         // try to connect back to infinispan cluster and expect no content
         await().atMost(5, TimeUnit.MINUTES).untilAsserted(() -> {
@@ -182,8 +174,7 @@ public class OperatorOpenShiftInfinispanCountersIT extends BaseOpenShiftInfinisp
 
         incrementCountersOnValue(one, "/first-counter/increment-counters", 10);
 
-        killInfinispanCluster();
-        restartInfinispanCluster();
+        dataGridInfinispan.restart();
 
         // try to connect back to infinispan cluster and expect no content
         await().atMost(5, TimeUnit.MINUTES).untilAsserted(() -> {
@@ -311,9 +302,7 @@ public class OperatorOpenShiftInfinispanCountersIT extends BaseOpenShiftInfinisp
         assertEquals("Cache=1 Client=1", firstClientCounters);
         assertEquals("Cache=2 Client=1", secondClientCounters);
 
-        killInfinispanCluster();
-        restartInfinispanCluster();
-
+        dataGridInfinispan.restart();
         // wait for clients to be reconnected to infinispan cluster
         await().atMost(1, TimeUnit.MINUTES).untilAsserted(() -> {
             one.given()
@@ -418,24 +407,31 @@ public class OperatorOpenShiftInfinispanCountersIT extends BaseOpenShiftInfinisp
     }
 
     /**
+     * This is needed for `testInvokeOnFailedInfinispanCluster` instead of restarting datagrid
      * Reduces the number of infinispan cluster replicas to 0 and wait for the shutdown condition. It is done by changing
-     * the YAML file in the target/test-classes directory.
+     * the YAML file.
      */
     private void killInfinispanCluster() throws IOException, InterruptedException {
-        adjustYml(CLUSTER_CONFIG, "replicas: 1", "replicas: 0");
-        applyYaml(CLUSTER_CONFIG);
+        // Create same path to cluster config in tmp directory as FW do it
+        Path clusterConfigPath = Path.of(System.getProperty("java.io.tmpdir"), dataGridInfinispan.getDisplayName(),
+                Paths.get(CLUSTER_CONFIG).getFileName().toString());
+        adjustYml(clusterConfigPath, "replicas: 1", "replicas: 0");
+        ocClient.applyInProject(clusterConfigPath, CLUSTER_NAMESPACE_NAME);
         new Command("oc", "-n", CLUSTER_NAMESPACE_NAME, "wait", "--for", "condition=gracefulShutdown", "--timeout=300s",
-                "infinispan/" + NEW_CLUSTER_NAME).runAndWait();
+                "infinispan/" + dataGridInfinispan.getDisplayName()).runAndWait();
     }
 
     /**
+     * This is needed for `testInvokeOnFailedInfinispanCluster` instead of restarting datagrid
      * The number of replicas is increased back to value 1 the same way as in "killInfinispanCluster()" method. The wait command
      * expects "wellFormed" condition in Infinispan cluster status.
      */
     private void restartInfinispanCluster() throws IOException, InterruptedException {
-        adjustYml(CLUSTER_CONFIG, "replicas: 0", "replicas: 1");
-        applyYaml(CLUSTER_CONFIG);
+        Path clusterConfigPath = Path.of(System.getProperty("java.io.tmpdir"), dataGridInfinispan.getDisplayName(),
+                Paths.get(CLUSTER_CONFIG).getFileName().toString());
+        adjustYml(clusterConfigPath, "replicas: 0", "replicas: 1");
+        ocClient.applyInProject(clusterConfigPath, CLUSTER_NAMESPACE_NAME);
         new Command("oc", "-n", CLUSTER_NAMESPACE_NAME, "wait", "--for", "condition=wellFormed", "--timeout=360s",
-                "infinispan/" + NEW_CLUSTER_NAME).runAndWait();
+                "infinispan/" + dataGridInfinispan.getDisplayName()).runAndWait();
     }
 }
