@@ -44,8 +44,7 @@ public class OperatorOpenShiftInfinispanObjectsIT extends BaseOpenShiftInfinispa
             new ShopItem("Item 5", 500, ShopItem.Type.MECHANICAL));
 
     @QuarkusApplication
-    static RestService one = new RestService()
-            .onPreStart(s -> createInfinispanCluster());
+    static RestService one = new RestService();
 
     @AfterEach
     public void afterEach() {
