@@ -1,6 +1,7 @@
 package io.quarkus.ts.http.minimum.reactive;
 
 import static io.restassured.RestAssured.given;
+import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
@@ -8,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import jakarta.ws.rs.core.MediaType;
 
@@ -88,7 +90,7 @@ public class HttpMinimumReactiveIT {
 
     @Test
     @Tag("https://github.com/quarkusio/quarkus/issues/44564")
-    void interceptedMethodFound() {
+    void interceptedMethodFound() throws InterruptedException {
         Response operator = givenSpec()
                 .when()
                 .contentType(ContentType.JSON)
@@ -97,14 +99,17 @@ public class HttpMinimumReactiveIT {
 
         assertEquals(200, operator.statusCode(), "Intercepted request was not processed");
         assertEquals("Hello operator", operator.body().asString(), "Intercepted request was not processed properly");
-        List<String> logs = app.getLogs();
-        boolean startFlag = false;
-        boolean endFlag = false;
-        for (String line : logs) {
-            startFlag = startFlag || line.contains("Before reading ");
-            endFlag = endFlag || line.contains("After reading ");
-        }
-        assertTrue(startFlag && endFlag, "The message was not intercepted, full logs: " + logs);
+
+        await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
+            List<String> logs = app.getLogs();
+            boolean startFlag = false;
+            boolean endFlag = false;
+            for (String line : logs) {
+                startFlag = startFlag || line.contains("Before reading ");
+                endFlag = endFlag || line.contains("After reading ");
+            }
+            assertTrue(startFlag && endFlag, "The message was not intercepted, full logs: " + logs);
+        });
     }
 
     protected RequestSpecification givenSpec() {
