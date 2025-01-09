@@ -6,6 +6,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -90,7 +91,7 @@ public class HttpMinimumReactiveIT {
 
     @Test
     @Tag("https://github.com/quarkusio/quarkus/issues/44564")
-    void interceptedMethodFound() throws InterruptedException {
+    void interceptedMethodFound() {
         Response operator = givenSpec()
                 .when()
                 .contentType(ContentType.JSON)
@@ -99,7 +100,7 @@ public class HttpMinimumReactiveIT {
 
         assertEquals(200, operator.statusCode(), "Intercepted request was not processed");
         assertEquals("Hello operator", operator.body().asString(), "Intercepted request was not processed properly");
-
+        assertNotEquals(0, app.getLogs().size(), "App logs are empty!");
         await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
             List<String> logs = app.getLogs();
             boolean startFlag = false;
