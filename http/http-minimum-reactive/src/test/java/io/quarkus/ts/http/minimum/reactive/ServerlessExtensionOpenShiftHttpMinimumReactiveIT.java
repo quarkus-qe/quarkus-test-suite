@@ -2,6 +2,7 @@ package io.quarkus.ts.http.minimum.reactive;
 
 import static io.restassured.RestAssured.given;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 
 import io.quarkus.test.scenarios.OpenShiftDeploymentStrategy;
@@ -18,5 +19,10 @@ public class ServerlessExtensionOpenShiftHttpMinimumReactiveIT extends HttpMinim
     @Override
     protected RequestSpecification givenSpec() {
         return HTTPS_CLIENT_SPEC;
+    }
+
+    @Override
+    @Disabled("Serverless deployments do not have logs which we can check")
+    void interceptedMethodFound() {
     }
 }
