@@ -21,6 +21,7 @@ import io.restassured.specification.RequestSpecification;
 @Tag("QUARKUS-1676")
 public abstract class BaseOidcMtlsIT {
     protected static final String REALM_DEFAULT = "test-mutual-tls-realm";
+    protected static final String DEFAULT_REALM_FILE = "/test-mutual-tls-realm-realm.json";
     protected static final String RESOURCE_PATH = "/ping";
     protected static final String NORMAL_USER = "test-normal-user";
     protected static final String CLIENT_ID_DEFAULT = "test-mutual-tls";

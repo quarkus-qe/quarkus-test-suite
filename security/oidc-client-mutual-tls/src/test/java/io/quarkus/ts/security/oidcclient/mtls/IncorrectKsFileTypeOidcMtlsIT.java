@@ -1,6 +1,5 @@
 package io.quarkus.ts.security.oidcclient.mtls;
 
-import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_FILE;
 import static io.quarkus.ts.security.oidcclient.mtls.MutualTlsKeycloakService.newKeycloakInstance;
 
 import org.apache.http.HttpStatus;
