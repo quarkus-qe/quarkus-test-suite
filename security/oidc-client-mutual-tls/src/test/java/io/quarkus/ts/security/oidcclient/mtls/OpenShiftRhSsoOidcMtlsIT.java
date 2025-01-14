@@ -26,7 +26,7 @@ Enabling this may require fixing config map names created for resources
 public class OpenShiftRhSsoOidcMtlsIT extends KeycloakMtlsAuthN {
 
     @KeycloakContainer(command = { "start-dev", "--import-realm" }, image = "${rhbk.image}")
-    static KeycloakService rhsso = newRhSsoInstance("/keycloak-realm.json", REALM_DEFAULT);
+    static KeycloakService rhsso = newRhSsoInstance("/test-realm-realm.json", REALM_DEFAULT);
 
     /**
      * Keystore file type is automatically detected by file extension by quarkus-oidc.
