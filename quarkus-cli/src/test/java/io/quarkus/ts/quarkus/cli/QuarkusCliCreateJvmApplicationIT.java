@@ -39,7 +39,9 @@ import org.junit.jupiter.api.condition.OS;
 import io.quarkus.logging.Log;
 import io.quarkus.test.bootstrap.QuarkusCliClient;
 import io.quarkus.test.bootstrap.QuarkusCliRestService;
+import io.quarkus.test.bootstrap.QuarkusVersionAwareCliClient;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.TestQuarkusCli;
 import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 import io.quarkus.test.services.quarkus.model.QuarkusProperties;
@@ -66,8 +68,8 @@ public class QuarkusCliCreateJvmApplicationIT {
 
     @Tag("QUARKUS-1071")
     @Tag("QUARKUS-1072")
-    @Test
-    public void shouldCreateApplicationOnJvm() {
+    @TestQuarkusCli
+    public void shouldCreateApplicationOnJvm(QuarkusVersionAwareCliClient cliClient) {
         // Create application
         QuarkusCliRestService app = cliClient.createApplication("app");
 
@@ -98,9 +100,9 @@ public class QuarkusCliCreateJvmApplicationIT {
     }
 
     @Tag("QUARKUS-1472")
-    @Test
-    public void shouldCreateAnApplicationForcingJavaVersion17() {
-        CreateApplicationRequest args = defaults().withExtraArgs("--java=" + JDK_17);
+    @TestQuarkusCli
+    public void shouldCreateAnApplicationForcingJavaVersion17(QuarkusVersionAwareCliClient cliClient) {
+        CreateApplicationRequest args = cliClient.getDefaultCreateApplicationRequest().withExtraArgs("--java=" + JDK_17);
         QuarkusCliRestService app = cliClient.createApplication("app", args);
         assertExpectedJavaVersion(app.getFileFromApplication("pom.xml"), JDK_17);
         assertDockerJavaVersion(app.getFileFromApplication(DOCKER_FOLDER, DOCKERFILE_JVM), JDK_17);
@@ -115,13 +117,14 @@ public class QuarkusCliCreateJvmApplicationIT {
     }
 
     @Tag("QUARKUS-1071")
-    @Test
-    public void shouldCreateApplicationWithGradleOnJvm() {
+    @TestQuarkusCli
+    public void shouldCreateApplicationWithGradleOnJvm(QuarkusVersionAwareCliClient cliClient) {
 
         // Create application
-        QuarkusCliRestService app = cliClient.createApplication("app", defaults().withExtraArgs("--gradle"));
+        QuarkusCliRestService app = cliClient.createApplication("app",
+                cliClient.getDefaultCreateApplicationRequest().withExtraArgs("--gradle"));
 
-        useQuarkusSnapshotFromSonatypeIfNeeded(app);
+        useQuarkusSnapshotFromSonatypeIfNeeded(app, cliClient.getQuarkusVersion());
 
         // Run Gradle Daemon to avoid file lock on quarkus-cli-command.out when the daemon is started as part of 'app.buildOnJvm()'
         runGradleDaemon(app);
@@ -145,9 +148,9 @@ public class QuarkusCliCreateJvmApplicationIT {
         stopGradleDaemon(app);
     }
 
-    private static void useQuarkusSnapshotFromSonatypeIfNeeded(QuarkusCliRestService app) {
+    private static void useQuarkusSnapshotFromSonatypeIfNeeded(QuarkusCliRestService app, String quarkusVersion) {
         // must match only the 'main' branch snapshot, not 999-SNAPSHOT in other branches as they are not published
-        boolean is999Snapshot = "999-SNAPSHOT".equals(QuarkusProperties.getVersion());
+        boolean is999Snapshot = "999-SNAPSHOT".equals(quarkusVersion);
         var localRepository = System.getProperty("localRepository");
         if (is999Snapshot && localRepository != null) {
             if (!doesQuarkusSnapshotExistInLocalRepo(localRepository)) { // not adding external repository when not needed
@@ -210,12 +213,13 @@ public class QuarkusCliCreateJvmApplicationIT {
     }
 
     @Tag("QUARKUS-1071")
-    @Test
+    @TestQuarkusCli
     @DisabledOnQuarkusVersion(version = ".*redhat.*", reason = "https://issues.redhat.com/browse/QUARKUS-3371")
-    public void shouldCreateApplicationWithJbangOnJvm() {
+    public void shouldCreateApplicationWithJbangOnJvm(QuarkusVersionAwareCliClient cliClient) {
 
         // Create application
-        QuarkusCliRestService app = cliClient.createApplication("app", defaults().withExtraArgs("--jbang"));
+        QuarkusCliRestService app = cliClient.createApplication("app",
+                cliClient.getDefaultCreateApplicationRequest().withExtraArgs("--jbang"));
 
         // Should build on Jvm
         final String repository = System.getProperty("maven.repo.local");
@@ -259,11 +263,11 @@ public class QuarkusCliCreateJvmApplicationIT {
     }
 
     @Tag("QUARKUS-1071")
-    @Test
-    public void shouldCreateApplicationWithCodeStarter() {
+    @TestQuarkusCli
+    public void shouldCreateApplicationWithCodeStarter(QuarkusVersionAwareCliClient cliClient) {
         // Create application with Resteasy Jackson + Spring Web (we need both for the app to run)
         QuarkusCliRestService app = cliClient.createApplication("app",
-                defaults().withExtensions(REST_JACKSON_EXTENSION, SPRING_WEB_EXTENSION));
+                cliClient.getDefaultCreateApplicationRequest().withExtensions(REST_JACKSON_EXTENSION, SPRING_WEB_EXTENSION));
 
         // Verify By default, it installs only "quarkus-rest-jackson" and "quarkus-spring-web"
         assertInstalledExtensions(app, REST_JACKSON_EXTENSION, SPRING_WEB_EXTENSION);
@@ -311,7 +315,7 @@ public class QuarkusCliCreateJvmApplicationIT {
         // Generate application using old community version
         QuarkusCliRestService app = cliClient.createApplication("app", defaults()
                 .withStream(null)
-                .withPlatformBom("io.quarkus:quarkus-bom:3.10.2")
+                .withPlatformBom("io.quarkus:quarkus-bom:3.15.2")
                 .withExtensions(SMALLRYE_HEALTH_EXTENSION, REST_EXTENSION));
 
         // Make sure version and groupId from the TS run is used
