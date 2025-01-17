@@ -40,7 +40,7 @@ public class SnappyCompressionIT {
 
     private static final String BIG_JSON = "/big_json.json";
 
-    private static final String COMMAND_LOG_CONTAINER = "./bin/kafka-run-class.sh kafka.tools.DumpLogSegments --deep-iteration --print-data-log --files /tmp/kraft-combined-logs/test-0/00000000000000000000.log | head";
+    private static final String COMMAND_LOG_CONTAINER = "./bin/kafka-run-class.sh kafka.tools.DumpLogSegments --deep-iteration --print-data-log --files /tmp/default-log-dir/test-0/00000000000000000000.log | head";
 
     @KafkaContainer(vendor = KafkaVendor.STRIMZI)
     static final KafkaService kafka = new KafkaService().withProperty("auto.create.topics.enable", "false");
