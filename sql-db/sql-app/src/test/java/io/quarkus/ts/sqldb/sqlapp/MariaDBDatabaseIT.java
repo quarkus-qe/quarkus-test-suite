@@ -15,8 +15,8 @@ public class MariaDBDatabaseIT extends AbstractSqlDatabaseIT {
             + MARIADB_PORT)
     static MariaDbService database = new MariaDbService();
 
-    @QuarkusApplication
-    static RestService app = new RestService().withProperties("mariadb_app.properties")
+    @QuarkusApplication(properties = "mariadb_app.properties")
+    static RestService app = new RestService()
             .withProperty("quarkus.datasource.username", database.getUser())
             .withProperty("quarkus.datasource.password", database.getPassword())
             .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl);

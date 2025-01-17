@@ -17,8 +17,8 @@ public class OracleDatabaseIT extends AbstractSqlDatabaseIT {
     @Container(image = "${oracle.image}", port = ORACLE_PORT, expectedLog = "DATABASE IS READY TO USE!")
     static OracleService database = new OracleService();
 
-    @QuarkusApplication
-    static RestService app = new RestService().withProperties("oracle.properties")
+    @QuarkusApplication(properties = "oracle.properties")
+    static RestService app = new RestService()
             .withProperty("quarkus.datasource.username", database.getUser())
             .withProperty("quarkus.datasource.password", database.getPassword())
             .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl);
