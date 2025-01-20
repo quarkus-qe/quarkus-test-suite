@@ -32,9 +32,6 @@ jobs:
                     "messaging-modules-no-kafka,websockets-modules"]
 
     steps:
-      - name: Install yq
-        run: sudo add-apt-repository ppa:rmescandon/yq && sudo apt update && sudo apt install yq -y
-
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
