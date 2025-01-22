@@ -25,9 +25,9 @@ public class OpenAPITracingIT {
     private static final String HTTP_REQUEST_METHOD_TAG = "http.request.method";
     private static final String SPAN_KIND_TAG = "span.kind";
     private static final String OPEN_API_PATH = "/q/openapi";
-    private static final String OPEN_API_OPERATION = "GET /openapi";
+    private static final String OPEN_API_OPERATION = "GET /q/openapi";
     private static final String SWAGGER_UI_PATH = "/q/swagger-ui/";
-    private static final String SWAGGER_UI_OPERATION = "GET /swagger-ui";
+    private static final String SWAGGER_UI_OPERATION = "GET /q/swagger-ui";
 
     @JaegerContainer(expectedLog = "\"Health Check state change\",\"status\":\"ready\"")
     static final JaegerService jaeger = new JaegerService();
