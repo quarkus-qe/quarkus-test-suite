@@ -54,7 +54,7 @@ public class QuarkusCliTlsCommandIT {
                 .withOption(GenerateQuarkusCaOptions.RENEW_SHORT)
                 .executeCommand()
                 .assertCommandOutputContains("Root CA certificate generated successfully")
-                .assertCommandOutputContains("Quarkus Development CA generated and installed")
+                .assertCommandOutputContains("Quarkus Dev CA certificate generated and installed")
                 .assertFileExistsStr(cmd -> cmd.getOutputLineRemainder("Truststore generated successfully:"));
         assertTrue(DEV_CA_CERT_FILE.exists(),
                 "Quarkus CLI subcommand 'tls generate-quarkus-ca' didn't generate Quarkus DEV CA certificate");
