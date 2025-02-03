@@ -64,7 +64,9 @@ public abstract class AbstractAnalyticsIT {
                 .withStream(null)
                 .withExtraArgs("--no-code", "--no-wrapper")
                 .withExtensions(extensions);
-        return cliClient.createApplication(appName, createApplicationRequest);
+        QuarkusCliRestService cliRestService = cliClient.createApplication(appName, createApplicationRequest);
+        cliRestService.withProperty("quarkus.analytics.disabled", "false");
+        return cliRestService;
     }
 
     protected Result buildApp(Function<String[], Result> buildFunction, String... buildProperties) {
