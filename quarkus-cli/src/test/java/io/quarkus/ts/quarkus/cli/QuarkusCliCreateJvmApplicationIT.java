@@ -40,6 +40,7 @@ import io.quarkus.logging.Log;
 import io.quarkus.test.bootstrap.QuarkusCliClient;
 import io.quarkus.test.bootstrap.QuarkusCliRestService;
 import io.quarkus.test.bootstrap.QuarkusVersionAwareCliClient;
+import io.quarkus.test.configuration.Configuration;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.TestQuarkusCli;
 import io.quarkus.test.scenarios.annotations.DisabledOnNative;
@@ -381,7 +382,8 @@ public class QuarkusCliCreateJvmApplicationIT {
             Files.write(pom, content);
         }
         // Start using DEV mode
-        assertEquals(Duration.ofSeconds(2), app.getConfiguration().getAsDuration("startup.timeout", null));
+        assertEquals(Duration.ofSeconds(2),
+                app.getConfiguration().getAsDuration(Configuration.Property.SERVICE_STARTUP_TIMEOUT, null));
         assertThrows(ConditionTimeoutException.class, app::start, "That application shouldn't start!");
         app.logs().assertContains("Type of the artifact is POM, skipping dev goal");
     }
