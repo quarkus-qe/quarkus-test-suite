@@ -14,7 +14,7 @@ import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.Certificate;
 import io.quarkus.test.services.QuarkusApplication;
-import io.quarkus.vertx.http.runtime.HttpConfiguration;
+import io.quarkus.vertx.http.runtime.VertxHttpConfig;
 
 @QuarkusScenario
 public class EnabledHttpsSecurityIT {
@@ -26,7 +26,7 @@ public class EnabledHttpsSecurityIT {
             })
     })
     static RestService app = new RestService()
-            .withProperty("quarkus.http.insecure-requests", HttpConfiguration.InsecureRequests.ENABLED.name());
+            .withProperty("quarkus.http.insecure-requests", VertxHttpConfig.InsecureRequests.ENABLED.name());
 
     @Test
     public void https() {

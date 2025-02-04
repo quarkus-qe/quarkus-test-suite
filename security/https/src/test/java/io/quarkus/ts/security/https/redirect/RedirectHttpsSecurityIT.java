@@ -12,7 +12,7 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Certificate;
 import io.quarkus.test.services.QuarkusApplication;
-import io.quarkus.vertx.http.runtime.HttpConfiguration;
+import io.quarkus.vertx.http.runtime.VertxHttpConfig;
 import io.vertx.ext.web.client.WebClientOptions;
 
 @QuarkusScenario
@@ -20,7 +20,7 @@ public class RedirectHttpsSecurityIT {
 
     @QuarkusApplication(ssl = true, certificates = @Certificate(configureKeystore = true, configureTruststore = true, configureHttpServer = true, useTlsRegistry = false))
     static RestService app = new RestService()
-            .withProperty("quarkus.http.insecure-requests", HttpConfiguration.InsecureRequests.REDIRECT.name());
+            .withProperty("quarkus.http.insecure-requests", VertxHttpConfig.InsecureRequests.REDIRECT.name());
 
     @Test
     public void https() {
