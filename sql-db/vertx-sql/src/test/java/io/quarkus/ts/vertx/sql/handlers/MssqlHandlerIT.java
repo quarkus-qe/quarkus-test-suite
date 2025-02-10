@@ -14,7 +14,8 @@ import io.quarkus.test.services.SqlServerContainer;
 @QuarkusScenario
 public class MssqlHandlerIT extends CommonTestCases {
 
-    @SqlServerContainer
+    // TODO: use default (newer) image when https://github.com/quarkusio/quarkus/issues/46083 gets fixed
+    @SqlServerContainer(image = "mcr.microsoft.com/mssql/rhel/server:2022-CU16-rhel-9.1")
     static SqlServerService database = new SqlServerService();
 
     @QuarkusApplication
