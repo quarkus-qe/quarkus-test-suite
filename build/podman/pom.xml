@@ -89,5 +89,17 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>ubi8-compatibility-build-test</id>
+            <activation>
+                <property>
+                    <name>test-ubi8-compatibility</name>
+                </property>
+            </activation>
+            <properties>
+                <quarkus.podman.dockerfile-jvm-path>src/main/docker/Dockerfile-compatibility.jvm</quarkus.podman.dockerfile-jvm-path>
+                <quarkus.podman.dockerfile-native-path>src/main/docker/Dockerfile-compatibility.native</quarkus.podman.dockerfile-native-path>
+            </properties>
+        </profile>
     </profiles>
 </project>
