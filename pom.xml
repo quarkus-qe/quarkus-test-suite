@@ -36,8 +36,8 @@
         <!-- Faster build when using -DskipTests -->
         <quarkus.build.skip>${skipTests}</quarkus.build.skip>
         <!-- S2i configuration -->
-        <quarkus.s2i.base-jvm-image>registry.access.redhat.com/ubi8/openjdk-17:latest</quarkus.s2i.base-jvm-image>
-        <quarkus.s2i.base-native-image>quay.io/quarkus/ubi-quarkus-native-binary-s2i:2.0</quarkus.s2i.base-native-image>
+        <quarkus.s2i.base-jvm-image>registry.access.redhat.com/ubi9/openjdk-21:latest</quarkus.s2i.base-jvm-image>
+        <quarkus.s2i.base-native-image>quay.io/quarkus/ubi9-quarkus-native-binary-s2i:2.0</quarkus.s2i.base-native-image>
         <!-- Default values for format -->
         <src.format.goal>format</src.format.goal>
         <src.sort.goal>sort</src.sort.goal>
@@ -740,7 +740,7 @@
                 <quarkus.native.enabled>true</quarkus.native.enabled>
                 <quarkus.native.container-build>true</quarkus.native.container-build>
                 <quarkus.native.native-image-xmx>5g</quarkus.native.native-image-xmx>
-                <quarkus.native.builder-image>quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-21</quarkus.native.builder-image>
+                <quarkus.native.builder-image>quay.io/quarkus/ubi9-quarkus-mandrel-builder-image:jdk-21</quarkus.native.builder-image>
                 <exclude.quarkus.devmode.tests>**/*DevMode*IT.java</exclude.quarkus.devmode.tests>
             </properties>
         </profile>

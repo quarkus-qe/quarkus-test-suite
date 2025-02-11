@@ -55,5 +55,17 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>ubi8-compatibility-build-test</id>
+            <activation>
+                <property>
+                    <name>test-ubi8-compatibility</name>
+                </property>
+            </activation>
+            <properties>
+                <quarkus.docker.dockerfile-jvm-path>src/main/docker/Dockerfile-compatibility.jvm</quarkus.docker.dockerfile-jvm-path>
+                <quarkus.docker.dockerfile-native-path>src/main/docker/Dockerfile-compatibility.native</quarkus.docker.dockerfile-native-path>
+            </properties>
+        </profile>
     </profiles>
 </project>
