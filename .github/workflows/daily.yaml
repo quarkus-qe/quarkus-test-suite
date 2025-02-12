@@ -26,6 +26,7 @@ jobs:
           check-latest: true
           cache: 'maven'
       - uses: ./.github/actions/prepare-quarkus-cli
+      - uses: ./.github/actions/use-docker-mirror
       - name: Test in JVM mode
         run: |
           mvn -fae -V -B --no-transfer-progress -fae clean verify -P ${{ matrix.profiles }} -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli"
@@ -65,6 +66,7 @@ jobs:
           check-latest: true
           cache: 'maven'
       - uses: ./.github/actions/prepare-quarkus-cli
+      - uses: ./.github/actions/use-docker-mirror
       - name: Test in Native mode
         run: |
           mvn -fae -V -B --no-transfer-progress -P ${{ matrix.profiles }} -fae clean verify -Dnative \
