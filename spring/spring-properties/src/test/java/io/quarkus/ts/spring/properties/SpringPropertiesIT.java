@@ -8,10 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.QuarkusApplication;
 
-@DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/46172")
 @QuarkusScenario
 public class SpringPropertiesIT {
 
