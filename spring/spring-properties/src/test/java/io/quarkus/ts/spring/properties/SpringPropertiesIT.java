@@ -11,7 +11,7 @@ import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.QuarkusApplication;
 
-@DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/46172")
+@DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/46341")
 @QuarkusScenario
 public class SpringPropertiesIT {
 
