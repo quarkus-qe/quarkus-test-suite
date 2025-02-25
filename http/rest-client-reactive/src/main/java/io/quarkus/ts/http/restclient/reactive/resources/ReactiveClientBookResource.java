@@ -118,4 +118,10 @@ public class ReactiveClientBookResource {
     public Set<Book> postFilter() {
         return bookInterface.postFilter(Map.of("author", "Haruki Murakami"));
     }
+
+    @GET
+    @Path("/sequel")
+    public Uni<String> getSequel(@QueryParam("title") String title, @QueryParam("author") String author) {
+        return bookInterface.getSequel(new Book(title, author));
+    }
 }

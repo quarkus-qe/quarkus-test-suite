@@ -28,4 +28,9 @@ public class Book {
     public String getAuthor() {
         return author;
     }
+
+    // TODO: required due to https://github.com/quarkusio/quarkus/issues/46458
+    public void setAuthor(String author) {
+        this.author = author;
+    }
 }

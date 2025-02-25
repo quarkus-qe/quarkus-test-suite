@@ -26,6 +26,7 @@ import com.github.tomakehurst.wiremock.http.Fault;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.scenarios.annotations.EnabledOnNative;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.http.restclient.reactive.json.Book;
@@ -333,7 +334,40 @@ public class ReactiveRestClientIT {
                 .then()
                 .statusCode(200)
                 .body(containsString("File received: fileTest.txt content: This is sample test content with media type"));
+    }
 
+    @Test
+    public void postJson() {
+        app.given()
+                .get("/client/book/sequel?title=Psycho&author=Block")
+                .then()
+                .statusCode(200)
+                .body(is("Psycho II"));
+    }
+
+    @Test
+    @DisabledOnNative(reason = "This endpoint uses reflection which is not accessible in native mode")
+    public void verifyGeneratedClasses() {
+        app.given()
+                .get("/meta/class/io.quarkus.ts.http.restclient.reactive.json.Book")
+                .then()
+                .statusCode(200)
+                .body(is("io.quarkus.ts.http.restclient.reactive.json.Book"));
+
+        app.given()
+                .get("/meta/class/io.quarkus.ts.http.restclient.reactive.json.Shmook")
+                .then()
+                .statusCode(204);
+        app.given()
+                .get("/meta/class/io.quarkus.ts.http.restclient.reactive.json.Book$quarkusjacksonserializer")
+                .then()
+                .statusCode(200)
+                .body(is("io.quarkus.ts.http.restclient.reactive.json.Book$quarkusjacksonserializer"));
+        app.given()
+                .get("/meta/class/io.quarkus.ts.http.restclient.reactive.json.Book$quarkusjacksondeserializer")
+                .then()
+                .statusCode(200)
+                .body(is("io.quarkus.ts.http.restclient.reactive.json.Book$quarkusjacksondeserializer"));
     }
 
     @AfterAll

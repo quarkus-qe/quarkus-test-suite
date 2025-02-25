@@ -174,6 +174,14 @@ public class PlainBookResource {
         return Set.of(new Book("The Wind-Up Bird Chronicle", author));
     }
 
+    @POST
+    @Path("/sequel")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
+    public Uni<String> getSequel(Book first) {
+        return Uni.createFrom().item(first.getTitle() + " II");
+    }
+
     private KeyStore trustStore() throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
         KeyStore ks = KeyStore.getInstance("JKS");
         try (var is = getClass().getResourceAsStream("META-INF/keystore.jks")) {
