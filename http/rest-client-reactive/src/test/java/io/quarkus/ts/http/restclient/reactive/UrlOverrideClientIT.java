@@ -82,7 +82,7 @@ public class UrlOverrideClientIT {
         // redirect the request to non-existing host which should result in failure to execute the erquest
         Response response = app.given().get("/testUrlOverride/overrideHost/?host=nonExistingHost");
         assertEquals(500, response.statusCode(), "Request should fail with code 500");
-        app.logs().assertContains("UnknownHostException: nonExistingHost");
+        app.logs().assertContains("UnknownHostException", "nonExistingHost");
     }
 
     private void testEndpoints(String defaultEndpoint, String overrideEndpoint) {
