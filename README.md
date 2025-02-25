@@ -393,10 +393,12 @@ This module will setup a very minimal configuration (only `quarkus-resteasy`) an
 Reactive equivalent of the http/rest-client module.
 Exclusions: XML test. Reason: https://quarkus.io/blog/resteasy-reactive/#what-jax-rs-features-are-missing
 
-Additionally, it's include endpoints to check usage of HTTP/2 using REST client over the http and https.
+There are also several scenarios, not covered in resteasy module: 
+1. Endpoints to check usage of HTTP/2 using REST client over the http and https.
 HTTP/2 REST client tests check sync and async response by:
 - Two endpoint used by client
 - Eight endpoints used for validation of client request
+2. Reflection-free serialization and deserialization (enabled with special option) and a test to verify that this feature is really enabled. 
 
 
 ### `http/rest-client-reactive-vanilla`
@@ -1065,7 +1067,7 @@ Ensure UTF-8 support is enabled, see for example https://stackoverflow.com/quest
 ### `Qute`
 Coverage for Qute template engine.
 Module `qute/synchronous` contains coverage for Qute templating and integration with RESTEasy.
-Module `qute/reactive` contains coverage for Qute templating and integration with RESTEasy reactive.
+Module `qute/reactive` contains coverage for Qute templating and integration with RESTEasy reactive. Reflection-free deserialization also covered there.
 Module `qute/multimodule` provides coverage for complicated issue of having localised messages in separate modules.
 
 ### `spring/spring-data`

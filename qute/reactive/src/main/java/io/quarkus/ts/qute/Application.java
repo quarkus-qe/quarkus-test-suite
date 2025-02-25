@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.concurrent.CompletionStage;
 
 import jakarta.inject.Inject;
+import jakarta.json.JsonObject;
+import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
@@ -133,6 +135,42 @@ public class Application {
                 .renderAsync();
     }
 
+    @POST
+    @Path("/book/object")
+    @Produces(MediaType.TEXT_PLAIN)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Uni<String> book(Book book) {
+        String template = """
+                The book is called {book.title} and is written by {book.['author']}
+                It has {book.characters.length} characters:
+                {#for character in book.characters}
+                {character_count}. {character}{#if character_hasNext} {#if character_odd }as well as{/if}{#if character_even }and also{/if}{/if}
+                {/for}
+                """;
+        return Qute.fmt(template)
+                .data("server", "engine")
+                .data("book", book)
+                .instance().createUni();
+    }
+
+    @POST
+    @Path("/book/json")
+    @Produces(MediaType.TEXT_PLAIN)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Uni<String> book(JsonObject book) {
+        String template = """
+                The book is called {book.getString('title')} and is written by {book.['author']}
+                It has {book.characters.size} characters:
+                {#for character in book.characters}
+                {character_count}. {character}{#if character_hasNext} {#if character_odd }as well as{/if}{#if character_even }and also{/if}{/if}
+                {/for}
+                """;
+        return Qute.fmt(template)
+                .data("server", "engine")
+                .data("book", book)
+                .instance().createUni();
+    }
+
     @GET
     @Path("/encoding")
     @Produces(MediaType.TEXT_HTML)
@@ -213,6 +251,18 @@ public class Application {
     @Produces(MediaType.TEXT_PLAIN)
     public String injectedLocalization() {
         return hebrew.hello("אדם");
+    }
+
+    @GET
+    @Path("/class/{name}")
+    public Response getClass(@PathParam("name") String className) {
+        try {
+            Class<?> existingclass = Class.forName(className);
+            return Response.ok(existingclass.getCanonicalName()).build();
+        } catch (ClassNotFoundException e) {
+            return Response.status(Response.Status.NO_CONTENT.getStatusCode(),
+                    "There is no such class: " + className).build();
+        }
     }
 
     private static URI getUri(String path) {

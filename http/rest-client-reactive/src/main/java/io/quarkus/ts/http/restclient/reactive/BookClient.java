@@ -119,4 +119,10 @@ public interface BookClient {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     Set<Book> postFilter(@RestForm Map<String, String> filter);
+
+    @POST
+    @Path("/sequel")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
+    Uni<String> getSequel(Book first);
 }

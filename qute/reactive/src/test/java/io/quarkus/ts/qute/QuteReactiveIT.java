@@ -1,5 +1,6 @@
 package io.quarkus.ts.qute;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -14,13 +15,19 @@ import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.QuarkusApplication;
 import io.restassured.response.Response;
 
 @QuarkusScenario
 public class QuteReactiveIT {
 
-    private static final String UTF8_HTML = MediaType.TEXT_HTML + ";charset=UTF-8";
+    private static final String UTF8_HTML = utf8(MediaType.TEXT_HTML);
+    private static final String UTF8_TEXT = utf8(MediaType.TEXT_PLAIN);
+
+    private static String utf8(String textHtml) {
+        return textHtml + ";charset=UTF-8";
+    }
 
     @QuarkusApplication
     static RestService app = new RestService();
@@ -114,7 +121,7 @@ public class QuteReactiveIT {
 
         Response plain = app.given().accept("text/plain").get("/format?name=plaintext client");
         assertEquals(200, plain.statusCode());
-        assertEquals(MediaType.TEXT_PLAIN + ";charset=UTF-8", plain.contentType());
+        assertEquals(utf8(MediaType.TEXT_PLAIN), plain.contentType());
         assertEquals("This page is rendered for \"plaintext client\" by Qute", plain.body().asString());
     }
 
@@ -157,6 +164,41 @@ public class QuteReactiveIT {
         assertEquals("and this is odd", content[arrayStartLine + 3]);
         assertEquals("and this is even", content[arrayStartLine + 4]);
         assertEquals("and this is odd.", content[arrayStartLine + 5]);
+    }
+
+    @Test
+    void json() {
+        Response response = app.given().get("/proxy/book?title=Truth&author=Pratchett");
+        assertEquals(200, response.statusCode());
+        assertEquals(UTF8_TEXT, response.contentType());
+
+        List<String> content = List.of(response.body().asString().split("\n"));
+        assertEquals(4, content.size());
+
+        assertEquals("The book is called Truth and is written by Pratchett",
+                content.get(0));
+
+        assertEquals("It has 2 characters:", content.get(1));
+        assertEquals("1. Death as well as", content.get(2));
+        assertEquals("2. Taxes", content.get(3));
+    }
+
+    @Test
+    @DisabledOnNative(reason = "TODO: https://github.com/quarkusio/quarkus/issues/46508")
+    void jsonObject() {
+        Response response = app.given().get("/proxy/json?title=Truth&author=Pratchett");
+        assertEquals(200, response.statusCode());
+        assertEquals(UTF8_TEXT, response.contentType());
+
+        List<String> content = List.of(response.body().asString().split("\n"));
+        assertEquals(4, content.size());
+
+        assertEquals("The book is called Truth and is written by \"Pratchett\"",
+                content.get(0));
+
+        assertEquals("It has 2 characters:", content.get(1));
+        assertEquals("1. \"Death\" as well as", content.get(2));
+        assertEquals("2. \"Taxes\"", content.get(3));
     }
 
     @Test
@@ -251,5 +293,20 @@ public class QuteReactiveIT {
         Response bruges = app.given().get("/enums/bruges");
         assertEquals(200, bruges.statusCode());
         assertEquals("Good news, we will not spend a week in Bruges!", bruges.body().asString());
+    }
+
+    @Test
+    @DisabledOnNative(reason = "This endpoint uses reflection which is not accessible in native mode")
+    public void verifyGeneratedClasses() {
+        app.given()
+                .get("/class/io.quarkus.ts.qute.Book")
+                .then()
+                .statusCode(200)
+                .body(is("io.quarkus.ts.qute.Book"));
+        app.given()
+                .get("/class/io.quarkus.ts.qute.Book$quarkusjacksondeserializer")
+                .then()
+                .statusCode(200)
+                .body(is("io.quarkus.ts.qute.Book$quarkusjacksondeserializer"));
     }
 }
