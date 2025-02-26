@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.concurrent.CompletionStage;
 
 import jakarta.inject.Inject;
-import jakarta.json.JsonObject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.DefaultValue;
@@ -33,6 +32,7 @@ import io.quarkus.qute.TemplateInstance;
 import io.quarkus.qute.i18n.Localized;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
+import io.vertx.core.json.JsonObject;
 
 @Path("")
 public class Application {
