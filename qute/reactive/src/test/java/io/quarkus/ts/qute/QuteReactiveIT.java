@@ -184,7 +184,6 @@ public class QuteReactiveIT {
     }
 
     @Test
-    @DisabledOnNative(reason = "TODO: https://github.com/quarkusio/quarkus/issues/46508")
     void jsonObject() {
         Response response = app.given().get("/proxy/json?title=Truth&author=Pratchett");
         assertEquals(200, response.statusCode());
@@ -193,12 +192,12 @@ public class QuteReactiveIT {
         List<String> content = List.of(response.body().asString().split("\n"));
         assertEquals(4, content.size());
 
-        assertEquals("The book is called Truth and is written by \"Pratchett\"",
+        assertEquals("The book is called Truth and is written by Pratchett",
                 content.get(0));
 
         assertEquals("It has 2 characters:", content.get(1));
-        assertEquals("1. \"Death\" as well as", content.get(2));
-        assertEquals("2. \"Taxes\"", content.get(3));
+        assertEquals("1. Death as well as", content.get(2));
+        assertEquals("2. Taxes", content.get(3));
     }
 
     @Test
