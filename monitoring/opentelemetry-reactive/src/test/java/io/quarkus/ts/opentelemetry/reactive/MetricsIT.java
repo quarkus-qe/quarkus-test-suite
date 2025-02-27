@@ -5,9 +5,11 @@ import static io.restassured.RestAssured.given;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.http.HttpStatus;
@@ -78,6 +80,31 @@ public class MetricsIT {
                     assertTrue(content[3].contains("span_id"), "Exemplar doesn't contain span ID");
                     assertTrue(content[3].contains("trace_id"), "Exemplar doesn't contain trace ID");
                     assertEquals("1.0", content[4], "Unexpected exemplar value!");
+                });
+    }
+
+    @Test
+    @Tag("QUARKUS-5637")
+    public void testNetty() {
+        await().ignoreExceptions().atMost(30, TimeUnit.SECONDS)
+                .pollInterval(5, TimeUnit.SECONDS)
+                .untilAsserted(() -> {
+                    Response response = pingservice.given().get("/q/metrics");
+                    assertEquals(HttpStatus.SC_OK, response.statusCode());
+                    final String metricName = "netty_allocator_memory_used";
+                    final String body = response.body().asString();
+                    List<String> metrics = Arrays.stream(body.split("\n"))
+                            .filter(line -> line.startsWith(metricName))
+                            .toList();
+                    assertNotEquals(0, metrics.size(), "No Netty metrics");
+                    for (String metric : metrics) {
+                        String type = metric.split(" ")[0];
+                        long params = Arrays.stream(type.substring(type.indexOf('{'), type.indexOf('}'))
+                                .split(","))
+                                .filter(parameter -> parameter.startsWith("id="))
+                                .count();
+                        assertEquals(0, params, "There is 'id' parameter in " + metric);
+                    }
                 });
     }
 }
