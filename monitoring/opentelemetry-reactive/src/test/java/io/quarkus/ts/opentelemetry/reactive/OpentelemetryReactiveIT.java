@@ -10,6 +10,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -17,7 +18,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matcher;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.JaegerService;
@@ -69,8 +69,8 @@ public class OpentelemetryReactiveIT {
             ArrayList<String> spanKinds = resp.body().path(
                     "data[0].spans.findAll { it.operationName == '%s' }.tags.flatten().findAll { it.key == 'span.kind' }.value.flatten()",
                     "GET /hello");
-            Assertions.assertTrue(spanKinds.contains("client"));
-            Assertions.assertTrue(spanKinds.contains("server"));
+            assertTrue(spanKinds.contains("client"));
+            assertTrue(spanKinds.contains("server"));
         });
     }
 
@@ -108,7 +108,7 @@ public class OpentelemetryReactiveIT {
                 .extract()
                 .body()
                 .asString());
-        Assertions.assertTrue(invocations >= 2);
+        assertTrue(invocations >= 2);
     }
 
     public void whenDoPingPongRequest() {
