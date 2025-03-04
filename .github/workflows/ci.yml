@@ -176,6 +176,59 @@ jobs:
         with:
           name: artifacts-latest-linux-jvm${{ matrix.java }}
           path: artifacts-latest-linux-jvm${{ matrix.java }}.zip
+  linux-aarch64-build-jvm-latest:
+    name: PR - Linux on Aarch64 - JVM build - Latest Version
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 240
+    needs: [ linux-validate-format, prepare-jvm-native-latest-modules-mvn-param ]
+    strategy:
+      matrix:
+        java: [ 17 ]
+        module-mvn-args: ${{ fromJSON(needs.prepare-jvm-native-latest-modules-mvn-param.outputs.JVM_MODULES_MAVEN_PARAM) }}
+    outputs:
+      has-flaky-tests: ${{steps.flaky-test-detector.outputs.has-flaky-tests}}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reclaim Disk Space
+        run: .github/ci-prerequisites.sh
+      - name: Install JDK {{ matrix.java }}
+        # Uses sha for added security since tags can be updated
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java }}
+          check-latest: true
+          cache: 'maven'
+      - uses: ./.github/actions/prepare-quarkus-cli
+      - uses: ./.github/actions/use-docker-mirror
+      - name: Build with Maven
+        run: |
+          mvn -fae -V -B --no-transfer-progress clean verify -Daarch64 -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli" ${{ matrix.module-mvn-args }} -am
+      - name: Detect flaky tests
+        id: flaky-test-detector
+        if: ${{ hashFiles('**/flaky-run-report.json') != '' }}
+        run: echo "has-flaky-tests=true" >> "$GITHUB_OUTPUT"
+      - name: Rename flaky test run report to avoid file name conflicts
+        id: rename-flaky-test-run-report
+        if: ${{ hashFiles('**/flaky-run-report.json') != '' }}
+        shell: bash
+        run: mv target/flaky-run-report.json target/flaky-run-report-linux-jvm-latest.json
+      - name: Archive flaky run report
+        id: archive-flaky-run-report
+        if: ${{ hashFiles('**/flaky-run-report-linux-jvm-latest.json') != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: flaky-run-report-linux-jvm-latest
+          path: target/flaky-run-report-linux-jvm-latest.json
+      - name: Zip Artifacts
+        if: failure()
+        run: |
+          zip -R artifacts-latest-linux-aarch64-jvm${{ matrix.java }}.zip '*-reports/*'
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: artifacts-latest-linux-aarch64-jvm${{ matrix.java }}
+          path: artifacts-latest-linux-aarch64-jvm${{ matrix.java }}.zip
   linux-build-native-latest:
     name: PR - Linux - Native build - Latest Version
     runs-on: ubuntu-latest
@@ -230,6 +283,60 @@ jobs:
         with:
           name: artifacts-latest-linux-native${{ matrix.java }}
           path: artifacts-latest-linux-native${{ matrix.java }}.zip
+  linux-aarch64-build-native-latest:
+    name: PR - Linux on Aarch64 - Native build - Latest Version
+    runs-on: ubuntu-24.04-arm
+    needs: [linux-validate-format, prepare-jvm-native-latest-modules-mvn-param]
+    strategy:
+      matrix:
+        java: [ 17 ]
+        module-mvn-args: ${{ fromJSON(needs.prepare-jvm-native-latest-modules-mvn-param.outputs.NATIVE_MODULES_MAVEN_PARAM) }}
+    outputs:
+      has-flaky-tests: ${{steps.flaky-test-detector.outputs.has-flaky-tests}}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reclaim Disk Space
+        run: .github/ci-prerequisites.sh
+      - name: Install JDK {{ matrix.java }}
+        # Uses sha for added security since tags can be updated
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java }}
+          check-latest: true
+          cache: 'maven'
+      - uses: ./.github/actions/prepare-quarkus-cli
+      - uses: ./.github/actions/use-docker-mirror
+      - name: Build with Maven
+        run: |
+          mvn -fae -V -B --no-transfer-progress -Daarch64 \
+                      -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli" \
+                      ${{ matrix.module-mvn-args }} clean verify -Dnative -am
+      - name: Detect flaky tests
+        id: flaky-test-detector
+        if: ${{ hashFiles('**/flaky-run-report.json') != '' }}
+        run: echo "has-flaky-tests=true" >> "$GITHUB_OUTPUT"
+      - name: Rename flaky test run report to avoid file name conflicts
+        id: rename-flaky-test-run-report
+        if: ${{ hashFiles('**/flaky-run-report.json') != '' }}
+        shell: bash
+        run: mv target/flaky-run-report.json target/flaky-run-report-linux-native-latest.json
+      - name: Archive flaky run report
+        id: archive-flaky-run-report
+        if: ${{ hashFiles('**/flaky-run-report-linux-native-latest.json') != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: flaky-run-report-linux-native-latest
+          path: target/flaky-run-report-linux-native-latest.json
+      - name: Zip Artifacts
+        if: failure()
+        run: |
+          zip -R artifacts-latest-linux-aarch64-native${{ matrix.java }}.zip '*-reports/*'
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: artifacts-latest-linux-aarch64-native${{ matrix.java }}
+          path: artifacts-latest-linux-aarch64-native${{ matrix.java }}.zip
   windows-build-jvm-latest:
     name: PR - Windows - JVM build - Latest Version
     runs-on: windows-latest
