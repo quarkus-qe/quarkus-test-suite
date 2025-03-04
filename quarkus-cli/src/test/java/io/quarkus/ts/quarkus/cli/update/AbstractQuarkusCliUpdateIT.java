@@ -55,7 +55,7 @@ public abstract class AbstractQuarkusCliUpdateIT {
 
         DefaultArtifactVersion updatedVersion = getQuarkusAppVersion(app);
         assertEquals(newVersionStream.getMajorVersion(), updatedVersion.getMajorVersion(),
-                "Major version for app updated to " + newVersionStream + "should be " + newVersionStream.getMajorVersion());
+                "Major version for app updated to " + newVersionStream + " should be " + newVersionStream.getMajorVersion());
         assertEquals(newVersionStream.getMinorVersion(), updatedVersion.getMinorVersion(),
                 "Minor version for app updated to " + newVersionStream + " should be " + newVersionStream.getMinorVersion());
         // check that updated app is using RHBQ, if we're testing with RHBQ
