@@ -12,9 +12,12 @@ import org.apache.maven.model.Dependency;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 
 import io.quarkus.test.bootstrap.QuarkusCliRestService;
 
+@DisabledOnOs(value = OS.WINDOWS, disabledReason = "https://github.com/quarkusio/quarkus/issues/46639")
 @Tag("quarkus-cli")
 public class QuarkusCli35to315UpdateIT extends AbstractQuarkusCliUpdateIT {
     private static final DefaultArtifactVersion oldVersion = new DefaultArtifactVersion("3.2");
