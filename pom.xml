@@ -25,7 +25,7 @@
         <formatter-maven-plugin.version>2.25.0</formatter-maven-plugin.version>
         <impsort-maven-plugin.version>1.12.0</impsort-maven-plugin.version>
         <xml-format-maven-plugin.version>4.0.1</xml-format-maven-plugin.version>
-        <checkstyle.version>10.21.2</checkstyle.version>
+        <checkstyle.version>10.21.4</checkstyle.version>
         <jsoup.version>1.19.1</jsoup.version>
         <quarkiverse.config.version>2.4.0</quarkiverse.config.version>
         <quarkiverse.pact.version>1.5.0</quarkiverse.pact.version>
