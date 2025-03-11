@@ -3,6 +3,7 @@ package io.quarkus.ts.security.https.secured;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -13,6 +14,7 @@ import io.quarkus.test.services.Certificate;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.utils.AwaitilityUtils;
 
+@Tag("fips-incompatible") // Reported in https://github.com/quarkusio/quarkus/issues/46696
 @QuarkusScenario
 public class TlsRegistryCertificateReloadingIT {
 

@@ -4,6 +4,7 @@ import static io.quarkus.ts.security.https.utils.Certificates.CLIENT_CN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -11,6 +12,7 @@ import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Certificate;
 import io.quarkus.test.services.QuarkusApplication;
 
+@Tag("fips-incompatible") // Reported in https://github.com/quarkusio/quarkus/issues/46696
 @QuarkusScenario
 public class HttpsEncryptedPemIT {
     @QuarkusApplication(ssl = true, certificates = @Certificate(format = Certificate.Format.ENCRYPTED_PEM, configureHttpServer = true, clientCertificates = {

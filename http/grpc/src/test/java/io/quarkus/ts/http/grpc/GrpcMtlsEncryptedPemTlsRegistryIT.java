@@ -1,8 +1,9 @@
 package io.quarkus.ts.http.grpc;
 
 import static io.quarkus.test.services.Certificate.Format.ENCRYPTED_PEM;
-import static org.junit.Assert.assertEquals;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.GrpcService;
@@ -14,6 +15,7 @@ import io.quarkus.ts.grpc.GreeterGrpc;
 import io.quarkus.ts.grpc.HelloReply;
 import io.quarkus.ts.grpc.HelloRequest;
 
+@Tag("fips-incompatible") // Reported in https://github.com/quarkusio/quarkus/issues/46696
 @QuarkusScenario
 public class GrpcMtlsEncryptedPemTlsRegistryIT {
 
@@ -34,7 +36,7 @@ public class GrpcMtlsEncryptedPemTlsRegistryIT {
         try (var channel = app.securedGrpcChannel()) {
             HelloRequest request = HelloRequest.newBuilder().setName(CLIENT_CN_NAME).build();
             HelloReply response = GreeterGrpc.newBlockingStub(channel).sayHello(request);
-            assertEquals("Hello " + CLIENT_CN_NAME, response.getMessage());
+            Assertions.assertEquals("Hello " + CLIENT_CN_NAME, response.getMessage());
         }
     }
 
