@@ -1,8 +1,14 @@
 package io.quarkus.ts.http.restclient.reactive.resources;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 @Path("/meta")
@@ -18,4 +24,15 @@ public class MetaResource {
                     "There is no such class: " + className).build();
         }
     }
+
+    @GET
+    @Path("/headers")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<String> getHeaders(HttpHeaders info) {
+        List<String> headers = new ArrayList<>();
+        info.getRequestHeaders().forEach((key, value) -> headers.add(key + ": " + value));
+
+        return headers;
+    }
+
 }
