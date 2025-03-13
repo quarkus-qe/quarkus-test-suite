@@ -31,6 +31,7 @@ import io.quarkus.test.scenarios.annotations.EnabledOnNative;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.http.restclient.reactive.json.Book;
 import io.quarkus.ts.http.restclient.reactive.json.BookRepository;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 
 @QuarkusScenario
@@ -368,6 +369,18 @@ public class ReactiveRestClientIT {
                 .then()
                 .statusCode(200)
                 .body(is("io.quarkus.ts.http.restclient.reactive.json.Book$quarkusjacksondeserializer"));
+    }
+
+    @Test
+    @Tag("https://github.com/quarkusio/quarkus/issues/46411")
+    public void customResolver() {
+        Response clientResponse = app.given().get("/books/direct-client?title=Steppenwolf&author=Hesse");
+        assertEquals(200, clientResponse.statusCode());
+        JsonPath json = clientResponse.jsonPath();
+        assertEquals("Hesse", json.getString("author"),
+                "There is an error in author field: " + clientResponse.body().asString());
+        assertEquals("Steppenwolf", json.getString("title"),
+                "There is an error in title field: " + clientResponse.body().asString());
     }
 
     @AfterAll
