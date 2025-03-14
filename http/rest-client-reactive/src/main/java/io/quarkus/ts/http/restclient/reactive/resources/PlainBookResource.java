@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import jakarta.enterprise.inject.spi.CDI;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.GET;
@@ -18,11 +19,17 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.ext.ContextResolver;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.jboss.resteasy.reactive.RestQuery;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.quarkus.ts.http.restclient.reactive.BookClient;
 import io.quarkus.ts.http.restclient.reactive.json.Book;
@@ -174,6 +181,29 @@ public class PlainBookResource {
         return Set.of(new Book("The Wind-Up Bird Chronicle", author));
     }
 
+    @POST
+    @Path("/sequel")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
+    public Uni<String> getSequel(Book first) {
+        return Uni.createFrom().item(first.getTitle() + " II");
+    }
+
+    @GET
+    @Path("/direct-client")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Book client(@QueryParam("title") String title, @QueryParam("author") String author) {
+        WebTarget target;
+        try (Client client = ClientBuilder.newClient()) {
+            target = client.target(baseUri.resolve("/books"))
+                    .queryParam("title", title)
+                    .queryParam("author", author);
+            target.register(new JacksonObjectMapperContextResolver());
+            jakarta.ws.rs.core.Response response = target.request(MediaType.APPLICATION_JSON).get();
+            return response.readEntity(Book.class);
+        }
+    }
+
     private KeyStore trustStore() throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
         KeyStore ks = KeyStore.getInstance("JKS");
         try (var is = getClass().getResourceAsStream("META-INF/keystore.jks")) {
@@ -182,4 +212,11 @@ public class PlainBookResource {
         return ks;
     }
 
+    static class JacksonObjectMapperContextResolver implements ContextResolver<ObjectMapper> {
+
+        @Override
+        public ObjectMapper getContext(Class<?> type) {
+            return CDI.current().select(ObjectMapper.class).get();
+        }
+    }
 }

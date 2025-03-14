@@ -481,6 +481,7 @@
                 <module>http/vertx-web-validation</module>
                 <module>http/hibernate-validator</module>
                 <module>http/graphql</module>
+                <module>http/graphql-client</module>
                 <module>http/graphql-telemetry</module>
                 <module>http/vertx</module>
                 <module>http/management</module>
