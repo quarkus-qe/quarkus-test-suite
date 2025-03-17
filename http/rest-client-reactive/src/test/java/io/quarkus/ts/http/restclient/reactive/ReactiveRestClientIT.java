@@ -15,6 +15,7 @@ import jakarta.ws.rs.core.MediaType;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -92,6 +93,7 @@ public class ReactiveRestClientIT {
     }
 
     @Test
+    @Disabled("https://github.com/quarkusio/quarkus/issues/46816")
     public void mapInQueryParam() {
         Response response = app.given()
                 .when()
