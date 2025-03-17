@@ -29,7 +29,6 @@ import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.in;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.htmlunit.util.MimeType.IMAGE_JPEG;
@@ -39,7 +38,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -61,7 +59,6 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.annotations.DisabledOnNative;
-import io.quarkus.test.scenarios.annotations.EnabledOnQuarkusVersion;
 import io.quarkus.test.security.certificate.CertificateBuilder;
 import io.restassured.http.Header;
 import io.restassured.response.ValidatableResponse;
@@ -191,24 +188,6 @@ public abstract class BaseHttpAdvancedReactiveIT {
 
         done.await(TIMEOUT_SEC, TimeUnit.SECONDS);
         assertThat(done.getCount(), equalTo(0L));
-    }
-
-    @Test
-    @DisplayName("Non-application endpoint move to /q/")
-    @EnabledOnQuarkusVersion(version = "1\\..*", reason = "Redirection is no longer supported in 2.x")
-    public void nonAppRedirections() {
-        List<String> endpoints = Arrays.asList("/openapi", "/swagger-ui", "/metrics/base", "/metrics/application",
-                "/metrics/vendor", "/metrics", "/health/group", "/health/well", "/health/ready", "/health/live",
-                "/health");
-
-        for (String endpoint : endpoints) {
-            getApp().given().redirects().follow(false).get(ROOT_PATH + endpoint)
-                    .then().statusCode(HttpStatus.SC_MOVED_PERMANENTLY)
-                    .and().header("Location", containsString("/q" + endpoint));
-
-            getApp().given().get(ROOT_PATH + endpoint)
-                    .then().statusCode(in(Arrays.asList(SC_OK, HttpStatus.SC_NO_CONTENT)));
-        }
     }
 
     @Test
