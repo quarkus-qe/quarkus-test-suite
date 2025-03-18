@@ -8,12 +8,12 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.junit.jupiter.api.condition.DisabledOnOs;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.condition.OS;
 
 import io.quarkus.test.bootstrap.QuarkusCliClient;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnNative;
+import io.quarkus.test.scenarios.annotations.EnabledOnNative;
 
 @Tag("QUARKUS-960")
 @Tag("quarkus-cli")
@@ -29,8 +29,6 @@ public class QuarkusCliSpecialCharsIT {
 
     static final String ARTIFACT_ID = "app";
     static final String EXPECTED_BUILD_OUTPUT = "BUILD SUCCESS";
-    static final String PROFILE_ID = "profile.id";
-    static final String NATIVE = "native";
 
     @Inject
     static QuarkusCliClient cliClient;
@@ -65,31 +63,31 @@ public class QuarkusCliSpecialCharsIT {
     }
 
     @Test
-    @EnabledIfSystemProperty(named = PROFILE_ID, matches = NATIVE)
+    @EnabledOnNative
     public void shouldCreateApplicationOnNativeWithSpaces() {
         assertCreateNativeApplicationAtFolder(FOLDER_WITH_SPACES);
     }
 
     @Test
-    @EnabledIfSystemProperty(named = PROFILE_ID, matches = NATIVE)
+    @EnabledOnNative
     public void shouldCreateApplicationOnNativeWithSpecialChars() {
         assertCreateNativeApplicationAtFolder(FOLDER_WITH_SPECIAL_CHARS);
     }
 
     @Test
-    @EnabledIfSystemProperty(named = PROFILE_ID, matches = NATIVE)
+    @EnabledOnNative
     public void shouldCreateApplicationOnNativeWithDiacritics() {
         assertCreateNativeApplicationAtFolder(FOLDER_WITH_DIACRITICS);
     }
 
     @Test
-    @EnabledIfSystemProperty(named = PROFILE_ID, matches = NATIVE)
+    @EnabledOnNative
     public void shouldCreateApplicationOnNativeWithJapanese() {
         assertCreateNativeApplicationAtFolder(FOLDER_WITH_JAPANESE);
     }
 
     @Test
-    @EnabledIfSystemProperty(named = PROFILE_ID, matches = NATIVE)
+    @EnabledOnNative
     public void shouldCreateApplicationOnNativeWithInternationalization() {
         assertCreateNativeApplicationAtFolder(FOLDER_WITH_INTERNATIONALIZATION);
     }

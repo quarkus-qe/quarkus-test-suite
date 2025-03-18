@@ -31,7 +31,6 @@
         <quarkiverse.pact.version>1.5.0</quarkiverse.pact.version>
         <smallrye-stork.version>2.7.1</smallrye-stork.version>
         <assertj.version>3.27.3</assertj.version>
-        <profile.id>jvm</profile.id>
         <htmlunit.version>4.10.0</htmlunit.version>
         <!-- Faster build when using -DskipTests -->
         <quarkus.build.skip>${skipTests}</quarkus.build.skip>
@@ -276,7 +275,6 @@
                                 <exclude>${exclude.quarkus.devmode.tests}</exclude>
                             </excludes>
                             <systemPropertyVariables>
-                                <profile.id>${profile.id}</profile.id>
                                 <!-- S2i configuration for OpenShift -->
                                 <quarkus.s2i.base-jvm-image>${quarkus.s2i.base-jvm-image}</quarkus.s2i.base-jvm-image>
                                 <quarkus.s2i.base-native-image>${quarkus.s2i.base-native-image}</quarkus.s2i.base-native-image>
@@ -739,7 +737,6 @@
                 </plugins>
             </build>
             <properties>
-                <profile.id>native</profile.id>
                 <quarkus.native.enabled>true</quarkus.native.enabled>
                 <quarkus.native.container-build>true</quarkus.native.container-build>
                 <quarkus.native.native-image-xmx>5g</quarkus.native.native-image-xmx>
