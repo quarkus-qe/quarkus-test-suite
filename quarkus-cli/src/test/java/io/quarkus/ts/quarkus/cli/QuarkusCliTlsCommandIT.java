@@ -31,7 +31,7 @@ import io.quarkus.ts.quarkus.cli.tls.surefire.TlsCommandTest;
 @Tag("quarkus-cli")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @QuarkusScenario
-@DisabledOnNative // Only for JVM verification
+@DisabledOnNative(reason = "Only for JVM verification")
 public class QuarkusCliTlsCommandIT {
 
     // locations are expected according to the Quarkus docs describes generation target
