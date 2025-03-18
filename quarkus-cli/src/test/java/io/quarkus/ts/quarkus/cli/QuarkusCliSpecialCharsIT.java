@@ -18,7 +18,7 @@ import io.quarkus.test.scenarios.annotations.EnabledOnNative;
 @Tag("QUARKUS-960")
 @Tag("quarkus-cli")
 @QuarkusScenario
-@DisabledOnNative // Only for JVM verification
+@DisabledOnNative(reason = "Only for JVM verification")
 public class QuarkusCliSpecialCharsIT {
 
     static final String FOLDER_WITH_SPACES = "s p a c e s";

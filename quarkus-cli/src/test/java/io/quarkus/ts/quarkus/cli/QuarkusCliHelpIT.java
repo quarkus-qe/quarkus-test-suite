@@ -14,7 +14,7 @@ import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 @Tag("QUARKUS-960")
 @Tag("quarkus-cli")
 @QuarkusScenario
-@DisabledOnNative // Only for JVM verification
+@DisabledOnNative(reason = "Only for JVM verification")
 public class QuarkusCliHelpIT {
 
     static final String HELP_COMMAND = "--help";

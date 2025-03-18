@@ -19,7 +19,7 @@ import io.quarkus.ts.quarkus.cli.config.surefire.RemovePropertyTest;
 @Tag("QUARKUS-3456")
 @Tag("quarkus-cli")
 @QuarkusScenario
-@DisabledOnNative // Only for JVM verification
+@DisabledOnNative(reason = "Only for JVM verification")
 public class QuarkusCliConfigRemoveIT {
 
     @Inject

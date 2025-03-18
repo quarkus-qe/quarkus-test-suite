@@ -25,7 +25,7 @@ import io.quarkus.test.services.quarkus.model.QuarkusProperties;
 @Tag("QUARKUS-960")
 @Tag("quarkus-cli")
 @QuarkusScenario
-@DisabledOnNative // Only for JVM verification
+@DisabledOnNative(reason = "Only for JVM verification")
 public class QuarkusCliExtensionsIT {
 
     static final String AGROAL_EXTENSION_NAME = "Agroal - Database connection pool";
