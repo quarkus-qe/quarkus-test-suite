@@ -14,7 +14,7 @@ import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 @Tag("QUARKUS-960")
 @Tag("quarkus-cli")
 @QuarkusScenario
-@DisabledOnNative // Only for JVM verification
+@DisabledOnNative(reason = "Only for JVM verification")
 public class QuarkusCliCompletionIT {
 
     static final String EXPECTED_COMPLETION_OUTPUT = "Generates completions for the options and subcommands";
