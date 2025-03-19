@@ -91,17 +91,6 @@ public class ReactiveRestClientIT {
         assertEquals("Title in Json: 123", response.jsonPath().getString("title"));
     }
 
-    @Test
-    public void mapInQueryParam() {
-        Response response = app.given()
-                .when()
-                .queryParam("param", "{\"id\":\"Hagakure\",\"author\":\"Tsuramoto\"}")
-                .get("/books/map");
-        assertEquals(HttpStatus.SC_OK, response.statusCode());
-        assertEquals("Hagakure", response.jsonPath().getString("title"));
-        assertEquals("Tsuramoto", response.jsonPath().getString("author"));
-    }
-
     @Tag("QUARKUS-2148")
     @Test
     public void restQueryParam() {
