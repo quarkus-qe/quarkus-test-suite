@@ -24,7 +24,7 @@
         <confluent.kafka-avro-serializer.version>7.5.1</confluent.kafka-avro-serializer.version>
         <formatter-maven-plugin.version>2.25.0</formatter-maven-plugin.version>
         <impsort-maven-plugin.version>1.12.0</impsort-maven-plugin.version>
-        <xml-format-maven-plugin.version>4.0.1</xml-format-maven-plugin.version>
+        <xml-format-maven-plugin.version>4.1.0</xml-format-maven-plugin.version>
         <checkstyle.version>10.21.4</checkstyle.version>
         <jsoup.version>1.19.1</jsoup.version>
         <quarkiverse.config.version>2.4.0</quarkiverse.config.version>
