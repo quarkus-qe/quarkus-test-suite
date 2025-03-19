@@ -8,7 +8,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import jakarta.enterprise.inject.spi.CDI;
@@ -46,15 +45,6 @@ public class PlainBookResource {
 
     public PlainBookResource(@ConfigProperty(name = "quarkus.http.port") int httpPort) {
         this.baseUri = URI.create("http://localhost:" + httpPort);
-    }
-
-    @GET
-    @Path("/map")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Uni<Book> getByQueryMap(@QueryParam("param") Map<String, String> params) {
-        return Uni.createFrom()
-                .item(new Book(params.get("id"),
-                        params.get("author")));
     }
 
     @GET
