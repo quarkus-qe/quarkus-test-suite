@@ -1,11 +1,11 @@
 package io.quarkus.ts.spring.data.primitivetypes;
 
+import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
-import static org.jboss.resteasy.spi.HttpResponseCodes.SC_OK;
 
 import java.util.Arrays;
 import java.util.Collections;
