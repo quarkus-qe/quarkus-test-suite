@@ -1,0 +1,75 @@
+{
+  "realm": "test-realm",
+  "enabled": true,
+  "sslRequired": "none",
+  "roles": {
+    "realm": [
+      {
+        "name": "user"
+      },
+      {
+        "name": "admin"
+      }
+    ]
+  },
+  "users": [
+    {
+      "username": "albert",
+      "email": "albert@localhost",
+      "firstName": "Albert",
+      "lastName": "User",
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "einstein"
+        }
+      ],
+      "clientRoles": {
+        "test-application-client": [
+          "uma_protection"
+        ]
+      },
+      "realmRoles": [
+        "user",
+        "uma_protection"
+      ]
+    },
+    {
+      "username": "charlie",
+      "email": "charlie@localhost",
+      "firstName": "Charlie",
+      "lastName": "Admin",
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "random"
+        }
+      ],
+      "clientRoles": {
+        "test-application-client": [
+          "uma_protection"
+        ]
+      },
+      "realmRoles": [
+        "admin",
+        "user",
+        "uma_protection"
+      ]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "test-application-client",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "test-application-client-secret"
+    }
+  ]
+}

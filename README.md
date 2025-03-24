@@ -1215,6 +1215,13 @@ Coverage for sending messages over websockets
 ### `websockets/websockets-client`
 Coverage for sending messages over websockets with only a client library
 
+### `websockets/websocket-next`
+Coverage for sending messages over websocket-next extension
+
+### `websockets/websocket-next-oidc`
+Coverage for sending messages over websocket-next with authentication using OIDC
+
+
 ### `funqy/knative-events`
 
 Verifies [Quarkus Funqy Knative Events](https://quarkus.io/guides/funqy-knative-events) deployed to OpenShift and unit testing using RestAssured works according to the documentation.
