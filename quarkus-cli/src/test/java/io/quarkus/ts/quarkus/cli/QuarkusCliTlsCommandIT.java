@@ -7,6 +7,7 @@ import static io.quarkus.ts.quarkus.cli.tls.surefire.TlsCommandTest.TRUST_STORE_
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
+import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
 import jakarta.inject.Inject;
@@ -48,14 +49,21 @@ public class QuarkusCliTlsCommandIT {
         // also prepares state for assertion in TlsCommandTest
         deleteFileIfExists(DEV_CA_CERT_FILE);
         deleteFileIfExists(DEV_CA_PK_FILE);
-        tlsCommand
+        QuarkusCliCommandResult result = tlsCommand
                 .generateQuarkusCa()
                 .withOption(GenerateQuarkusCaOptions.TRUSTSTORE_LONG)
                 .withOption(GenerateQuarkusCaOptions.RENEW_SHORT)
-                .executeCommand()
+                .executeCommand();
+        result
                 .assertCommandOutputContains("Root CA certificate generated successfully")
-                .assertCommandOutputContains("Quarkus Dev CA certificate generated and installed")
                 .assertFileExistsStr(cmd -> cmd.getOutputLineRemainder("Truststore generated successfully:"));
+        String output = result.getOutput();
+        BooleanSupplier devCertGenerated = () -> {
+            String oldMessage = "Quarkus Development CA generated and installed";
+            String newMessage = "Quarkus Dev CA certificate generated and installed";
+            return output.contains(oldMessage) || output.contains(newMessage);
+        };
+        assertTrue(devCertGenerated, "Dev certificate generation was not mentioned in the output: " + output);
         assertTrue(DEV_CA_CERT_FILE.exists(),
                 "Quarkus CLI subcommand 'tls generate-quarkus-ca' didn't generate Quarkus DEV CA certificate");
         assertTrue(DEV_CA_PK_FILE.exists(),
