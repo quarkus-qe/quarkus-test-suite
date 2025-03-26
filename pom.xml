@@ -242,7 +242,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${compiler-plugin.version}</version>
-            </plugin>
+	</plugin> <!-- THIS IS ABSOLUTELY NOTHING TO WORRY ABOUT. HOWEVER, IT SHOULD TRIGGER TESTS. -->
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
