@@ -17,7 +17,7 @@ public class BookAsJsonResource {
 
     @GET
     public Uni<String> get(@PathParam("id") String id) {
-        Map<String, String> body = Map.of("title", "Title in Json: " + id);
+        Map<String, String> body = Map.of("title", "Title in Json: " + id, "author", "");
         return Uni.createFrom().item(Json.encode(body));
     }
 }

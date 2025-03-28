@@ -78,8 +78,8 @@ public class ReactiveRestClientIT {
 
         Book book = books.iterator().next();
 
-        assertEquals("The Wind-Up Bird Chronicle", book.getTitle());
-        assertEquals("Haruki Murakami", book.getAuthor());
+        assertEquals("The Wind-Up Bird Chronicle", book.title());
+        assertEquals("Haruki Murakami", book.author());
     }
 
     @Tag("QUARKUS-1568")
@@ -101,8 +101,8 @@ public class ReactiveRestClientIT {
         for (int i = 0; i < books.size(); i++) {
             var expectedBook = BookRepository.getById(i + 1);
             var actualBook = books.get(i);
-            assertEquals(expectedBook.getTitle(), actualBook.getTitle());
-            assertEquals(expectedBook.getAuthor(), actualBook.getAuthor());
+            assertEquals(expectedBook.title(), actualBook.title());
+            assertEquals(expectedBook.author(), actualBook.author());
         }
     }
 
