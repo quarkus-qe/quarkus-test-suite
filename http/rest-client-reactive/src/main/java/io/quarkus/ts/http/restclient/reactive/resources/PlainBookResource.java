@@ -160,7 +160,7 @@ public class PlainBookResource {
                 .trustStore(trustStore()) // keep truststore in place to verify QUARKUS-3170
                 .build(BookClient.class)
                 .getBook("The Hobbit: An Unexpected Journey", "J. R. R. Tolkien")
-                .map(Book::getTitle);
+                .map(Book::title);
     }
 
     @POST
@@ -176,7 +176,7 @@ public class PlainBookResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     public Uni<String> getSequel(Book first) {
-        return Uni.createFrom().item(first.getTitle() + " II");
+        return Uni.createFrom().item(first.title() + " II");
     }
 
     @GET
