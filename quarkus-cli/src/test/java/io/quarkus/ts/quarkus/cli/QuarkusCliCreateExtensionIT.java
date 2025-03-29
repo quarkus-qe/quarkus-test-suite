@@ -10,7 +10,7 @@ import io.quarkus.test.scenarios.TestQuarkusCli;
 import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 
 @QuarkusScenario
-@DisabledOnNative // Only for JVM verification
+@DisabledOnNative(reason = "Only for JVM verification")
 public class QuarkusCliCreateExtensionIT {
 
     @TestQuarkusCli

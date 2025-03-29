@@ -9,6 +9,7 @@ import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.services.quarkus.model.QuarkusProperties;
 
 @QuarkusScenario
 public class ConfigValueIT {
@@ -37,10 +38,6 @@ public class ConfigValueIT {
 
     // Clarification: https://github.com/quarkusio/quarkus/issues/27231#issuecomment-1211783882
     private String getExpectedSourceNameValue() {
-        return isNativeExecution() ? "DefaultValuesConfigSource" : "PropertiesConfigSource";
-    }
-
-    private boolean isNativeExecution() {
-        return System.getProperties().contains("native");
+        return QuarkusProperties.isNativeEnabled() ? "DefaultValuesConfigSource" : "PropertiesConfigSource";
     }
 }

@@ -63,6 +63,20 @@ public class HttpMinimumIT {
                 .body("data", is("ok"));
     }
 
+    @Test
+    public void accessingRequestParameters() {
+        givenSpec().get("/api/minmax/method/1/5").then()
+                .statusCode(HttpStatus.SC_OK)
+                .body(is("1 - 5"));
+
+        givenSpec().get("/api/minmax/class/1/5").then()
+                .statusCode(HttpStatus.SC_UNSUPPORTED_MEDIA_TYPE);
+
+        givenSpec().get("/api/minmax/record/1/5").then()
+                .statusCode(HttpStatus.SC_UNSUPPORTED_MEDIA_TYPE);
+
+    }
+
     protected RequestSpecification givenSpec() {
         return HTTP_CLIENT_SPEC;
     }

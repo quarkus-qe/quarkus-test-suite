@@ -50,7 +50,7 @@ import io.quarkus.test.utils.FileUtils;
 @Tag("QUARKUS-960")
 @Tag("quarkus-cli")
 @QuarkusScenario
-@DisabledOnNative // Only for JVM verification
+@DisabledOnNative(reason = "Only for JVM verification")
 public class QuarkusCliCreateJvmApplicationIT {
 
     static final String REST_EXTENSION = "quarkus-rest";

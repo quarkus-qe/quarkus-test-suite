@@ -18,7 +18,7 @@ import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 @Tag("quarkus-cli")
 @QuarkusScenario
 @DisabledOnQuarkusVersion(version = ".*redhat.*", reason = "Do not run CLI version check on productized bits")
-@DisabledOnNative // Only for JVM verification
+@DisabledOnNative(reason = "Only for JVM verification")
 @DisabledIfSystemProperty(named = "gh-action-disable-on-win", matches = "true", disabledReason = "We setting `-Dfile.encoding=UTF8` on GH windows action. This causing the output the `picked up java_tool_options` which is not expected in this test.") // TODO remove when We test with JDK 21+
 public class QuarkusCliVersionIT {
 

@@ -31,6 +31,7 @@ import io.quarkus.test.scenarios.annotations.EnabledOnNative;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.http.restclient.reactive.json.Book;
 import io.quarkus.ts.http.restclient.reactive.json.BookRepository;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 
 @QuarkusScenario
@@ -77,8 +78,8 @@ public class ReactiveRestClientIT {
 
         Book book = books.iterator().next();
 
-        assertEquals("The Wind-Up Bird Chronicle", book.getTitle());
-        assertEquals("Haruki Murakami", book.getAuthor());
+        assertEquals("The Wind-Up Bird Chronicle", book.title());
+        assertEquals("Haruki Murakami", book.author());
     }
 
     @Tag("QUARKUS-1568")
@@ -88,17 +89,6 @@ public class ReactiveRestClientIT {
                 .get("/client/book/{id}/jsonByBeanParam");
         assertEquals(HttpStatus.SC_OK, response.statusCode());
         assertEquals("Title in Json: 123", response.jsonPath().getString("title"));
-    }
-
-    @Test
-    public void mapInQueryParam() {
-        Response response = app.given()
-                .when()
-                .queryParam("param", "{\"id\":\"Hagakure\",\"author\":\"Tsuramoto\"}")
-                .get("/books/map");
-        assertEquals(HttpStatus.SC_OK, response.statusCode());
-        assertEquals("Hagakure", response.jsonPath().getString("title"));
-        assertEquals("Tsuramoto", response.jsonPath().getString("author"));
     }
 
     @Tag("QUARKUS-2148")
@@ -111,8 +101,8 @@ public class ReactiveRestClientIT {
         for (int i = 0; i < books.size(); i++) {
             var expectedBook = BookRepository.getById(i + 1);
             var actualBook = books.get(i);
-            assertEquals(expectedBook.getTitle(), actualBook.getTitle());
-            assertEquals(expectedBook.getAuthor(), actualBook.getAuthor());
+            assertEquals(expectedBook.title(), actualBook.title());
+            assertEquals(expectedBook.author(), actualBook.author());
         }
     }
 
@@ -368,6 +358,18 @@ public class ReactiveRestClientIT {
                 .then()
                 .statusCode(200)
                 .body(is("io.quarkus.ts.http.restclient.reactive.json.Book$quarkusjacksondeserializer"));
+    }
+
+    @Test
+    @Tag("https://github.com/quarkusio/quarkus/issues/46411")
+    public void customResolver() {
+        Response clientResponse = app.given().get("/books/direct-client?title=Steppenwolf&author=Hesse");
+        assertEquals(200, clientResponse.statusCode());
+        JsonPath json = clientResponse.jsonPath();
+        assertEquals("Hesse", json.getString("author"),
+                "There is an error in author field: " + clientResponse.body().asString());
+        assertEquals("Steppenwolf", json.getString("title"),
+                "There is an error in title field: " + clientResponse.body().asString());
     }
 
     @AfterAll

@@ -113,6 +113,24 @@ public class HttpMinimumReactiveIT {
         });
     }
 
+    @Test
+    public void accessingRequestParameters() {
+        givenSpec().get("/api/minmax/method/1/5").then()
+                .statusCode(HttpStatus.SC_OK)
+                .body(is("1 - 5"));
+
+        givenSpec().get("/api/minmax/class/1/5").then()
+                .statusCode(HttpStatus.SC_OK)
+                .body("min", is("1"))
+                .body("max", is("5"));
+
+        givenSpec().get("/api/minmax/record/1/5").then()
+                .statusCode(HttpStatus.SC_OK)
+                .body("min", is("1"))
+                .body("max", is("5"));
+
+    }
+
     protected RequestSpecification givenSpec() {
         return app.given();
     }

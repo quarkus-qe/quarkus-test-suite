@@ -1,4 +1,3 @@
-#!/usr/bin/env -S podman build . --tag quay.io/quarkusqeteam/wait:0.0.2 --file
 FROM ubi9:latest
 
 COPY <<EOF /etc/yum.repos.d/kubernetes.repo

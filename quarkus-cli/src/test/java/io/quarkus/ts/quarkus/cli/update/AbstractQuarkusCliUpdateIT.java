@@ -27,7 +27,7 @@ import io.quarkus.test.util.QuarkusCLIUtils;
 import io.quarkus.test.utils.AwaitilityUtils;
 
 @QuarkusScenario
-@DisabledOnNative // Only for JVM verification
+@DisabledOnNative(reason = "Only for JVM verification")
 @Tag("quarkus-cli")
 public abstract class AbstractQuarkusCliUpdateIT {
     @Inject

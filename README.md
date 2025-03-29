@@ -447,6 +447,10 @@ It also verifies multiple deployment strategies like:
 ### `http/graphql`
 This module covers some basic scenarios around GraphQL.
 
+### `http/graphql-client`
+This module covers some basic scenarios around GraphQL client.
+Initially it only covers a single scenario, related to this issue: https://github.com/smallrye/smallrye-graphql/issues/2271
+
 ### `http/graphql-telemetry`
 This module covers some basic scenarios around OpenTelemetry usage with GraphQL.
 
