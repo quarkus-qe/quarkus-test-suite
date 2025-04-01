@@ -770,6 +770,12 @@ Reactive twin of the `security/keycloak-oidc-client-extended`, extends `security
 
 - Verifies Proof Of Key for Code Exchange support for a Keycloak and Red Hat Single Sign-On together with OIDC Single Page Application logout flow
 
+### `security/keycloak-oidc-client-standalone`
+
+Verifies Dev Mode experience using `quarkus-oidc-client` extension without `quarkus-oidc` extension.
+Verifies the logs when using custom and default Keycloak service.
+Verifies that it's possible to get token when using Keycloak Dev service.
+
 ### `securty/oidc-client-mutual-tls`
 
 Verifies OIDC client can be authenticated as part of the `Mutual TLS` (`mTLS`) authentication process
