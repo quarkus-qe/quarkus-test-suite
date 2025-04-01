@@ -26,7 +26,6 @@ import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -35,6 +34,7 @@ import static org.htmlunit.util.MimeType.IMAGE_JPEG;
 import static org.htmlunit.util.MimeType.IMAGE_PNG;
 import static org.htmlunit.util.MimeType.TEXT_CSS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.nio.file.Paths;
 import java.time.Duration;
@@ -43,9 +43,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.Response;
 
 import org.apache.http.HttpStatus;
+import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -61,6 +61,7 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.security.certificate.CertificateBuilder;
 import io.restassured.http.Header;
+import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import io.smallrye.mutiny.Uni;
 import io.vertx.core.http.HttpVersion;
@@ -192,7 +193,7 @@ public abstract class BaseHttpAdvancedReactiveIT {
 
     @Test
     public void microprofileHttpClientRedirection() {
-        io.restassured.response.Response health = getApp().given().get("api/client");
+        Response health = getApp().given().get("api/client");
         assertEquals(HttpStatus.SC_OK, health.statusCode());
     }
 
@@ -339,7 +340,7 @@ public abstract class BaseHttpAdvancedReactiveIT {
     @Test
     @Tag("QUARKUS-2004")
     public void constraintsExist() throws JsonProcessingException {
-        io.restassured.response.Response response = getApp().given().get("/q/openapi");
+        Response response = getApp().given().get("/q/openapi");
         Assertions.assertEquals(HttpStatus.SC_OK, response.statusCode());
 
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
@@ -379,6 +380,143 @@ public abstract class BaseHttpAdvancedReactiveIT {
                 .then().statusCode(SC_OK)
                 .body(containsString(String.format("event: name=NON EMPTY data={%s} and is empty: false", DATA_VALUE)),
                         containsString("event: name=EMPTY data={} and is empty: true"));
+    }
+
+    @Test
+    void testGetOnRecordWithQuarkusAnnotations() {
+        callGet(ROOT_PATH + "/cheese/quarkus/my-cheese;variant=goat");
+    }
+
+    @Test
+    void testGetOnRecordWithSpecAnnotations() {
+        callGet(ROOT_PATH + "/cheese/spec/my-cheese;variant=goat");
+    }
+
+    @Test
+    void testGetOnClassWithQuarkusAnnotations() {
+        callGet(ROOT_PATH + "/cheese/class/my-cheese;variant=goat");
+    }
+
+    @Test
+    void testPostOnRecordWithQuarkusAnnotations() {
+        callPost(ROOT_PATH + "/cheese/quarkus/my-cheese;variant=goat");
+    }
+
+    @Test
+    void testPostOnRecordWithSpecAnnotations() {
+        callPost(ROOT_PATH + "/cheese/spec/my-cheese;variant=goat");
+    }
+
+    @Test
+    void testPostOnClassWithQuarkusAnnotations() {
+        callPost(ROOT_PATH + "/cheese/class/my-cheese;variant=goat");
+    }
+
+    @Test
+    void testInvalidPostOnRecordWithQuarkusAnnotations() {
+        callInvalidPost(ROOT_PATH + "/cheese/quarkus/my-cheese;variant=goat");
+    }
+
+    @Test
+    void testInvalidPostOnRecordWithSpecAnnotations() {
+        callInvalidPost(ROOT_PATH + "/cheese/spec/my-cheese;variant=goat");
+    }
+
+    @Test
+    void testInvalidPostOnClassWithQuarkusAnnotations() {
+        callInvalidPost(ROOT_PATH + "/cheese/class/my-cheese;variant=goat");
+    }
+
+    private void callGet(String path) {
+        getApp().given()
+                .urlEncodingEnabled(false) // https://stackoverflow.com/a/59990214 matrix-parameters workaround
+                .header("X-Cheese-Secret-Handshake", "s8cr8t")
+                .header("Header-Param", "foo")
+                .cookie("level", "hardcore")
+                .queryParam("age", "2")
+                .get(path)
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body(CoreMatchers.containsString("foo/"))
+                .body(CoreMatchers.containsString(
+                        "type=my-cheese, variant=goat, age=2, level=hardcore, secretHandshake=s8cr8t, smell=null, ar=AgeRecord[age=2], ac=AgeClass{age=2}"));
+    }
+
+    private void callPost(String path) {
+        getApp().given()
+                .urlEncodingEnabled(false) // https://stackoverflow.com/a/59990214 matrix-parameters workaround
+                .header("X-Cheese-Secret-Handshake", "s8cr8t")
+                .header("Header-Param", "foo")
+                .cookie("level", "hardcore")
+                .queryParam("age", "2")
+                .formParams("degree", "aging", "smell", "strong")
+                .post(path)
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body(CoreMatchers.containsString("foo/"))
+                .body(CoreMatchers.containsString(
+                        "type=my-cheese, variant=goat, age=2, level=hardcore, secretHandshake=s8cr8t, smell=strong, ar=AgeRecord[age=2], ac=AgeClass{age=2}"));
+    }
+
+    private void callInvalidPost(String path) {
+        getApp().given()
+                .urlEncodingEnabled(false) // https://stackoverflow.com/a/59990214 matrix-parameters workaround
+                .header("X-Cheese-Secret-Handshake", "s8cr8t")
+                .header("Header-Param", "foo")
+                .queryParam("age", "2")
+                .formParams("degree", "aging", "smell", "strong")
+                .post(path)
+                .then()
+                .statusCode(HttpStatus.SC_BAD_REQUEST)
+                .body(CoreMatchers.containsString("Level may not be blank"));
+    }
+
+    @Test
+    void testOpenAPISchemasForParametersContainers() throws JsonProcessingException {
+        Response response = getApp().given().get("/q/openapi");
+        assertEquals(HttpStatus.SC_OK, response.statusCode());
+
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+        JsonNode body = mapper.readTree(response.body().asString());
+
+        JsonNode quarkusSchema = body.get("components").get("schemas").get("ParametersQuarkus");
+        JsonNode specSchema = body.get("components").get("schemas").get("ParametersSpec");
+        JsonNode classSchema = body.get("components").get("schemas").get("ParametersClass");
+
+        checkParametersContainersSchema(quarkusSchema);
+        checkParametersContainersSchema(specSchema);
+        checkParametersContainersSchema(classSchema);
+    }
+
+    private static void checkParametersContainersSchema(JsonNode schema) {
+        assertNotNull(schema);
+        assertEquals("object", schema.get("type").asText());
+
+        JsonNode schemaProperties = schema.get("properties");
+
+        assertNotNull(schemaProperties.get("type"));
+        assertEquals("string", schemaProperties.get("type").get("type").asText());
+
+        assertNotNull(schemaProperties.get("variant"));
+        assertEquals("string", schemaProperties.get("variant").get("type").asText());
+
+        assertNotNull(schemaProperties.get("age"));
+        assertEquals("string", schemaProperties.get("age").get("type").asText());
+
+        assertNotNull(schemaProperties.get("level"));
+        assertEquals("string", schemaProperties.get("level").get("type").asText());
+
+        assertNotNull(schemaProperties.get("secretHandshake"));
+        assertEquals("string", schemaProperties.get("secretHandshake").get("type").asText());
+
+        assertNotNull(schemaProperties.get("smell"));
+        assertEquals("string", schemaProperties.get("smell").get("type").asText());
+
+        assertNotNull(schemaProperties.get("ar"));
+        assertEquals("#/components/schemas/AgeRecord", schemaProperties.get("ar").get("$ref").asText());
+
+        assertNotNull(schemaProperties.get("ac"));
+        assertEquals("#/components/schemas/AgeClass", schemaProperties.get("ac").get("$ref").asText());
     }
 
     private void assertAcceptedMediaTypeEqualsResponseBody(String acceptedMediaType) {
