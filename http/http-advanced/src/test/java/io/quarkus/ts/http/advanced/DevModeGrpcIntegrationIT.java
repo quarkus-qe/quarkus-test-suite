@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.function.Consumer;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -72,6 +73,7 @@ public class DevModeGrpcIntegrationIT {
     }
 
     @Test
+    @Disabled("https://github.com/quarkusio/quarkus/issues/47138")
     public void testGrpcDevUIServicesView() {
         assertOnGrpcServicePage(page -> {
             var grpcSvcViewGrid = page.waitForSelector("#page > qwc-grpc-services > vaadin-grid").innerText();
