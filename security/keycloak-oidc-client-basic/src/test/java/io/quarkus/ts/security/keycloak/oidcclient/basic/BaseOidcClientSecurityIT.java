@@ -3,7 +3,10 @@ package io.quarkus.ts.security.keycloak.oidcclient.basic;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.startsWith;
 
+import java.util.concurrent.TimeUnit;
+
 import org.apache.http.HttpStatus;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.KeycloakService;
@@ -89,6 +92,58 @@ public abstract class BaseOidcClientSecurityIT {
     }
 
     @Test
+    public void tokenProviderCheckExpirationAndAccess() throws InterruptedException {
+        String token = TokenProviderMethod.TOKEN_PROVIDER.getToken(getApp());
+
+        getApp().given()
+                .when()
+                .auth().preemptive().oauth2(token)
+                .get("/default")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body(equalTo("Hello, user service-account-test-application-client"));
+
+        // Wait until the token expire the 5s expiration time + 5s set via quarkus.oidc.token.lifespan-grace
+        Awaitility.await().atMost(15, TimeUnit.SECONDS).untilAsserted(() -> {
+            getApp().given()
+                    .when()
+                    .auth().preemptive().oauth2(token)
+                    .get("/default")
+                    .then()
+                    .statusCode(HttpStatus.SC_UNAUTHORIZED);
+        });
+
+        // Check if the TokenProvider using refreshed token
+        getApp().given()
+                .when()
+                .auth().preemptive().oauth2(TokenProviderMethod.TOKEN_PROVIDER.getToken(getApp()))
+                .get("/default")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body(equalTo("Hello, user service-account-test-application-client"));
+    }
+
+    @Test
+    public void defaultTokenProviderAdminResource() {
+        getApp().given()
+                .when()
+                .auth().preemptive().oauth2(TokenProviderMethod.TOKEN_PROVIDER.getToken(getApp()))
+                .get("/admin")
+                .then()
+                .statusCode(HttpStatus.SC_FORBIDDEN);
+    }
+
+    @Test
+    public void defaultTokenProviderUserResource() {
+        getApp().given()
+                .when()
+                .auth().preemptive().oauth2(TokenProviderMethod.TOKEN_PROVIDER.getToken(getApp()))
+                .get("/user")
+                .then()
+                .statusCode(HttpStatus.SC_FORBIDDEN);
+    }
+
+    @Test
     public void noUserSecuredResource() {
         getApp().given()
                 .when()
@@ -119,7 +174,8 @@ public abstract class BaseOidcClientSecurityIT {
         CLIENT_CREDENTIALS("client-credentials"),
         JWT("jwt-secret"),
         NORMAL_USER("normal-user-password"),
-        ADMIN_USER("admin-user-password");
+        ADMIN_USER("admin-user-password"),
+        TOKEN_PROVIDER("token-provider");
 
         private final String path;
 
