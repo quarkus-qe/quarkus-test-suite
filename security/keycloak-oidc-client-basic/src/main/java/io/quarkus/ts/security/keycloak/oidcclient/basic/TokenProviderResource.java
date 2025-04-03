@@ -6,6 +6,7 @@ import jakarta.ws.rs.Path;
 
 import io.quarkus.oidc.client.OidcClient;
 import io.quarkus.oidc.client.OidcClients;
+import io.quarkus.oidc.client.spi.TokenProvider;
 
 @Path("/generate-token")
 public class TokenProviderResource {
@@ -14,6 +15,9 @@ public class TokenProviderResource {
 
     @Inject
     OidcClients allOidcClients;
+
+    @Inject
+    TokenProvider tokenProvider;
 
     @GET
     @Path("/client-credentials")
@@ -38,6 +42,12 @@ public class TokenProviderResource {
     @Path("/admin-user-password")
     public String getTokenUsingAdminUserPasswordGrant() {
         return generateToken(allOidcClients.getClient("admin-user"));
+    }
+
+    @GET
+    @Path("/token-provider")
+    public String getTokenUsingTokenProvider() {
+        return tokenProvider.getAccessToken().await().indefinitely();
     }
 
     private String generateToken(OidcClient client) {
