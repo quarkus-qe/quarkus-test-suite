@@ -10,7 +10,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -75,7 +74,6 @@ public class DevModeGrpcIntegrationReactiveIT {
     }
 
     @Test
-    @Disabled("https://github.com/quarkusio/quarkus/issues/47138")
     public void testGrpcDevUIServicesView() {
         assertOnGrpcServicePage(page -> {
             var grpcSvcView = page.waitForSelector("#page > qwc-grpc-services > vaadin-grid").innerText();
