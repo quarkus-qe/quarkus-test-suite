@@ -17,14 +17,14 @@ import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 @DisabledOnNative(reason = "Only for JVM verification")
 public class QuarkusCliCompletionIT {
 
-    static final String EXPECTED_COMPLETION_OUTPUT = "Generates completions for the options and subcommands";
+    static final String EXPECTED_COMPLETION_OUTPUT = "Generate bash/zsh completion script for quarkus";
 
     @Inject
     static QuarkusCliClient cliClient;
 
     @Test
     public void shouldConfigureCompletion() {
-        QuarkusCliClient.Result result = cliClient.run("completion");
+        QuarkusCliClient.Result result = cliClient.run("completion", "--help");
 
         assertTrue(result.isSuccessful(), "Completion command failed: " + result.getOutput());
         assertTrue(result.getOutput().contains(EXPECTED_COMPLETION_OUTPUT), "Unexpected output: " + result.getOutput());
