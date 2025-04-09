@@ -798,6 +798,12 @@ Variants:
 - Running on OpenShift with a stable Red Hat SSO
 - Running on OpenShift with the latest Red Hat SSO
 
+### `security/permissions`
+
+Verifies direct usage of `@PermissionAllowed` and `@PermissionAllowed` defined via meta-annotation.
+Define 4 groups (for 4 users) and 4 permission.
+Tests verifies various combinations of these groups and permissions.
+
 ### `security/https`
 
 Verifies that accessing an HTTPS endpoint is posible.
