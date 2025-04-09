@@ -7,9 +7,11 @@ import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnRHBQandWindows;
 import io.quarkus.test.services.DevModeQuarkusApplication;
 import io.quarkus.ts.messaging.kafka.processor.decorator.HeaderDecorator;
 
+@DisabledOnRHBQandWindows(reason = "QUARKUS-3434")
 @Tag("QUARKUS-5178")
 @QuarkusScenario
 public class DevModeKafkaProcessorIT {
