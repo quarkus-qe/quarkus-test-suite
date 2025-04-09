@@ -557,6 +557,7 @@
                 <module>security/keycloak-oidc-client-reactive-basic</module>
                 <module>security/keycloak-oidc-client-reactive-extended</module>
                 <module>security/keycloak-oidc-client-standalone</module>
+                <module>security/permissions</module>
                 <module>security/vertx-jwt</module>
                 <module>security/oidc-client-mutual-tls</module>
                 <module>security/webauthn</module>
