@@ -33,10 +33,6 @@
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-jdbc-db2</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
             <artifactId>quarkus-jdbc-h2</artifactId>
         </dependency>
         <dependency>
@@ -66,6 +62,23 @@
         </dependency>
     </dependencies>
     <profiles>
+        <profile>
+            <id>test-quarkus-jdbc-db2</id>
+            <activation>
+                <!-- quarkus-jdbc-db2 is currently not supported in FIPS-enabled environment -->
+                <!-- TODO: drop this profile once https://github.com/IBM/Db2/issues/43 is fixed and move Quarkus JDBC D2 dependency to others -->
+                <property>
+                    <name>env.FIPS</name>
+                    <value>!fips</value>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>io.quarkus</groupId>
+                    <artifactId>quarkus-jdbc-db2</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
         <profile>
             <id>native</id>
             <activation>
