@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -75,6 +76,86 @@ public class BasicSecurityIT {
         test("/admin", username, password)
                 .statusCode(expectedStatus)
                 .body(ok ? equalTo("Hello, admin " + username) : anything());
+    }
+
+    @Test
+    public void customPolicyOnAnnotations() {
+        given()
+                .auth().basic("alice", "rabbit")
+                .get("/custom/annotated")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body(equalTo("Hello, user alice"));
+
+        given()
+                .auth().basic("bob", "builder")
+                .get("/custom/annotated")
+                .then()
+                .statusCode(HttpStatus.SC_FORBIDDEN);
+        given()
+                .auth().basic(USER_USERNAME, USER_PASSWORD)
+                .get("/custom/annotated")
+                .then()
+                .statusCode(HttpStatus.SC_FORBIDDEN);
+        given()
+                .auth().basic(ADMIN_USERNAME, ADMIN_PASSWORD)
+                .get("/custom/annotated")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body(equalTo("Hello, user albert"));
+    }
+
+    @Test
+    public void customPolicyProperties() {
+        given()
+                .auth().basic("alice", "rabbit")
+                .get("/custom/properties")
+                .then()
+                .statusCode(HttpStatus.SC_FORBIDDEN);
+
+        given()
+                .auth().basic("bob", "builder")
+                .get("/custom/properties")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body(equalTo("Hello, user bob"));
+        given()
+                .auth().basic(USER_USERNAME, USER_PASSWORD)
+                .get("/custom/properties")
+                .then()
+                .statusCode(HttpStatus.SC_FORBIDDEN);
+        given()
+                .auth().basic(ADMIN_USERNAME, ADMIN_PASSWORD)
+                .get("/custom/properties")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body(equalTo("Hello, user albert"));
+    }
+
+    @Test
+    public void customPolicyBoth() {
+        given()
+                .auth().basic("alice", "rabbit")
+                .get("/custom/both")
+                .then()
+                .statusCode(HttpStatus.SC_FORBIDDEN);
+
+        given()
+                .auth().basic("bob", "builder")
+                .get("/custom/both")
+                .then()
+                .statusCode(HttpStatus.SC_FORBIDDEN);
+        given()
+                .auth().basic(USER_USERNAME, USER_PASSWORD)
+                .get("/custom/both")
+                .then()
+                .statusCode(HttpStatus.SC_FORBIDDEN);
+        given()
+                .auth().basic(ADMIN_USERNAME, ADMIN_PASSWORD)
+                .get("/custom/both")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body(equalTo("Hello, user albert"));
     }
 
     private ValidatableResponse test(String url, String username, String password) {
