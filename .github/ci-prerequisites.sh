@@ -2,6 +2,10 @@
 df -h /
 free -h
 
+#Filesystem      Size  Used Avail Use% Mounted on
+# /dev/root        72G   48G   25G  67% /
+# =>
+#/dev/root        72G   18G   54G  25% /
 
 sudo du -sh /* || true
 echo "# du -sh /home/runner/work/quarkus/quarkus/integration-tests/*"
@@ -17,14 +21,12 @@ sudo du -sh /imagegeneration/installers/* || true
 
 
 
-time sudo rm -rf /opt/ghc || true
-time sudo rm -rf /usr/local/.ghcup || true
+du -cskh /opt/ghc || true
+du -cskh /usr/local/.ghcup || true
 
-du -cskh /usr/share/rust || true
-du -cskh /usr/local/go || true
 du -cskh /usr/share/miniconda || true
 du -cskh /usr/local/share/powershell || true
-/usr/lib/google-cloud-sdk || true
+du -cskh /usr/lib/google-cloud-sdk || true
 
 
 echo "Reclaim disk space."
@@ -47,8 +49,7 @@ du -cskh /usr/local/lib/android /opt/pipx
 sudo rm -rf /usr/local/lib/android
 sudo rm -rf /opt/pipx
 
-du -cskh /imagegeneration/installers/*.tar.gz /opt/hostedtoolcache/PyPy /opt/hostedtoolcache/Python /opt/hostedtoolcache/Ruby /opt/hostedtoolcache/go /opt/hostedtoolcache/node
-sudo rm -rf /imagegeneration/installers/*.tar.gz
+du -cskh /imagegeneration/installers/* /opt/hostedtoolcache/PyPy /opt/hostedtoolcache/Python /opt/hostedtoolcache/Ruby /opt/hostedtoolcache/go /opt/hostedtoolcache/node
 sudo rm -rf /opt/hostedtoolcache/PyPy
 sudo rm -rf /opt/hostedtoolcache/Python
 sudo rm -rf /opt/hostedtoolcache/Ruby
