@@ -20,6 +20,8 @@ public class OidcRestClientIT extends BaseOidcIT {
     static final String PONG_ENDPOINT = "/%s-pong";
     static final String WRONG_TOKEN = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
+    private static final String PERMISSION_CHECKER_PATH = "/permission-checker";
+
     @Test
     public void testRest() {
         assertPingEndpoints("rest");
@@ -45,6 +47,42 @@ public class OidcRestClientIT extends BaseOidcIT {
     @Test
     public void testLookupAuthorization() {
         assertPingEndpoints("rest-lookup-auth");
+    }
+
+    @Test
+    public void unauthenticatedTest() {
+        given().get(PERMISSION_CHECKER_PATH)
+                .then().statusCode(HttpStatus.SC_UNAUTHORIZED);
+    }
+
+    @Test
+    public void wrongAuthorizationTest() {
+        // request should fail if required permission is not met
+        given().auth().oauth2(createToken())
+                .queryParam("projectName", "not-my-project")
+                .queryParam("newName", "test-user-new-project")
+                .get(PERMISSION_CHECKER_PATH + "/rename")
+                .then().statusCode(HttpStatus.SC_FORBIDDEN);
+
+        // request should fail if only one of the required permissions is set
+        given().auth().oauth2(createToken())
+                .queryParam("projectName", "test-user-project")
+                .get(PERMISSION_CHECKER_PATH + "/delete")
+                .then().statusCode(HttpStatus.SC_FORBIDDEN);
+    }
+
+    @Test
+    public void permissionAllowedTest() {
+        given().auth().oauth2(createToken())
+                .queryParam("projectName", "test-user-project")
+                .queryParam("newName", "test-user-new-project")
+                .get(PERMISSION_CHECKER_PATH + "/rename")
+                .then().statusCode(HttpStatus.SC_OK);
+
+        given().auth().oauth2(createToken())
+                .queryParam("projectName", "test-user-project-deletable")
+                .get(PERMISSION_CHECKER_PATH + "/delete")
+                .then().statusCode(HttpStatus.SC_OK);
     }
 
     private void assertPingEndpoints(String endpointPrefix) {
