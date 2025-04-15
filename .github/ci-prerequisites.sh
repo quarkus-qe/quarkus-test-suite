@@ -8,8 +8,6 @@ free -h
 #/dev/root        72G   18G   54G  25% /
 
 sudo du -sh /* || true
-echo "# du -sh /home/runner/work/quarkus/quarkus/integration-tests/*"
-sudo du -sh /home/runner/work/quarkus/quarkus/integration-tests/* || true
 echo "# docker images"
 docker images || true
 echo "# du -sh /var/lib/*"
@@ -21,7 +19,7 @@ sudo du -sh /imagegeneration/installers/* || true
 
 
 
-du -cskh /opt/ghc || true
+du -cskh /opt/* || true
 du -cskh /usr/local/.ghcup || true
 
 du -cskh /usr/share/miniconda || true
@@ -33,8 +31,7 @@ echo "Reclaim disk space."
 
 time sudo docker image prune --all --force || true
 
-du -cskh /usr/share/dotnet /usr/share/swift /usr/share/gradle-*
-sudo rm -rf /usr/share/dotnet
+du -cskh /usr/share/swift /usr/share/gradle-*
 sudo rm -rf /usr/share/swift
 sudo rm -rf /usr/share/gradle-*
 
@@ -49,7 +46,7 @@ du -cskh /usr/local/lib/android /opt/pipx
 sudo rm -rf /usr/local/lib/android
 sudo rm -rf /opt/pipx
 
-du -cskh /imagegeneration/installers/* /opt/hostedtoolcache/PyPy /opt/hostedtoolcache/Python /opt/hostedtoolcache/Ruby /opt/hostedtoolcache/go /opt/hostedtoolcache/node
+du -cskh /opt/hostedtoolcache/PyPy /opt/hostedtoolcache/Python /opt/hostedtoolcache/Ruby /opt/hostedtoolcache/go /opt/hostedtoolcache/node
 sudo rm -rf /opt/hostedtoolcache/PyPy
 sudo rm -rf /opt/hostedtoolcache/Python
 sudo rm -rf /opt/hostedtoolcache/Ruby
