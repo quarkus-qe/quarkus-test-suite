@@ -7,7 +7,9 @@ free -h
 # =>
 #/dev/root        72G   18G   54G  25% /
 
-du -cskh /home/* || true
+du -cskh /home/runner/* || true
+du -cskh /usr/local/* || true
+du -cskh /usr/local/lib/* || true
 du -cskh /opt/* || true
 du -cskh /usr/* || true
 
@@ -25,10 +27,9 @@ du -cskh /usr/share/swift /usr/share/gradle-*
 sudo rm -rf /usr/share/swift
 sudo rm -rf /usr/share/gradle-*
 
-du -cskh /opt/az /opt/google /opt/hostedtoolcache/CodeQL /opt/microsoft /usr/local/julia*
+du -cskh /opt/az /opt/google /opt/microsoft /usr/local/julia*
 sudo rm -rf /opt/az
 sudo rm -rf /opt/google
-sudo rm -rf /opt/hostedtoolcache/CodeQL
 sudo rm -rf /opt/microsoft
 sudo rm -rf /usr/local/julia*
 
