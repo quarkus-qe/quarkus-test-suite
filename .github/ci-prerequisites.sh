@@ -7,21 +7,11 @@ free -h
 # =>
 #/dev/root        72G   18G   54G  25% /
 
-sudo du -sh /* || true
-echo "# docker images"
-docker images || true
-echo "# du -sh /var/lib/*"
-sudo du -sh /var/lib/* || true
-echo "# du -sh /opt/hostedtoolcache/*"
-sudo du -sh /opt/hostedtoolcache/* || true
-echo "# du -sh /imagegeneration/installers/*"
-sudo du -sh /imagegeneration/installers/* || true
-
-
-
+du -cskh /home/* || true
 du -cskh /opt/* || true
-du -cskh /usr/local/.ghcup || true
+du -cskh /usr/* || true
 
+du -cskh /usr/local/.ghcup || true
 du -cskh /usr/share/miniconda || true
 du -cskh /usr/local/share/powershell || true
 du -cskh /usr/lib/google-cloud-sdk || true
@@ -46,7 +36,8 @@ du -cskh /usr/local/lib/android /opt/pipx
 sudo rm -rf /usr/local/lib/android
 sudo rm -rf /opt/pipx
 
-du -cskh /opt/hostedtoolcache/PyPy /opt/hostedtoolcache/Python /opt/hostedtoolcache/Ruby /opt/hostedtoolcache/go /opt/hostedtoolcache/node
+du -cskh /opt/hostedtoolcache/CodeQL /opt/hostedtoolcache/PyPy /opt/hostedtoolcache/Python /opt/hostedtoolcache/Ruby /opt/hostedtoolcache/go /opt/hostedtoolcache/node
+sudo rm -rf /opt/hostedtoolcache/CodeQL
 sudo rm -rf /opt/hostedtoolcache/PyPy
 sudo rm -rf /opt/hostedtoolcache/Python
 sudo rm -rf /opt/hostedtoolcache/Ruby
