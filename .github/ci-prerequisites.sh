@@ -6,36 +6,30 @@ free -h
 # /dev/root        72G   48G   25G  67% /
 # =>
 #/dev/root        72G   18G   54G  25% /
-
-du -cskh /home/runner/* || true
-du -cskh /usr/local/* || true
-du -cskh /usr/local/lib/* || true
-du -cskh /opt/* || true
-du -cskh /usr/* || true
-
-du -cskh /usr/local/.ghcup || true
-du -cskh /usr/share/miniconda || true
-du -cskh /usr/local/share/powershell || true
-du -cskh /usr/lib/google-cloud-sdk || true
-
+# =>
+#
 
 echo "Reclaim disk space."
 
 time sudo docker image prune --all --force || true
 
-du -cskh /usr/share/swift /usr/share/gradle-*
+du -cskh /usr/share/swift /usr/share/gradle-* /usr/share/miniconda
 sudo rm -rf /usr/share/swift
 sudo rm -rf /usr/share/gradle-*
+sudo rm -rf /usr/share/miniconda
 
-du -cskh /opt/az /opt/google /opt/microsoft /usr/local/julia*
+du -cskh /opt/az /opt/google /opt/microsoft /opt/pipx
 sudo rm -rf /opt/az
 sudo rm -rf /opt/google
 sudo rm -rf /opt/microsoft
-sudo rm -rf /usr/local/julia*
-
-du -cskh /usr/local/lib/android /opt/pipx
-sudo rm -rf /usr/local/lib/android
 sudo rm -rf /opt/pipx
+
+du -cskh /usr/local/lib/android /usr/local/julia* /usr/local/.ghcup /usr/local/share/powershell /usr/lib/google-cloud-sdk
+sudo rm -rf /usr/local/lib/android
+sudo rm -rf /usr/local/julia*
+sudo rm -rf /usr/local/.ghcup || true
+sudo rm -rf /usr/local/share/powershell || true
+sudo rm -rf /usr/lib/google-cloud-sdk || true
 
 du -cskh /opt/hostedtoolcache/CodeQL /opt/hostedtoolcache/PyPy /opt/hostedtoolcache/Python /opt/hostedtoolcache/Ruby /opt/hostedtoolcache/go /opt/hostedtoolcache/node
 sudo rm -rf /opt/hostedtoolcache/CodeQL
