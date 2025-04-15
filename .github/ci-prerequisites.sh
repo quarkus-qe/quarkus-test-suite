@@ -1,8 +1,35 @@
 # Reclaim ~30 GB disk space, otherwise we do not have enough disk space for TS execution
-echo "Reclaim disk space."
 df -h /
-docker images
-time docker rmi node:12 node:14 node:16 buildpack-deps:buster buildpack-deps:bullseye ubuntu:18.04 ubuntu:20.04 debian:10 debian:11 moby/buildkit node:16-alpine node:14-alpine alpine:3.16 alpine:3.17
+free -h
+
+
+sudo du -sh /* || true
+echo "# du -sh /home/runner/work/quarkus/quarkus/integration-tests/*"
+sudo du -sh /home/runner/work/quarkus/quarkus/integration-tests/* || true
+echo "# docker images"
+docker images || true
+echo "# du -sh /var/lib/*"
+sudo du -sh /var/lib/* || true
+echo "# du -sh /opt/hostedtoolcache/*"
+sudo du -sh /opt/hostedtoolcache/* || true
+echo "# du -sh /imagegeneration/installers/*"
+sudo du -sh /imagegeneration/installers/* || true
+
+
+
+time sudo rm -rf /opt/ghc || true
+time sudo rm -rf /usr/local/.ghcup || true
+
+du -cskh /usr/share/rust || true
+du -cskh /usr/local/go || true
+du -cskh /usr/share/miniconda || true
+du -cskh /usr/local/share/powershell || true
+/usr/lib/google-cloud-sdk || true
+
+
+echo "Reclaim disk space."
+
+time sudo docker image prune --all --force || true
 
 du -cskh /usr/share/dotnet /usr/share/swift /usr/share/gradle-*
 sudo rm -rf /usr/share/dotnet
@@ -29,5 +56,6 @@ sudo rm -rf /opt/hostedtoolcache/go
 sudo rm -rf /opt/hostedtoolcache/node
 
 echo "Reclaim disk space end."
+
 df -h /
-docker images
+free -h
