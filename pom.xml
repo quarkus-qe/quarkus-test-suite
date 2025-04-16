@@ -50,7 +50,7 @@
         <exclude.quarkus.cli.tests>**/QuarkusCli*IT.java</exclude.quarkus.cli.tests>
         <exclude.quarkus.devmode.tests>no</exclude.quarkus.devmode.tests>
         <!-- Docker images used by both surefire and failsafe plugin -->
-        <postgresql.latest.image>docker.io/library/postgres:16</postgresql.latest.image>
+        <postgresql.latest.image>docker.io/library/postgres:17</postgresql.latest.image>
         <mysql.80.image>registry.access.redhat.com/rhscl/mysql-80-rhel7:latest</mysql.80.image>
         <rhbk.image>registry.redhat.io/rhbk/keycloak-rhel9:26.0</rhbk.image>
         <wiremock-jre8.version>2.35.2</wiremock-jre8.version>
@@ -798,7 +798,7 @@
                                         <ts.redhat.registry.enabled>true</ts.redhat.registry.enabled>
                                         <!-- Product Services -->
                                         <rhbk.image>${rhbk.image}</rhbk.image>
-                                        <postgresql.10.image>registry.redhat.io/rhel8/postgresql-10:latest</postgresql.10.image>
+                                        <postgresql.12.image>registry.redhat.io/rhel8/postgresql-12:latest</postgresql.12.image>
                                         <postgresql.latest.image>registry.redhat.io/rhel9/postgresql-16:latest</postgresql.latest.image>
                                         <mariadb.103.image>registry.redhat.io/rhel8/mariadb-103:latest</mariadb.103.image>
                                         <mariadb.105.image>registry.redhat.io/rhel9/mariadb-105:latest</mariadb.105.image>
@@ -848,7 +848,7 @@
                                         <ts.redhat.registry.enabled>true</ts.redhat.registry.enabled>
                                         <!-- Product Services -->
                                         <rhbk.image>${rhbk.image}</rhbk.image>
-                                        <postgresql.10.image>registry.redhat.io/rhel8/postgresql-10:latest</postgresql.10.image>
+                                        <postgresql.12.image>registry.redhat.io/rhel8/postgresql-12:latest</postgresql.12.image>
                                         <postgresql.dev.svc.latest.image>${postgresql.latest.image}</postgresql.dev.svc.latest.image>
                                         <postgresql.latest.image>registry.redhat.io/rhel9/postgresql-16:latest</postgresql.latest.image>
                                         <mysql.80.image>registry.redhat.io/rhel8/mysql-80:latest</mysql.80.image>
@@ -917,7 +917,7 @@
                                         <!-- Product Services -->
                                         <amqbroker.image>registry.redhat.io/amq7/amq-broker-rhel8:7.12</amqbroker.image>
                                         <rhbk.image>${rhbk.image}</rhbk.image>
-                                        <postgresql.10.image>registry.redhat.io/rhel8/postgresql-10:latest</postgresql.10.image>
+                                        <postgresql.12.image>registry.redhat.io/rhel8/postgresql-12:latest</postgresql.12.image>
                                         <postgresql.latest.image>registry.redhat.io/rhel9/postgresql-16:latest</postgresql.latest.image>
                                         <mysql.80.image>registry.redhat.io/rhel8/mysql-80:latest</mysql.80.image>
                                         <mariadb.103.image>registry.redhat.io/rhel8/mariadb-103:latest</mariadb.103.image>
