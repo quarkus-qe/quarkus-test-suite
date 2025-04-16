@@ -19,7 +19,7 @@ public class MariaDbDatabaseHibernateReactiveIT extends AbstractDatabaseHibernat
 
     // TODO At the time of writing, there is no specific connector for mariadb, so we are using MY SQL driver.
     // we need to change this, if this connector will be ever provided. Additionally, we need to add an OpenShift test
-    @Container(image = "${mariadb.105.image}", port = MYSQL_PORT, expectedLog = "Only MySQL server logs after this point")
+    @Container(image = "${mariadb.1011.image}", port = MYSQL_PORT, expectedLog = "Only MySQL server logs after this point")
     static MariaDbService database = new MariaDbService()
             .withUser(MYSQL_USER)
             .withPassword(MYSQL_PASSWORD)

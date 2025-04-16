@@ -13,7 +13,7 @@ import io.quarkus.test.services.QuarkusApplication;
 public class OpenShiftMariaDBPanacheResourceIT extends AbstractPanacheResourceIT {
     static final int MARIADB_PORT = 3306;
 
-    @Container(image = "${mariadb.105.image}", port = MARIADB_PORT, expectedLog = "Only MySQL server logs after this point")
+    @Container(image = "${mariadb.1011.image}", port = MARIADB_PORT, expectedLog = "Only MySQL server logs after this point")
     static MariaDbService database = new MariaDbService();
 
     @QuarkusApplication
@@ -22,5 +22,5 @@ public class OpenShiftMariaDBPanacheResourceIT extends AbstractPanacheResourceIT
             .withProperty("quarkus.datasource.password", database.getPassword())
             .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl)
             // set DB version as we use older version than default version configured at the build time
-            .withProperty("quarkus.datasource.db-version", "10.5");
+            .withProperty("quarkus.datasource.db-version", "10.11");
 }

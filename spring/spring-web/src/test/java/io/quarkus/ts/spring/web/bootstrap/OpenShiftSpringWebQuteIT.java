@@ -1,8 +1,8 @@
 package io.quarkus.ts.spring.web.bootstrap;
 
-import static io.quarkus.ts.spring.web.MariaDBConstants.IMAGE_105;
+import static io.quarkus.ts.spring.web.MariaDBConstants.IMAGE_1011;
 import static io.quarkus.ts.spring.web.MariaDBConstants.PORT;
-import static io.quarkus.ts.spring.web.MariaDBConstants.START_LOG_105;
+import static io.quarkus.ts.spring.web.MariaDBConstants.START_LOG_1011;
 
 import io.quarkus.test.bootstrap.MariaDbService;
 import io.quarkus.test.bootstrap.RestService;
@@ -13,7 +13,7 @@ import io.quarkus.test.services.QuarkusApplication;
 @OpenShiftScenario
 public class OpenShiftSpringWebQuteIT extends AbstractSpringWebQuteIT {
 
-    @Container(image = IMAGE_105, port = PORT, expectedLog = START_LOG_105)
+    @Container(image = IMAGE_1011, port = PORT, expectedLog = START_LOG_1011)
     static final MariaDbService database = new MariaDbService();
 
     @QuarkusApplication
