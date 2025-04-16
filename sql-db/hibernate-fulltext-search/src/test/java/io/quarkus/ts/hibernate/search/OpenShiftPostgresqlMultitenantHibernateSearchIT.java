@@ -24,7 +24,7 @@ public class OpenShiftPostgresqlMultitenantHibernateSearchIT extends AbstractMul
             // Limit resources as Elasticsearch official docker image use half of available RAM
             .withProperty("ES_JAVA_OPTS", "-Xms1g -Xmx1g");
 
-    @Container(image = "${postgresql.10.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
+    @Container(image = "${postgresql.12.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
     static PostgresqlService database = new PostgresqlService();
 
     @QuarkusApplication
