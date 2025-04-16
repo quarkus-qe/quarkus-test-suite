@@ -11,7 +11,7 @@ public class MariaDBPanacheResourceIT extends AbstractPanacheResourceIT {
 
     static final int MARIADB_PORT = 3306;
 
-    @Container(image = "${mariadb.10.image}", port = MARIADB_PORT, expectedLog = "socket: '/run/mysqld/mysqld.sock'  port: "
+    @Container(image = "${mariadb.11.image}", port = MARIADB_PORT, expectedLog = "socket: '/run/mysqld/mysqld.sock'  port: "
             + MARIADB_PORT)
     static MariaDbService database = new MariaDbService();
 

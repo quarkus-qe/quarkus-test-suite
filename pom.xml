@@ -293,7 +293,7 @@
                                 <elastic.7x.image>docker.io/library/elasticsearch:7.17.17</elastic.7x.image>
                                 <mysql.upstream.80.image>docker.io/library/mysql:8.4</mysql.upstream.80.image>
                                 <mysql.80.image>${mysql.80.image}</mysql.80.image>
-                                <mariadb.10.image>docker.io/library/mariadb:10.11</mariadb.10.image>
+                                <mariadb.11.image>docker.io/library/mariadb:11.4</mariadb.11.image>
                                 <mssql.image>mcr.microsoft.com/mssql/rhel/server:2022-latest</mssql.image>
                                 <!-- Oracle image - we aim to use same version as Dev Services for Oracle so that we only download one image -->
                                 <oracle.image>docker.io/gvenzl/oracle-free:23-slim-faststart</oracle.image>
@@ -801,7 +801,7 @@
                                         <postgresql.12.image>registry.redhat.io/rhel8/postgresql-12:latest</postgresql.12.image>
                                         <postgresql.latest.image>registry.redhat.io/rhel9/postgresql-16:latest</postgresql.latest.image>
                                         <mariadb.103.image>registry.redhat.io/rhel8/mariadb-103:latest</mariadb.103.image>
-                                        <mariadb.105.image>registry.redhat.io/rhel9/mariadb-105:latest</mariadb.105.image>
+                                        <mariadb.1011.image>registry.redhat.io/rhel9/mariadb-1011:latest</mariadb.1011.image>
                                         <!-- Kafka  (amq-streams) requires separate properties for image and version -->
                                         <amq-streams.image>registry.redhat.io/amq-streams/kafka-35-rhel8</amq-streams.image>
                                         <amq-streams.version>2.6.0</amq-streams.version>
@@ -853,7 +853,7 @@
                                         <postgresql.latest.image>registry.redhat.io/rhel9/postgresql-16:latest</postgresql.latest.image>
                                         <mysql.80.image>registry.redhat.io/rhel8/mysql-80:latest</mysql.80.image>
                                         <mariadb.103.image>registry.redhat.io/rhel8/mariadb-103:latest</mariadb.103.image>
-                                        <mariadb.105.image>registry.redhat.io/rhel8/mariadb-105:latest</mariadb.105.image>
+                                        <mariadb.1011.image>registry.redhat.io/rhel8/mariadb-1011:latest</mariadb.1011.image>
                                         <amqbroker.image>registry.redhat.io/amq7/amq-broker-rhel8:7.12</amqbroker.image>
                                         <!-- Kafka  (amq-streams) requires separate properties for image and version -->
                                         <amq-streams.image>registry.redhat.io/amq-streams/kafka-35-rhel8</amq-streams.image>
@@ -921,7 +921,7 @@
                                         <postgresql.latest.image>registry.redhat.io/rhel9/postgresql-16:latest</postgresql.latest.image>
                                         <mysql.80.image>registry.redhat.io/rhel8/mysql-80:latest</mysql.80.image>
                                         <mariadb.103.image>registry.redhat.io/rhel8/mariadb-103:latest</mariadb.103.image>
-                                        <mariadb.105.image>registry.redhat.io/rhel8/mariadb-105:latest</mariadb.105.image>
+                                        <mariadb.1011.image>registry.redhat.io/rhel8/mariadb-1011:latest</mariadb.1011.image>
                                         <!-- Kafka  (amq-streams) requires separate properties for image and version -->
                                         <amq-streams.image>registry.redhat.io/amq-streams/kafka-35-rhel8</amq-streams.image>
                                         <amq-streams.version>2.6.0</amq-streams.version>

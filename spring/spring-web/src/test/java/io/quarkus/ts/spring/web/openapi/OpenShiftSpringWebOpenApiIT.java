@@ -1,8 +1,8 @@
 package io.quarkus.ts.spring.web.openapi;
 
-import static io.quarkus.ts.spring.web.MariaDBConstants.IMAGE_105;
+import static io.quarkus.ts.spring.web.MariaDBConstants.IMAGE_1011;
 import static io.quarkus.ts.spring.web.MariaDBConstants.PORT;
-import static io.quarkus.ts.spring.web.MariaDBConstants.START_LOG_105;
+import static io.quarkus.ts.spring.web.MariaDBConstants.START_LOG_1011;
 
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -19,7 +19,7 @@ import io.quarkus.test.services.QuarkusApplication;
 @EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
 public class OpenShiftSpringWebOpenApiIT extends AbstractSpringWebOpenApiIT {
 
-    @Container(image = IMAGE_105, port = PORT, expectedLog = START_LOG_105)
+    @Container(image = IMAGE_1011, port = PORT, expectedLog = START_LOG_1011)
     static final MariaDbService database = new MariaDbService();
 
     @QuarkusApplication

@@ -20,14 +20,14 @@ import io.quarkus.test.utils.SocketUtils;
 @QuarkusScenario
 public class DevModeMariadbDevServicesUserExperienceIT {
 
-    private static final String MARIA_DB_NAME = getImageName("mariadb.10.image");
-    private static final String MARIA_DB_VERSION = getImageVersion("mariadb.10.image");
+    private static final String MARIA_DB_NAME = getImageName("mariadb.11.image");
+    private static final String MARIA_DB_VERSION = getImageVersion("mariadb.11.image");
 
     @DevModeQuarkusApplication
     static RestService app = new RestService()
             .withProperty("quarkus.datasource.db-kind", "mariadb")
             .withProperty("quarkus.datasource.devservices.port", Integer.toString(SocketUtils.findAvailablePort()))
-            .withProperty("quarkus.datasource.devservices.image-name", "${mariadb.10.image}")
+            .withProperty("quarkus.datasource.devservices.image-name", "${mariadb.11.image}")
             .withProperty("quarkus.hibernate-orm.database.generation", "none")
             .onPreStart(s -> DockerUtils.removeImage(MARIA_DB_NAME, MARIA_DB_VERSION));
 
