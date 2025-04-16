@@ -1,27 +1,31 @@
-# Reclaim ~30 GB disk space, otherwise we do not have enough disk space for TS execution
-echo "Reclaim disk space."
+# Reclaim ~32 GB disk space, otherwise we do not have enough disk space for TS execution
 df -h /
-docker images
-time docker rmi node:12 node:14 node:16 buildpack-deps:buster buildpack-deps:bullseye ubuntu:18.04 ubuntu:20.04 debian:10 debian:11 moby/buildkit node:16-alpine node:14-alpine alpine:3.16 alpine:3.17
+free -h
 
-du -cskh /usr/share/dotnet /usr/share/swift /usr/share/gradle-*
-sudo rm -rf /usr/share/dotnet
+echo "Reclaim disk space."
+
+sudo docker image prune --all --force || true
+
+du -cskh /usr/share/swift /usr/share/gradle-* /usr/share/miniconda
 sudo rm -rf /usr/share/swift
 sudo rm -rf /usr/share/gradle-*
+sudo rm -rf /usr/share/miniconda
 
-du -cskh /opt/az /opt/google /opt/hostedtoolcache/CodeQL /opt/microsoft /usr/local/julia*
+du -cskh /opt/az /opt/google /opt/microsoft /opt/pipx
 sudo rm -rf /opt/az
 sudo rm -rf /opt/google
-sudo rm -rf /opt/hostedtoolcache/CodeQL
 sudo rm -rf /opt/microsoft
-sudo rm -rf /usr/local/julia*
-
-du -cskh /usr/local/lib/android /opt/pipx
-sudo rm -rf /usr/local/lib/android
 sudo rm -rf /opt/pipx
 
-du -cskh /imagegeneration/installers/*.tar.gz /opt/hostedtoolcache/PyPy /opt/hostedtoolcache/Python /opt/hostedtoolcache/Ruby /opt/hostedtoolcache/go /opt/hostedtoolcache/node
-sudo rm -rf /imagegeneration/installers/*.tar.gz
+du -cskh /usr/local/lib/android /usr/local/julia* /usr/local/.ghcup /usr/local/share/powershell /usr/lib/google-cloud-sdk
+sudo rm -rf /usr/local/lib/android
+sudo rm -rf /usr/local/julia*
+sudo rm -rf /usr/local/.ghcup || true
+sudo rm -rf /usr/local/share/powershell || true
+sudo rm -rf /usr/lib/google-cloud-sdk || true
+
+du -cskh /opt/hostedtoolcache/CodeQL /opt/hostedtoolcache/PyPy /opt/hostedtoolcache/Python /opt/hostedtoolcache/Ruby /opt/hostedtoolcache/go /opt/hostedtoolcache/node
+sudo rm -rf /opt/hostedtoolcache/CodeQL
 sudo rm -rf /opt/hostedtoolcache/PyPy
 sudo rm -rf /opt/hostedtoolcache/Python
 sudo rm -rf /opt/hostedtoolcache/Ruby
@@ -29,5 +33,6 @@ sudo rm -rf /opt/hostedtoolcache/go
 sudo rm -rf /opt/hostedtoolcache/node
 
 echo "Reclaim disk space end."
+
 df -h /
-docker images
+free -h
