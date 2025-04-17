@@ -1,5 +1,8 @@
 package io.quarkus.ts.security.keycloak.oidcclient.reactive.extended;
 
+import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM;
+import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_BASE_PATH;
+import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_FILE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,12 +23,16 @@ import org.jboss.logging.Logger;
 import org.junit.jupiter.api.Test;
 import org.yaml.snakeyaml.Yaml;
 
+import io.quarkus.test.bootstrap.KeycloakService;
+import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.services.KeycloakContainer;
+import io.quarkus.test.services.QuarkusApplication;
 import io.smallrye.openapi.runtime.io.Format;
 import io.vertx.core.json.JsonObject;
 
 @QuarkusScenario
-public class OpenApiStoreSchemaIT extends BaseOidcIT {
+public class OpenApiStoreSchemaIT {
 
     private static final Logger LOGGER = Logger.getLogger(OpenApiStoreSchemaIT.class.getName());
     private static final String directory = "target/generated/jakarta-rest/";
@@ -41,6 +48,13 @@ public class OpenApiStoreSchemaIT extends BaseOidcIT {
 
     private static final String EXPECTED_TAGS = "[{\"name\":\"Ping\",\"description\":\"Ping API\"},{\"name\":\"Pong\",\"description\":\"Pong API\"}]";
     private static final String EXPECTED_INFO = "{\"title\":\"security-keycloak-oidc-client-reactive-extended API\",\"version\":\"1.0.0-SNAPSHOT\"}";
+
+    @KeycloakContainer(command = { "start-dev", "--import-realm", "--features=token-exchange" })
+    static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
+
+    @QuarkusApplication
+    static RestService app = new RestService()
+            .withProperty("quarkus.oidc.auth-server-url", () -> keycloak.getRealmUrl());
 
     // QUARKUS-716
     @Test
