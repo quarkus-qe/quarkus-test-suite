@@ -58,11 +58,11 @@ public class WebSocketsNextMetricsIT {
     @Order(1)
     public void serverMessageMetricsTest() throws URISyntaxException, InterruptedException {
         // if the three clients join
-        BaseWebSocketIT.Client aliceClient = createClient("/chat/alice");
+        Client aliceClient = createClient("/chat/alice");
         Thread.sleep(100); // to ensure outgoing "${username} joined" messages are sent in correct sequence
-        BaseWebSocketIT.Client bobClient = createClient("/chat/bob");
+        Client bobClient = createClient("/chat/bob");
         Thread.sleep(100);
-        BaseWebSocketIT.Client charlieClient = createClient("/chat/charlie");
+        Client charlieClient = createClient("/chat/charlie");
         // then client count is three
         thenCounterIs(TOTAL_SERVER_CONNECTIONS_OPEN_FORMAT, 3);
         String helloWorldEnglish = "hello world";
@@ -96,7 +96,7 @@ public class WebSocketsNextMetricsIT {
     @Order(2)
     @Disabled("https://github.com/quarkusio/quarkus/issues/47409")
     public void serverErrorMetricsTest() throws URISyntaxException, InterruptedException {
-        BaseWebSocketIT.Client client = createClient("/failing");
+        Client client = createClient("/failing");
         getServer().logs().assertContains("Error on websocket: Websocket failed to open");
         thenCounterIs(TOTAL_SERVER_CONNECTION_ERRORS_FORMAT, 1);
         client.send("Create an error");
@@ -108,7 +108,7 @@ public class WebSocketsNextMetricsIT {
     @Test
     @Order(3)
     public void clientMessageMetricsTest() throws URISyntaxException, InterruptedException {
-        BaseWebSocketIT.Client client = createClient("/chat/alice");
+        Client client = createClient("/chat/alice");
         // connect server-side client
         given().queryParam("username", "bob").get("/userDataRes/connect"); // "bob joined"
         int inboundClientMessagesTotalBytes = "bob joined".getBytes(StandardCharsets.UTF_8).length;
@@ -155,9 +155,9 @@ public class WebSocketsNextMetricsIT {
         return new URI(getServer().getURI(Protocol.WS).toString()).resolve(with);
     }
 
-    private BaseWebSocketIT.Client createClient(String endpoint)
+    private Client createClient(String endpoint)
             throws URISyntaxException, InterruptedException {
-        BaseWebSocketIT.Client client = new BaseWebSocketIT.Client(getUri(endpoint), false);
+        Client client = new Client(getUri(endpoint), false);
         if (!client.connectBlocking()) {
             LOG.error("Websocket client fail to connect to " + endpoint);
         }

@@ -27,5 +27,10 @@
             <artifactId>Java-WebSocket</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.quarkus.qe</groupId>
+            <artifactId>quarkus-test-service-jaeger</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>
