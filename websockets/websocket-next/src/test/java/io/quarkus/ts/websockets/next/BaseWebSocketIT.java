@@ -214,8 +214,16 @@ public abstract class BaseWebSocketIT {
         Client client = createAuthenticatedClient("/authChat", "alice", "password");
         client.send("Hi");
         assertMessage("alice: Hi", client);
+        client.close();
+
+        // directly connect authenticated client which is not passing the checker
+        client = createAuthenticatedClient("/authChat", "tom", "boss");
+        client.send("Hi");
+        assertMessage("forbidden:tom", client);
+        client.close();
 
         // connect server-side client
+        client = createAuthenticatedClient("/authChat", "alice", "password");
         given()
                 .queryParam("username", "bob")
                 .queryParam("password", "secret")
