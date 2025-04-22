@@ -13,6 +13,7 @@ import org.jboss.logging.Logger;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
@@ -25,6 +26,7 @@ import io.restassured.response.ValidatableResponse;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @QuarkusScenario
+@Tag("QUARKUS-5667")
 public class WebSocketsNextMetricsIT {
 
     private static final Logger LOG = Logger.getLogger(WebSocketsNextMetricsIT.class);
