@@ -104,4 +104,24 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <profiles>
+        <profile>
+            <id>openshift-ibm-z-p</id>
+            <activation>
+                <property>
+                    <name>openshift-ibm-z-p</name>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>com.aayushatharva.brotli4j</groupId>
+                    <artifactId>native-linux-s390x</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>com.aayushatharva.brotli4j</groupId>
+                    <artifactId>native-linux-ppc64le</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 </project>
