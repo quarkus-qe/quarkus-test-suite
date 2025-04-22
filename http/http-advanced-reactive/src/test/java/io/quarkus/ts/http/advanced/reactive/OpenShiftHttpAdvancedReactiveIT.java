@@ -4,8 +4,6 @@ import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM;
 import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_BASE_PATH;
 import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_FILE;
 
-import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
-
 import io.quarkus.test.bootstrap.KeycloakService;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
@@ -15,10 +13,9 @@ import io.quarkus.test.services.KeycloakContainer;
 import io.quarkus.test.services.QuarkusApplication;
 
 @OpenShiftScenario
-@DisabledIfSystemProperty(named = "ts.ibm-z-p.missing.services.excludes", matches = "true", disabledReason = "keycloak container not available on s390x & ppc64le.")
 public class OpenShiftHttpAdvancedReactiveIT extends BaseHttpAdvancedReactiveIT {
 
-    @KeycloakContainer(command = { "start-dev", "--import-realm", "--hostname-strict=false" })
+    @KeycloakContainer(command = { "start-dev", "--import-realm", "--hostname-strict=false" }, image = "${rhbk.image}")
     static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
 
     @QuarkusApplication(ssl = true, certificates = @Certificate(configureKeystore = true, configureHttpServer = true, useTlsRegistry = false))
