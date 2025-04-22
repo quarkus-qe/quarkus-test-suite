@@ -137,7 +137,7 @@ public class WebSocketsNextMetricsIT {
     @Order(4)
     public void clientErrorMetricsTest() throws InterruptedException {
         given().get("/pingPongRes/connect");
-        Thread.sleep(9000); // client pings every two seconds, third pong response produces RTE
+        Thread.sleep(10000); // client pings every two seconds, third pong response produces RTE
         given().get("/pingPongRes/disconnect");
         thenCounterIs(TOTAL_CLIENT_ENDPOINT_ERRORS_FORMAT, 1);
     }
