@@ -20,9 +20,9 @@ public class PingPongClient {
 
     @OnPongMessage
     void pong(Buffer data) {
-        if (pongsReceived.size() > 2) {
+        pongsReceived.add(System.currentTimeMillis());
+        if (pongsReceived.size() == 3) {
             throw new RuntimeException("You asked for an error, you've got it!");
         }
-        pongsReceived.add(System.currentTimeMillis());
     }
 }
