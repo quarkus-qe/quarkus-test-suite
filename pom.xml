@@ -1013,5 +1013,37 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>mariadb-11-fips</id>
+            <activation>
+                <!-- MariaDB 11.4 is not starting in FIPS-enabled environment, use 10.11 as a workaround -->
+                <!-- TODO: drop this profile when https://issues.redhat.com/browse/QUARKUS-5984 is fixed -->
+                <property>
+                    <name>env.FIPS</name>
+                    <value>fips</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                                <configuration>
+                                    <systemPropertyVariables>
+                                        <mariadb.11.image>registry.redhat.io/rhel9/mariadb-1011:latest</mariadb.11.image>
+                                    </systemPropertyVariables>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>
