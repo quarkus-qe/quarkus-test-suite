@@ -3,7 +3,6 @@ package io.quarkus.ts.websockets.next.endpoints;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 
-import io.quarkus.oidc.BearerTokenAuthentication;
 import io.quarkus.security.ForbiddenException;
 import io.quarkus.security.UnauthorizedException;
 import io.quarkus.security.identity.SecurityIdentity;
@@ -12,7 +11,6 @@ import io.quarkus.websockets.next.OnTextMessage;
 import io.quarkus.websockets.next.WebSocket;
 
 @WebSocket(path = "/adminChat")
-@BearerTokenAuthentication
 public class AdminChatWebSocket {
     @Inject
     SecurityIdentity currentIdentity;
