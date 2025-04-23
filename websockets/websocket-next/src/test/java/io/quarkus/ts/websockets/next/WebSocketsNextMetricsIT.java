@@ -2,13 +2,17 @@ package io.quarkus.ts.websockets.next;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
+import static java.time.Duration.ofSeconds;
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.http.HttpStatus;
+import org.awaitility.Awaitility;
 import org.jboss.logging.Logger;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
@@ -61,24 +65,31 @@ public class WebSocketsNextMetricsIT {
     public void serverMessageMetricsTest() throws URISyntaxException, InterruptedException {
         // if the three clients join
         Client aliceClient = createClient("/chat/alice");
-        Thread.sleep(100); // to ensure outgoing "${username} joined" messages are sent in correct sequence
+        String aliceJoinedMessage = "alice joined";
+        assertMessage(aliceJoinedMessage, aliceClient);
         Client bobClient = createClient("/chat/bob");
-        Thread.sleep(100);
+        String bobJoinedMessage = "bob joined";
+        assertMessage(bobJoinedMessage, aliceClient, bobClient);
         Client charlieClient = createClient("/chat/charlie");
+        String charlieJoinedMessage = "charlie joined";
+        assertMessage(charlieJoinedMessage, aliceClient, bobClient, charlieClient);
         // then client count is three
         thenCounterIs(TOTAL_SERVER_CONNECTIONS_OPEN_FORMAT, 3);
         String helloWorldEnglish = "hello world";
         String aliceHelloWorldEnglish = "alice: " + helloWorldEnglish;
         aliceClient.send(helloWorldEnglish);
+        assertMessage(aliceHelloWorldEnglish, aliceClient, bobClient, charlieClient);
         String helloWorldCantonese = "你好世界";
         String aliceHelloWorldCantonese = "alice: " + helloWorldCantonese;
         aliceClient.send(helloWorldCantonese);
+        assertMessage(aliceHelloWorldCantonese, aliceClient, bobClient, charlieClient);
         String helloBinary = "hello binary";
         byte[] helloBinaryData = helloBinary.getBytes();
         aliceClient.send(helloBinaryData);
-        int outboundMessagesTotalBytes = "alice joined".getBytes(StandardCharsets.UTF_8).length // sent only to alice
-                + 2 * "bob joined".getBytes(StandardCharsets.UTF_8).length // sent to bob and alice
-                + 3 * "charlie joined".getBytes(StandardCharsets.UTF_8).length // sent to charlie, bob and alice
+        assertBinaryMessage(helloBinaryData, aliceClient, bobClient, charlieClient);
+        int outboundMessagesTotalBytes = aliceJoinedMessage.getBytes(StandardCharsets.UTF_8).length // sent only to alice
+                + 2 * bobJoinedMessage.getBytes(StandardCharsets.UTF_8).length // sent to bob and alice
+                + 3 * charlieJoinedMessage.getBytes(StandardCharsets.UTF_8).length // sent to charlie, bob and alice
                 + 3 * aliceHelloWorldEnglish.getBytes(StandardCharsets.UTF_8).length // sent to charlie, bob and alice
                 + 3 * aliceHelloWorldCantonese.getBytes(StandardCharsets.UTF_8).length // sent to charlie, bob and alice
                 + 3 * helloBinaryData.length; // sent to charlie, bob and alice
@@ -88,9 +99,9 @@ public class WebSocketsNextMetricsIT {
         thenCounterIs(TOTAL_SERVER_BYTES_OUTBOUND_FORMAT, outboundMessagesTotalBytes);
         thenCounterIs(TOTAL_SERVER_MESSAGES_INBOUND_FORMAT, 3);
         thenCounterIs(TOTAL_SERVER_BYTES_INBOUND_FORMAT, inboundMessagesTotalBytes);
-        aliceClient.close();
-        bobClient.close();
-        charlieClient.close();
+        aliceClient.closeBlocking();
+        bobClient.closeBlocking();
+        charlieClient.closeBlocking();
         thenCounterIs(TOTAL_SERVER_CONNECTIONS_CLOSED_FORMAT, 3);
     }
 
@@ -111,12 +122,16 @@ public class WebSocketsNextMetricsIT {
     @Order(3)
     public void clientMessageMetricsTest() throws URISyntaxException, InterruptedException {
         Client client = createClient("/chat/alice");
+        assertMessage("alice joined", client);
         // connect server-side client
         given().queryParam("username", "bob").get("/userDataRes/connect"); // "bob joined"
+        assertMessage("bob joined", client);
         int inboundClientMessagesTotalBytes = "bob joined".getBytes(StandardCharsets.UTF_8).length;
         try {
             // server-side client will respond to "login" message by sending its username (which is stored in user data)
             client.send("login"); // "alice: login" and "bob: bob"
+            assertMessage("alice: login");
+            assertMessage("bob: bob");
             inboundClientMessagesTotalBytes = inboundClientMessagesTotalBytes
                     + "alice: login".getBytes(StandardCharsets.UTF_8).length
                     + "bob: bob".getBytes(StandardCharsets.UTF_8).length;
@@ -128,6 +143,7 @@ public class WebSocketsNextMetricsIT {
             thenCounterIs(TOTAL_CLIENT_MESSAGES_OUTBOUND_FORMAT, 1);
         } finally {
             given().get("/userDataRes/disconnect");
+            assertMessage("bob left", client);
             client.close();
         }
         thenCounterIs(TOTAL_CLIENT_CONNECTIONS_CLOSED_FORMAT, 1);
@@ -164,6 +180,24 @@ public class WebSocketsNextMetricsIT {
             LOG.error("Websocket client fail to connect to " + endpoint);
         }
         return client;
+    }
+
+    private void assertMessage(String expectedMessage, Client... clients) {
+        for (Client client : clients) {
+            Awaitility
+                    .await()
+                    .atMost(ofSeconds(2))
+                    .untilAsserted(() -> assertEquals(expectedMessage, client.waitForAndGetMessage()));
+        }
+    }
+
+    private void assertBinaryMessage(byte[] expectedMessage, Client... clients) {
+        for (Client client : clients) {
+            Awaitility
+                    .await()
+                    .atMost(ofSeconds(2))
+                    .untilAsserted(() -> assertArrayEquals(expectedMessage, client.waitForAndGetBinaryMessage().array()));
+        }
     }
 
 }
