@@ -12,7 +12,7 @@ public class MultiplePersistenceIT extends AbstractMultiplePersistenceIT {
 
     static final int MARIADB_PORT = 3306;
     static final int POSTGRESQL_PORT = 5432;
-    private static final String MARIADB_START_LOG = "socket: '/run/mysqld/mysqld.sock'  port: " + MARIADB_PORT;
+    private static final String MARIADB_START_LOG = "socket: '.*/mysql.*sock'  port: " + MARIADB_PORT;
 
     @Container(image = "${mariadb.11.image}", port = MARIADB_PORT, expectedLog = MARIADB_START_LOG)
     static MariaDbService mariadb = new MariaDbService();

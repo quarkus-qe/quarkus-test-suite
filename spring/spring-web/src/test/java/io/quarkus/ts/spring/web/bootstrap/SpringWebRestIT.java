@@ -2,7 +2,7 @@ package io.quarkus.ts.spring.web.bootstrap;
 
 import static io.quarkus.ts.spring.web.MariaDBConstants.IMAGE_11;
 import static io.quarkus.ts.spring.web.MariaDBConstants.PORT;
-import static io.quarkus.ts.spring.web.MariaDBConstants.START_LOG_10;
+import static io.quarkus.ts.spring.web.MariaDBConstants.START_LOG_11;
 
 import io.quarkus.test.bootstrap.MariaDbService;
 import io.quarkus.test.bootstrap.RestService;
@@ -13,7 +13,7 @@ import io.quarkus.test.services.QuarkusApplication;
 @QuarkusScenario
 public class SpringWebRestIT extends AbstractSpringWebRestIT {
 
-    @Container(image = IMAGE_11, port = PORT, expectedLog = START_LOG_10)
+    @Container(image = IMAGE_11, port = PORT, expectedLog = START_LOG_11)
     static final MariaDbService database = new MariaDbService();
 
     @QuarkusApplication
