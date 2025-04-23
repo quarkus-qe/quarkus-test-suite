@@ -709,6 +709,7 @@
                 <module>websockets/quarkus-websockets</module>
                 <module>websockets/websockets-client</module>
                 <module>websockets/websocket-next</module>
+                <module>websockets/websocket-next-oidc</module>
             </modules>
         </profile>
         <profile>
