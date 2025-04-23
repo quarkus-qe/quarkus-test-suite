@@ -18,7 +18,7 @@ import io.quarkus.test.services.QuarkusApplication;
 @QuarkusScenario
 public class MultiDatabaseActiveInactiveIT extends AbstractMultiDatabaseActiveInactiveIT {
 
-    @Container(image = "${mariadb.11.image}", port = MARIADB_PORT, expectedLog = "socket: '/run/mysqld/mysqld.sock'  port: "
+    @Container(image = "${mariadb.11.image}", port = MARIADB_PORT, expectedLog = "socket: '.*/mysql.*sock'  port: "
             + MARIADB_PORT)
     static MariaDbService mariadb = new MariaDbService();
 

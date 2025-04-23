@@ -2,7 +2,7 @@ package io.quarkus.ts.spring.web.openapi;
 
 import static io.quarkus.ts.spring.web.MariaDBConstants.IMAGE_11;
 import static io.quarkus.ts.spring.web.MariaDBConstants.PORT;
-import static io.quarkus.ts.spring.web.MariaDBConstants.START_LOG_10;
+import static io.quarkus.ts.spring.web.MariaDBConstants.START_LOG_11;
 
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -17,7 +17,7 @@ import io.quarkus.test.services.QuarkusApplication;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class SpringWebOpenApiIT extends AbstractSpringWebOpenApiIT {
 
-    @Container(image = IMAGE_11, port = PORT, expectedLog = START_LOG_10)
+    @Container(image = IMAGE_11, port = PORT, expectedLog = START_LOG_11)
     static final MariaDbService database = new MariaDbService();
 
     @QuarkusApplication
