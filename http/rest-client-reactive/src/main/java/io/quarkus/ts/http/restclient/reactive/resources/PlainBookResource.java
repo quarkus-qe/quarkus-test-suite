@@ -31,6 +31,7 @@ import org.jboss.resteasy.reactive.RestQuery;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.quarkus.ts.http.restclient.reactive.BookClient;
+import io.quarkus.ts.http.restclient.reactive.json.Author;
 import io.quarkus.ts.http.restclient.reactive.json.Book;
 import io.quarkus.ts.http.restclient.reactive.json.BookIdWrapper;
 import io.quarkus.ts.http.restclient.reactive.json.BookRepository;
@@ -78,6 +79,15 @@ public class PlainBookResource {
     }
 
     @GET
+    @Path("/author/info")
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Uni<Author> getAuthor(@QueryParam("name") String author) {
+        boolean hasNobel = author.contains("Hemingway");
+        return Uni.createFrom().item(new Author(author, hasNobel));
+    }
+
+    @GET
     @Path("/author/profession/title")
     public Uni<String> getProfession() {
         return Uni.createFrom().item("writer");
@@ -100,6 +110,20 @@ public class PlainBookResource {
     @Path("/%E3%82%AF%E3%82%A4%E3%83%83%E3%82%AF%E6%A4%9C%E7%B4%A2/%25%20%23%20%5B%20%5D%20+%20=%20&%20@%20:%20!%20*%20(%20)%20'%20$%20,%20%3F/-%20_%20.%20~")
     public Multi<String> getBySearchTerm(@QueryParam("searchTerm") String searchTerm) {
         if (SEARCH_TERM_VAL.equals(searchTerm)) {
+            return Multi.createFrom().items("In Ou"
+                    + "r Time", ", ", "The Sun Also Rises", ", ", "A Farewell to Arms", ", ",
+                    "The Old Man and the Sea");
+        } else {
+            return Multi.createFrom().empty();
+        }
+    }
+
+    @POST
+    @Path("/author/books")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
+    public Multi<String> booksByAuthor(Author author) {
+        if (SEARCH_TERM_VAL.equals(author.name()) && author.gotNobelPrize()) {
             return Multi.createFrom().items("In Ou"
                     + "r Time", ", ", "The Sun Also Rises", ", ", "A Farewell to Arms", ", ",
                     "The Old Man and the Sea");
