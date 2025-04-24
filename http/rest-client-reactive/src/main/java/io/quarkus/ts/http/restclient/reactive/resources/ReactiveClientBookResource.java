@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import jakarta.inject.Inject;
+import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -17,6 +18,7 @@ import jakarta.ws.rs.core.MultivaluedHashMap;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import io.quarkus.ts.http.restclient.reactive.BookClient;
+import io.quarkus.ts.http.restclient.reactive.json.Author;
 import io.quarkus.ts.http.restclient.reactive.json.Book;
 import io.quarkus.ts.http.restclient.reactive.json.BookIdWrapper;
 import io.quarkus.ts.http.restclient.reactive.json.IdBeanParam;
@@ -72,6 +74,20 @@ public class ReactiveClientBookResource {
     @Path("/currency")
     public String getLastResource() {
         return bookInterface.getAuthor().getProfession().getWage().getCurrency().getName();
+    }
+
+    @GET
+    @Path("/author/info")
+    public Uni<Author> getAuthorInfo(@QueryParam("author") String author) {
+        return bookInterface.getAuthor().getAuthor(author);
+    }
+
+    @POST
+    @Path("/author/books")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
+    public Multi<String> getAuthorInfo(Author author) {
+        return bookInterface.getAuthor().getBooksByAuthor(author);
     }
 
     @GET

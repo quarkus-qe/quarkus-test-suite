@@ -18,6 +18,7 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.jboss.resteasy.reactive.RestForm;
 import org.jboss.resteasy.reactive.RestQuery;
 
+import io.quarkus.ts.http.restclient.reactive.json.Author;
 import io.quarkus.ts.http.restclient.reactive.json.Book;
 import io.quarkus.ts.http.restclient.reactive.json.BookIdWrapper;
 import io.smallrye.mutiny.Multi;
@@ -44,6 +45,17 @@ public interface BookClient {
         @GET
         @Path("/name")
         Uni<String> getName(@QueryParam("author") String author);
+
+        @GET
+        @Path("/info")
+        @Produces(MediaType.APPLICATION_JSON)
+        Uni<Author> getAuthor(@QueryParam("name") String author);
+
+        @POST
+        @Path("/books")
+        @Consumes(MediaType.APPLICATION_JSON)
+        @Produces(MediaType.TEXT_PLAIN)
+        Multi<String> getBooksByAuthor(Author author);
 
         @Path("profession")
         ProfessionClient getProfession();
