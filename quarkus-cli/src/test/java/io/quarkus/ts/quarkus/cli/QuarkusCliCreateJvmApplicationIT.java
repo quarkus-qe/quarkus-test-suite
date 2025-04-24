@@ -312,7 +312,6 @@ public class QuarkusCliCreateJvmApplicationIT {
 
     @Tag("https://github.com/quarkusio/quarkus/issues/25184")
     @Test
-    @Disabled("https://github.com/quarkusio/quarkus/issues/47418")
     public void shouldKeepUsingTheSameQuarkusVersionAfterReload() {
         // Generate application using old community version
         QuarkusCliRestService app = cliClient.createApplication("app", defaults()
