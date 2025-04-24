@@ -12,6 +12,10 @@
     <name>Quarkus QE TS: Service-discovery: Stork</name>
     <dependencies>
         <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-smallrye-stork</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.smallrye.stork</groupId>
             <artifactId>stork-service-discovery-consul</artifactId>
         </dependency>
