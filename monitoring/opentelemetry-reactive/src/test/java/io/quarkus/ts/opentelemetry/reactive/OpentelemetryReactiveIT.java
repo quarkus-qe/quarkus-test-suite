@@ -4,6 +4,7 @@ import static io.quarkus.test.bootstrap.Protocol.HTTP;
 import static io.restassured.RestAssured.given;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
@@ -18,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matcher;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.JaegerService;
@@ -31,6 +33,7 @@ import io.restassured.response.Response;
 public class OpentelemetryReactiveIT {
 
     private static final String OTEL_PING_SERVICE_NAME = "pingservice";
+    private static final String TRACING_SUPPRESSED_SERVICE_NAME = "tracing-suppressed-service";
 
     private Response resp;
 
@@ -53,6 +56,14 @@ public class OpentelemetryReactiveIT {
             .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl)
             // verify OTEL service name has priority over default Quarkus application name
             .withProperty("quarkus.otel.service.name", OTEL_PING_SERVICE_NAME);
+
+    @QuarkusApplication(classes = { PartiallyTraceableResource.class, UntraceableResource.class })
+    static final RestService tracingsuppressedservice = new RestService()
+            .withProperty("quarkus.application.name", TRACING_SUPPRESSED_SERVICE_NAME)
+            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.service.name", TRACING_SUPPRESSED_SERVICE_NAME)
+            // we need to censor root as OpenShift readiness probe throws in a bunch of GET / traces into the mix and we don't want that in the test
+            .withProperty("quarkus.otel.traces.suppress-application-uris", "/,partially-traceable-hello,untraceable-hello*");
 
     @Test
     public void testContextPropagation() {
@@ -111,6 +122,22 @@ public class OpentelemetryReactiveIT {
         assertTrue(invocations >= 2);
     }
 
+    @Test
+    @Tag("QUARKUS-5668")
+    public void testUriTracingSuppression() {
+        String queryParamOperationName = "GET /partially-traceable-hello";
+        String pathParamOperationName = "GET /partially-traceable-hello/{name}";
+        String subPathOperationName = "GET /partially-traceable-hello/everybody";
+        String[] operations = new String[] { queryParamOperationName, pathParamOperationName, subPathOperationName };
+        doSuppressedTracingRequests();
+
+        await().atMost(1, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(1)).untilAsserted(() -> {
+            thenRetrieveTraces(10, "1h", TRACING_SUPPRESSED_SERVICE_NAME);
+            resp.then().body("data.flatten().spans.flatten().operationName", containsInAnyOrder(operations));
+            thenNumberOfTracesMustBe(is(3)); // untraceable-hello is fully suppressed, /partially-traceable-hello root is suppressed, three other requests should be traced
+        });
+    }
+
     public void whenDoPingPongRequest() {
         given().when()
                 .get(pingservice.getURI(HTTP).withPath("/ping/pong").toString())
@@ -127,6 +154,51 @@ public class OpentelemetryReactiveIT {
                 .body(equalTo("Hello, admin " + ADMIN_USERNAME));
     }
 
+    private void doSuppressedTracingRequests() {
+        given().when()
+                .get(tracingsuppressedservice.getURI(HTTP).withPath("/untraceable-hello").toString())
+                .then()
+                .statusCode(HttpStatus.SC_OK).body(equalTo("Untraced hello anonymous"));
+
+        given().when()
+                .queryParam("name", "alice")
+                .get(tracingsuppressedservice.getURI(HTTP).withPath("/untraceable-hello").toString())
+                .then()
+                .statusCode(HttpStatus.SC_OK).body(equalTo("Untraced hello alice"));
+
+        given().when()
+                .get(tracingsuppressedservice.getURI(HTTP).withPath("/untraceable-hello/bob").toString())
+                .then()
+                .statusCode(HttpStatus.SC_OK).body(equalTo("Untraced hello bob"));
+
+        given().when()
+                .get(tracingsuppressedservice.getURI(HTTP).withPath("/untraceable-hello/everybody").toString())
+                .then()
+                .statusCode(HttpStatus.SC_OK).body(equalTo("Untraced hello to everybody!"));
+
+        given().when()
+                .get(tracingsuppressedservice.getURI(HTTP).withPath("/partially-traceable-hello").toString())
+                .then()
+                .statusCode(HttpStatus.SC_OK).body(equalTo("Untraced hello anonymous"));
+
+        given().when()
+                .queryParam("name", "alice")
+                .get(tracingsuppressedservice.getURI(HTTP).withPath("/partially-traceable-hello").toString())
+                .then()
+                .statusCode(HttpStatus.SC_OK).body(equalTo("Traced hello alice"));
+
+        given().when()
+                .get(tracingsuppressedservice.getURI(HTTP).withPath("/partially-traceable-hello/bob").toString())
+                .then()
+                .statusCode(HttpStatus.SC_OK).body(equalTo("Traced hello bob"));
+
+        given().when()
+                .get(tracingsuppressedservice.getURI(HTTP).withPath("/partially-traceable-hello/everybody").toString())
+                .then()
+                .statusCode(HttpStatus.SC_OK).body(equalTo("Traced hello to everybody!"));
+
+    }
+
     private void thenRetrieveTraces(int pageLimit, String lookBack, String serviceName, String operationName) {
         await().atMost(10, TimeUnit.SECONDS)
                 .pollInterval(Duration.ofSeconds(1))
@@ -141,10 +213,27 @@ public class OpentelemetryReactiveIT {
                 });
     }
 
+    private void thenRetrieveTraces(int pageLimit, String lookBack, String serviceName) {
+        await().atMost(10, TimeUnit.SECONDS)
+                .pollInterval(Duration.ofSeconds(1))
+                .until(() -> {
+                    resp = given().when()
+                            .queryParam("lookback", lookBack)
+                            .queryParam("limit", pageLimit)
+                            .queryParam("service", serviceName)
+                            .get(jaeger.getTraceUrl());
+                    return !resp.jsonPath().getList("data.spans").isEmpty();
+                });
+    }
+
     private void assertSecurityEventsAndLogsPresent() {
         resp.then().body(
                 "data.flatten().spans.flatten().findAll { span -> span.operationName == 'GET /admin' }.logs.flatten().findAll { log -> log.fields.find { field -> field.key == 'event' && field.value == 'quarkus.security.authorization.success' } }",
                 is(not(empty())));
+    }
+
+    private void thenNumberOfTracesMustBe(Matcher<?> matcher) {
+        resp.then().body("data.size()", matcher);
     }
 
     private void thenTraceSpanSizeMustBe(Matcher<?> matcher) {
