@@ -20,7 +20,6 @@ import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
-import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 
 public abstract class BaseWebSocketIT {
     private static final Logger LOG = Logger.getLogger(BaseWebSocketIT.class);
@@ -80,7 +79,6 @@ public abstract class BaseWebSocketIT {
     }
 
     @Test
-    @DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/47269")
     public void nativeSerializationTest() throws URISyntaxException, InterruptedException {
         Client client = createClient("/serialization/native");
         assertMessage("{\"type\":\"OPEN\",\"message\":\"Connection opened\",\"payload\":null}", client);
