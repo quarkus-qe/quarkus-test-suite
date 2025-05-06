@@ -8,10 +8,14 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import jakarta.ws.rs.core.MediaType;
+
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+
+import io.quarkus.test.bootstrap.RestService;
 
 @Tag("QUARKUS-3731")
 public abstract class BaseHibernateIT {
@@ -22,12 +26,53 @@ public abstract class BaseHibernateIT {
     private static final String TRUE = Boolean.TRUE.toString();
     private static final String FALSE = Boolean.FALSE.toString();
 
+    protected abstract RestService getApp();
+
     /**
      * Required data is pulled in from the `import.sql` resource.
      */
     @Test
     public void shouldNotFailWithConstraints() {
         given().when().get("/items/count").then().body(is("1"));
+    }
+
+    @Tag("https://github.com/quarkusio/quarkus/pull/46940")
+    @Test
+    public void testJsonEntityMappingWithJsonbUnremovable() {
+        String jsonPayload = "{\"testJsonEntity\": {\"field1\": \"value1\", \"field2\": 42}}";
+
+        String idString = getApp().given()
+                .contentType(MediaType.TEXT_PLAIN)
+                .body(jsonPayload)
+                .post("/json-entity/create/Test Entity")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .extract()
+                .asString();
+
+        Long id = Long.parseLong(idString);
+
+        String retrievedJson = getApp().given()
+                .pathParam("id", id)
+                .get("/json-entity/{id}")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .extract()
+                .asString();
+
+        assertEquals(jsonPayload, retrievedJson);
+        /*
+         * The warning was present before the fix: "CDI: programmatic lookup problem detected
+         * At least one bean matched the required type and qualifiers but was marked as unused and removed during build"
+         */
+        String cdiProblemDetected = "CDI: programmatic lookup problem detected";
+        String markedAsRemovedLog = "marked as unused and removed during build";
+        String removedBeansHeaderLog = "Removed beans:";
+
+        getApp().logs().assertDoesNotContain(cdiProblemDetected);
+        getApp().logs().assertDoesNotContain(markedAsRemovedLog);
+        getApp().logs().assertDoesNotContain(removedBeansHeaderLog);
+
     }
 
     @Test
