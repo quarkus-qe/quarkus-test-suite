@@ -9,4 +9,9 @@ public class DevModeHibernateIT extends BaseHibernateIT {
 
     @DevModeQuarkusApplication
     static RestService app = new RestService();
+
+    @Override
+    protected RestService getApp() {
+        return app;
+    }
 }
