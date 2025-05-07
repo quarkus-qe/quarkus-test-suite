@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 import jakarta.ws.rs.core.MediaType;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -308,4 +309,19 @@ public class QuteReactiveIT {
                 .statusCode(200)
                 .body(is("io.quarkus.ts.qute.Book$quarkusjacksondeserializer"));
     }
+
+    @Tag("https://github.com/quarkusio/quarkus/pull/47001")
+    @Test
+    void testRecordFragmentParameterOrderNPEFix() {
+        String content = app.given()
+                .get("/record-order/test")
+                .then()
+                .statusCode(200)
+                .extract()
+                .asString();
+
+        assertTrue(content.contains("Fragment using name then id: User 'Test User' has id 123"),
+                "Should contain fragment details with name before id");
+    }
+
 }
