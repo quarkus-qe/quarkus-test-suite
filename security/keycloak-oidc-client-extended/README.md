@@ -1,0 +1,14 @@
+# Keycloak-oidc-client-extended
+
+## Generate certificates:
+Certificates are required for BearerFilesystemIT
+
+In src/test/resources generate a new certificate
+`openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 36500 -subj "/CN=token-application-client" -nodes`
+
+Copy the content of the cert.pem without head,tail and newlines to the "test-realm-realm.json" file.
+Copy it to the <b>token-application-client</b> in path "clients.attributes.jwt.credential.certificate".
+So it will look like:
+```
+"jwt.credential.certificate": "MIIDHTCCAgmgAwIBAgIUPUwmE6xejGK6ZPBI+HiBUcvfEfQwDQYJKoZIhvcNAQELBQAwIjEgMB4GA1UEAwwXdGVzdC1hcHBsaWNhdGlvbi1jbGllbnQwHhcNMjUwNTIxMTM0MTA3WhcNMzUwNTE5MTM0MTA3WjAiMSAwHgYDVQQDDBd0ZXN0LWFwcGxpY2F0aW9uLWNsaWVudDCCAR4wDQYJKoZIhvcNAQEBBQADggELADCCAQYCgf4A0DKUI3haUY1ll8GO6I9ISCiHnMsTRC98rGHXYymwxYoW57ogHL9F6c8Qfq75lArznjLIPlgPrtwnRPwskJ4E2QpnxnDxqr37Sbo7r/iE+OJquPQuhzKixjdk1zpngGDtuvDgRqIEEI6Nzj+/ULPNZGJ40L/zApzLJWwyOC9J2HcJ38Sg1M1NCyOJkCrFL1faZgiRDRP6+4dggNB1Fb/xwQHD8xcwd6myJNLxKmUR0Ojzzt+I79v7vCDr3aSRB9kBGJExrDKDaMJgu+fV5Gr3bbTVFEivExOpijhNu4HhLsK/3TdR2j8nIy/VnFwQ7TgMtyHkWvVQZuxN5x1mmQIDAQABo1MwUTAdBgNVHQ4EFgQUY1yeEutBHVgUyea4raJViW67LacwHwYDVR0jBBgwFoAUY1yeEutBHVgUyea4raJViW67LacwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOB/gBOmjUPTUqlJgsQALuMq3djr1b0FQYeQg91u2QV22uikrDHSXC5H/EldBwKJ3kXB/1lzOIVK/7FFjCrWJrnd8xdQu6GNbj0SXdlQx8Bp72+9XNmDtP0WVIZnGqc40arQEjWld9Jz6aHNoj1+2GktaOISV/Et5f7lPYiuXHYjC900sXgT7DD90YB+TIs7b1u2YBo5tzU7FookfkEFDkBGPQSGHQF+A1wv5Tc88yQqxRWSGI1dtf+I8EgsFIJkSwUaqujl0ACvu2yYbUroImL30sxjbwiua4A/CBu3hVcGjgUPgO1HmMnUFVRDDsql42OsayMIkBKuieehGPNT6L2"
+```
