@@ -1,0 +1,18 @@
+<div>
+    <p>Id: {id}</p>
+    <p>Name: {name}</p>
+    <p>Order Number: {orderNumber}</p>
+    <p>Is Active: {isActive}</p>
+
+    <hr/>
+    {#fragment id=theFragment}
+    <div class="user-details-complex">
+        <p>Fragment using name then id: User '{name}' has id {id}.</p>
+        <p>All details (from fragment context): Name: {name}, Id: {id}</p>
+    </div>
+    {/fragment}
+    <hr/>
+
+    <h1>Name from Main: {name}</h1>
+    <p>ID from Main: {id}</p>
+</div>
