@@ -74,6 +74,13 @@ public class Application {
         return Response.ok(template.data("server", name + " engine")).build();
     }
 
+    @GET
+    @Path("/record-order/test")
+    @Produces(MediaType.TEXT_HTML)
+    public TemplateInstance recordComplexOrderTest() {
+        return new UserTemplates.UserWithOrder(123, "Test User", 789L, true);
+    }
+
     @POST
     @Path("/engine/{name}")
     @Produces(MediaType.TEXT_HTML)
