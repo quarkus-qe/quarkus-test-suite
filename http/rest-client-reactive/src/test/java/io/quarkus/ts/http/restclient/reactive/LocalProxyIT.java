@@ -17,9 +17,8 @@ import io.restassured.response.Response;
 @QuarkusScenario
 public class LocalProxyIT {
 
-    @DevModeQuarkusApplication
+    @DevModeQuarkusApplication(properties = "modern.properties")
     static RestService proxyApp = new RestService()
-            .withProperties("modern.properties")
             .withProperty("quarkus.rest-client.meta-client.enable-local-proxy", "true");
 
     @Test
