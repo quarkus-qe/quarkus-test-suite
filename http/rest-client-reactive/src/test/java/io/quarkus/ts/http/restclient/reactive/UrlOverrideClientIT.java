@@ -36,17 +36,15 @@ public class UrlOverrideClientIT {
     @JaegerContainer(expectedLog = "\"Health Check state change\",\"status\":\"ready\"")
     static final JaegerService jaeger = new JaegerService();
 
-    @QuarkusApplication()
+    @QuarkusApplication(properties = "urlOverride.properties")
     static RestService app = new RestService()
-            .withProperties("urlOverride.properties")
             .withProperty("quarkus.otel.enabled", "true")
             .withProperty("quarkus.otel.simple", "true")
             .withProperty("quarkus.application.name", MAIN_SERVICE_NAME)
             .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl);
 
-    @QuarkusApplication()
+    @QuarkusApplication(properties = "urlOverride.properties")
     static RestService app2 = new RestService()
-            .withProperties("urlOverride.properties")
             .withProperty("quarkus.http.ssl-port", "8444")
             .withProperty("ts.quarkus.urlOverride.response", "overridden");
 

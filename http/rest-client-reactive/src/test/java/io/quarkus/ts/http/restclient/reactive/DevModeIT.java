@@ -21,9 +21,8 @@ import io.restassured.response.ResponseBody;
 @QuarkusScenario
 public class DevModeIT {
 
-    @DevModeQuarkusApplication
-    static RestService app = new RestService()
-            .withProperties("modern.properties");
+    @DevModeQuarkusApplication(properties = "modern.properties")
+    static RestService app = new RestService();
 
     @Test
     @Tag("https://issues.redhat.com/browse/QUARKUS-5616")

@@ -43,10 +43,9 @@ public class LargeFileHandlingIT {
         }
     }
 
-    @QuarkusApplication
+    @QuarkusApplication(properties = "modern.properties")
     static RestService app = new RestService()
-            .withProperty("client.filepath", () -> files.toAbsolutePath().toString())
-            .withProperties("modern.properties");
+            .withProperty("client.filepath", () -> files.toAbsolutePath().toString());
 
     @Inject
     public LargeFileHandlingIT() {
