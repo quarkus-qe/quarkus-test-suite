@@ -52,9 +52,8 @@ public class ReactiveRestClientIT {
 
     static final String MALFORMED_URL = "quarkus.rest-client.\"io.quarkus.ts.http.restclient.reactive.MalformedClient\".url";
 
-    @QuarkusApplication
+    @QuarkusApplication(properties = "modern.properties")
     static RestService app = new RestService()
-            .withProperties("modern.properties")
             .withProperty(MALFORMED_URL, () -> mockServer.baseUrl());
 
     @Test
