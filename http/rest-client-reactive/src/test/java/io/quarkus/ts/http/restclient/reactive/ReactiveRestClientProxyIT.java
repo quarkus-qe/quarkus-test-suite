@@ -22,9 +22,8 @@ public class ReactiveRestClientProxyIT {
             .withProperty("NGINX_ENVSUBST_OUTPUT_DIR", "/etc/nginx")
             .withProperty("_whatever", "resource_with_destination::/etc/nginx/templates/|nginx.conf.template");
 
-    @QuarkusApplication
+    @QuarkusApplication(properties = "proxy.properties")
     static RestService proxyApp = new RestService()
-            .withProperties("proxy.properties")
             .withProperty("quarkus.rest-client.\"io.quarkus.ts.http.restclient.reactive.proxy.ProxyClient\".proxy-user", USER)
             .withProperty("quarkus.rest-client.\"io.quarkus.ts.http.restclient.reactive.proxy.ProxyClient\".proxy-password",
                     PASSWORD)
