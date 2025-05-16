@@ -10,6 +10,7 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static java.time.Duration.ofMinutes;
 import static org.awaitility.Awaitility.await;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.time.Duration;
@@ -256,6 +257,55 @@ public abstract class TransactionCommons {
         testTransactionRecoveryInternal();
     }
 
+    @Order(9)
+    @Test
+    @Tag("QUARKUS-5950")
+    public void testChangesAreNotCommitedAfterTimeoutPost() {
+        String clientAccountNumber = "ES8521006742088984966898";
+        ClientEntity client = new ClientEntity("Carlo", "Mendoza", clientAccountNumber);
+
+        getApp().given()
+                .body(client)
+                .contentType(ContentType.JSON)
+                .post("/client/create-manually")
+                .then()
+                .statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+
+        var response = getClient(clientAccountNumber);
+        response.then().statusCode(HttpStatus.SC_NO_CONTENT);
+    }
+
+    @Order(10)
+    @Test
+    @Tag("QUARKUS-5950")
+    public void testChangesAreNotCommitedAfterTimeoutDelete() {
+        getApp().given()
+                .contentType(ContentType.JSON)
+                .delete("/client/delete/" + ACCOUNT_NUMBER_EDUARDO)
+                .then()
+                .statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+
+        var response = getClient(ACCOUNT_NUMBER_EDUARDO);
+        response.then().statusCode(HttpStatus.SC_OK)
+                .body(containsString(ACCOUNT_NUMBER_EDUARDO));
+    }
+
+    @Order(11)
+    @Test
+    @Tag("QUARKUS-5950")
+    public void testChangesAreNotCommitedAfterTimeoutPatch() {
+        getApp().given()
+                .param("name", "Francis")
+                .contentType(ContentType.JSON)
+                .patch("/client/update/" + ACCOUNT_NUMBER_FRANCISCO)
+                .then()
+                .statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+
+        var response = getClient(ACCOUNT_NUMBER_FRANCISCO);
+        response.then().statusCode(HttpStatus.SC_OK)
+                .body(containsString(ACCOUNT_NUMBER_FRANCISCO), containsString("Francisco"));
+    }
+
     protected void testTransactionRecoveryInternal() {
         // test transactions without crash so that we check that on normal circumstances, there are no issues
         makeTransaction(false, false);
@@ -351,6 +401,10 @@ public abstract class TransactionCommons {
                 .statusCode(HttpStatus.SC_OK)
                 .extract()
                 .body().as(AccountEntity.class);
+    }
+
+    private Response getClient(String accountNumber) {
+        return given().get("/client/" + accountNumber);
     }
 
     private void verifyRequestTraces(String operationName) {
