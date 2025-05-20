@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import io.quarkus.test.bootstrap.JaegerService;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
+import io.quarkus.test.logging.Log;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.JaegerContainer;
 import io.quarkus.test.services.QuarkusApplication;
@@ -47,6 +48,7 @@ public class OpenTelemetryProxyIT {
     private static final String PROXY_USERNAME = "otel-user";
     private static final String PROXY_PASSWORD = "otel-pwd";
     private static final String JAEGER_MISSING_COLLECTOR = "missing.collector";
+    private static final int RANDOM_PORT_INCREMENT = 156;
 
     @JaegerContainer
     static final JaegerService jaeger = new JaegerService();
@@ -69,15 +71,6 @@ public class OpenTelemetryProxyIT {
 
     private static Closeable createGrpcProxy(Vertx vertx) {
         GrpcServer grpcProxy = GrpcServer.server(vertx);
-
-        HttpServer proxyHttpServer = vertx.createHttpServer(new HttpServerOptions().setPort(getProxyPort()));
-        proxyHttpServer
-                .requestHandler(httpServerRequest -> {
-                    assertEquals(JAEGER_MISSING_COLLECTOR, httpServerRequest.authority().host());
-                    grpcProxy.handle(httpServerRequest);
-                })
-                .listen();
-
         GrpcClient proxyClient = GrpcClient.client(vertx);
 
         // create proxy server
@@ -95,6 +88,16 @@ public class OpenTelemetryProxyIT {
                             .onSuccess(h -> h.messageHandler(msg -> reqFromQuarkus.response().endMessage(msg)))
                             .onFailure(err -> reqFromQuarkus.response().status(GrpcStatus.ABORTED).end());
                 })));
+
+        HttpServer proxyHttpServer = vertx.createHttpServer(new HttpServerOptions().setPort(getProxyPort()));
+        Log.info("Starting new gRPC proxy on port %s for Jaeger collector %s", getProxyPort(), getJaegerSocketAddress());
+        proxyHttpServer
+                .requestHandler(httpServerRequest -> {
+                    assertEquals(JAEGER_MISSING_COLLECTOR, httpServerRequest.authority().host());
+                    grpcProxy.handle(httpServerRequest);
+                })
+                .listen();
+
         return () -> proxyHttpServer
                 .close()
                 .eventually(proxyClient::close)
@@ -150,7 +153,7 @@ public class OpenTelemetryProxyIT {
     }
 
     private static int getProxyPort() {
-        return getJaegerUri().getPort() + 1;
+        return getJaegerUri().getPort() + RANDOM_PORT_INCREMENT;
     }
 
     private static String getProxyPortAsString() {
