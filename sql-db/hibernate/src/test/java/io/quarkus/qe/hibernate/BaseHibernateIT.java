@@ -119,6 +119,27 @@ public abstract class BaseHibernateIT {
                 .body(Matchers.is(AUTHOR));
     }
 
+    @Test
+    @Tag("https://issues.redhat.com/browse/QUARKUS-5714")
+    public void testCreationAndUpdateInOneTransaction() {
+        long id = 10;
+        String initData = "Init data";
+        String updateData = "Updated data";
+        given()
+                .queryParam("id", id)
+                .queryParam("initData", initData)
+                .queryParam("updateData", updateData)
+                .post("/entity-creation/create-and-update")
+                .then()
+                .statusCode(HttpStatus.SC_CREATED);
+
+        given()
+                .get("/entity-creation/" + id)
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body(containsString(updateData));
+    }
+
     private void givenPostConstructAndPreDestroyAreNotInvoked() {
         assertEquals(FALSE, getPostConstructInvokeResult(), "PostConstruct method has been invoked already");
         assertEquals(FALSE, getPreDestroyInvokeResult(), "PreDestroy method has been invoked already");
