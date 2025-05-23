@@ -60,6 +60,15 @@
       ]
     }
   ],
+  "clientScopes": [
+    {
+      "name": "openid",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true"
+      }
+    }
+  ],
   "clients": [
     {
       "clientId": "test-application-client",
@@ -70,6 +79,10 @@
       "directAccessGrantsEnabled": true,
       "clientAuthenticatorType": "client-secret",
       "secret": "test-application-client-secret",
+      "attributes": {
+        "use.refresh.tokens": "true",
+        "client.offline.access.allowed": "true"
+      },
       "protocolMappers": [
         {
           "id": "f17f8d5f-2327-4e0b-8001-48a7706be252",
@@ -107,7 +120,8 @@
         "roles",
         "profile",
         "uma_protection",
-        "email"
+        "email",
+        "openid"
       ],
       "optionalClientScopes": [
         "address",
