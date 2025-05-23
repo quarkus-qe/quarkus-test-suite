@@ -60,6 +60,15 @@
       ]
     }
   ],
+  "clientScopes": [
+    {
+      "name": "openid",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true"
+      }
+    }
+  ],
   "clients": [
     {
       "clientId": "test-application-client",
@@ -107,7 +116,8 @@
         "roles",
         "profile",
         "uma_protection",
-        "email"
+        "email",
+        "openid"
       ],
       "optionalClientScopes": [
         "address",
