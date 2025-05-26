@@ -2,7 +2,7 @@ name: "Daily Build"
 on:
   workflow_dispatch:
   schedule:
-    - cron: '03 0 * * *'
+    - cron: '30 2 * * *'
 jobs:
   linux-build-jvm-latest:
     name: Linux JVM
