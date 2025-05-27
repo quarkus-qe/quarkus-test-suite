@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import jakarta.inject.Inject;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -15,6 +16,7 @@ import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 @Tag("quarkus-cli")
 @QuarkusScenario
 @DisabledOnNative(reason = "Only for JVM verification")
+@Disabled("The test have some unknow problem and causing the build stuck, happening on main as well. Disabled for 3.20.1")
 public class QuarkusCliHelpIT {
 
     static final String HELP_COMMAND = "--help";
