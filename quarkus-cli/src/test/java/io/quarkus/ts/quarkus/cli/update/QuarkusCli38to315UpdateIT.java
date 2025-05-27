@@ -23,6 +23,7 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.surefire.shared.lang3.tuple.Pair;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -338,6 +339,7 @@ public class QuarkusCli38to315UpdateIT extends AbstractQuarkusCliUpdateIT {
      * Use an application with multiple modules and test it will be upgraded properly.
      */
     @Test
+    @Disabled("https://github.com/quarkusio/quarkus/issues/48072")
     public void updateMultiModuleAppTest() throws XmlPullParserException, IOException {
         QuarkusCliRestService app = cliClient.createApplicationFromExistingSources("app", null, MULTI_MODULE_APP);
         QuarkusCLIUtils.setCommunityBomIfNotRunningRHBQ(app, OLD_COMMUNITY_VERSION);
