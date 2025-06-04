@@ -57,7 +57,7 @@
         <build-reporter-maven-extension.version>3.11.1</build-reporter-maven-extension.version>
         <reruns>2</reruns>
         <oc.reruns>1</oc.reruns>
-        <flaky-run-reporter.version>0.1.5</flaky-run-reporter.version>
+        <flaky-run-reporter.version>0.1.6</flaky-run-reporter.version>
     </properties>
     <dependencyManagement>
         <dependencies>
