@@ -36,7 +36,7 @@
         <!-- Faster build when using -DskipTests -->
         <quarkus.build.skip>${skipTests}</quarkus.build.skip>
         <!-- S2i configuration -->
-        <quarkus.s2i.base-jvm-image>registry.access.redhat.com/ubi9/openjdk-21:latest</quarkus.s2i.base-jvm-image>
+        <quarkus.s2i.base-jvm-image>quay.io/jdowland/ubi9-openjdk-21:OPENJDK-3142</quarkus.s2i.base-jvm-image>
         <quarkus.s2i.base-native-image>quay.io/quarkus/ubi9-quarkus-native-binary-s2i:2.0</quarkus.s2i.base-native-image>
         <!-- Default values for format -->
         <src.format.goal>format</src.format.goal>
