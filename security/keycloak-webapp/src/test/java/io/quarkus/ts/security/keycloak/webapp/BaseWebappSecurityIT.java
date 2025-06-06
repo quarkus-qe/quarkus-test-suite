@@ -3,6 +3,7 @@ package io.quarkus.ts.security.keycloak.webapp;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -23,6 +24,7 @@ import org.htmlunit.html.HtmlForm;
 import org.htmlunit.html.HtmlPage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.KeycloakService;
@@ -141,6 +143,31 @@ public abstract class BaseWebappSecurityIT {
         whenGoTo("/logout");
         whenGoTo("/user");
         thenRedirectToLoginPage();
+    }
+
+    @Test
+    @Tag("QUARKUS-5653")
+    public void logoutShouldRevokeTokensViaSecurityEventListener() throws Exception {
+        String initialAccessToken = getUserAccessToken();
+
+        // Logout event will trigger SecurityEventListener and revoke tokens
+        whenGoTo("/logout");
+        assertInstanceOf(Page.class, page);
+        assertEquals(HttpStatus.SC_OK, page.getWebResponse().getStatusCode());
+
+        // Get a new access token after logout
+        String revokedAccessToken = getUserAccessToken();
+
+        assertNotEquals(revokedAccessToken, initialAccessToken,
+                "Access token should be different after logout, indicating it was revoked");
+    }
+
+    private String getUserAccessToken() throws Exception {
+        whenGoTo("/user/access-token");
+        thenRedirectToLoginPage();
+        whenLoginAs("test-user");
+        assertInstanceOf(TextPage.class, page, "Should be in a text content page");
+        return ((TextPage) page).getContent();
     }
 
     private void whenLoginAs(String user) throws Exception {

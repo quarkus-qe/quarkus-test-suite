@@ -32,4 +32,11 @@ public class UserResource {
     public String issuer() {
         return "user token issued by " + jwt.getIssuer();
     }
+
+    @GET
+    @Path("/access-token")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String token() {
+        return jwt.getRawToken();
+    }
 }
