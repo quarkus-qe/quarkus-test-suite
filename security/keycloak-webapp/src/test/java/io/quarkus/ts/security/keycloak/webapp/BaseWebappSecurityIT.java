@@ -23,6 +23,7 @@ import org.htmlunit.html.HtmlForm;
 import org.htmlunit.html.HtmlPage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.KeycloakService;
@@ -141,6 +142,42 @@ public abstract class BaseWebappSecurityIT {
         whenGoTo("/logout");
         whenGoTo("/user");
         thenRedirectToLoginPage();
+    }
+
+    @Test
+    @Tag("QUARKUS-5653")
+    public void logoutShouldRevokeTokensViaSecurityEventListener() throws Exception {
+        String initialAccessToken = getUserAccessToken();
+        System.out.println("Initial access token: " + initialAccessToken);
+
+        // Logout event will trigger SecurityEventListener and revoke tokens
+        //        whenGoTo("/logout");
+        //        assertInstanceOf(Page.class, page);
+        //        assertEquals(HttpStatus.SC_OK, page.getWebResponse().getStatusCode());
+
+        //        String newAT = getUserAccessToken();
+        //        System.out.println("New access token: " + newAT);
+
+        whenGoTo("/user/logout");
+
+        // After login, now access the introspection endpoint with query param
+        String inspectionUrl = "/user/inspect?token=" + initialAccessToken;
+        page = webClient.getPage(getApp().getURI(Protocol.HTTP).toString() + inspectionUrl);
+
+        thenRedirectToLoginPage();
+        whenLoginAs("test-user");
+
+        assertInstanceOf(TextPage.class, page, "Should be in a text content page");
+        String tokenStatusAfterRevocation = ((TextPage) page).getContent();
+        assertEquals("inactive", tokenStatusAfterRevocation);
+    }
+
+    private String getUserAccessToken() throws Exception {
+        whenGoTo("/user/access-token");
+        thenRedirectToLoginPage();
+        whenLoginAs("test-user");
+        assertInstanceOf(TextPage.class, page, "Should be in a text content page");
+        return ((TextPage) page).getContent();
     }
 
     private void whenLoginAs(String user) throws Exception {
