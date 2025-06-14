@@ -28,10 +28,10 @@ import io.quarkus.test.services.quarkus.model.QuarkusProperties;
 @DisabledOnNative // Only for JVM verification
 public class QuarkusCliExtensionsIT {
 
-    static final String AGROAL_EXTENSION_NAME = "Agroal - Database connection pool";
-    static final String AGROAL_EXTENSION_ARTIFACT = "quarkus-agroal";
+    static final String REST_EXTENSION_NAME = "REST";
+    static final String REST_EXTENSION_ARTIFACT = "quarkus-rest";
     static final String QUARKUS_BOM = "quarkus-bom";
-    static final String AGROAL_EXTENSION_GUIDE = "https://quarkus.io/guides/datasource";
+    static final String REST_EXTENSION_GUIDE = "https://quarkus.io/guides/rest";
     static final List<String> EXPECTED_PLATFORM_VERSIONS = Arrays.asList("2.0.0.Final", "2.1.0.Final");
     static final ListExtensionRequest NO_STREAM = new ListExtensionRequest(null); // --stream and --platform-bom are not compatible
 
@@ -105,40 +105,40 @@ public class QuarkusCliExtensionsIT {
     }
 
     private void assertListDefaultOptionOutput() {
-        assertTrue(result.getOutput().contains(AGROAL_EXTENSION_NAME)
-                && result.getOutput().contains(AGROAL_EXTENSION_ARTIFACT)
-                && !result.getOutput().contains(AGROAL_EXTENSION_GUIDE),
+        assertTrue(result.getOutput().contains(REST_EXTENSION_NAME)
+                && result.getOutput().contains(REST_EXTENSION_ARTIFACT)
+                && !result.getOutput().contains(REST_EXTENSION_GUIDE),
                 "Default output is unexpected. Output: " + result.getOutput());
     }
 
     private void assertListOriginsOptionOutput() {
         assertTrue(result.getOutput().contains(QUARKUS_BOM)
-                && result.getOutput().contains(AGROAL_EXTENSION_NAME)
-                && result.getOutput().contains(AGROAL_EXTENSION_ARTIFACT)
-                && !result.getOutput().contains(AGROAL_EXTENSION_GUIDE),
+                && result.getOutput().contains(REST_EXTENSION_NAME)
+                && result.getOutput().contains(REST_EXTENSION_ARTIFACT)
+                && !result.getOutput().contains(REST_EXTENSION_GUIDE),
                 "--origins option output is unexpected. Output: " + result.getOutput());
     }
 
     private void assertListNameOptionOutput() {
         // Concise shows only the artifact id
-        assertTrue(result.getOutput().contains(AGROAL_EXTENSION_ARTIFACT)
-                && result.getOutput().contains(AGROAL_EXTENSION_NAME),
+        assertTrue(result.getOutput().contains(REST_EXTENSION_ARTIFACT)
+                && result.getOutput().contains(REST_EXTENSION_NAME),
                 "--name option output is unexpected. Output: " + result.getOutput());
     }
 
     private void assertListConciseOptionOutput() {
         // Concise shows extension name ++ artifact id
-        assertTrue(result.getOutput().contains(AGROAL_EXTENSION_NAME)
-                && result.getOutput().contains(AGROAL_EXTENSION_ARTIFACT)
-                && !result.getOutput().contains(AGROAL_EXTENSION_GUIDE),
+        assertTrue(result.getOutput().contains(REST_EXTENSION_NAME)
+                && result.getOutput().contains(REST_EXTENSION_ARTIFACT)
+                && !result.getOutput().contains(REST_EXTENSION_GUIDE),
                 "--concise option output is unexpected. Output: " + result.getOutput());
     }
 
     private void assertListFullOptionOutput() {
         // Full should show also the origins. Reported by https://github.com/quarkusio/quarkus/issues/18062.
-        assertTrue(result.getOutput().contains(AGROAL_EXTENSION_NAME)
-                && result.getOutput().contains(AGROAL_EXTENSION_ARTIFACT)
-                && result.getOutput().contains(AGROAL_EXTENSION_GUIDE),
+        assertTrue(result.getOutput().contains(REST_EXTENSION_NAME)
+                && result.getOutput().contains(REST_EXTENSION_ARTIFACT)
+                && result.getOutput().contains(REST_EXTENSION_GUIDE),
                 "--full option output is unexpected. Output: " + result.getOutput());
     }
 
