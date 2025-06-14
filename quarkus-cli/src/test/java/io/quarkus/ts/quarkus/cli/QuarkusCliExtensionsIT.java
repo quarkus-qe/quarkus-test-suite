@@ -28,8 +28,8 @@ import io.quarkus.test.services.quarkus.model.QuarkusProperties;
 @DisabledOnNative(reason = "Only for JVM verification")
 public class QuarkusCliExtensionsIT {
 
-    static final String AGROAL_EXTENSION_NAME = "Agroal - Database connection pool";
-    static final String AGROAL_EXTENSION_ARTIFACT = "quarkus-agroal";
+    static final String AGROAL_EXTENSION_NAME = "REST";
+    static final String AGROAL_EXTENSION_ARTIFACT = "quarkus-rest";
     static final String QUARKUS_BOM = "quarkus-bom";
     static final String AGROAL_EXTENSION_GUIDE = "https://quarkus.io/guides/datasource";
     static final List<String> EXPECTED_PLATFORM_VERSIONS = Arrays.asList("2.0.0.Final", "2.1.0.Final");
