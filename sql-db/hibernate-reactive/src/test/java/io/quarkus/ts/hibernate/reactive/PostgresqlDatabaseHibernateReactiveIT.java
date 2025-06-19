@@ -1,5 +1,8 @@
 package io.quarkus.ts.hibernate.reactive;
 
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
 import io.quarkus.test.bootstrap.PostgresqlService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -31,4 +34,11 @@ public class PostgresqlDatabaseHibernateReactiveIT extends AbstractDatabaseHiber
     protected RestService getApp() {
         return app;
     }
+
+    @Override
+    @Test
+    @Disabled("https://github.com/quarkusio/quarkus/issues/48476")
+    public void searchWithLimit() {
+    }
+
 }
