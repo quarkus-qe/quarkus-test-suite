@@ -31,7 +31,7 @@
         <quarkiverse.pact.version>1.5.0</quarkiverse.pact.version>
         <smallrye-stork.version>2.7.3</smallrye-stork.version>
         <assertj.version>3.27.3</assertj.version>
-        <htmlunit.version>4.12.0</htmlunit.version>
+        <htmlunit.version>4.13.0</htmlunit.version>
         <java.websocket.version>1.6.0</java.websocket.version>
         <!-- Faster build when using -DskipTests -->
         <quarkus.build.skip>${skipTests}</quarkus.build.skip>
