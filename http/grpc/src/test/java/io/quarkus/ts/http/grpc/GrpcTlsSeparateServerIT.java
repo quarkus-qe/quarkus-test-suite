@@ -3,8 +3,6 @@ package io.quarkus.ts.http.grpc;
 import static io.quarkus.test.services.Certificate.Format.PEM;
 import static io.quarkus.ts.http.grpc.GrpcMutualTlsSeparateServerIT.addEscapes;
 
-import org.junit.jupiter.api.AfterAll;
-
 import io.quarkus.test.bootstrap.CloseableManagedChannel;
 import io.quarkus.test.bootstrap.GrpcService;
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -37,13 +35,6 @@ public class GrpcTlsSeparateServerIT implements GRPCIT, StreamingHttpIT, Reflect
             webClient = app.mutiny();
         }
         return webClient;
-    }
-
-    @AfterAll
-    static void afterAll() {
-        if (webClient != null) {
-            webClient.close();
-        }
     }
 
     private static String getClientCaCert() {
