@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.quarkus.ts.grpc.demo";
+option java_outer_classname = "DemoOuterClass";
+
+package demo;
+
+service Demo {
+  rpc TriggerEnumError (EnumTriggerRequest) returns (EnumTriggerReply) {}
+}
+
+enum DemoEnum {
+  A = 0;
+  B = 1;
+  C = 2;
+}
+
+message EnumTriggerRequest {
+  string name = 1;
+  DemoEnum enum = 2;
+}
+
+message EnumTriggerReply {
+  string name = 1;
+  DemoEnum enum = 2;
+}

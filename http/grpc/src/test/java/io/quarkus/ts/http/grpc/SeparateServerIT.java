@@ -1,7 +1,5 @@
 package io.quarkus.ts.http.grpc;
 
-import org.junit.jupiter.api.AfterAll;
-
 import io.quarkus.test.bootstrap.CloseableManagedChannel;
 import io.quarkus.test.bootstrap.GrpcService;
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -31,10 +29,4 @@ public class SeparateServerIT implements GRPCIT, StreamingHttpIT, ReflectionHttp
         return webClient;
     }
 
-    @AfterAll
-    static void afterAll() {
-        if (webClient != null) {
-            webClient.close();
-        }
-    }
 }
