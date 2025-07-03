@@ -17,6 +17,7 @@ import io.grpc.reflection.v1.FileDescriptorResponse;
 import io.quarkus.ts.grpc.GreeterGrpc;
 import io.quarkus.ts.grpc.HelloWorldProto;
 import io.quarkus.ts.grpc.StreamingGrpc;
+import io.quarkus.ts.grpc.demo.DemoGrpc;
 import io.vertx.mutiny.ext.web.client.WebClient;
 
 public interface ReflectionHttpIT {
@@ -29,14 +30,15 @@ public interface ReflectionHttpIT {
         assertEquals(SC_OK, httpResponse.statusCode());
         GrpcReflectionResponse response = httpResponse.bodyAsJson(GrpcReflectionResponse.class);
 
-        assertEquals(3, response.getServiceCount());
+        assertEquals(4, response.getServiceCount());
 
         List<String> serviceList = response.getServiceList();
 
-        assertEquals(3, serviceList.size());
+        assertEquals(4, serviceList.size());
         assertTrue(serviceList.stream().anyMatch(GreeterGrpc.SERVICE_NAME::equals));
         assertTrue(serviceList.stream().anyMatch(StreamingGrpc.SERVICE_NAME::equals));
         assertTrue(serviceList.stream().anyMatch("grpc.health.v1.Health"::equals));
+        assertTrue(serviceList.stream().anyMatch(DemoGrpc.SERVICE_NAME::equals));
     }
 
     @Test
