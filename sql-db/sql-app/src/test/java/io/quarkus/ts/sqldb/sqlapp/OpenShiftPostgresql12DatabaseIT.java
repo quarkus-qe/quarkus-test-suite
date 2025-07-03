@@ -22,5 +22,5 @@ public class OpenShiftPostgresql12DatabaseIT extends AbstractSqlDatabaseIT {
             .withProperty("quarkus.datasource.password", database.getPassword())
             .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl)
             // set DB version as we use older version than default version configured at the build time
-            .withProperty("quarkus.datasource.db-version", "10");
+            .withProperty("quarkus.datasource.db-version", "12");
 }

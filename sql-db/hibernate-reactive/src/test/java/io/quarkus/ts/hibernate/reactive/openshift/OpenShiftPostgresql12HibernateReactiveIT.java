@@ -28,7 +28,9 @@ public class OpenShiftPostgresql12HibernateReactiveIT extends AbstractDatabaseHi
     static RestService app = new RestService().withProperties("postgresql.properties")
             .withProperty("quarkus.datasource.username", POSTGRES_USER)
             .withProperty("quarkus.datasource.password", POSTGRES_PASSWORD)
-            .withProperty("quarkus.datasource.reactive.url", database::getReactiveUrl);
+            .withProperty("quarkus.datasource.reactive.url", database::getReactiveUrl)
+            // set DB version as we use older version than default version configured at the build time
+            .withProperty("quarkus.datasource.db-version", "12");
 
     @Override
     protected RestService getApp() {

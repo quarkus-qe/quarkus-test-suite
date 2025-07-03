@@ -36,7 +36,7 @@ public class OpenShiftPostgresqlMultitenantHibernateSearchIT extends AbstractMul
             .withProperty("quarkus.hibernate-search-orm.elasticsearch.hosts",
                     () -> getElasticSearchConnectionChain(elastic.getURI(Protocol.HTTP)))
             // set DB version as we use older version than default version configured at the build time
-            .withProperty("quarkus.datasource.db-version", "10");
+            .withProperty("quarkus.datasource.db-version", "12");
 
     @Override
     protected RestService getApp() {
