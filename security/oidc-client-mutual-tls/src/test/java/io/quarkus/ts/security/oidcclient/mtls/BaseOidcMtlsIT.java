@@ -87,6 +87,17 @@ public abstract class BaseOidcMtlsIT {
             url = realmUrl + "/protocol/openid-connect/token";
         }
 
+        TokenRequest(String realmUrl, String userName, String password, String clientId) {
+            requestSpecification = RestAssured
+                    .given()
+                    .param(GRANT_TYPE, PASSWORD)
+                    .param(USERNAME, userName)
+                    .param(PASSWORD, password)
+                    .param(CLIENT_ID, clientId)
+                    .param(CLIENT_SECRET, CLIENT_SECRET_DEFAULT);
+            url = realmUrl + "/protocol/openid-connect/token";
+        }
+
         TokenRequest withKeystore(String keyStorePath) {
             requestSpecification = requestSpecification.keyStore(keyStorePath, PASSWORD);
             return this;
