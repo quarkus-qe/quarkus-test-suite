@@ -54,6 +54,18 @@
           }
         ]
       }
+    },
+    {
+      "clientId": "test-mutual-tls-binding",
+      "enabled": true,
+      "clientAuthenticatorType": "client-x509",
+      "directAccessGrantsEnabled": true,
+      "protocol": "openid-connect",
+      "attributes": {
+        "x509.subjectdn": ".*CN=localhost.*",
+        "tls.client.certificate.bound.access.tokens": "true",
+        "x509.allow.regex.pattern.comparison": "true"
+      }
     }
   ]
 }
