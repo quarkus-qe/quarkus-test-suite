@@ -26,7 +26,7 @@ public class MutualTlsKeycloakService extends KeycloakService {
     private MutualTlsKeycloakService(String realmFile, String realmName, String realmBasePath) {
         super(realmFile, realmName, realmBasePath);
         this.realm = realmName;
-        this.realmBasePath = realmBasePath;
+        this.realmBasePath = normalizeRealmBasePath(realmBasePath);
         this.openshiftScenario = TestExecutionProperties.isOpenshiftPlatform();
     }
 
@@ -41,6 +41,18 @@ public class MutualTlsKeycloakService extends KeycloakService {
 
     public Integer getPort() {
         return openshiftScenario ? 443 : super.getURI().getPort();
+    }
+
+    private String normalizeRealmBasePath(String realmBasePath) {
+        if (realmBasePath.startsWith("/")) {
+            realmBasePath = realmBasePath.substring(1);
+        }
+
+        if (realmBasePath.endsWith("/")) {
+            realmBasePath = realmBasePath.substring(0, realmBasePath.length() - 1);
+        }
+
+        return realmBasePath;
     }
 
 }
