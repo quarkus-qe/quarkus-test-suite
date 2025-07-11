@@ -641,6 +641,11 @@ OpenTelemetry JDBC instrumentation test coverage is also placed here. JDBC traci
 databases in JVM mode, native mode and OpenShift. Smoke tests for DEV mode are using PostgreSQL. Smallrye Context Propagation
 cooperation with OpenTelemetry in DEV mode is also placed in this module.
 
+### `sql-db/jakarta-data`
+
+Test coverage for Jakarta Data capabilities of Quarkus Hibernate ORM extension.
+Focus of this test coverage is on integration points between Jakarta Data and Quarkus like CDI, transactions and DEV mode.
+
 ### `security/basic`
 
 Verifies the simplest way of doing authn/authz.
