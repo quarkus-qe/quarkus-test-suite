@@ -94,7 +94,7 @@ public class DevModeGrpcIntegrationReactiveIT {
 
     private static void assertOnGrpcServicePage(Consumer<Page> assertion) {
         try (Playwright playwright = Playwright.create()) {
-            try (Browser browser = playwright.chromium().launch()) {
+            try (Browser browser = playwright.firefox().launch()) {
                 Page page = browser.newContext().newPage();
                 var grpcServicesViewUrl = app
                         .getURI(Protocol.HTTP)
