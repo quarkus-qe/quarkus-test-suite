@@ -23,9 +23,7 @@ public class OpenShiftMariaDbTransactionGeneralUsageIT extends TransactionCommon
             .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl)
             .withProperty("quarkus.datasource.username", database.getUser())
             .withProperty("quarkus.datasource.password", database.getPassword())
-            .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl)
-            // set DB version as we use older version than default version configured at the build time
-            .withProperty("quarkus.datasource.db-version", "10.11");
+            .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl);
 
     @Override
     protected RestService getApp() {

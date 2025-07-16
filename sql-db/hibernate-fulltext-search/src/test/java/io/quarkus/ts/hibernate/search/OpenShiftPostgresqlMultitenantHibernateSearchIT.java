@@ -24,7 +24,7 @@ public class OpenShiftPostgresqlMultitenantHibernateSearchIT extends AbstractMul
             // Limit resources as Elasticsearch official docker image use half of available RAM
             .withProperty("ES_JAVA_OPTS", "-Xms1g -Xmx1g");
 
-    @Container(image = "${postgresql.12.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
+    @Container(image = "${postgresql.13.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
     static PostgresqlService database = new PostgresqlService();
 
     @QuarkusApplication
@@ -34,9 +34,7 @@ public class OpenShiftPostgresqlMultitenantHibernateSearchIT extends AbstractMul
             .withProperty("quarkus.datasource.password", database.getPassword())
             .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl)
             .withProperty("quarkus.hibernate-search-orm.elasticsearch.hosts",
-                    () -> getElasticSearchConnectionChain(elastic.getURI(Protocol.HTTP)))
-            // set DB version as we use older version than default version configured at the build time
-            .withProperty("quarkus.datasource.db-version", "12");
+                    () -> getElasticSearchConnectionChain(elastic.getURI(Protocol.HTTP)));
 
     @Override
     protected RestService getApp() {
