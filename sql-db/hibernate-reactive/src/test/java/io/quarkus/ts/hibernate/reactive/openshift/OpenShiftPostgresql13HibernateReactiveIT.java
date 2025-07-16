@@ -11,14 +11,14 @@ import io.quarkus.ts.hibernate.reactive.AbstractDatabaseHibernateReactiveIT;
 
 @OpenShiftScenario
 @EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
-public class OpenShiftPostgresql12HibernateReactiveIT extends AbstractDatabaseHibernateReactiveIT {
+public class OpenShiftPostgresql13HibernateReactiveIT extends AbstractDatabaseHibernateReactiveIT {
 
     private static final String POSTGRES_USER = "quarkus_test";
     private static final String POSTGRES_PASSWORD = "quarkus_test";
     private static final String POSTGRES_DATABASE = "quarkus_test";
     private static final int POSTGRES_PORT = 5432;
 
-    @Container(image = "${postgresql.12.image}", port = POSTGRES_PORT, expectedLog = "listening on IPv4 address")
+    @Container(image = "${postgresql.13.image}", port = POSTGRES_PORT, expectedLog = "listening on IPv4 address")
     static PostgresqlService database = new PostgresqlService()
             .withUser(POSTGRES_USER)
             .withPassword(POSTGRES_PASSWORD)
@@ -28,9 +28,7 @@ public class OpenShiftPostgresql12HibernateReactiveIT extends AbstractDatabaseHi
     static RestService app = new RestService().withProperties("postgresql.properties")
             .withProperty("quarkus.datasource.username", POSTGRES_USER)
             .withProperty("quarkus.datasource.password", POSTGRES_PASSWORD)
-            .withProperty("quarkus.datasource.reactive.url", database::getReactiveUrl)
-            // set DB version as we use older version than default version configured at the build time
-            .withProperty("quarkus.datasource.db-version", "12");
+            .withProperty("quarkus.datasource.reactive.url", database::getReactiveUrl);
 
     @Override
     protected RestService getApp() {

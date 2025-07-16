@@ -798,9 +798,8 @@
                                         <ts.redhat.registry.enabled>true</ts.redhat.registry.enabled>
                                         <!-- Product Services -->
                                         <rhbk.image>${rhbk.image}</rhbk.image>
-                                        <postgresql.12.image>registry.redhat.io/rhel8/postgresql-12:latest</postgresql.12.image>
+                                        <postgresql.13.image>registry.redhat.io/rhel9/postgresql-13:latest</postgresql.13.image>
                                         <postgresql.latest.image>registry.redhat.io/rhel9/postgresql-16:latest</postgresql.latest.image>
-                                        <mariadb.103.image>registry.redhat.io/rhel8/mariadb-103:latest</mariadb.103.image>
                                         <mariadb.1011.image>registry.redhat.io/rhel9/mariadb-1011:latest</mariadb.1011.image>
                                         <!-- Kafka  (amq-streams) requires separate properties for image and version -->
                                         <amq-streams.image>registry.redhat.io/amq-streams/kafka-35-rhel8</amq-streams.image>
@@ -848,12 +847,11 @@
                                         <ts.redhat.registry.enabled>true</ts.redhat.registry.enabled>
                                         <!-- Product Services -->
                                         <rhbk.image>${rhbk.image}</rhbk.image>
-                                        <postgresql.12.image>registry.redhat.io/rhel8/postgresql-12:latest</postgresql.12.image>
+                                        <postgresql.13.image>registry.redhat.io/rhel9/postgresql-13:latest</postgresql.13.image>
                                         <postgresql.dev.svc.latest.image>${postgresql.latest.image}</postgresql.dev.svc.latest.image>
                                         <postgresql.latest.image>registry.redhat.io/rhel9/postgresql-16:latest</postgresql.latest.image>
                                         <mysql.80.image>registry.redhat.io/rhel8/mysql-80:latest</mysql.80.image>
-                                        <mariadb.103.image>registry.redhat.io/rhel8/mariadb-103:latest</mariadb.103.image>
-                                        <mariadb.1011.image>registry.redhat.io/rhel8/mariadb-1011:latest</mariadb.1011.image>
+                                        <mariadb.1011.image>registry.redhat.io/rhel9/mariadb-1011:latest</mariadb.1011.image>
                                         <amqbroker.image>registry.redhat.io/amq7/amq-broker-rhel8:7.12</amqbroker.image>
                                         <!-- Kafka  (amq-streams) requires separate properties for image and version -->
                                         <amq-streams.image>registry.redhat.io/amq-streams/kafka-35-rhel8</amq-streams.image>
@@ -917,11 +915,10 @@
                                         <!-- Product Services -->
                                         <amqbroker.image>registry.redhat.io/amq7/amq-broker-rhel8:7.12</amqbroker.image>
                                         <rhbk.image>${rhbk.image}</rhbk.image>
-                                        <postgresql.12.image>registry.redhat.io/rhel8/postgresql-12:latest</postgresql.12.image>
+                                        <postgresql.13.image>registry.redhat.io/rhel9/postgresql-13:latest</postgresql.13.image>
                                         <postgresql.latest.image>registry.redhat.io/rhel9/postgresql-16:latest</postgresql.latest.image>
                                         <mysql.80.image>registry.redhat.io/rhel8/mysql-80:latest</mysql.80.image>
-                                        <mariadb.103.image>registry.redhat.io/rhel8/mariadb-103:latest</mariadb.103.image>
-                                        <mariadb.1011.image>registry.redhat.io/rhel8/mariadb-1011:latest</mariadb.1011.image>
+                                        <mariadb.1011.image>registry.redhat.io/rhel9/mariadb-1011:latest</mariadb.1011.image>
                                         <!-- Kafka  (amq-streams) requires separate properties for image and version -->
                                         <amq-streams.image>registry.redhat.io/amq-streams/kafka-35-rhel8</amq-streams.image>
                                         <amq-streams.version>2.6.0</amq-streams.version>

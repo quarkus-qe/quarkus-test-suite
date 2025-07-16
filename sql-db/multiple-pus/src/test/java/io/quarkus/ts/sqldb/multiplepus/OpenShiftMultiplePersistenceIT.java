@@ -17,7 +17,7 @@ public class OpenShiftMultiplePersistenceIT extends AbstractMultiplePersistenceI
 
     static final int POSTGRESQL_PORT = 5432;
 
-    @Container(image = "${mariadb.103.image}", port = MYSQL_PORT, expectedLog = "Only MySQL server logs after this point")
+    @Container(image = "${mariadb.1011.image}", port = MYSQL_PORT, expectedLog = "Only MySQL server logs after this point")
     static MariaDbService mariadb = new MariaDbService();
 
     @Container(image = "${postgresql.latest.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
@@ -31,9 +31,7 @@ public class OpenShiftMultiplePersistenceIT extends AbstractMultiplePersistenceI
             .withProperty("MARIA_DB_JDBC_URL", mariadb::getJdbcUrl)
             .withProperty("POSTGRESQL_USERNAME", postgresql.getUser())
             .withProperty("POSTGRESQL_PASSWORD", postgresql.getPassword())
-            .withProperty("POSTGRESQL_JDBC_URL", postgresql::getJdbcUrl)
-            // set DB version as we use older version than default version configured at the build time
-            .withProperty("quarkus.datasource.\"fruits\".db-version", "10.3");
+            .withProperty("POSTGRESQL_JDBC_URL", postgresql::getJdbcUrl);
 
     @Override
     RestService getApp() {
