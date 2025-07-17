@@ -1,8 +1,6 @@
 package io.quarkus.ts.hibernate.reactive;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -28,12 +26,6 @@ public class MsSQLDatabaseHibernateReactiveIT extends AbstractDatabaseHibernateR
     @Override
     protected RestService getApp() {
         return app;
-    }
-
-    @Override
-    @Test
-    @Disabled("https://github.com/quarkusio/quarkus/issues/48476")
-    public void searchWithLimit() {
     }
 
 }
