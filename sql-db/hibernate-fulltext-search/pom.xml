@@ -49,4 +49,31 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <configuration>
+                            <annotationProcessors>
+                                <annotationProcessor>org.hibernate.search.processor.HibernateSearchProcessor</annotationProcessor>
+                            </annotationProcessors>
+                            <annotationProcessorPaths>
+                                <path>
+                                    <groupId>org.hibernate.search</groupId>
+                                    <artifactId>hibernate-search-processor</artifactId>
+                                </path>
+                                <dependency>
+                                    <groupId>org.hibernate.search</groupId>
+                                    <artifactId>hibernate-search-backend-elasticsearch</artifactId>
+                                </dependency>
+                            </annotationProcessorPaths>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

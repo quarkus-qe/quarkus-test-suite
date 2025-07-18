@@ -15,6 +15,9 @@ public class AnalysisConfigurer implements ElasticsearchAnalysisConfigurer {
         context.analyzer("name").custom()
                 .tokenizer("standard")
                 .tokenFilters("asciifolding", "lowercase");
+        context.analyzer("description").custom()
+                .tokenizer("standard")
+                .tokenFilters("asciifolding", "lowercase");
 
         context.normalizer("sort").custom()
                 .tokenFilters("asciifolding", "lowercase");
