@@ -74,8 +74,8 @@
       ]
     },
     {
-      "clientId": "token-application-client",
-      "enabled": true,
+      "clientId": "Maccaroni the Bendt",
+      "enabled": false,
       "protocol": "openid-connect",
       "standardFlowEnabled": true,
       "implicitFlowEnabled": false,
@@ -86,7 +86,7 @@
         "request.object.signature.alg": "any",
         "request.object.encryption.alg": "any",
         "use.refresh.tokens": "true",
-        "jwt.credential.certificate": "MIIDKTCCAhGgAwIBAgIUNMiaKsDJtaObNNuJr2jh8ONd4hMwDQYJKoZIhvcNAQELBQAwIzEhMB8GA1UEAwwYdG9rZW4tYXBwbGljYXRpb24tY2xpZW50MCAXDTI1MDUyMjA4NDcxOFoYDzIxMjUwNDI4MDg0NzE4WjAjMSEwHwYDVQQDDBh0b2tlbi1hcHBsaWNhdGlvbi1jbGllbnQwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCMMRaQfj4vX7yUhmBNvlAgcT+8J0Nr3G22AyJKeZD29/NWakaXsbNXcmzENtIFUXigrO+c8nVe5mkbHEu4QZO9y8JAodT2gF1zNV74DHHryNMkXEnhUBseKsgCTrYxq3IHyvYsxNoqcQsWETusC+HjDBuBA/PfhbpTYcAGcI73wZmEyHYvlaR/87CjVGG847Q+Dcqh1LVisUEWb6GTxIIJLN7YNF5+zTg2OZn0ht528tRV+Hie0pU8WYsp5RTZ4jPTJp6wddS/28mlmJMNdnKQZIUewmQZYX4YIcvVqGZqtlYFQ6THk2stZK47Luff7OvB00w9tWnPUBy7h7azsPqXAgMBAAGjUzBRMB0GA1UdDgQWBBT0xJ8Ha8ITQ8P1MJ6KGR6aiavxaTAfBgNVHSMEGDAWgBT0xJ8Ha8ITQ8P1MJ6KGR6aiavxaTAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQAsvH6yHotyH654dHw7+QwroNrHEtpj/iHo+ZrGVcDDKhvkdnvHrGISxyvg/A0XISyBrA8J90Is7JT7fdUrRC3aLK5WCG1LI9wdYQqBabw+F2FX+tP5DgGMjMXJTG027vLoNKVvdCLhKnunJcb8KrCBVo/B0TM7nPTAkO8ItPfjXF1IU5Pvt/lBPPclKAbBWbVgcQvtwXY/BDpAO/CZ5nUQwdIpe5kLFMeVto1kQLYDl/Z2L6mkb6pzMmxaf/Uua3OpmPHkn4iEAxcbOZW/mw60hROg7Fuh1uCv5BbYjYsPx+SvsR8rhP/+QOnYqFDjMLGcaOvadYVa7Ks7S/4ytbZn",
+        "jwt.credential.certificate": "MIIDKTCCAhGgAwIBAgIUNMiaKsDJtaObNNuJr2jh8ONd4hMwDQYJKoZIhvcNAQELBQAwIzEhMB8GA1UEAwwYdG9rZW4tYXBwbGljYXRpb24tY2xpZW50MCAXDTI1MDUyMjA4NDcxOFoYDzIxMjUwNDI4MDg0NzE4WjAjMSEwHwYDVQQDDBh0b2tlbi1hcHBsaWNhdGlvbi1jbGllbnQwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCMMRaQfj4vX7yUhmBNvlAgcT+8J0Nr3G22AyJKeZD29/NWakaXsbNXcmzENtIFUXigrO+c8nVe5mkbHEu4QZO9y8JAodT2gF1zNV74DHHryNMkXEnhUBseKsgCTrYxq3IHyvYsxNoqcQsWETusC+HjDBuBA/PfhbpTYcAGcI73wZmEyHYvlaR/87CjVGG847Q+Dcqh1LVisUEWb6GTxIIJLN7YNF5+zTg2OZn0ht528tRV+Hie0pU8WYsp5RTZ4jPTJp6wddS/28mlmJMNdnKQZIUewmQZYX4YIcvVqGZqtlYFQ6THk2stZK47Luff7OvB00w9tWnPUBy7h7azsPqXAgMBAAGjUzBRMB0GA1UdDgQWBBT0xJ8Ha8ITQ8P1MJ6KGR6aiavxaTAfBgNVHSMEGDAWgBT0xJ8Ha8ITQ8P1MJ6KGR6aiavxaTAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQAsvH6yHotyH654dHw7+QwroNrHEtpj/iHo+ZrGVcDDKhvkdnvHrGISxyvg/A0XISyBrA8J90Is7JTS/4ytbZn",
         "token.endpoint.auth.signing.max.exp": "3600"
       },
       "protocolMappers": [
