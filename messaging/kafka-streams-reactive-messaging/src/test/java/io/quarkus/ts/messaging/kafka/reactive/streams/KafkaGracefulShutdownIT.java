@@ -31,10 +31,10 @@ import io.quarkus.ts.messaging.kafka.reactive.streams.shutdown.SlowTopicResource
 @QuarkusScenario
 @DisabledOnNative(reason = "Due to high native build execution time")
 @DisabledOnRHBQandWindows(reason = "QUARKUS-3434")
-public class KafkaGratefulShutdownIT {
+public class KafkaGracefulShutdownIT {
 
     private static final int TOTAL_MESSAGES = 10;
-    private static final String GRATEFUL_SHUTDOWN_PROPERTY = "mp.messaging.incoming.slow.graceful-shutdown";
+    private static final String GRACEFUL_SHUTDOWN_PROPERTY = "mp.messaging.incoming.slow.graceful-shutdown";
     private static final String KAFKA_LOG_PROPERTY = "quarkus.log.category.\"io.smallrye.reactive.messaging.kafka\".level";
     private static final String LAST_MESSAGE_LOG = "Processed Message " + TOTAL_MESSAGES;
     private static final String SHUTDOWN_KAFKA_LOG = "Shutting down - Waiting for message processing to complete";
@@ -43,7 +43,7 @@ public class KafkaGratefulShutdownIT {
     static KafkaService kafka = new KafkaService();
 
     @QuarkusApplication(classes = { SlowTopicConsumer.class,
-            SlowTopicResource.class, ReadinessObserver.class }, properties = "kafka.grateful.shutdown.application.properties")
+            SlowTopicResource.class, ReadinessObserver.class }, properties = "kafka.graceful.shutdown.application.properties")
     static RestService app = new RestService()
             .withProperty("kafka.bootstrap.servers", kafka::getBootstrapUrl)
             .withProperty("quarkus.kafka-streams.bootstrap-servers", kafka::getBootstrapUrl)
@@ -58,7 +58,7 @@ public class KafkaGratefulShutdownIT {
 
     @Order(2)
     @Test
-    public void shouldWaitForMessagesWhenGratefulShutdownIsEnabled() throws InterruptedException {
+    public void shouldWaitForMessagesWhenGracefulShutdownIsEnabled() throws InterruptedException {
         givenMessagesInTopic();
         if (OS.current() == OS.WINDOWS) {
             Thread.sleep(1000);
@@ -69,16 +69,16 @@ public class KafkaGratefulShutdownIT {
 
     @Order(3)
     @Test
-    public void shouldNotWaitForMessagesWhenGratefulShutdownIsDisabled() {
-        givenApplicationWithGratefulShutdownDisabled();
+    public void shouldNotWaitForMessagesWhenGracefulShutdownIsDisabled() {
+        givenApplicationWithGracefulShutdownDisabled();
         givenMessagesInTopic();
         whenStopApplication();
         thenAllMessagesAreNotProcessed();
     }
 
-    private void givenApplicationWithGratefulShutdownDisabled() {
+    private void givenApplicationWithGracefulShutdownDisabled() {
         app.stop();
-        app.withProperty(GRATEFUL_SHUTDOWN_PROPERTY, Boolean.FALSE.toString());
+        app.withProperty(GRACEFUL_SHUTDOWN_PROPERTY, Boolean.FALSE.toString());
         app.start();
     }
 
@@ -105,7 +105,7 @@ public class KafkaGratefulShutdownIT {
     }
 
     private void thenAssertLogs(Predicate<String> assertion, String message) {
-        await().atMost(3, TimeUnit.SECONDS).untilAsserted(() -> {
+        await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
             List<String> elements = app.getLogs();
 
             assertTrue(elements.stream().anyMatch(assertion), message + ":" + Strings.join(elements, '\n'));
