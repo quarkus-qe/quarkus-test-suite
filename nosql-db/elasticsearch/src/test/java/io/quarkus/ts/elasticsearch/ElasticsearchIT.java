@@ -29,7 +29,7 @@ public class ElasticsearchIT {
 
     static final int ELASTIC_PORT = 9200;
 
-    @Container(image = "${elastic.7x.image}", port = ELASTIC_PORT, expectedLog = "started")
+    @Container(image = "${elastic.9x.image}", port = ELASTIC_PORT, expectedLog = "started")
     static DefaultService elastic = new DefaultService()
             .withProperty("discovery.type", "single-node")
             .withProperty("ES_JAVA_OPTS", "-Xms512m -Xmx512m")

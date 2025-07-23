@@ -1,17 +1,25 @@
 package io.quarkus.ts.hibernate.search;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.search.engine.backend.types.Aggregable;
 import org.hibernate.search.engine.backend.types.Sortable;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 
 @Entity
@@ -23,14 +31,21 @@ import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordFie
 public class Fruit {
 
     @Id
-    @GeneratedValue(generator = "fruitsSequence")
-    @GenericGenerator(name = "fruitsSequence", strategy = "io.quarkus.ts.hibernate.search.MyCustomIdGenerator")
+    @MyCustomIdGeneratorAnnotation
     private Integer id;
 
     @FullTextField(analyzer = "name")
     @KeywordField(name = "fruitName_sort", sortable = Sortable.YES, normalizer = "sort")
     @Column(length = 40, unique = true)
     private String name;
+
+    @GenericField(aggregable = Aggregable.YES)
+    @Column
+    private Double price;
+
+    @IndexedEmbedded
+    @OneToMany(mappedBy = "fruit", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<FruitProducer> producers = new ArrayList<>();
 
     public Fruit() {
     }
@@ -42,6 +57,13 @@ public class Fruit {
     public Fruit(Integer id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public Fruit(Integer id, String name, Double price, List<FruitProducer> producers) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.producers = producers;
     }
 
     public Integer getId() {
@@ -60,38 +82,48 @@ public class Fruit {
         this.name = name;
     }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        return result;
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public List<FruitProducer> getProducers() {
+        return producers;
+    }
+
+    public void setProducers(List<FruitProducer> producers) {
+        this.producers = producers;
+    }
+
+    public void addProducer(FruitProducer producer) {
+        this.producers.add(producer);
+        producer.setFruit(this);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass())
             return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Fruit other = (Fruit) obj;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        if (name == null) {
-            return other.name == null;
-        } else
-            return name.equals(other.name);
+        Fruit fruit = (Fruit) o;
+        return Objects.equals(id, fruit.id) && Objects.equals(name, fruit.name) && Objects.equals(price, fruit.price)
+                && Objects.equals(producers, fruit.producers);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, price, producers);
     }
 
     @Override
     public String toString() {
-        return "Fruit [id=" + id + ", name=" + name + "]";
+        return "Fruit{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", producers=" + producers +
+                '}';
     }
-
 }

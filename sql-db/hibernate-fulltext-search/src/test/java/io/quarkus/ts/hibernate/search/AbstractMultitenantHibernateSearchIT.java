@@ -11,18 +11,24 @@ import java.util.stream.Collectors;
 
 import jakarta.ws.rs.core.Response;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
+import io.quarkus.test.bootstrap.LookupService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.services.URILike;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
+import io.restassured.response.ValidatableResponse;
 
 public abstract class AbstractMultitenantHibernateSearchIT {
     public static final TypeRef<List<Fruit>> FRUIT_LIST_TYPE_REF = new TypeRef<>() {
     };
 
     private static final List EMPTY_LIST = List.of();
+
+    @LookupService
+    static RestService app;
 
     @Test
     public void fullTextSearch() {
@@ -72,6 +78,9 @@ public abstract class AbstractMultitenantHibernateSearchIT {
         List<Fruit> sortedFruits = search(tenant, "*");
         List<String> fruitNames = sortedFruits.stream().map(Fruit::getName).collect(Collectors.toList());
         assertThat(fruitNames, is(List.of("Apricot", "Banana", "Cherries")));
+        sortedFruits = searchUsingMetamodelClass(tenant, "*");
+        fruitNames = sortedFruits.stream().map(Fruit::getName).collect(Collectors.toList());
+        assertThat(fruitNames, is(List.of("Apricot", "Banana", "Cherries")));
         delete(tenant, sortedFruits);
     }
 
@@ -82,36 +91,125 @@ public abstract class AbstractMultitenantHibernateSearchIT {
         create(tenant, new Fruit(fruitName));
         Fruit pitaya = search(tenant, fruitName.toLowerCase()).get(0);
         assertThat(pitaya.getName(), is(fruitName));
+        pitaya = searchUsingMetamodelClass(tenant, fruitName.toLowerCase()).get(0);
+        assertThat(pitaya.getName(), is(fruitName));
         delete(tenant, pitaya);
     }
 
-    private void create(String tenantId, Fruit fruit) {
-        getApp().given().with().body(fruit).contentType(ContentType.JSON)
+    @Test
+    public void testMetricAggregations() {
+        String tenant = "base";
+        var fruit = new Fruit();
+        fruit.setName("apple");
+        fruit.setPrice(1.5);
+        create(tenant, fruit);
+        var fruit2 = new Fruit();
+        fruit2.setName("pear");
+        fruit2.setPrice(5d);
+        create(tenant, fruit2);
+        var fruit3 = new Fruit();
+        fruit3.setName("peach");
+        fruit3.setPrice(3.5);
+        create(tenant, fruit3);
+        var fruit4 = new Fruit();
+        fruit4.setName("raspberry");
+        fruit4.setPrice(4.5);
+        create(tenant, fruit4);
+        var fruit5 = new Fruit();
+        fruit5.setName("blueberry");
+        fruit5.setPrice(5.5);
+        create(tenant, fruit5);
+        // all fruits
+        app.given()
+                .pathParam("tenantId", tenant)
+                .queryParam("fetch", 5)
+                .get("/{tenantId}/fruits/metric-aggregations")
+                .then().statusCode(200)
+                .body("numOfFetchedFruits", is(5))
+                .body("averagePrice", is(4.0f));
+        // average price for all fruits, only 3 are fetched: apple, blueberry, peach
+        app.given()
+                .pathParam("tenantId", tenant)
+                .queryParam("fetch", 3)
+                .get("/{tenantId}/fruits/metric-aggregations")
+                .then().statusCode(200)
+                .body("numOfFetchedFruits", is(3))
+                .body("averagePrice", is(4.0f));
+        // clean up after this test
+        app.given()
+                .pathParam("tenantId", tenant)
+                .queryParam("min-price", 1.5)
+                .queryParam("max-price", 5.5)
+                .delete("/{tenantId}/fruits/delete-by-price-range")
+                .then().statusCode(200)
+                .body(is("5"));
+    }
+
+    @Test
+    public void testProjectingMultivaluedFields() {
+        // create a fruit
+        String tenant = "base";
+        var fruit1 = new Fruit();
+        fruit1.setName("peach");
+        var producer = new FruitProducer();
+        producer.setName("Mark");
+        fruit1.addProducer(producer);
+        var producer2 = new FruitProducer();
+        producer2.setName("Martin");
+        fruit1.addProducer(producer2);
+        var producer3 = new FruitProducer();
+        producer3.setName("Luke");
+        fruit1.addProducer(producer3);
+        var persistedFruit = create(tenant, fruit1).extract().as(Fruit.class);
+        int id = persistedFruit.getId();
+        // verify the fruit is created correctly
+        app.given()
+                .pathParam("id", id)
+                .pathParam("tenantId", tenant)
+                .get("/{tenantId}/fruits/{id}")
+                .then().statusCode(200)
+                .body("name", is(fruit1.getName()))
+                .body("producers", hasSize(3));
+        // retrieve the fruit using a projection with multivalued field 'producerNames'
+        app.given()
+                .queryParam("fruit-name", fruit1.getName())
+                .pathParam("tenantId", tenant)
+                .get("/{tenantId}/fruits/projection-with-multivalued-field")
+                .then().statusCode(200)
+                .body("id", is(id))
+                .body("name", is(fruit1.getName()))
+                .body("producers", hasSize(3))
+                .body("producers", Matchers.containsInAnyOrder("Mark", "Martin", "Luke"));
+        delete(tenant, persistedFruit);
+    }
+
+    private ValidatableResponse create(String tenantId, Fruit fruit) {
+        return app.given().with().body(fruit).contentType(ContentType.JSON)
                 .when().post("/" + tenantId + "/fruits")
                 .then()
                 .statusCode(is(Response.Status.CREATED.getStatusCode()));
     }
 
     private void update(String tenantId, Fruit fruit) {
-        getApp().given().with().body(fruit).contentType(ContentType.JSON)
+        app.given().with().body(fruit).contentType(ContentType.JSON)
                 .when().put("/" + tenantId + "/fruits/" + fruit.getId())
                 .then()
                 .statusCode(is(Response.Status.OK.getStatusCode()));
     }
 
     private void delete(String tenantId, Fruit fruit) {
-        getApp().given()
+        app.given()
                 .when().delete("/" + tenantId + "/fruits/" + fruit.getId())
                 .then()
                 .statusCode(is(Response.Status.NO_CONTENT.getStatusCode()));
     }
 
     private void delete(String tenantId, List<Fruit> fruits) {
-        fruits.stream().forEach(fruit -> delete(tenantId, fruit));
+        fruits.forEach(fruit -> delete(tenantId, fruit));
     }
 
     private List<Fruit> search(String tenantId, String terms) {
-        io.restassured.response.Response response = given()
+        io.restassured.response.Response response = app.given()
                 .when().get("/" + tenantId + "/fruits/search?terms={terms}", terms);
         if (response.getStatusCode() == Response.Status.OK.getStatusCode()) {
             return response.as(FRUIT_LIST_TYPE_REF);
@@ -119,9 +217,16 @@ public abstract class AbstractMultitenantHibernateSearchIT {
         return EMPTY_LIST;
     }
 
+    private List<Fruit> searchUsingMetamodelClass(String tenantId, String terms) {
+        io.restassured.response.Response response = app.given()
+                .when().get("/" + tenantId + "/fruits/search-using-metamodel-class?terms={terms}", terms);
+        if (response.getStatusCode() == Response.Status.OK.getStatusCode()) {
+            return response.as(FRUIT_LIST_TYPE_REF);
+        }
+        return List.of();
+    }
+
     protected static String getElasticSearchConnectionChain(URILike uri) {
         return uri.toString().replaceAll("http://", "");
     }
-
-    protected abstract RestService getApp();
 }
