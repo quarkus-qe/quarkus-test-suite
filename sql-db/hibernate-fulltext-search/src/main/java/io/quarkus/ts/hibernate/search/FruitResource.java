@@ -18,6 +18,8 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 
+import org.hibernate.search.engine.search.aggregation.AggregationKey;
+import org.hibernate.search.engine.search.predicate.dsl.TypedSearchPredicateFactory;
 import org.hibernate.search.mapper.orm.session.SearchSession;
 import org.jboss.logging.Logger;
 
@@ -64,6 +66,9 @@ public class FruitResource {
     public Response create(Fruit fruit) {
         if (fruit.getId() != null) {
             throw new WebApplicationException("Id was invalidly set on request.", 422);
+        }
+        if (fruit.getProducers() != null && !fruit.getProducers().isEmpty()) {
+            fruit.getProducers().forEach(producer -> producer.setFruit(fruit));
         }
         LOG.debugv("Create {0}", fruit.getName());
         entityManager.persist(fruit);
@@ -115,4 +120,51 @@ public class FruitResource {
                 .fetchAllHits();
         return Response.status(Response.Status.OK).entity(list).build();
     }
+
+    @GET
+    @Path("/search-using-metamodel-class")
+    @Transactional
+    @Blocking
+    public Response searchUsingMetamodelClasses(@QueryParam("terms") String terms) {
+        List<Fruit> list = searchSession.search(Fruit__.INDEX.scope(searchSession))
+                .where(f -> f.simpleQueryString().field(Fruit__.INDEX.name).matching(terms))
+                .sort(f -> f.field(Fruit__.INDEX.fruitName_sort).asc())
+                .fetchAllHits();
+        return Response.status(Response.Status.OK).entity(list).build();
+    }
+
+    @GET
+    @Path("/metric-aggregations")
+    public MetricAggregationsResponseDto getMetricAggregations(@QueryParam("fetch") int fetch) {
+        AggregationKey<Double> avgPriceKey = AggregationKey.of("avgPrice");
+        var result = searchSession.search(Fruit__.INDEX.scope(searchSession))
+                .where(TypedSearchPredicateFactory::matchAll)
+                .sort(f -> f.field(Fruit__.INDEX.fruitName_sort).asc())
+                .aggregation(avgPriceKey, f -> f.avg().field(Fruit__.INDEX.price))
+                .fetch(fetch);
+        Double averagePrice = result.aggregation(avgPriceKey);
+        return new MetricAggregationsResponseDto(averagePrice, result.hits().size());
+    }
+
+    @Transactional
+    @DELETE
+    @Path("/delete-by-price-range")
+    public int deleteByPriceRange(@QueryParam("min-price") double minPrice, @QueryParam("max-price") double maxPrice) {
+        List<Fruit> list = searchSession.search(Fruit__.INDEX.scope(searchSession))
+                .where(f -> f.range().field(Fruit__.INDEX.price).between(minPrice, maxPrice))
+                .fetchAllHits();
+        list.forEach(entityManager::remove);
+        return list.size();
+    }
+
+    @Path("/projection-with-multivalued-field")
+    @GET
+    public FruitProjection getProjectionWithMultivaluedField(@QueryParam("fruit-name") String fruitName) {
+        return searchSession.search(Fruit__.INDEX.scope(searchSession))
+                .select(FruitProjection.class)
+                .where(f -> f.match().field(Fruit__.INDEX.name).matching(fruitName))
+                .fetch(1)
+                .hits().get(0);
+    }
+
 }

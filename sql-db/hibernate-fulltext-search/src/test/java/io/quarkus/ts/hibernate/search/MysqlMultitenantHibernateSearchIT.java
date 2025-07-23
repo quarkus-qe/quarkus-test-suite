@@ -2,7 +2,6 @@ package io.quarkus.ts.hibernate.search;
 
 import io.quarkus.test.bootstrap.DefaultService;
 import io.quarkus.test.bootstrap.MySqlService;
-import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
@@ -22,11 +21,15 @@ public class MysqlMultitenantHibernateSearchIT extends AbstractMultitenantHibern
     @Container(image = "${mysql.upstream.80.image}", port = MYSQL_PORT, expectedLog = "ready for connections")
     static MySqlService company2 = new MySqlService().withDatabase("company2");
 
-    @Container(image = "${elastic.7x.image}", port = ELASTIC_PORT, expectedLog = "started")
+    @Container(image = "${elastic.9x.image}", port = ELASTIC_PORT, expectedLog = "started")
     static DefaultService elastic = new DefaultService()
             .withProperty("discovery.type", "single-node")
             // Limit resources as Elasticsearch official docker image use half of available RAM
-            .withProperty("ES_JAVA_OPTS", "-Xms1g -Xmx1g");
+            .withProperty("ES_JAVA_OPTS", "-Xms1g -Xmx1g")
+            // these properties are suggest by https://quarkus.io/guides/elasticsearch#running-an-elasticsearch-cluster
+            // and Quarkus failed to connect to the Elasticsearch container without them
+            .withProperty("cluster.routing.allocation.disk.threshold_enabled", "false")
+            .withProperty("xpack.security.enabled", "false");
 
     @QuarkusApplication
     static RestService app = new RestService()
@@ -43,11 +46,6 @@ public class MysqlMultitenantHibernateSearchIT extends AbstractMultitenantHibern
             .withProperty("quarkus.datasource.company2.username", company2.getUser())
             .withProperty("quarkus.datasource.company2.password", company2.getPassword())
             .withProperty("quarkus.datasource.company2.jdbc.url", company2::getJdbcUrl)
-            .withProperty("quarkus.hibernate-search-orm.elasticsearch.hosts",
-                    () -> getElasticSearchConnectionChain(elastic.getURI(Protocol.HTTP)));
+            .withProperty("quarkus.hibernate-search-orm.elasticsearch.hosts", () -> elastic.getURI().toString());
 
-    @Override
-    protected RestService getApp() {
-        return app;
-    }
 }
