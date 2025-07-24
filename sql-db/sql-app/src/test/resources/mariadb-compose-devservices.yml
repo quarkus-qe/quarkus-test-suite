@@ -1,0 +1,11 @@
+name: test-project
+services:
+  db:
+    image: mirror.gcr.io/library/mariadb:11.8
+    ports:
+      - '3306'
+    environment:
+      MARIADB_ROOT_PASSWORD: rootpassword
+      MARIADB_USER: myuser
+      MARIADB_PASSWORD: mypassword
+      MARIADB_DATABASE: mydb

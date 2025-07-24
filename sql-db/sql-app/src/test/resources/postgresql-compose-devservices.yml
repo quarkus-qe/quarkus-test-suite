@@ -1,0 +1,15 @@
+name: test-project
+services:
+  db:
+    image: mirror.gcr.io/library/postgres:16
+    healthcheck:
+      test: pg_isready -U myuser -d mydb
+      interval: 1s
+      timeout: 1s
+      retries: 3
+    ports:
+      - '5432'
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydb
