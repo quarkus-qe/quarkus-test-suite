@@ -51,7 +51,7 @@ public class BearerFilesystemIT {
             "--features=token-exchange" })
     static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
 
-    private static String token_file_path = null;
+    private static String tokenFilePath = null;
 
     @QuarkusApplication
     static RestService app = new RestService()
@@ -122,7 +122,8 @@ public class BearerFilesystemIT {
 
     private RSAPrivateKey readPrivateKey() throws Exception {
         if (privateKey == null) {
-            privateKey = readPKCS8PrivateKey(Path.of(getClass().getClassLoader().getResource(PRIVATE_KEY_FILE).getPath()));
+            privateKey = readPKCS8PrivateKey(
+                    new File(getClass().getClassLoader().getResource(PRIVATE_KEY_FILE).getFile()).toPath());
         }
         return privateKey;
     }
@@ -171,13 +172,13 @@ public class BearerFilesystemIT {
     }
 
     public static String getTokenFilePath() {
-        if (token_file_path != null) {
-            return token_file_path;
+        if (tokenFilePath != null) {
+            return tokenFilePath;
         }
         String tmpDir = System.getProperty("java.io.tmpdir");
         String path = RandomStringUtils.insecure().nextAlphanumeric(8) + ".token";
 
-        token_file_path = tmpDir + File.separator + path;
-        return token_file_path;
+        tokenFilePath = Path.of(tmpDir, path).toString();
+        return tokenFilePath;
     }
 }
