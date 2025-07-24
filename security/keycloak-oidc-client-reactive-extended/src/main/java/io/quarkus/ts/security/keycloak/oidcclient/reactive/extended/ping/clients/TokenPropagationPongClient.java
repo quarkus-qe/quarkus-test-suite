@@ -12,7 +12,7 @@ import jakarta.ws.rs.core.MediaType;
 
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-import io.quarkus.oidc.token.propagation.AccessToken;
+import io.quarkus.oidc.token.propagation.common.AccessToken;
 import io.quarkus.ts.security.keycloak.oidcclient.reactive.extended.model.Score;
 
 @RegisterRestClient
