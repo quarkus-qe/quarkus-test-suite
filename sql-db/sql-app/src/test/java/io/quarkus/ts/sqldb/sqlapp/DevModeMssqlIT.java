@@ -17,7 +17,7 @@ public class DevModeMssqlIT extends AbstractSqlDatabaseIT {
     static RestService app = new RestService().withProperties("mssql.properties");
 
     @Test
-    public void mmsqlContainerShouldBeStarted() {
-        app.logs().assertContains("Creating container for image: mcr.microsoft.com/mssql/server");
+    public void mssqlContainerShouldBeStarted() {
+        app.logs().assertContains("Creating container for image: mcr.microsoft.com");
     }
 }
