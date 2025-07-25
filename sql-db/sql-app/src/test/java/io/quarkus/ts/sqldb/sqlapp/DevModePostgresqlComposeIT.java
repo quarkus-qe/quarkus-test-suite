@@ -13,11 +13,12 @@ public class DevModePostgresqlComposeIT extends AbstractSqlDatabaseIT {
 
     @DevModeQuarkusApplication(properties = "postgresql.properties")
     static RestService app = new RestService()
-            .withProperty("quarkus.compose.devservices.files", "src/main/resources/postgresql-compose-devservices.yml");
+            .withProperty("quarkus.compose.devservices.files", "src/main/resources/postgresql-compose-devservices.yml")
+            .withProperty("quarkus.compose.devservices.env-variables.IMAGE", "${postgresql.latest.image}");
 
     @Test
     public void composeDevServicesAreUsed() {
         app.logs().assertContains("Compose is running command");
-        app.logs().assertContains("library/postgres:16");
+        app.logs().assertContains(System.getProperty("postgresql.latest.image"));
     }
 }

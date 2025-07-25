@@ -1,7 +1,7 @@
 name: test-project
 services:
   db:
-    image: mirror.gcr.io/library/mariadb:11.8
+    image: ${IMAGE}
     ports:
       - '3306'
     environment:

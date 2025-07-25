@@ -14,11 +14,12 @@ public class DevModeMysqlComposeIT extends AbstractSqlDatabaseIT {
 
     @DevModeQuarkusApplication(properties = "mysql.properties")
     static RestService app = new RestService()
-            .withProperty("quarkus.compose.devservices.files", "src/main/resources/mysql-compose-devservices.yml");
+            .withProperty("quarkus.compose.devservices.files", "src/main/resources/mysql-compose-devservices.yml")
+            .withProperty("quarkus.compose.devservices.env-variables.IMAGE", "${mysql.upstream.80.image}");
 
     @Test
     public void composeDevServicesAreUsed() {
         app.logs().assertContains("Compose is running command");
-        app.logs().assertContains("library/mysql:9.4");
+        app.logs().assertContains(System.getProperty("mysql.upstream.80.image"));
     }
 }
