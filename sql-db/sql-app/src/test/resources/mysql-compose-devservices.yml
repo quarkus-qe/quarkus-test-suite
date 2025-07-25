@@ -1,7 +1,7 @@
 name: test-project
 services:
   db:
-    image: mirror.gcr.io/library/mysql:9.4
+    image: ${IMAGE}
     ports:
       - '3306'
     environment:

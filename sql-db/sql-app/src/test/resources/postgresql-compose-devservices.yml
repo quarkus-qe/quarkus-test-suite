@@ -1,7 +1,7 @@
 name: test-project
 services:
   db:
-    image: mirror.gcr.io/library/postgres:16
+    image: ${IMAGE}
     healthcheck:
       test: pg_isready -U myuser -d mydb
       interval: 1s
