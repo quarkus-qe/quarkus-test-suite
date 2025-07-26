@@ -669,6 +669,12 @@ Verifies that Basic Authentication is not used as a fallback option when it is e
 Verifies Basic authentication with Jakarta Persistence identity provider, enabling role-based access control.
 User password is hashed by one of algorithms: MD5, SHA-256, SHA-512.
 
+### `security/jpa-reactive`
+
+Verifies Hibernate ORM and Hibernate Reactive can be used together.
+The Security JPA Reactive extension provides identity provider for the Basic and Form-based authentication.
+Hibernate ORM Panache is used by a user's application persistence layer.
+
 ### `security/jwt`
 
 Verifies token-based authn and role-based authz.
