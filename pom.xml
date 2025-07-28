@@ -544,6 +544,7 @@
                 <module>security/form-authn</module>
                 <module>security/https</module>
                 <module>security/jpa</module>
+                <module>security/jpa-reactive</module>
                 <module>security/jwt</module>
                 <module>security/keycloak</module>
                 <module>security/keycloak-authz-classic</module>
