@@ -5,9 +5,14 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.Table;
 
 @Entity
+@NamedEntityGraph(name = "Item.withCustomer", attributeNodes = {
+        @NamedAttributeNode("customer"),
+})
 @Table(name = "item") // import script expects lower case table name, identifiers are quoted, hence case-sensitive
 public class Item {
 
