@@ -96,7 +96,7 @@ public class DevModeGrpcIntegrationIT {
                 Page page = browser.newContext().newPage();
                 var grpcServicesViewUrl = app
                         .getURI(Protocol.HTTP)
-                        .withPath("/q/dev-ui/io.quarkus.quarkus-grpc/services")
+                        .withPath("/q/dev-ui/quarkus-grpc/services")
                         .toString();
                 page.navigate(grpcServicesViewUrl);
 
