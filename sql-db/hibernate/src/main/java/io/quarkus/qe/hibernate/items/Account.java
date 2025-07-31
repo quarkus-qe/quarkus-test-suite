@@ -1,6 +1,6 @@
 package io.quarkus.qe.hibernate.items;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,8 +12,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -29,8 +27,7 @@ public class Account {
     @Size(max = 255)
     public String email;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    public Date createdOn;
+    public Instant createdOn;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "account_in_role", joinColumns = @JoinColumn(name = "accountid"), inverseJoinColumns = @JoinColumn(name = "roleid"))
