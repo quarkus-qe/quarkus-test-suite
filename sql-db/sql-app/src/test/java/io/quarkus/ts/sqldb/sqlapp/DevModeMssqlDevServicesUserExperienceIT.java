@@ -32,7 +32,7 @@ public class DevModeMssqlDevServicesUserExperienceIT {
             .withProperty("quarkus.datasource.devservices.port", Integer.toString(SocketUtils.findAvailablePort()))
             .withProperty("quarkus.datasource.devservices.image-name", "${mssql.image}")
             .withProperty("quarkus.datasource.jdbc.driver", "com.microsoft.sqlserver.jdbc.SQLServerDriver")
-            .withProperty("quarkus.hibernate-orm.database.generation", "none")
+            .withProperty("quarkus.hibernate-orm.schema-management.strategy", "none")
             .onPreStart(s -> DockerUtils.removeImage(MSSQL_NAME, MSSQL_VERSION));
 
     @Test

@@ -44,7 +44,7 @@ public class DevModePostgresqlDevServiceUserExperienceIT {
             .withProperty("quarkus.datasource.db-kind", "postgresql")
             .withProperty("quarkus.datasource.devservices.port", Integer.toString(SocketUtils.findAvailablePort()))
             .withProperty("quarkus.datasource.devservices.image-name", "${" + POSTGRESQL_IMAGE_NAME + "}-alpine")
-            .withProperty("quarkus.hibernate-orm.database.generation", "none")
+            .withProperty("quarkus.hibernate-orm.schema-management.strategy", "none")
             .onPreStart(s -> DockerUtils.removeImage(POSTGRES_NAME, POSTGRESQL_VERSION));
 
     @Test

@@ -29,7 +29,7 @@ public class DevModeMysqlDevServiceUserExperienceIT {
             .withProperty("quarkus.datasource.db-kind", "mysql")
             .withProperty("quarkus.datasource.devservices.port", Integer.toString(SocketUtils.findAvailablePort()))
             .withProperty("quarkus.datasource.devservices.image-name", "${mysql.upstream.80.image}")
-            .withProperty("quarkus.hibernate-orm.database.generation", "none")
+            .withProperty("quarkus.hibernate-orm.schema-management.strategy", "none")
             .onPreStart(s -> DockerUtils.removeImage(MYSQL_NAME, MYSQL_VERSION));
 
     @Test

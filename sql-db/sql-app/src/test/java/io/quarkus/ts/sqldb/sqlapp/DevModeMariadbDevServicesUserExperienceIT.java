@@ -28,7 +28,7 @@ public class DevModeMariadbDevServicesUserExperienceIT {
             .withProperty("quarkus.datasource.db-kind", "mariadb")
             .withProperty("quarkus.datasource.devservices.port", Integer.toString(SocketUtils.findAvailablePort()))
             .withProperty("quarkus.datasource.devservices.image-name", "${mariadb.11.image}")
-            .withProperty("quarkus.hibernate-orm.database.generation", "none")
+            .withProperty("quarkus.hibernate-orm.schema-management.strategy", "none")
             .onPreStart(s -> DockerUtils.removeImage(MARIA_DB_NAME, MARIA_DB_VERSION));
 
     @Test
