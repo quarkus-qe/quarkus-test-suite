@@ -30,7 +30,7 @@ public class DevModeOracleDevServiceUserExperienceIT {
             .withProperty("quarkus.datasource.db-kind", "oracle")
             .withProperty("quarkus.datasource.devservices.port", Integer.toString(SocketUtils.findAvailablePort()))
             .withProperty("quarkus.datasource.devservices.image-name", "${oracle.image}")
-            .withProperty("quarkus.hibernate-orm.database.generation", "none")
+            .withProperty("quarkus.hibernate-orm.schema-management.strategy", "none")
             .onPreStart(s -> DockerUtils.removeImage(ORACLE_NAME, ORACLE_VERSION));
 
     @Test
