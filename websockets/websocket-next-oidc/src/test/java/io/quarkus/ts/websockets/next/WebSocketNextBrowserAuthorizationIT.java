@@ -49,14 +49,15 @@ public class WebSocketNextBrowserAuthorizationIT {
     private URILike wsBaseUri;
     private URILike wssBaseUri;
 
-    @KeycloakContainer(command = { "start-dev", "--import-realm", "--features=token-exchange" })
+    @KeycloakContainer(runKeycloakInProdMode = true)
     static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
 
     @QuarkusApplication(ssl = true, certificates = {
             @Certificate(configureKeystore = true, configureTruststore = true, useTlsRegistry = false, configureHttpServer = true)
     })
     static final RestService server = new RestService()
-            .withProperty("quarkus.oidc.auth-server-url", keycloak::getRealmUrl);
+            .withProperty("quarkus.oidc.auth-server-url", keycloak::getRealmUrl)
+            .withProperties(keycloak::getTlsProperties);
 
     @BeforeAll
     static void launchBrowser() {

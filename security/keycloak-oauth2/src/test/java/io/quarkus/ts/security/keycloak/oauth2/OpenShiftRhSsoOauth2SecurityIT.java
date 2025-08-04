@@ -16,13 +16,14 @@ import io.quarkus.test.services.QuarkusApplication;
 @EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
 public class OpenShiftRhSsoOauth2SecurityIT extends BaseOauth2SecurityIT {
 
-    @KeycloakContainer(command = { "start-dev", "--import-realm" }, image = "${rhbk.image}")
+    @KeycloakContainer(runKeycloakInProdMode = true, image = "${rhbk.image}")
     static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
 
     @QuarkusApplication
     static RestService app = new RestService()
             .withProperty("quarkus.oauth2.introspection-url",
-                    () -> keycloak.getRealmUrl() + "/protocol/openid-connect/token/introspect");
+                    () -> keycloak.getRealmUrl() + "/protocol/openid-connect/token/introspect")
+            .withProperties(keycloak::getTlsProperties);
 
     @Override
     protected KeycloakService getKeycloak() {

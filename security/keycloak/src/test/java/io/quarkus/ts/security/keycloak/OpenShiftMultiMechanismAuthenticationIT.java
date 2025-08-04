@@ -14,7 +14,7 @@ import io.quarkus.test.services.KeycloakContainer;
 @Tag("QUARKUS-5617")
 public class OpenShiftMultiMechanismAuthenticationIT extends AbstractMultiMechanismAuthenticationIT {
 
-    @KeycloakContainer(command = { "start-dev", "--import-realm" }, image = "${rhbk.image}")
+    @KeycloakContainer(runKeycloakInProdMode = true, image = "${rhbk.image}")
     static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
 
 }
