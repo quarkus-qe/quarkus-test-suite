@@ -13,6 +13,7 @@ public class DevModePostgresqlComposeIT extends AbstractSqlDatabaseIT {
 
     @DevModeQuarkusApplication(properties = "postgresql.properties")
     static RestService app = new RestService()
+            .withProperties(AbstractSqlDatabaseIT::getDockerComposeProperties)
             .withProperty("quarkus.compose.devservices.files", "src/main/resources/postgresql-compose-devservices.yml")
             .withProperty("quarkus.compose.devservices.env-variables.IMAGE", "${postgresql.latest.image}");
 
