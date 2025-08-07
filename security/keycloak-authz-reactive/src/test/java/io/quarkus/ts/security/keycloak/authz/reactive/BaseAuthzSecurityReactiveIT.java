@@ -64,7 +64,7 @@ public abstract class BaseAuthzSecurityReactiveIT {
     public void normalUserUserResourceIssuer() {
         whenMakeRequestTo(HttpMethod.GET, "/user/issuer", getToken(NORMAL_USER, NORMAL_USER));
         thenStatusCodeIs(HttpStatus.SC_OK);
-        thenBodyStartWith("user token issued by " + getKeycloak().getURI(Protocol.HTTP).getRestAssuredStyleUri());
+        thenBodyStartWith("user token issued by " + getKeycloak().getURI(Protocol.HTTPS).getRestAssuredStyleUri());
     }
 
     @Test
@@ -91,7 +91,7 @@ public abstract class BaseAuthzSecurityReactiveIT {
     public void adminUserAdminResourceIssuer() {
         whenMakeRequestTo(HttpMethod.GET, "/admin/issuer", getToken(ADMIN_USER, ADMIN_USER));
         thenStatusCodeIs(HttpStatus.SC_OK);
-        thenBodyStartWith("admin token issued by " + getKeycloak().getURI(Protocol.HTTP).getRestAssuredStyleUri());
+        thenBodyStartWith("admin token issued by " + getKeycloak().getURI(Protocol.HTTPS).getRestAssuredStyleUri());
     }
 
     @Test

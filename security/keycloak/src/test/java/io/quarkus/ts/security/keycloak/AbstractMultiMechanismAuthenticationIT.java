@@ -33,7 +33,8 @@ public abstract class AbstractMultiMechanismAuthenticationIT {
             .withProperty("quarkus.oidc.auth-server-url", () -> keycloak.getRealmUrl())
             .withProperty("quarkus.oidc.client-id", CLIENT_ID_DEFAULT)
             .withProperty("quarkus.oidc.credentials.secret", CLIENT_SECRET_DEFAULT)
-            .withProperties("multi-mechanism.properties");
+            .withProperties("multi-mechanism.properties")
+            .withProperties(() -> keycloak.getTlsProperties());
 
     @Test
     public void testAdminBasicAndOidcTogetherOnAdminResource() {

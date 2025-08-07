@@ -14,7 +14,7 @@ import io.quarkus.test.services.KeycloakContainer;
 @Tag("QUARKUS-5617")
 public class MultiMechanismAuthenticationIT extends AbstractMultiMechanismAuthenticationIT {
 
-    @KeycloakContainer(command = { "start-dev", "--import-realm" })
+    @KeycloakContainer(runKeycloakInProdMode = true)
     static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
 
 }

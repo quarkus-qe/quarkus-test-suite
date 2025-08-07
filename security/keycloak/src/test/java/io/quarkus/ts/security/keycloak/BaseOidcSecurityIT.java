@@ -57,7 +57,7 @@ public abstract class BaseOidcSecurityIT {
                 .then()
                 .statusCode(HttpStatus.SC_OK)
                 .body(startsWith("user token issued by " +
-                        getKeycloak().getURI(Protocol.HTTP).getRestAssuredStyleUri()));
+                        getKeycloak().getURI(Protocol.HTTPS).getRestAssuredStyleUri()));
     }
 
     @Test
@@ -101,7 +101,7 @@ public abstract class BaseOidcSecurityIT {
                 .then()
                 .statusCode(HttpStatus.SC_OK)
                 .body(startsWith("admin token issued by " +
-                        getKeycloak().getURI(Protocol.HTTP).getRestAssuredStyleUri()));
+                        getKeycloak().getURI(Protocol.HTTPS).getRestAssuredStyleUri()));
     }
 
     @Test

@@ -14,12 +14,13 @@ import io.quarkus.test.services.QuarkusApplication;
 @QuarkusScenario
 public class HttpAdvancedReactiveIT extends BaseHttpAdvancedReactiveIT {
 
-    @KeycloakContainer(command = { "start-dev", "--import-realm", "--hostname-strict=false" })
+    @KeycloakContainer(runKeycloakInProdMode = true)
     static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
 
     @QuarkusApplication(ssl = true, certificates = @Certificate(configureKeystore = true, configureHttpServer = true, useTlsRegistry = false))
-    static RestService app = new RestService().withProperty("quarkus.oidc.auth-server-url",
-            keycloak::getRealmUrl);
+    static RestService app = new RestService()
+            .withProperty("quarkus.oidc.auth-server-url", keycloak::getRealmUrl)
+            .withProperties(keycloak::getTlsProperties);
 
     @Override
     protected RestService getApp() {
