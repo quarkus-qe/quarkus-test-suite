@@ -1,0 +1,13 @@
+name: test-project
+services:
+  db:
+    image: ${IMAGE}
+    ports:
+      - '1521'
+    environment:
+      ORACLE_PASSWORD: quarkus
+      ORACLE_DATABASE: quarkus
+      APP_USER: quarkus
+      APP_USER_PASSWORD: quarkus
+    labels:
+      io.quarkus.devservices.compose.wait_for.logs: .*DATABASE IS READY TO USE.*

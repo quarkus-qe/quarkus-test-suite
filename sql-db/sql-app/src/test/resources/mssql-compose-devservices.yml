@@ -1,0 +1,11 @@
+name: test-project
+services:
+  db:
+    image: ${IMAGE}
+    ports:
+      - '1433'
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: Quarkus123
+    labels:
+      io.quarkus.devservices.compose.jdbc.parameters: trustServerCertificate=true
