@@ -37,7 +37,8 @@ public abstract class AbstractOidcWebSocketIT {
 
     @QuarkusApplication
     static final RestService server = new RestService()
-            .withProperty("quarkus.oidc.auth-server-url", () -> keycloak.getRealmUrl());
+            .withProperty("quarkus.oidc.auth-server-url", () -> keycloak.getRealmUrl())
+            .withProperties(() -> keycloak.getTlsProperties());
 
     @Test
     public void tokenAuthenticatedTest() throws URISyntaxException, InterruptedException {

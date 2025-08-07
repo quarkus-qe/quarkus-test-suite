@@ -29,7 +29,7 @@ public abstract class BaseMicrometerOidcSecurityIT {
     static final String OK_HTTP_CALL_METRIC = HTTP_METRIC + "outcome=\"SUCCESS\",status=\"200\",uri=\"%s\"}";
     static final String UNAUTHORIZED_HTTP_CALL_METRIC = HTTP_METRIC + "outcome=\"CLIENT_ERROR\",status=\"401\",uri=\"%s\"}";
 
-    @KeycloakContainer(command = { "start-dev", "--import-realm" })
+    @KeycloakContainer(runKeycloakInProdMode = true)
     static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
 
     private AuthzClient authzClient;
