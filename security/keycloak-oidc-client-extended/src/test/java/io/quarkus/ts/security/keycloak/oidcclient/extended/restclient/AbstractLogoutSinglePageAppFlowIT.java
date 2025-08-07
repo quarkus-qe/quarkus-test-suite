@@ -35,7 +35,8 @@ public abstract class AbstractLogoutSinglePageAppFlowIT {
     @QuarkusApplication(classes = { LogoutFlow.class, LogoutTenantResolver.class })
     static RestService app = new RestService()
             .withProperty("keycloak.url", () -> keycloak.getURI(Protocol.HTTP).toString())
-            .withProperties("logout.properties");
+            .withProperties("logout.properties")
+            .withProperties(keycloak::getTlsProperties);
 
     @Test
     public void singlePageAppLogoutFlow() throws IOException {

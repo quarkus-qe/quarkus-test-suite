@@ -38,12 +38,13 @@ public class VertxWebSocketClientIT {
     private static final String ADMIN_PASSWORD = "random";
     private static Vertx vertx;
 
-    @KeycloakContainer(command = { "start-dev", "--import-realm", "--features=token-exchange" })
+    @KeycloakContainer(runKeycloakInProdMode = true)
     static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
 
     @QuarkusApplication(ssl = true)
     static final RestService server = new RestService()
-            .withProperty("quarkus.oidc.auth-server-url", keycloak::getRealmUrl);
+            .withProperty("quarkus.oidc.auth-server-url", keycloak::getRealmUrl)
+            .withProperties(keycloak::getTlsProperties);
 
     @BeforeAll
     static void setup() {

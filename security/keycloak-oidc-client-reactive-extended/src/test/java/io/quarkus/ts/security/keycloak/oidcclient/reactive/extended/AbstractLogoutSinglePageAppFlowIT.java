@@ -46,7 +46,8 @@ public abstract class AbstractLogoutSinglePageAppFlowIT {
                     return "${keycloak.url}";
                 }
             })
-            .withProperties("logout.properties");
+            .withProperties("logout.properties")
+            .withProperties(keycloak::getTlsProperties);
 
     @Tag("QUARKUS-2491")
     @Test

@@ -14,6 +14,6 @@ import io.quarkus.test.services.KeycloakContainer;
 @QuarkusScenario
 public class KeycloakStaticMultiTenantUserInfoIT extends AbstractStaticMultiTenantUserInfoIT {
 
-    @KeycloakContainer(command = { "start-dev", "--import-realm" })
+    @KeycloakContainer(runKeycloakInProdMode = true)
     static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
 }
