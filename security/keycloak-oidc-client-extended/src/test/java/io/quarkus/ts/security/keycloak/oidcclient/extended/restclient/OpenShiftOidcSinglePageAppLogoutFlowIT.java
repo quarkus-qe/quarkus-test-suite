@@ -10,6 +10,6 @@ import io.quarkus.test.services.KeycloakContainer;
 public class OpenShiftOidcSinglePageAppLogoutFlowIT extends AbstractLogoutSinglePageAppFlowIT {
 
     @KeycloakContainer(command = { "start-dev", "--import-realm" }, image = "${rhbk.image}")
-    static KeycloakService keycloak = new KeycloakService("/kc-logout-realm.json", REALM_DEFAULT, DEFAULT_REALM_BASE_PATH);
+    static KeycloakService keycloak = new KeycloakService("/quarkus-realm.json", REALM_DEFAULT, DEFAULT_REALM_BASE_PATH);
 
 }

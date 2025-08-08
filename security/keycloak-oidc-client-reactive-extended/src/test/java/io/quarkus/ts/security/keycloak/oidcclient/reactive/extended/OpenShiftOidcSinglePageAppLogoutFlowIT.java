@@ -11,6 +11,6 @@ public class OpenShiftOidcSinglePageAppLogoutFlowIT extends AbstractLogoutSingle
 
     @KeycloakContainer(command = { "start-dev", "--import-realm", "--hostname-strict=false",
             "--features=token-exchange" }, image = "${rhbk.image}")
-    static KeycloakService keycloak = new KeycloakService("/kc-logout-realm.json", REALM_DEFAULT, DEFAULT_REALM_BASE_PATH);
+    static KeycloakService keycloak = new KeycloakService("/quarkus-realm.json", REALM_DEFAULT, DEFAULT_REALM_BASE_PATH);
 
 }
