@@ -11,7 +11,7 @@
 
 3. Create a keystore for the server
 
-`keytool -genkey -alias Server -validity 3650 -keyalg RSA -keystore server-keystore.p12 -keysize 2048 -storetype PKCS12 -storepass password -dname "cn=localhost, ou=QuarkusQE, o=Redhat, L=Brno, st=BR, c=CZ"`
+`keytool -genkey -alias Server -validity 3650 -keyalg RSA -keystore server-keystore.p12 -keysize 2048 -storetype PKCS12 -storepass password -dname "cn=localhost, ou=QuarkusQE, o=Redhat, L=Brno, st=BR, c=CZ" -ext SAN=dns:localhost,dns:keycloak,dns:keycloak-secured`
 
 4. Export the public certificate of the server
 

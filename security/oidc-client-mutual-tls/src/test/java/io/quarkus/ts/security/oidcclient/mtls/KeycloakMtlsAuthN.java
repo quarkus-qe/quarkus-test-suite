@@ -71,7 +71,7 @@ public abstract class KeycloakMtlsAuthN extends BaseOidcMtlsIT {
         verifyAuthSuccess("/mtls/authentication", getExpectedMtlsPrincipal());
     }
 
-    private Executable getTokenWithoutMutualTlsHandshake() {
+    protected Executable getTokenWithoutMutualTlsHandshake() {
         return () -> new TokenRequest(getKeycloakService().getRealmUrl(), NORMAL_USER,
                 NORMAL_USER).execute();
     }
