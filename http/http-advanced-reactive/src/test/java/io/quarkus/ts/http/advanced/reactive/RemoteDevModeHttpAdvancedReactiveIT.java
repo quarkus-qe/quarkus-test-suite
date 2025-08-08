@@ -9,12 +9,13 @@ import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.services.IsRunningCheck;
 import io.quarkus.test.services.RemoteDevModeQuarkusApplication;
 
 @QuarkusScenario
 public class RemoteDevModeHttpAdvancedReactiveIT {
 
-    @RemoteDevModeQuarkusApplication
+    @RemoteDevModeQuarkusApplication(isRunningCheck = IsRunningCheck.IsBasePathReachableCheck.class)
     static RestService app = new RestService()
             .withProperty("quarkus.oidc.enabled", "false")
             .withProperty("quarkus.keycloak.policy-enforcer.enable", "false")
