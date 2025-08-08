@@ -93,8 +93,9 @@ public abstract class BaseOidcMtlsIT {
                     .param(GRANT_TYPE, PASSWORD)
                     .param(USERNAME, userName)
                     .param(PASSWORD, password)
-                    .param(CLIENT_ID, clientId)
-                    .param(CLIENT_SECRET, CLIENT_SECRET_DEFAULT);
+                    // CLIENT_SECRET should not be set here to proof that client auth works with mTLS
+                    // this method is only used in settings, where x509 is really used for oidc_client authentication
+                    .param(CLIENT_ID, clientId);
             url = realmUrl + "/protocol/openid-connect/token";
         }
 
