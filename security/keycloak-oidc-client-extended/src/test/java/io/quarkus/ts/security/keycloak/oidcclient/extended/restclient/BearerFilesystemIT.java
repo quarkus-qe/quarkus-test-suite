@@ -47,8 +47,7 @@ public class BearerFilesystemIT {
     private static final String PRIVATE_KEY_FILE = "key.pem";
     private RSAPrivateKey privateKey = null;
 
-    @KeycloakContainer(command = { "start-dev", "--import-realm",
-            "--features=token-exchange" })
+    @KeycloakContainer(runKeycloakInProdMode = true)
     static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
 
     private static String tokenFilePath = null;
@@ -56,6 +55,7 @@ public class BearerFilesystemIT {
     @QuarkusApplication
     static RestService app = new RestService()
             .withProperty("quarkus.oidc.auth-server-url", () -> keycloak.getRealmUrl())
+            .withProperties(() -> keycloak.getTlsProperties())
             // remove OIDC credentials, that are in the application.properties
             // we want to force the app to use JWT token, not default username:password
             .withProperty("quarkus.oidc.credentials.secret", "")
@@ -147,6 +147,7 @@ public class BearerFilesystemIT {
      */
     private String createUserToken() throws Exception {
         return given()
+                .relaxedHTTPSValidation()
                 .param("client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer")
                 .param("client_assertion", createSignedJwt())
                 .param("grant_type", "password")

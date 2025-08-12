@@ -22,12 +22,13 @@ import io.restassured.response.Response;
 @QuarkusScenario
 public class KeycloakOidcClientSecurityIT extends BaseOidcClientSecurityIT {
 
-    @KeycloakContainer(command = { "start-dev", "--import-realm", "--features=token-exchange" })
+    @KeycloakContainer(runKeycloakInProdMode = true)
     static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
 
     @QuarkusApplication
     static RestService app = new RestService()
-            .withProperty("quarkus.oidc.auth-server-url", () -> keycloak.getRealmUrl());
+            .withProperty("quarkus.oidc.auth-server-url", () -> keycloak.getRealmUrl())
+            .withProperties(() -> keycloak.getTlsProperties());
 
     @Override
     protected KeycloakService getKeycloak() {

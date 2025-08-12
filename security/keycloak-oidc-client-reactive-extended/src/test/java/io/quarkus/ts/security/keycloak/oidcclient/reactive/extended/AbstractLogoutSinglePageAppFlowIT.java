@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 
 import org.htmlunit.SilentCssErrorHandler;
 import org.htmlunit.WebClient;
+import org.htmlunit.WebClientOptions;
 import org.htmlunit.WebResponse;
 import org.htmlunit.html.HtmlForm;
 import org.htmlunit.html.HtmlPage;
@@ -36,17 +37,18 @@ public abstract class AbstractLogoutSinglePageAppFlowIT {
 
     @QuarkusApplication(classes = { LogoutFlow.class })
     static RestService app = new RestService()
-            .withProperty("keycloak.url", () -> keycloak.getURI(Protocol.HTTP).toString())
+            .withProperty("keycloak.url", () -> keycloak.getURI(Protocol.HTTPS).toString())
             .withProperty("keycloak.origin", () -> {
                 if (TestExecutionProperties.isOpenshiftPlatform()) {
                     // in OpenShift we need scheme + host
-                    return keycloak.getURI(Protocol.HTTP).getRestAssuredStyleUri();
+                    return keycloak.getURI(Protocol.HTTPS).getRestAssuredStyleUri();
                 } else {
                     // on Bare Metal we need scheme + host + port
                     return "${keycloak.url}";
                 }
             })
-            .withProperties("logout.properties");
+            .withProperties("logout.properties")
+            .withProperties(() -> keycloak.getTlsProperties());
 
     @Tag("QUARKUS-2491")
     @Test
@@ -88,6 +90,8 @@ public abstract class AbstractLogoutSinglePageAppFlowIT {
 
     private WebClient createWebClient() {
         WebClient webClient = new WebClient();
+        WebClientOptions options = webClient.getOptions();
+        options.setUseInsecureSSL(true);
         webClient.setCssErrorHandler(new SilentCssErrorHandler());
         Logger.getLogger("org.htmlunit.css").setLevel(Level.OFF);
         webClient.getOptions().setRedirectEnabled(true);

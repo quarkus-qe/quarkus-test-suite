@@ -1,6 +1,13 @@
 package io.quarkus.ts.security.keycloak.oidcclient.extended.restclient.ping.clients;
 
+import java.io.File;
+import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.util.Collections;
+import java.util.Optional;
 
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -12,7 +19,11 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContexts;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.rest.client.annotation.ClientHeaderParam;
@@ -21,6 +32,8 @@ import org.keycloak.authorization.client.AuthzClient;
 import org.keycloak.authorization.client.Configuration;
 
 import io.quarkus.ts.security.keycloak.oidcclient.extended.restclient.model.Score;
+
+import javax.net.ssl.SSLContext;
 
 @RegisterRestClient
 @ClientHeaderParam(name = "Authorization", value = "{lookupAuth}")
@@ -66,8 +79,37 @@ public interface LookupAuthorizationPongClient {
                 realm,
                 clientId,
                 Collections.singletonMap("secret", clientSecret),
-                HttpClients.createDefault()));
+                prepareHttpClientForAuthzClient(config)));
 
         return "Bearer " + authzClient.obtainAccessToken("test-user", "test-user").getToken();
+    }
+
+    private HttpClient prepareHttpClientForAuthzClient(Config config) {
+        Optional<String> truststorePathP12 = config.getOptionalValue("quarkus.tls.keycloak.trust-store.p12.path", String.class);
+        Optional<String> truststorePathJks = config.getOptionalValue("quarkus.tls.keycloak.trust-store.jks.path", String.class);
+        final SSLConnectionSocketFactory sslConnectionSocketFactory;
+        String truststorePassword;
+        String trustStorePath;
+
+        if (truststorePathP12.isPresent()) {
+            trustStorePath = truststorePathP12.get();
+            truststorePassword = config.getValue("quarkus.tls.keycloak.trust-store.p12.password", String.class);
+        } else if (truststorePathJks.isPresent()) {
+            trustStorePath = truststorePathJks.get();
+            truststorePassword = config.getValue("quarkus.tls.keycloak.trust-store.jks.password", String.class);
+        } else {
+            return HttpClients.createDefault();
+        }
+
+        try {
+            SSLContext sslContext = SSLContexts.custom()
+                    .loadTrustMaterial(new File(trustStorePath), truststorePassword.toCharArray())
+                    .build();
+            sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
+        } catch (CertificateException | IOException | NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
+            throw new IllegalStateException("Unable to create SSLConnectionSocketFactory to allow"
+                    + " secured connection use self-signed certificates", e);
+        }
+        return HttpClients.custom().setSSLSocketFactory(sslConnectionSocketFactory).build();
     }
 }

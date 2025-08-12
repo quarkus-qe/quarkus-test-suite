@@ -49,12 +49,13 @@ public class OpenApiStoreSchemaIT {
     private static final String EXPECTED_TAGS = "[{\"name\":\"Ping\",\"description\":\"Ping API\"},{\"name\":\"Pong\",\"description\":\"Pong API\"}]";
     private static final String EXPECTED_INFO = "{\"title\":\"security-keycloak-oidc-client-reactive-extended API\",\"version\":\"1.0.0-SNAPSHOT\"}";
 
-    @KeycloakContainer(command = { "start-dev", "--import-realm", "--features=token-exchange" })
+    @KeycloakContainer(runKeycloakInProdMode = true)
     static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
 
     @QuarkusApplication
     static RestService app = new RestService()
-            .withProperty("quarkus.oidc.auth-server-url", () -> keycloak.getRealmUrl());
+            .withProperty("quarkus.oidc.auth-server-url", () -> keycloak.getRealmUrl())
+            .withProperties(() -> keycloak.getTlsProperties());
 
     // QUARKUS-716
     @Test

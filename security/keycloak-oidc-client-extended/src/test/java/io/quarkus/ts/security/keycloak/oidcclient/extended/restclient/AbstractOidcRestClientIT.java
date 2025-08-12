@@ -29,7 +29,8 @@ public abstract class AbstractOidcRestClientIT {
 
     @QuarkusApplication
     static RestService app = new RestService()
-            .withProperty("quarkus.oidc.auth-server-url", () -> keycloak.getRealmUrl());
+            .withProperty("quarkus.oidc.auth-server-url", () -> keycloak.getRealmUrl())
+            .withProperties(() -> keycloak.getTlsProperties());
 
     @Test
     public void testRest() {
