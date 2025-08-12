@@ -9,7 +9,7 @@ import io.quarkus.test.services.KeycloakContainer;
 @QuarkusScenario
 public class LogoutSinglePageAppFlowIT extends AbstractLogoutSinglePageAppFlowIT {
 
-    @KeycloakContainer(command = { "start-dev", "--import-realm" })
+    @KeycloakContainer(runKeycloakInProdMode = true)
     static KeycloakService keycloak = new KeycloakService("/quarkus-realm.json", REALM_DEFAULT, DEFAULT_REALM_BASE_PATH);
 
 }

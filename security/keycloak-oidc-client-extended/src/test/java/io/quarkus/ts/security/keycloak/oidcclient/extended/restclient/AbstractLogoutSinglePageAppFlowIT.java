@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 
 import org.htmlunit.SilentCssErrorHandler;
 import org.htmlunit.WebClient;
+import org.htmlunit.WebClientOptions;
 import org.htmlunit.html.HtmlForm;
 import org.htmlunit.html.HtmlPage;
 import org.htmlunit.util.Cookie;
@@ -34,8 +35,9 @@ public abstract class AbstractLogoutSinglePageAppFlowIT {
 
     @QuarkusApplication(classes = { LogoutFlow.class, LogoutTenantResolver.class })
     static RestService app = new RestService()
-            .withProperty("keycloak.url", () -> keycloak.getURI(Protocol.HTTP).toString())
-            .withProperties("logout.properties");
+            .withProperty("keycloak.url", () -> keycloak.getURI(Protocol.HTTPS).toString())
+            .withProperties("logout.properties")
+            .withProperties(() -> keycloak.getTlsProperties());
 
     @Test
     public void singlePageAppLogoutFlow() throws IOException {
@@ -61,6 +63,8 @@ public abstract class AbstractLogoutSinglePageAppFlowIT {
 
     private WebClient createWebClient() {
         WebClient webClient = new WebClient();
+        WebClientOptions options = webClient.getOptions();
+        options.setUseInsecureSSL(true);
         webClient.setCssErrorHandler(new SilentCssErrorHandler());
         Logger.getLogger("org.htmlunit.css").setLevel(Level.OFF);
         webClient.getOptions().setRedirectEnabled(true);

@@ -56,7 +56,7 @@ public abstract class BaseOidcClientSecurityIT {
                 .get("/user/issuer")
                 .then()
                 .statusCode(HttpStatus.SC_OK)
-                .body(startsWith("user token issued by " + getKeycloak().getURI(Protocol.HTTP).getRestAssuredStyleUri()));
+                .body(startsWith("user token issued by " + getKeycloak().getURI(Protocol.HTTPS).getRestAssuredStyleUri()));
     }
 
     @Test

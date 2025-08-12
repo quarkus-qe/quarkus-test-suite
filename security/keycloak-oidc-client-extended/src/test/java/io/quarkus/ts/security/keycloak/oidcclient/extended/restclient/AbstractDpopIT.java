@@ -38,7 +38,8 @@ abstract public class AbstractDpopIT {
     @QuarkusApplication
     static RestService app = new RestService()
             .withProperty("quarkus.oidc.auth-server-url", () -> keycloak.getRealmUrl())
-            .withProperty("quarkus.oidc.token.authorization-scheme", "dpop");
+            .withProperty("quarkus.oidc.token.authorization-scheme", "dpop")
+            .withProperties(() -> keycloak.getTlsProperties());
 
     @Test
     public void correctAccessTest() throws Exception {
@@ -155,13 +156,14 @@ abstract public class AbstractDpopIT {
 
     private String getAccessToken(KeyPair keyPair) {
         return given()
+                .relaxedHTTPSValidation()
                 .header("DPOP", createDPopProofForKeycloak(keyPair))
                 .param("client_id", CLIENT_ID)
                 .param("client_secret", CLIENT_SECRET)
                 .param("grant_type", "password")
                 .param("username", USERNAME)
                 .param("password", PASSWORD)
-                .post(keycloak.getRealmUrl() + "/protocol/openid-connect/token")
+                .post(getKeycloakRealmUrl() + "/protocol/openid-connect/token")
                 .jsonPath().getString("access_token");
     }
 
@@ -200,5 +202,9 @@ abstract public class AbstractDpopIT {
                 .jwk(keyPair.getPublic())
                 .header("typ", "dpop+jwt");
         return jwtSignatureBuilder.sign(keyPair.getPrivate());
+    }
+
+    protected String getKeycloakRealmUrl() {
+        return keycloak.getRealmUrl();
     }
 }

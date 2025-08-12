@@ -30,7 +30,8 @@ public abstract class AbstractOidcResponseFilterIT {
 
     @QuarkusApplication
     static RestService app = new RestService()
-            .withProperty("quarkus.oidc.auth-server-url", () -> keycloak.getRealmUrl());
+            .withProperty("quarkus.oidc.auth-server-url", () -> keycloak.getRealmUrl())
+            .withProperties(() -> keycloak.getTlsProperties());
 
     protected AccessTokenResponse createTokenWithoutProfileScope() {
         return keycloak

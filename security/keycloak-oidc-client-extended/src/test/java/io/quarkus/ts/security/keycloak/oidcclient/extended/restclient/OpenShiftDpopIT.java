@@ -10,6 +10,13 @@ import io.quarkus.test.services.KeycloakContainer;
 
 @OpenShiftScenario
 public class OpenShiftDpopIT extends AbstractDpopIT {
-    @KeycloakContainer(image = "${rhbk.image}", command = { "start-dev", "--import-realm", "--features=dpop" })
+    @KeycloakContainer(runKeycloakInProdMode = true, image = "${rhbk.image}", command = { "start", "--import-realm",
+            "--hostname-strict=false", "--features=dpop" })
     static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
+
+    @Override
+    protected String getKeycloakRealmUrl() {
+        // RestAssured with openshift KC url need the port otherwise is not able to success TLS handshake
+        return keycloak.getRealmUrl().replace("/realms/test-realm", ":443/realms/test-realm");
+    }
 }
