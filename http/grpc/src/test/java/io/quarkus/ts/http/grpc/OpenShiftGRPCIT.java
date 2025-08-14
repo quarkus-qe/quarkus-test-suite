@@ -8,7 +8,7 @@ import io.vertx.mutiny.ext.web.client.WebClient;
 
 @OpenShiftScenario
 @Disabled("https://github.com/quarkus-qe/quarkus-test-framework/issues/1052+1053")
-public class OpenShiftGRPCIT implements GRPCIT, StreamingHttpIT, ReflectionHttpIT {
+public class OpenShiftGRPCIT implements GRPCIT, StreamingHttpIT, ReflectionHttpIT, GrpcSameServerCustomizationIT {
 
     @Override
     public CloseableManagedChannel getChannel() {
