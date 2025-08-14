@@ -17,9 +17,9 @@ import io.vertx.mutiny.ext.web.client.WebClient;
 
 @Tag("QUARKUS-4592")
 @QuarkusScenario
-public class GrpcMutualTlsSeparateServerIT implements GRPCIT, StreamingHttpIT, ReflectionHttpIT {
+public class GrpcMutualTlsSameServerIT implements GRPCIT, StreamingHttpIT, ReflectionHttpIT, GrpcSameServerCustomizationIT {
 
-    private static final String CERT_PREFIX = "grpc-mtls-separate-server";
+    private static final String CERT_PREFIX = "grpc-mtls-same-server";
     private static final String CLIENT_CN_NAME = "mtls-client-name";
     private static WebClient webClient = null;
 
@@ -29,9 +29,9 @@ public class GrpcMutualTlsSeparateServerIT implements GRPCIT, StreamingHttpIT, R
     static final GrpcService app = (GrpcService) new GrpcService()
             .withProperty("quarkus.http.ssl.client-auth", "required")
             .withProperty("quarkus.profile", "mtls")
-            .withProperty("grpc.client.crt", GrpcMutualTlsSeparateServerIT::getClientCert)
-            .withProperty("grpc.client.ca-crt", GrpcMutualTlsSeparateServerIT::getClientCaCert)
-            .withProperty("grpc.client.key", GrpcMutualTlsSeparateServerIT::getClientKey);
+            .withProperty("grpc.client.crt", GrpcMutualTlsSameServerIT::getClientCert)
+            .withProperty("grpc.client.ca-crt", GrpcMutualTlsSameServerIT::getClientCaCert)
+            .withProperty("grpc.client.key", GrpcMutualTlsSameServerIT::getClientKey);
 
     public CloseableManagedChannel getChannel() {
         return app.securedGrpcChannel();

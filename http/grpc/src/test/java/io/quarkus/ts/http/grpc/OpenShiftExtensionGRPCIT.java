@@ -11,7 +11,7 @@ import io.vertx.mutiny.ext.web.client.WebClient;
 @Tag("use-quarkus-openshift-extension")
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
 @Disabled("https://github.com/quarkus-qe/quarkus-test-framework/issues/1052+1053")
-public class OpenShiftExtensionGRPCIT implements GRPCIT, StreamingHttpIT, ReflectionHttpIT {
+public class OpenShiftExtensionGRPCIT implements GRPCIT, StreamingHttpIT, ReflectionHttpIT, GrpcSameServerCustomizationIT {
 
     @Override
     public CloseableManagedChannel getChannel() {
