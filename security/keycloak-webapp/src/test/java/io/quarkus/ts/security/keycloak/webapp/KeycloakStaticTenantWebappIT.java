@@ -16,14 +16,16 @@ import io.quarkus.test.services.QuarkusApplication;
 @QuarkusScenario
 public class KeycloakStaticTenantWebappIT extends BaseWebappSecurityIT {
 
-    @KeycloakContainer(command = { "start-dev", "--import-realm", "--hostname-strict=false" })
+    @KeycloakContainer(runKeycloakInProdMode = true)
     static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
 
     @QuarkusApplication(classes = { OidcTenantInitializer.class, AdminResource.class,
             UserResource.class }, properties = "empty.properties")
     static RestService app = new RestService()
             .withProperty("quarkus.oidc.auth-server-url", () -> keycloak.getRealmUrl())
-            .withProperty("quarkus.oidc.client-id", CLIENT_ID_DEFAULT);
+            .withProperty("quarkus.oidc.client-id", CLIENT_ID_DEFAULT)
+            .withProperties(() -> keycloak.getTlsProperties())
+            .withProperty("quarkus.oidc.tls.tls-configuration-name", "");
 
     @Override
     protected KeycloakService getKeycloak() {

@@ -41,6 +41,7 @@ public abstract class BaseMultiTenantSecurityIT {
         webClient.setCssErrorHandler(new SilentCssErrorHandler());
         Logger.getLogger("org.htmlunit.css").setLevel(Level.OFF);
         webClient.getOptions().setRedirectEnabled(true);
+        webClient.getOptions().setUseInsecureSSL(true);
     }
 
     @AfterEach
@@ -54,8 +55,8 @@ public abstract class BaseMultiTenantSecurityIT {
         webClient.getOptions().setRedirectEnabled(false);
         String loc = webClient.loadWebResponse(new WebRequest(URI.create(getEndpointByTenant(webAppTenant)).toURL()))
                 .getResponseHeaderValue("location");
-        assertTrue(loc.startsWith(getKeycloak().getURI(Protocol.HTTP).getRestAssuredStyleUri()),
-                "Unexpected location for " + getKeycloak().getURI(Protocol.HTTP).getRestAssuredStyleUri() + ". Got: " + loc);
+        assertTrue(loc.startsWith(getKeycloak().getURI(Protocol.HTTPS).getRestAssuredStyleUri()),
+                "Unexpected location for " + getKeycloak().getURI(Protocol.HTTPS).getRestAssuredStyleUri() + ". Got: " + loc);
         assertTrue(loc.contains("scope=openid"), "Unexpected scope. Got: " + loc);
         assertTrue(loc.contains("response_type=code"), "Unexpected response type. Got: " + loc);
         assertTrue(loc.contains("client_id=" + webAppTenant.getClientId()),

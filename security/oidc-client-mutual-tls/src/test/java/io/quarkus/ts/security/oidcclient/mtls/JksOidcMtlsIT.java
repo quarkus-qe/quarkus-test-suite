@@ -14,7 +14,7 @@ import io.quarkus.test.services.QuarkusApplication;
 @QuarkusScenario
 public class JksOidcMtlsIT extends KeycloakMtlsAuthN {
 
-    @KeycloakContainer(command = { "start-dev", "--import-realm", "--hostname-strict=false",
+    @KeycloakContainer(exposeRawTls = true, command = { "start", "--import-realm", "--hostname-strict=false",
             "--features=token-exchange",
             "--hostname=localhost", // required by LocalHostKeycloakContainerManagedResourceBuilder
             "--https-client-auth=required", "--https-key-store-file=/etc/server-keystore.jks",

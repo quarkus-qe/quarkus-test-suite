@@ -45,6 +45,7 @@ public abstract class BaseWebappSecurityIT {
         webClient.setCssErrorHandler(new SilentCssErrorHandler());
         Logger.getLogger("org.htmlunit.css").setLevel(Level.OFF);
         webClient.getOptions().setRedirectEnabled(true);
+        webClient.getOptions().setUseInsecureSSL(true);
     }
 
     @AfterEach
@@ -58,8 +59,8 @@ public abstract class BaseWebappSecurityIT {
         String loc = webClient.loadWebResponse(new WebRequest(URI.create(appUrl("/user")).toURL()))
                 .getResponseHeaderValue("location");
 
-        assertTrue(loc.startsWith(getKeycloak().getURI(Protocol.HTTP).getRestAssuredStyleUri()),
-                "Unexpected location for " + getKeycloak().getURI(Protocol.HTTP).getRestAssuredStyleUri() + ". Got: " + loc);
+        assertTrue(loc.startsWith(getKeycloak().getURI(Protocol.HTTPS).getRestAssuredStyleUri()),
+                "Unexpected location for " + getKeycloak().getURI(Protocol.HTTPS).getRestAssuredStyleUri() + ". Got: " + loc);
         assertTrue(loc.contains("scope=openid"), "Unexpected scope. Got: " + loc);
         assertTrue(loc.contains("response_type=code"), "Unexpected response type. Got: " + loc);
         assertTrue(loc.contains("client_id=test-application-client"), "Unexpected client id. Got: " + loc);
@@ -80,7 +81,7 @@ public abstract class BaseWebappSecurityIT {
         thenRedirectToLoginPage();
 
         whenLoginAs("test-user");
-        thenPageReturns("user token issued by " + getKeycloak().getURI(Protocol.HTTP).getRestAssuredStyleUri());
+        thenPageReturns("user token issued by " + getKeycloak().getURI(Protocol.HTTPS).getRestAssuredStyleUri());
     }
 
     @Test
@@ -115,7 +116,7 @@ public abstract class BaseWebappSecurityIT {
         thenRedirectToLoginPage();
 
         whenLoginAs("test-admin");
-        thenPageReturns("admin token issued by " + getKeycloak().getURI(Protocol.HTTP).getRestAssuredStyleUri());
+        thenPageReturns("admin token issued by " + getKeycloak().getURI(Protocol.HTTPS).getRestAssuredStyleUri());
     }
 
     @Test
