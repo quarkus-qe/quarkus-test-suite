@@ -111,7 +111,8 @@ public class GroundedEndpoint {
                             Book book = new Book();
                             book.setAuthor(author.getId());
                             book.setTitle(name);
-                            return session3.persist(book);
+                            author.getBooks().add(book);
+                            return session3.persist(author);
                         }))).onItem()
                         .transformToUni(ignore -> factory.withSession(session3 -> session3.find(Author.class, author.getId())))
                         .onFailure()
