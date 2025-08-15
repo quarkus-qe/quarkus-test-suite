@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.http.HttpStatus;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
@@ -295,6 +296,16 @@ public abstract class AbstractDatabaseHibernateReactiveIT {
                 .get("/library/by-author/Dlugi");
         assertEquals(HttpStatus.SC_OK, author.statusCode());
         assertThat(author.body().asString(), containsString("Slovník"));
+    }
+
+    @Tag("QUARKUS-6475")
+    @Test
+    public void createBookThroughSession() {
+        getApp().given()
+                .get("/hibernate/bookThroughSession/Christie/Marple")
+                .then().statusCode(HttpStatus.SC_OK)
+                .body("name", Matchers.is("Christie"))
+                .body("books.size()", Matchers.is(1));
     }
 
     protected abstract RestService getApp();
