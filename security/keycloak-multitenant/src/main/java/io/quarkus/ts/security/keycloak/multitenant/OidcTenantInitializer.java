@@ -11,9 +11,10 @@ import io.quarkus.oidc.runtime.OidcConfig;
 public class OidcTenantInitializer {
 
     void observe(@Observes Oidc oidc, OidcConfig oidcConfig,
-            @ConfigProperty(name = "quarkus.oidc.auth-server-url") String authServerUrl) {
+            @ConfigProperty(name = "quarkus.oidc.auth-server-url") String authServerUrl,
+            @ConfigProperty(name = "quarkus.oidc.tls.tls-configuration-name") String tlsConfigurationName) {
         oidc.create(createDefaultTenant(oidcConfig));
-        oidc.create(createNamedTenant(authServerUrl));
+        oidc.create(createNamedTenant(authServerUrl, tlsConfigurationName));
     }
 
     private OidcTenantConfig createDefaultTenant(OidcConfig oidcConfig) {
@@ -23,11 +24,12 @@ public class OidcTenantInitializer {
                 .build();
     }
 
-    private OidcTenantConfig createNamedTenant(String authServerUrl) {
+    private OidcTenantConfig createNamedTenant(String authServerUrl, String tlsConfigurationName) {
         return OidcTenantConfig.authServerUrl(authServerUrl)
                 .tenantId("named")
                 .tenantPaths("/user-info/named-tenant-random")
                 .userInfoPath("%s/protocol/openid-connect/userinfo".formatted(authServerUrl))
+                .tlsConfigurationName(tlsConfigurationName)
                 .build();
     }
 

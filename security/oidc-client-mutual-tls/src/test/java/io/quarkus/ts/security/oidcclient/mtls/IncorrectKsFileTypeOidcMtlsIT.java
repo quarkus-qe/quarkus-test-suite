@@ -20,7 +20,7 @@ public class IncorrectKsFileTypeOidcMtlsIT extends BaseOidcMtlsIT {
 
     static final String KEYSTORE_FILE_EXTENSION = "jks";
 
-    @KeycloakContainer(command = { "start-dev", "--import-realm", "--hostname-strict=false",
+    @KeycloakContainer(exposeRawTls = true, command = { "start", "--import-realm", "--hostname-strict=false",
             "--features=token-exchange",
             "--hostname=localhost", // required by LocalHostKeycloakContainerManagedResourceBuilder
             "--https-client-auth=required", "--https-key-store-file=/etc/server-keystore.jks",

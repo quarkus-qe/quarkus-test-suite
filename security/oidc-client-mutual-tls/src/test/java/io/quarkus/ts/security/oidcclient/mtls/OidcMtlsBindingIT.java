@@ -10,7 +10,7 @@ import io.quarkus.test.services.KeycloakContainer;
 @QuarkusScenario
 public class OidcMtlsBindingIT extends AbstractOidcMtlsBindingIT {
 
-    @KeycloakContainer(command = { "start-dev", "--import-realm", "--hostname-strict=false",
+    @KeycloakContainer(command = { "start", "--import-realm", "--hostname-strict=false",
             "--features=token-exchange",
             "--hostname=localhost",
             "--https-client-auth=required", "--https-key-store-file=/etc/server-keystore.p12",

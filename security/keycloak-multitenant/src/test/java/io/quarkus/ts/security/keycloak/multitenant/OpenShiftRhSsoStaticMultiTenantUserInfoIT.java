@@ -16,6 +16,6 @@ import io.quarkus.test.services.KeycloakContainer;
 @EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
 public class OpenShiftRhSsoStaticMultiTenantUserInfoIT extends AbstractStaticMultiTenantUserInfoIT {
 
-    @KeycloakContainer(command = { "start-dev", "--import-realm", "--hostname-strict=false" }, image = "${rhbk.image}")
+    @KeycloakContainer(runKeycloakInProdMode = true, image = "${rhbk.image}")
     static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
 }

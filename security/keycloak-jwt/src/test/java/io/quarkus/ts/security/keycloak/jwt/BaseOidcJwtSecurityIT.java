@@ -38,6 +38,7 @@ public abstract class BaseOidcJwtSecurityIT {
         webClient.setCssErrorHandler(new SilentCssErrorHandler());
         Logger.getLogger("org.htmlunit.css").setLevel(Level.OFF);
         webClient.getOptions().setRedirectEnabled(true);
+        webClient.getOptions().setUseInsecureSSL(true);
     }
 
     @AfterEach
@@ -52,7 +53,7 @@ public abstract class BaseOidcJwtSecurityIT {
 
         whenLoginAs("test-admin");
         thenPageReturns(
-                "Hello, test-admin, your token was issued by " + getKeycloak().getURI(Protocol.HTTP).getRestAssuredStyleUri());
+                "Hello, test-admin, your token was issued by " + getKeycloak().getURI(Protocol.HTTPS).getRestAssuredStyleUri());
     }
 
     @Test
@@ -71,7 +72,7 @@ public abstract class BaseOidcJwtSecurityIT {
 
         whenLoginAs("test-user");
         thenPageReturns(
-                "Hello, test-user, your token was issued by " + getKeycloak().getURI(Protocol.HTTP).getRestAssuredStyleUri());
+                "Hello, test-user, your token was issued by " + getKeycloak().getURI(Protocol.HTTPS).getRestAssuredStyleUri());
     }
 
     @Test

@@ -23,7 +23,8 @@ public abstract class AbstractStaticMultiTenantUserInfoIT {
             .withProperty("quarkus.oidc.auth-server-url", () -> keycloak.getRealmUrl())
             .withProperty("quarkus.oidc.client-id", CLIENT_ID_DEFAULT)
             .withProperty("quarkus.oidc.tenant-paths", "/user-info/default-tenant-random")
-            .withProperty("quarkus.oidc.user-info-path", "${quarkus.oidc.auth-server-url}/protocol/openid-connect/userinfo");
+            .withProperty("quarkus.oidc.user-info-path", "${quarkus.oidc.auth-server-url}/protocol/openid-connect/userinfo")
+            .withProperties(() -> keycloak.getTlsProperties());
 
     @Test
     public void testDefaultTenant() {
