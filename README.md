@@ -911,6 +911,11 @@ Testing OpenTelemetry with Jaeger components
 Scenarios that test proper traces export to Jaeger components, context propagation, OpenTelemetry SDK Autoconfiguration, OTLP Exporter proxy and CDI injection of OpenTelemetry beans.
 See also `monitoring/opentelemetry/README.md`
 
+### `monitoring/micrometer-opentelemetry`
+
+Test coverage for the Quarkus Micrometer OpenTelemetry Bridge extension.
+Verifies that all the telemetry data (logs, tracing, metrics) created with both Micrometer and OpenTelemetry processed by the same OpenTelemetry SDK instance, and will use its configuration and exporters.
+
 ### `micrometer/prometheus`
 
 Verifies that custom metrics are exposed in the embedded Prometheus instance provided by OpenShift.
