@@ -1,5 +1,7 @@
 package io.quarkus.ts.hibernate.reactive.http;
 
+import static jakarta.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
+
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
@@ -111,11 +113,12 @@ public class GroundedEndpoint {
                             Book book = new Book();
                             book.setAuthor(author.getId());
                             book.setTitle(name);
-                            return session3.persist(book);
+                            author.getBooks().add(book);
+                            return session3.persist(author);
                         }))).onItem()
                         .transformToUni(ignore -> factory.withSession(session3 -> session3.find(Author.class, author.getId())))
                         .onFailure()
-                        .transform(error -> new WebApplicationException(error.getMessage(), Response.Status.BAD_REQUEST)));
+                        .transform(error -> new WebApplicationException(error.getMessage(), INTERNAL_SERVER_ERROR)));
     }
 
     @GET
