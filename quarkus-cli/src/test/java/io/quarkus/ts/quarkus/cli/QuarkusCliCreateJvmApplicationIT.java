@@ -133,10 +133,10 @@ public class QuarkusCliCreateJvmApplicationIT {
         final String repository = System.getProperty("maven.repo.local");
         final Result result;
         if (repository == null) {
-            result = app.buildOnJvm();
+            result = app.buildOnJvm("--", "--info");
         } else {
             app.withProperty("maven.repo.local", repository);
-            result = app.buildOnJvm("-Dmaven.repo.local=" + repository);
+            result = app.buildOnJvm("-Dmaven.repo.local=" + repository, "--", "--info");
         }
 
         assertTrue(result.isSuccessful(), "The application didn't build on JVM. Output: " + result.getOutput());
