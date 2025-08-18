@@ -19,7 +19,7 @@ public class JksOidcMtlsIT extends KeycloakMtlsAuthN {
             "--hostname=localhost", // required by LocalHostKeycloakContainerManagedResourceBuilder
             "--https-client-auth=required", "--https-key-store-file=/etc/server-keystore.jks",
             "--https-trust-store-file=/etc/server-truststore.jks",
-            "--https-trust-store-password=password" }, port = KEYCLOAK_PORT, builder = LocalHostKeycloakContainerManagedResourceBuilder.class)
+            "--https-trust-store-password=password" }, port = KEYCLOAK_PORT)
     static KeycloakService keycloak = newKeycloakInstance(DEFAULT_REALM_FILE, REALM_DEFAULT, "realms")
             .withProperty("HTTPS_KEYSTORE", "resource_with_destination::/etc/|server-keystore." + JKS_KEYSTORE_FILE_EXTENSION)
             .withProperty("HTTPS_TRUSTSTORE",
