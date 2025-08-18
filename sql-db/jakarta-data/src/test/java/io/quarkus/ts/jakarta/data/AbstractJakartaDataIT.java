@@ -14,6 +14,7 @@ import java.util.function.Supplier;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -477,6 +478,7 @@ public abstract class AbstractJakartaDataIT {
         assertEquals("Title-4", books[0].getTitle());
     }
 
+    @Disabled("https://github.com/quarkusio/quarkus/issues/49593")
     @Order(25)
     @Test
     void testBasicRepositoryDeleteUsingStatelessSessionDirectly() {
@@ -487,6 +489,7 @@ public abstract class AbstractJakartaDataIT {
                 .then().statusCode(204);
     }
 
+    @Disabled("https://github.com/quarkusio/quarkus/issues/49593")
     @Order(26)
     @Test
     void testBasicRepositoryBuiltinFindById() {

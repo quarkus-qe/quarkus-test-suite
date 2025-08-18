@@ -66,7 +66,9 @@ public final class BasicRepositoryResource {
     @POST
     public List<Author> saveAll(List<Author> authors) {
         bookRepository.saveAll(authors.stream().flatMap(a -> a.getBooks().stream()).toList());
-        return authorRepository.saveAll(authors);
+        // TODO: switch to the 'authorRepository.saveAll' once https://github.com/quarkusio/quarkus/issues/49593 is fixed
+        bookRepository.session().insertMultiple(authors);
+        return authors;
     }
 
     @Path("/find-annotation-with-limit-and-order-by")
@@ -86,7 +88,8 @@ public final class BasicRepositoryResource {
         var session = bookRepository.session();
         session.fetch(author.getBooks());
         author.getBooks().remove(book);
-        session.update(author);
+        // TODO: replace the next line with session.update(author)
+        //   after https://github.com/quarkusio/quarkus/issues/49593 is fixed
         authorRepository.save(author);
         session.delete(book);
     }
