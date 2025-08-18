@@ -202,7 +202,7 @@ public abstract class BaseOidcSecurityIT {
                         "client_id", CLIENT_ID_DEFAULT,
                         "client_secret", CLIENT_SECRET_DEFAULT,
                         "refresh_token", initialRefreshToken))
-                .post(getKeycloak().getRealmUrl() + "/protocol/openid-connect/token");
+                .post(getKeycloakRealmUrl() + "/protocol/openid-connect/token");
 
         // Assert that the old refresh token is no longer valid
         assertEquals(HttpStatus.SC_BAD_REQUEST, refreshGrantResponse.statusCode());
@@ -221,5 +221,9 @@ public abstract class BaseOidcSecurityIT {
 
     protected String getAdminAccessToken() {
         return getTokenCreationResponse(ADMIN_USER, ADMIN_USER).getToken();
+    }
+
+    protected String getKeycloakRealmUrl() {
+        return getKeycloak().getRealmUrl();
     }
 }
