@@ -30,4 +30,10 @@ public class OpenShiftRhSsoOidcSecurityIT extends BaseOidcSecurityIT {
     protected KeycloakService getKeycloak() {
         return keycloak;
     }
+
+    @Override
+    protected String getKeycloakRealmUrl() {
+        // RestAssured with openshift KC url need the port otherwise is not able to success TLS handshake
+        return keycloak.getRealmUrl().replace("/realms", ":443/realms");
+    }
 }
