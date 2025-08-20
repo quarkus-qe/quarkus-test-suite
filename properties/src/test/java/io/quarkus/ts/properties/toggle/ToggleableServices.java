@@ -1,10 +1,10 @@
 package io.quarkus.ts.properties.toggle;
 
 public enum ToggleableServices {
-    SWAGGER("Swagger", "/q/swagger-ui", "quarkus.swagger-ui.enable"),
-    OPENAPI("OpenAPI", "/q/openapi", "quarkus.smallrye-openapi.enable"),
-    GRAPHQL("GraphQL", "/q/graphql-ui", "quarkus.smallrye-graphql.ui.enable"),
-    HEALTH("Health", "/q/health-ui", "quarkus.smallrye-health.ui.enable");
+    SWAGGER("Swagger", "/q/swagger-ui", "quarkus.swagger-ui.enabled"),
+    OPENAPI("OpenAPI", "/q/openapi", "quarkus.smallrye-openapi.enabled"),
+    GRAPHQL("GraphQL", "/q/graphql-ui", "quarkus.smallrye-graphql.ui.enabled"),
+    HEALTH("Health", "/q/health-ui", "quarkus.smallrye-health.ui.enabled");
 
     private final String name;
     private final String endpoint;

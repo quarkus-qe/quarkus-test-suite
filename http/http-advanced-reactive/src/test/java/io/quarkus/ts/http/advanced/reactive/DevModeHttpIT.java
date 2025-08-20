@@ -13,7 +13,7 @@ public class DevModeHttpIT extends AbstractDevModeIT {
     @DevModeQuarkusApplication(ssl = false)
     static RestService app = new DevModeQuarkusService()
             .withProperty("quarkus.oidc.enabled", "false")
-            .withProperty("quarkus.keycloak.policy-enforcer.enable", "false")
+            .withProperty("quarkus.keycloak.policy-enforcer.enabled", "false")
             .withProperty("quarkus.keycloak.devservices.enabled", "false");
 
     @Override
