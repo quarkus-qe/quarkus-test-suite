@@ -18,7 +18,7 @@ public class RemoteDevModeHttpAdvancedReactiveIT {
     @RemoteDevModeQuarkusApplication(isRunningCheck = IsRunningCheck.IsBasePathReachableCheck.class)
     static RestService app = new RestService()
             .withProperty("quarkus.oidc.enabled", "false")
-            .withProperty("quarkus.keycloak.policy-enforcer.enable", "false")
+            .withProperty("quarkus.keycloak.policy-enforcer.enabled", "false")
             .withProperty("quarkus.keycloak.devservices.enabled", "false");
 
     @Test

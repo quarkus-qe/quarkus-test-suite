@@ -48,7 +48,7 @@ public class DevModeGrpcIntegrationIT {
     @DevModeQuarkusApplication(grpc = true)
     static final GrpcService app = (GrpcService) new GrpcService()
             .withProperty("quarkus.oidc.enabled", "false")
-            .withProperty("quarkus.keycloak.policy-enforcer.enable", "false")
+            .withProperty("quarkus.keycloak.policy-enforcer.enabled", "false")
             .withProperty("quarkus.keycloak.devservices.enabled", "false");
 
     @Test
