@@ -102,7 +102,7 @@ public class LoggingInJsonIT {
     }
 
     private void disableJsonFormatLogging() {
-        setPropertyTo("quarkus.log.console.json", Boolean.FALSE.toString());
+        setPropertyTo("quarkus.log.console.json.enabled", Boolean.FALSE.toString());
     }
 
     private void setLogLevelTo(Logger.Level info) {
