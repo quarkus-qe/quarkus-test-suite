@@ -13,30 +13,35 @@ public class DevModeComposeLocationsIT extends AbstractSqlDatabaseIT {
 
     @DevModeQuarkusApplication(properties = "postgresql.properties")
     static DevModeQuarkusService dockerComposeDevservicesApp = (DevModeQuarkusService) new DevModeQuarkusService()
+            .withProperties(AbstractSqlDatabaseIT::getDockerComposeProperties)
             .withProperty("quarkus.compose.devservices.env-variables.IMAGE", "${postgresql.latest.image}")
             .onPreStart(service -> ((DevModeQuarkusService) service)
                     .copyFile("src/test/resources/postgresql-compose-devservices.yml", "docker-compose-devservices.yml"));
 
     @DevModeQuarkusApplication(properties = "postgresql.properties")
     static DevModeQuarkusService dockerComposeDevserviceApp = (DevModeQuarkusService) new DevModeQuarkusService()
+            .withProperties(AbstractSqlDatabaseIT::getDockerComposeProperties)
             .withProperty("quarkus.compose.devservices.env-variables.IMAGE", "${postgresql.latest.image}")
             .onPreStart(service -> ((DevModeQuarkusService) service)
                     .copyFile("src/test/resources/postgresql-compose-devservices.yml", "docker-compose-devservice.yml"));
 
     @DevModeQuarkusApplication(properties = "postgresql.properties")
     static DevModeQuarkusService composeDevserviceApp = (DevModeQuarkusService) new DevModeQuarkusService()
+            .withProperties(AbstractSqlDatabaseIT::getDockerComposeProperties)
             .withProperty("quarkus.compose.devservices.env-variables.IMAGE", "${postgresql.latest.image}")
             .onPreStart(service -> ((DevModeQuarkusService) service)
                     .copyFile("src/test/resources/postgresql-compose-devservices.yml", "compose-devservice.yml"));
 
     @DevModeQuarkusApplication(properties = "postgresql.properties")
     static DevModeQuarkusService dockerComposeDevserviceYamlApp = (DevModeQuarkusService) new DevModeQuarkusService()
+            .withProperties(AbstractSqlDatabaseIT::getDockerComposeProperties)
             .withProperty("quarkus.compose.devservices.env-variables.IMAGE", "${postgresql.latest.image}")
             .onPreStart(service -> ((DevModeQuarkusService) service)
                     .copyFile("src/test/resources/postgresql-compose-devservices.yml", "docker-compose-devservice.yaml"));
 
     @DevModeQuarkusApplication(properties = "postgresql.properties")
     static DevModeQuarkusService suffixedDockerComposeDevserviceApp = (DevModeQuarkusService) new DevModeQuarkusService()
+            .withProperties(AbstractSqlDatabaseIT::getDockerComposeProperties)
             .withProperty("quarkus.compose.devservices.env-variables.IMAGE", "${postgresql.latest.image}")
             .onPreStart(service -> ((DevModeQuarkusService) service)
                     .copyFile("src/test/resources/postgresql-compose-devservices.yml", "docker-compose-devservice-foo.yml"));

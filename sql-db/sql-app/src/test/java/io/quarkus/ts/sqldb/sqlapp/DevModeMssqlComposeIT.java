@@ -15,6 +15,7 @@ public class DevModeMssqlComposeIT extends AbstractSqlDatabaseIT {
 
     @DevModeQuarkusApplication(properties = "mssql.properties")
     static RestService app = new RestService()
+            .withProperties(AbstractSqlDatabaseIT::getDockerComposeProperties)
             .withProperty("quarkus.compose.devservices.files", "src/main/resources/mssql-compose-devservices.yml")
             .withProperty("quarkus.compose.devservices.env-variables.IMAGE", "${mssql.image}");
 

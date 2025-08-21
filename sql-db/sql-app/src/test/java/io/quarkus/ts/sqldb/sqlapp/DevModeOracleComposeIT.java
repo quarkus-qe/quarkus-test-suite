@@ -16,6 +16,7 @@ public class DevModeOracleComposeIT extends AbstractSqlDatabaseIT {
 
     @DevModeQuarkusApplication(properties = "oracle.properties")
     static RestService app = new RestService()
+            .withProperties(AbstractSqlDatabaseIT::getDockerComposeProperties)
             .withProperty("quarkus.compose.devservices.files", "src/main/resources/oracle-compose-devservices.yml")
             .withProperty("quarkus.compose.devservices.env-variables.IMAGE", "${oracle.image}");
 
