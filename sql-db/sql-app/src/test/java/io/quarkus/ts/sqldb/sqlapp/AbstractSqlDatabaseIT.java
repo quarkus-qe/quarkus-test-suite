@@ -5,8 +5,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 
-import java.util.Map;
-
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -14,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import io.restassured.http.ContentType;
-import io.smallrye.common.os.OS;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public abstract class AbstractSqlDatabaseIT {
@@ -178,29 +175,5 @@ public abstract class AbstractSqlDatabaseIT {
                 .statusCode(HttpStatus.SC_NOT_FOUND)
                 .body("code", equalTo(HttpStatus.SC_NOT_FOUND))
                 .body("error", equalTo(String.format("book '%d' not found", VALID_ID)));
-    }
-
-    protected static Map<String, String> getDockerComposeProperties() {
-        if (OS.WINDOWS.isCurrent() && isNotPodman()) {
-            // this helps Docker CLI to discover docker-compos.exe as a plugin
-            // which is installed in 'C:\ProgramData\Docker\cli-plugins\docker-compose.exe'
-            return Map.of("quarkus.compose.devservices.env-variables.PROGRAMDATA", System.getenv("PROGRAMDATA"));
-        }
-        return Map.of();
-    }
-
-    private static boolean isNotPodman() {
-        // this is not as reliable as executing Docker command, but much quicker and sufficient
-        // since our Docker instance will never be a localhost, but it is true for Podman
-        String dockerIp = System.getenv("DOCKER_IP");
-        if (dockerIp != null && dockerIp.contains("localhost")) {
-            return false;
-        }
-        // fallback just in case
-        String dockerHost = System.getenv("DOCKER_HOST");
-        if (dockerHost != null && dockerHost.contains("podman")) {
-            return false;
-        }
-        return !System.getProperty("excludedGroups", "").contains("podman-incompatible");
     }
 }
