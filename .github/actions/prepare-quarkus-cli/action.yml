@@ -18,4 +18,15 @@ runs:
         EOF
         chmod +x ./quarkus-dev-cli
         ./quarkus-dev-cli version
+    - name: Build Quarkus Gradle Plugin locally
+      shell: bash
+      run: |
+        echo "Building Gradle plugin locally..."
+        git clone --depth 1 https://github.com/quarkusio/quarkus.git /tmp/quarkus-gradle
+        cd /tmp/quarkus-gradle
+        ./mvnw -Dquickly \
+        -pl devtools/gradle/gradle-application-plugin \
+        -am
+        cd -
+        rm -rf /tmp/quarkus-gradle
 
