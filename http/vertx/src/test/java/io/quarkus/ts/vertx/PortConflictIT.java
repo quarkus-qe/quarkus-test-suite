@@ -8,12 +8,10 @@ import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 import io.quarkus.test.services.Certificate;
 import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
-@DisabledOnQuarkusVersion(version = "3\\.(8|9|10|11|12|13|14)\\..*|3\\.15\\.(0|1)(\\..*)?", reason = "Disabled on Quarkus versions before 3.15.2 due to known port conflict issue https://github.com/quarkusio/quarkus/issues/43373")
 public class PortConflictIT {
 
     static final int COMMON_PORT_HTTP_HTTPS = 50000;
