@@ -3,6 +3,8 @@ package io.quarkus.ts.security.oidcclient.mtls;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.Base64;
@@ -16,7 +18,6 @@ import io.quarkus.test.bootstrap.KeycloakService;
 import io.quarkus.test.bootstrap.LookupService;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
-import io.quarkus.test.services.QuarkusApplication;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
 
@@ -34,11 +35,6 @@ public abstract class AbstractOidcMtlsBindingIT {
 
     @LookupService
     static KeycloakService keycloak;
-
-    @QuarkusApplication(ssl = true, properties = "mtls-binding.properties")
-    static RestService app = new RestService()
-            .withProperty("quarkus.oidc.auth-server-url", () -> keycloak.getRealmUrl())
-            .withProperty("quarkus.oidc.client-id", CLIENT_ID);
 
     @Test
     void verifySuccessfulAuthentification() {
@@ -104,7 +100,7 @@ public abstract class AbstractOidcMtlsBindingIT {
     }
 
     private RequestSpecification getMtlsRequestSpec() {
-        var uri = app.getURI(Protocol.HTTPS);
+        var uri = getApp().getURI(Protocol.HTTPS);
         return new RequestSpecBuilder()
                 .setBaseUri("%s://%s".formatted(uri.getScheme(), uri.getHost()))
                 .setPort(uri.getPort())
@@ -114,7 +110,7 @@ public abstract class AbstractOidcMtlsBindingIT {
     }
 
     private RequestSpecification getMtlsRequestSpecWithoutClientCertificate() {
-        var uri = app.getURI(Protocol.HTTPS);
+        var uri = getApp().getURI(Protocol.HTTPS);
         return new RequestSpecBuilder()
                 .setBaseUri("%s://%s".formatted(uri.getScheme(), uri.getHost()))
                 .setPort(uri.getPort())
@@ -123,14 +119,14 @@ public abstract class AbstractOidcMtlsBindingIT {
     }
 
     private String getToken(String userName) {
-        return new BaseOidcMtlsIT.TokenRequest(keycloak.getRealmUrl(), userName, userName, CLIENT_ID)
+        return new BaseOidcMtlsIT.TokenRequest(getKeycloakUriWithPort().toString(), userName, userName, CLIENT_ID)
                 .withKeystore(getKeyStorePath())
                 .withTrustStore(getTrustStorePath())
                 .execAndReturnAccessToken();
     }
 
     private String getTokenWithoutCnf(String userName) {
-        return new BaseOidcMtlsIT.TokenRequest(keycloak.getRealmUrl(), userName, userName)
+        return new BaseOidcMtlsIT.TokenRequest(getKeycloakUriWithPort().toString(), userName, userName)
                 .withKeystore(getKeyStorePath())
                 .withTrustStore(getTrustStorePath())
                 .execAndReturnAccessToken();
@@ -161,4 +157,24 @@ public abstract class AbstractOidcMtlsBindingIT {
 
         return parts[0] + "." + encodedPayload + "." + parts[2];
     }
+
+    /**
+     * For some reason RestAssured requires to have explicitly defined port 443 in the URI even if is default one.
+     * Same as OpenShiftRhSsoOidcMtlsIT#getKeycloakUriWithPort
+     */
+    private URI getKeycloakUriWithPort() {
+        URI keycloakUri = URI.create(keycloak.getRealmUrl());
+        // framework sets the port to -1 if default port is used
+        if (keycloakUri.getPort() == -1) {
+            try {
+                return new URI(keycloakUri.getScheme(), keycloakUri.getUserInfo(), keycloakUri.getHost(), 443,
+                        keycloakUri.getPath(), null, null);
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return keycloakUri;
+    }
+
+    protected abstract RestService getApp();
 }
