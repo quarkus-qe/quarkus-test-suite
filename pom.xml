@@ -287,10 +287,10 @@
                                 <!-- Services used in test suite -->
                                 <nginx.image>docker.io/library/nginx:1-alpine</nginx.image>
                                 <amqbroker.image>registry.access.redhat.com/amq-broker-7/amq-broker-72-openshift:latest</amqbroker.image>
-                                <amqbroker.1.0x.image>quay.io/artemiscloud/activemq-artemis-broker:1.0.25</amqbroker.1.0x.image>
-                                <redpanda.image>redpandadata/redpanda:v23.3.4</redpanda.image>
+                                <amqbroker.1.0x.image>quay.io/artemiscloud/activemq-artemis-broker:1.0.32</amqbroker.1.0x.image>
+                                <redpanda.image>redpandadata/redpanda:v25.2.2</redpanda.image>
                                 <postgresql.latest.image>${postgresql.latest.image}</postgresql.latest.image>
-                                <elastic.9x.image>docker.io/library/elasticsearch:9.0.2</elastic.9x.image>
+                                <elastic.9x.image>docker.io/library/elasticsearch:9.1.2</elastic.9x.image>
                                 <mysql.upstream.80.image>docker.io/library/mysql:8.4</mysql.upstream.80.image>
                                 <mysql.80.image>${mysql.80.image}</mysql.80.image>
                                 <mariadb.11.image>docker.io/library/mariadb:11.4</mariadb.11.image>
@@ -299,10 +299,10 @@
                                 <oracle.image>docker.io/gvenzl/oracle-free:23-slim-faststart</oracle.image>
                                 <db2.image>icr.io/db2_community/db2:12.1.0.0</db2.image>
                                 <mongodb.image>docker.io/library/mongo:7.0</mongodb.image>
-                                <redis.image>docker.io/library/redis:7.2</redis.image>
-                                <wiremock.image>docker.io/wiremock/wiremock:3.3.1</wiremock.image>
+                                <redis.image>docker.io/library/redis:8</redis.image>
+                                <wiremock.image>docker.io/wiremock/wiremock:3x</wiremock.image>
                                 <!-- TODO use official image when/if this fixed https://github.com/hashicorp/consul/issues/21762 -->
-                                <consul.image>docker.io/bitnami/consul:1.19.1</consul.image>
+                                <consul.image>docker.io/bitnami/consul:1</consul.image>
                                 <infinispan.image>quay.io/infinispan/server:15.0</infinispan.image>
                                 <infinispan.expected-log>Infinispan Server.*started in</infinispan.expected-log>
                                 <spring.cloud.server.image>quay.io/quarkusqeteam/spring-cloud-config-server:4.1</spring.cloud.server.image>
@@ -804,8 +804,8 @@
                                         <postgresql.latest.image>registry.redhat.io/rhel9/postgresql-16:latest</postgresql.latest.image>
                                         <mariadb.1011.image>registry.redhat.io/rhel9/mariadb-1011:latest</mariadb.1011.image>
                                         <!-- Kafka  (amq-streams) requires separate properties for image and version -->
-                                        <amq-streams.image>registry.redhat.io/amq-streams/kafka-35-rhel8</amq-streams.image>
-                                        <amq-streams.version>2.6.0</amq-streams.version>
+                                        <amq-streams.image>registry.redhat.io/amq-streams/kafka-38-rhel9</amq-streams.image>
+                                        <amq-streams.version>2.9.1</amq-streams.version>
                                     </systemPropertyVariables>
                                     <rerunFailingTestsCount>${oc.reruns}</rerunFailingTestsCount>
                                 </configuration>
@@ -856,8 +856,8 @@
                                         <mariadb.1011.image>registry.redhat.io/rhel9/mariadb-1011:latest</mariadb.1011.image>
                                         <amqbroker.image>registry.redhat.io/amq7/amq-broker-rhel8:7.12</amqbroker.image>
                                         <!-- Kafka  (amq-streams) requires separate properties for image and version -->
-                                        <amq-streams.image>registry.redhat.io/amq-streams/kafka-35-rhel8</amq-streams.image>
-                                        <amq-streams.version>2.6.0</amq-streams.version>
+                                        <amq-streams.image>registry.redhat.io/amq-streams/kafka-38-rhel9</amq-streams.image>
+                                        <amq-streams.version>2.9.1</amq-streams.version>
                                         <datagrid.image>registry.redhat.io/datagrid/datagrid-8-rhel9:latest</datagrid.image>
                                     </systemPropertyVariables>
                                     <rerunFailingTestsCount>${oc.reruns}</rerunFailingTestsCount>
