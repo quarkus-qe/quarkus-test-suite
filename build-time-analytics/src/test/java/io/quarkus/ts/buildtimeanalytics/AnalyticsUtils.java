@@ -6,10 +6,10 @@ import java.util.regex.Pattern;
 import io.quarkus.test.services.quarkus.model.QuarkusProperties;
 
 public class AnalyticsUtils {
-    private static final String QUARKUS_SNAPSHOT_VERSION = "999-SNAPSHOT";
+    private static final String QUARKUS_SNAPSHOT_VERSION = "3.26.999-SNAPSHOT";
     // Quarkus reports extensions' versions in the analytics payload as full artifact version.
     // So for 999-SNAPSHOT, it can look like e.g. 999-20230718.203351-1091
-    private static final String QUARKUS_EXTENSION_SNAPSHOT_VERSION_REGEX = "999-.*";
+    private static final String QUARKUS_EXTENSION_SNAPSHOT_VERSION_REGEX = "3\\.26\\.999-.*";
     // RHBQ artifacts may differ in the number suffix from a platform version.
     // E.g.: 3.8.0.redhat-00002 vs. 3.8.5.redhat-00003
     private static final String RHBQ_VERSION_REGEX_FORMAT = "%s\\.redhat-\\d{5}";
