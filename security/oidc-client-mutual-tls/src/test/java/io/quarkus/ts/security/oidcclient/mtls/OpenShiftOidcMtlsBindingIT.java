@@ -11,7 +11,8 @@ import io.quarkus.test.services.QuarkusApplication;
 @OpenShiftScenario
 public class OpenShiftOidcMtlsBindingIT extends AbstractOidcMtlsBindingIT {
 
-    @KeycloakContainer(exposeRawTls = true, command = { "start", "--import-realm", "--hostname-strict=false",
+    @KeycloakContainer(exposeRawTls = true, image = "${rhbk.image}", command = { "start", "--import-realm",
+            "--hostname-strict=false",
             "--features=token-exchange",
             "--https-client-auth=required",
             "--https-key-store-password=password",
