@@ -38,7 +38,11 @@ import io.restassured.response.Response;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class) // we keep order to ensure JDBC traces are ready
 public abstract class TransactionCommons {
 
-    private static final String ENABLE_TRANSACTION_RECOVERY = "quarkus.transaction-manager.enable-recovery";
+    /**
+     * The configuration property which enables or disables recovery globally for all the XA connections.
+     * Enabled by default in our 'application.properties' file.
+     */
+    private static final String TRANSACTION_MANAGER_ENABLE_RECOVERY = "quarkus.transaction-manager.enable-recovery";
     private static final int SERVICE_TRACES_LIMIT = 1000;
     private static final String NARAYANA_SERVICE_NAME = "narayanaTransactions";
     static final String ACCOUNT_NUMBER_MIGUEL = "SK0389852379529966291984";
@@ -68,6 +72,20 @@ public abstract class TransactionCommons {
      */
     protected boolean isDatabaseTableLockedWhenTransactionFailed() {
         return false;
+    }
+
+    /**
+     * Enables recovery for XA transactions with a configuration property.
+     */
+    protected void enableTransactionRecovery() {
+        getApp().withProperty(TRANSACTION_MANAGER_ENABLE_RECOVERY, TRUE.toString());
+    }
+
+    /**
+     * Disables recovery for XA transactions with a configuration property.
+     */
+    protected void disableTransactionRecovery() {
+        getApp().withProperty(TRANSACTION_MANAGER_ENABLE_RECOVERY, FALSE.toString());
     }
 
     @Order(1)
@@ -326,15 +344,22 @@ public abstract class TransactionCommons {
         } catch (Exception | AssertionError ignored) {
             if (isBareMetalPlatform()) {
                 // transaction crashed during two-phase commit, now we need to check that recovery_log is empty as planned
-                getApp().withProperty(ENABLE_TRANSACTION_RECOVERY, FALSE.toString());
+                disableTransactionRecovery();
                 getApp().restartAndWaitUntilServiceIsStarted();
                 if (!isDatabaseTableLockedWhenTransactionFailed()) {
+                    // checking these logs assures that we only check the recovery log state once the XA recovery module run
+                    // if the recovery is disabled on the transaction manager, we get warning that the recovery is disabled
+                    // if the recovery is disabled on the XA connections, the manager runs but there is no transaction
+                    // that supports the recovery
+                    getApp().logs().assertContains(
+                            "ARJUNA016037: Could not find new XAResource to use for recovering non-serializable XAResource",
+                            "Datasource xa-ds-1 enables XA but transaction recovery is not enabled");
                     untilAsserted(() -> assertRecoveryLogContainsTransactions(0));
                 }
                 assertJdbcObjectStoreContainsTransactions(1);
 
                 // now enable automatic recovery and see the transaction recovered
-                getApp().withProperty(ENABLE_TRANSACTION_RECOVERY, TRUE.toString());
+                enableTransactionRecovery();
                 getApp().restartAndWaitUntilServiceIsStarted();
                 // this might take a little while before periodic recovery module is started and run
                 // default timeout should be fine, but if this happens to be flaky, we can safely raise the timeout
