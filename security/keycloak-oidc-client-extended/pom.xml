@@ -44,6 +44,10 @@
             <artifactId>keycloak-authz-client</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-smallrye-health</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.quarkus.qe</groupId>
             <artifactId>quarkus-test-service-keycloak</artifactId>
             <scope>test</scope>
