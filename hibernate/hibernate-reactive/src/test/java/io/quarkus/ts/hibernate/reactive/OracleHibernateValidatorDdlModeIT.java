@@ -1,5 +1,6 @@
 package io.quarkus.ts.hibernate.reactive;
 
+import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.apache.http.HttpStatus.SC_INTERNAL_SERVER_ERROR;
 
 import org.junit.jupiter.api.Tag;
@@ -41,6 +42,24 @@ public class OracleHibernateValidatorDdlModeIT extends AbstractHibernateValidato
         getApp().given().put("/validation/person/InvalidNameWithMoreThanThirtyChars").then()
                 // DDL mode applies constraints to table, but error is thrown on Oracle side, not Hibernate
                 .statusCode(SC_INTERNAL_SERVER_ERROR);
+    }
+
+    @Test
+    @Override
+    public void validationXmlInvalidCustomerEmail() {
+        getApp().given()
+                .when().put("/validation/xml/customer/Al/not-an-email")
+                .then()
+                .statusCode(SC_CREATED);
+    }
+
+    @Test
+    @Override
+    public void validationXmlInvalidCustomerName() {
+        getApp().given()
+                .when().put("/validation/xml/customer/No/customer@example.com")
+                .then()
+                .statusCode(SC_CREATED);
     }
 
     public RestService getApp() {

@@ -47,5 +47,34 @@ public abstract class AbstractHibernateValidatorIT {
                 .body("correctMaxLength", equalTo(true));
     }
 
+    @Tag("QUARKUS-6262")
+    @Test
+    public void validationXmlInvalidCustomerEmail() {
+        getApp().given()
+                .when().put("/validation/xml/customer/Vick/not-an-email")
+                .then()
+                .statusCode(SC_BAD_REQUEST)
+                .body(containsString("XML constraint violation"));
+    }
+
+    @Tag("QUARKUS-6262")
+    @Test
+    public void validationXmlInvalidCustomerName() {
+        getApp().given()
+                .when().put("/validation/xml/customer/No/customer@example.com")
+                .then()
+                .statusCode(SC_BAD_REQUEST)
+                .body(containsString("XML constraint violation"));
+    }
+
+    @Tag("QUARKUS-6262")
+    @Test
+    public void validationXmlValidCustomer() {
+        getApp().given()
+                .when().put("/validation/xml/customer/Bjorn/brojn@example.com")
+                .then()
+                .statusCode(SC_CREATED);
+    }
+
     protected abstract RestService getApp();
 }

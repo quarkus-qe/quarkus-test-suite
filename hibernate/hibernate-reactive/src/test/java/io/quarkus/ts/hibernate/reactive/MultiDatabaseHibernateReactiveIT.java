@@ -18,6 +18,7 @@ import io.quarkus.ts.hibernate.reactive.database.AuthorRepository;
 import io.quarkus.ts.hibernate.reactive.database.Book;
 import io.quarkus.ts.hibernate.reactive.database.ISBNConverter;
 import io.quarkus.ts.hibernate.reactive.database.PersonEntity;
+import io.quarkus.ts.hibernate.reactive.database.XmlValidatedCustomer;
 import io.quarkus.ts.hibernate.reactive.http.ApplicationExceptionMapper;
 import io.quarkus.ts.hibernate.reactive.http.BookDescription;
 import io.quarkus.ts.hibernate.reactive.http.GroundedEndpoint;
@@ -65,7 +66,7 @@ public class MultiDatabaseHibernateReactiveIT extends AbstractDatabaseHibernateR
             // also include default classes
             Author.class, AuthorIdGenerator.class, AuthorRepository.class, Book.class, ISBNConverter.class, PersonEntity.class,
             ApplicationExceptionMapper.class, BookDescription.class, GroundedEndpoint.class, OtherResource.class,
-            PanacheEndpoint.class, SomeApi.class, ValidationResource.class
+            PanacheEndpoint.class, SomeApi.class, ValidationResource.class, XmlValidatedCustomer.class
     })
     static RestService app = new RestService()
             .withProperty("main.url", postgresql1::getReactiveUrl)
