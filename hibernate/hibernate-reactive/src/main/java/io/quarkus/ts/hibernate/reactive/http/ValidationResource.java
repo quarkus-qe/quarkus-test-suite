@@ -8,16 +8,17 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.hibernate.exception.ConstraintViolationException;
 import org.hibernate.reactive.mutiny.Mutiny;
 
 import io.quarkus.hibernate.reactive.panache.Panache;
 import io.quarkus.ts.hibernate.reactive.database.PersonEntity;
+import io.quarkus.ts.hibernate.reactive.database.XmlValidatedCustomer;
 import io.smallrye.mutiny.Uni;
 
 @Path("/validation")
@@ -33,14 +34,34 @@ public class ValidationResource {
     @Path("/person/{name}")
     public Uni<Response> createPerson(String name) {
         return Panache.withTransaction(() -> PersonEntity.create(name))
-                .map(nothing -> Response.status(Response.Status.CREATED).build())
+                .replaceWith(() -> Response.status(Response.Status.CREATED).build())
                 .onFailure()
                 .recoverWithItem(e -> {
                     Throwable cause = e;
                     while (cause != null) {
-                        String className = cause.getClass().getSimpleName();
-                        if (ConstraintViolationException.class.getSimpleName().equals(className)) {
+                        if (cause instanceof jakarta.validation.ConstraintViolationException) {
                             return Response.status(Response.Status.BAD_REQUEST).entity(cause.getMessage()).build();
+                        }
+                        cause = cause.getCause();
+                    }
+                    return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+                });
+    }
+
+    @PUT
+    @Path("/xml/customer/{name}/{email}")
+    public Uni<Response> createXmlCustomer(@PathParam("name") String name, @PathParam("email") String email) {
+        XmlValidatedCustomer customer = new XmlValidatedCustomer(name, email);
+
+        return sessionFactory.withTransaction(session -> session.persist(customer))
+                .replaceWith(() -> Response.status(Response.Status.CREATED).build())
+                .onFailure()
+                .recoverWithItem(e -> {
+                    Throwable cause = e;
+                    while (cause != null) {
+                        if (cause instanceof jakarta.validation.ConstraintViolationException) {
+                            return Response.status(Response.Status.BAD_REQUEST)
+                                    .entity("XML constraint violation: " + cause.getMessage()).build();
                         }
                         cause = cause.getCause();
                     }
@@ -54,8 +75,8 @@ public class ValidationResource {
         return sessionFactory
                 .withTransaction(s -> s.createNativeQuery("INSERT INTO person (name) VALUES (null)").executeUpdate())
                 .onItemOrFailure()
-                .transform((v, e) -> {
-                    if (e instanceof ConstraintViolationException) {
+                .transform((v, cause) -> {
+                    if (cause instanceof org.hibernate.exception.ConstraintViolationException) {
                         return "NOT NULL constraint enforced";
                     }
                     return "Column allows NULL values";
