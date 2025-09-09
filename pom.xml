@@ -76,6 +76,28 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
+                <!--
+                    Override strimzi-test-container version, that is in upstream quarkus-bom
+                    Current version there is 0.109.2 which is not compatible with Kafka which we have in the framework.
+                    This is just a hotfix before strimzi-test-container is bumped in upstream - see https://github.com/quarkusio/quarkus/pull/49949
+                    TODO: remove this dependency once https://github.com/quarkusio/quarkus/pull/49949 is merged
+                    TODO: or strimzi-test-container is bumped otherwise
+                -->
+                <groupId>io.strimzi</groupId>
+                <artifactId>strimzi-test-container</artifactId>
+                <version>0.112.0</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
                 <groupId>io.confluent</groupId>
                 <artifactId>kafka-avro-serializer</artifactId>
                 <version>${confluent.kafka-avro-serializer.version}</version>
@@ -805,8 +827,8 @@
                                         <mariadb.103.image>registry.redhat.io/rhel8/mariadb-103:latest</mariadb.103.image>
                                         <mariadb.1011.image>registry.redhat.io/rhel9/mariadb-1011:latest</mariadb.1011.image>
                                         <!-- Kafka  (amq-streams) requires separate properties for image and version -->
-                                        <amq-streams.image>registry.redhat.io/amq-streams/kafka-35-rhel8</amq-streams.image>
-                                        <amq-streams.version>2.6.0</amq-streams.version>
+                                        <amq-streams.image>registry.redhat.io/amq-streams/kafka-40-rhel9</amq-streams.image>
+                                        <amq-streams.version>3.0.0</amq-streams.version>
                                         <consul.image>registry.connect.redhat.com/hashicorp/consul:1.21</consul.image>
                                     </systemPropertyVariables>
                                     <rerunFailingTestsCount>${oc.reruns}</rerunFailingTestsCount>
@@ -859,8 +881,8 @@
                                         <mariadb.1011.image>registry.redhat.io/rhel8/mariadb-1011:latest</mariadb.1011.image>
                                         <amqbroker.image>registry.redhat.io/amq7/amq-broker-rhel8:7.12</amqbroker.image>
                                         <!-- Kafka  (amq-streams) requires separate properties for image and version -->
-                                        <amq-streams.image>registry.redhat.io/amq-streams/kafka-35-rhel8</amq-streams.image>
-                                        <amq-streams.version>2.6.0</amq-streams.version>
+                                        <amq-streams.image>registry.redhat.io/amq-streams/kafka-40-rhel9</amq-streams.image>
+                                        <amq-streams.version>3.0.0</amq-streams.version>
                                         <datagrid.image>registry.redhat.io/datagrid/datagrid-8-rhel9:latest</datagrid.image>
                                     </systemPropertyVariables>
                                     <rerunFailingTestsCount>${oc.reruns}</rerunFailingTestsCount>
@@ -926,8 +948,8 @@
                                         <mariadb.103.image>registry.redhat.io/rhel8/mariadb-103:latest</mariadb.103.image>
                                         <mariadb.1011.image>registry.redhat.io/rhel8/mariadb-1011:latest</mariadb.1011.image>
                                         <!-- Kafka  (amq-streams) requires separate properties for image and version -->
-                                        <amq-streams.image>registry.redhat.io/amq-streams/kafka-35-rhel8</amq-streams.image>
-                                        <amq-streams.version>2.6.0</amq-streams.version>
+                                        <amq-streams.image>registry.redhat.io/amq-streams/kafka-40-rhel9</amq-streams.image>
+                                        <amq-streams.version>3.0.0</amq-streams.version>
                                         <mongodb.image>docker.io/library/mongo:4.4.6</mongodb.image>
                                         <infinispan.image>registry.redhat.io/datagrid/datagrid-8-rhel9:1.5-8.5.0.GA</infinispan.image>
                                         <infinispan.expected-log>Red Hat Data Grid.*started in</infinispan.expected-log>
