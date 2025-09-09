@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<constraint-mappings xmlns="https://jakarta.ee/xml/ns/validation/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/validation/mapping https://jakarta.ee/xml/ns/validation/validation-mapping-3.1.xsd" version="3.1">
+    <bean class="io.quarkus.ts.hibernate.reactive.database.XmlValidatedCustomer">
+        <field name="name">
+            <constraint annotation="jakarta.validation.constraints.NotNull"/>
+            <constraint annotation="jakarta.validation.constraints.Size">
+                <element name="min">3</element>
+                <element name="max">50</element>
+            </constraint>
+        </field>
+        <field name="email">
+            <constraint annotation="jakarta.validation.constraints.Email"/>
+        </field>
+    </bean>
+</constraint-mappings>
