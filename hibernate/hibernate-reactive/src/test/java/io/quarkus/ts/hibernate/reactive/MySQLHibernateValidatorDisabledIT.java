@@ -57,6 +57,33 @@ public class MySQLHibernateValidatorDisabledIT {
         assertEquals("Column allows NULL values", responseBody);
     }
 
+    @Tag("QUARKUS-6262")
+    @Test
+    public void validationXmlAcceptInvalidCustomerEmail() {
+        getApp().given()
+                .when().put("/validation/xml/customer/Vick/not-an-email")
+                .then()
+                .statusCode(SC_CREATED);
+    }
+
+    @Tag("QUARKUS-6262")
+    @Test
+    public void validationXmlAcceptInvalidCustomerName() {
+        getApp().given()
+                .when().put("/validation/xml/customer/No/customer@example.com")
+                .then()
+                .statusCode(SC_CREATED);
+    }
+
+    @Tag("QUARKUS-6262")
+    @Test
+    public void validationXmlValidCustomer() {
+        getApp().given()
+                .when().put("/validation/xml/customer/Bjorn/brojn@example.com")
+                .then()
+                .statusCode(SC_CREATED);
+    }
+
     public RestService getApp() {
         return app;
     }
