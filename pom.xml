@@ -453,6 +453,19 @@
             </modules>
         </profile>
         <profile>
+            <id>ai-modules</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>all-modules</name>
+                </property>
+            </activation>
+            <modules>
+                <module>env-info</module>
+                <module>ai/langchain4j</module>
+            </modules>
+        </profile>
+        <profile>
             <id>root-modules</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
