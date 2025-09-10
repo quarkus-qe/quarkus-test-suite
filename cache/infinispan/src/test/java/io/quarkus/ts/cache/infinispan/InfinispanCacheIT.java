@@ -6,6 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.apache.http.HttpStatus;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -15,6 +18,7 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.ts.cache.infinispan.cdi.request.context.CdiRequestContextResponse;
 
 @QuarkusScenario
 public class InfinispanCacheIT {
@@ -179,6 +183,58 @@ public class InfinispanCacheIT {
         String thirdResponse = getFromPath("/cache/testIdle");
 
         assertNotEquals(firstResponse, thirdResponse, "Cache should return a new value after expiration");
+    }
+
+    /**
+     * This test calls cached method (a method annotated with {@link io.quarkus.cache.CachedResults}),
+     * stores response in a request-scoped CDI bean and verifies that both the cached method return value
+     * and the value stored in the CDI request-scoped bean are identical. Before the linked issue was fixed
+     * (like Quarkus 3.23.3), CDI request context wasn't active and if you activated it, it would not be populated
+     * with our return value. This happened because associated Vert.x duplicated context wasn't reused when Infinispan
+     * cached the result.
+     */
+    @Tag("https://github.com/quarkusio/quarkus/issues/48196")
+    @Test
+    public void testCdiRequestContextPropagation() {
+        CdiRequestContextResponse response1 = app.given()
+                .queryParam("prefix", "Biden")
+                .get("/cache/cdi-request-context/synchronous-response")
+                .then()
+                .statusCode(200)
+                .body(Matchers.containsString("Biden"))
+                .extract().as(CdiRequestContextResponse.class);
+        Assertions.assertEquals(response1.cacheOutput(), response1.requestContextOutput());
+        CdiRequestContextResponse response2 = app.given()
+                .queryParam("prefix", "Biden")
+                .get("/cache/cdi-request-context/synchronous-response")
+                .then()
+                .statusCode(200)
+                .body(Matchers.containsString("Biden"))
+                .extract().as(CdiRequestContextResponse.class);
+        Assertions.assertEquals(response1.cacheOutput(), response2.cacheOutput());
+        // because this result is expected to come from the cache, actual method that stores value to the CDI bean
+        // is not invoked; thus we assert that value comes from cache
+        Assertions.assertNull(response2.requestContextOutput());
+
+        response1 = app.given()
+                .queryParam("prefix", "Trump")
+                .get("/cache/cdi-request-context/async-response")
+                .then()
+                .statusCode(200)
+                .body(Matchers.containsString("Trump"))
+                .extract().as(CdiRequestContextResponse.class);
+        Assertions.assertEquals(response1.cacheOutput(), response1.requestContextOutput());
+        response2 = app.given()
+                .queryParam("prefix", "Trump")
+                .get("/cache/cdi-request-context/async-response")
+                .then()
+                .statusCode(200)
+                .body(Matchers.containsString("Trump"))
+                .extract().as(CdiRequestContextResponse.class);
+        Assertions.assertEquals(response1.cacheOutput(), response2.cacheOutput());
+        // because this result is expected to come from the cache, actual method that stores value to the CDI bean
+        // is not invoked; thus we assert that value comes from cache
+        Assertions.assertNull(response2.requestContextOutput());
     }
 
     private void invalidateCacheAllFromPath(String path) {
