@@ -1,5 +1,10 @@
 package io.quarkus.ts.http.minimum.reactive;
 
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
@@ -39,7 +44,15 @@ public class HelloResource {
     @GET
     @Path("/no-content-length")
     public Response hello() {
-        return Response.ok("hello").header("Transfer-Encoding", "chunked").build();
+        String content = IntStream.range(1, 100)
+                .mapToObj(i -> "Hello no." + i)
+                .collect(Collectors.joining("\n"));
+
+        // todo omit wrapping if https://github.com/quarkusio/quarkus/issues/49942 is ever fixed
+        var stream = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8));
+        return Response
+                .ok(stream)
+                .build();
     }
 
     public record Data(String data) {
