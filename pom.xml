@@ -16,7 +16,7 @@
         <surefire-plugin.version>3.5.3</surefire-plugin.version>
         <failsafe-plugin.version>3.5.3</failsafe-plugin.version>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
-        <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
+        <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
         <quarkus.platform.version>999-SNAPSHOT</quarkus.platform.version>
         <quarkus.ide.version>3.26.3</quarkus.ide.version>
         <quarkus.qe.framework.version>999-SNAPSHOT</quarkus.qe.framework.version>
@@ -747,6 +747,20 @@
                 <module>websockets/websockets-client</module>
                 <module>websockets/websocket-next</module>
                 <module>websockets/websocket-next-oidc</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>ai-modules</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <!-- FIXME disable by default                -->
+                <property>
+                    <name>all-modules</name>
+                </property>
+            </activation>
+            <modules>
+                <module>env-info</module>
+                <module>ai/langchain4j</module>
             </modules>
         </profile>
         <profile>
