@@ -57,6 +57,8 @@ If you have a look the main `pom.xml` you will notice that there are several pro
 * hibernate-modules: is focused on Hibernate implementation of Jakarta Data, Jakarta JPA and other Hibernate libraries
 * spring-modules: is focus on Spring world
 * quarkus-cli-tests: enable Quarkus command client test
+* ai-modules: extensions, related to Quarkus AI (Langchain4j)
+* ai-tests: enables tests for Quarkus AI, requires option `quarkus.langchain4j.openai.api-key`. Beware, that each run costs us some money. 
 
 By default, all your tests are running on bare metal (JVM / Dev mode), but you can add the following profiles to your maven command in order to activate other platforms
 
@@ -352,6 +354,10 @@ It also verifies multiple deployment strategies like:
 - Serverless
 - Using OpenShift quarkus extension
 - Using OpenShift quarkus extension and Docker Build strategy
+
+### `ai/langchain4j`
+
+Coverage for Quarkus AI, provided by Quarkus-Langchain4j and related extensions.
 
 ### `http/http-minimum-reactive`
 Reactive equivalent of the http/http-minimum module
