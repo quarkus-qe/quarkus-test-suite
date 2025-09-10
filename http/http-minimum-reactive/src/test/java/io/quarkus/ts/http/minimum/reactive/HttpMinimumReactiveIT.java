@@ -29,7 +29,8 @@ import io.restassured.specification.RequestSpecification;
 public class HttpMinimumReactiveIT {
 
     @QuarkusApplication
-    static RestService app = new RestService();
+    static RestService app = new RestService()
+            .withProperty("quarkus.rest.output-buffer-size", "1024");
 
     @Test
     public void httpServer() {
