@@ -570,7 +570,7 @@
             </modules>
         </profile>
         <profile>
-            <id>sql-db-modules</id>
+            <id>hibernate-modules</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
                 <property>
@@ -580,15 +580,27 @@
             <modules>
                 <module>env-info</module>
                 <module>sql-db/hibernate</module>
+                <module>sql-db/hibernate-reactive</module>
+                <module>sql-db/hibernate-fulltext-search</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>sql-db-modules</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>all-modules</name>
+                </property>
+            </activation>
+            <modules>
+                <module>env-info</module>
                 <module>sql-db/sql-app</module>
                 <module>sql-db/sql-app-compatibility</module>
                 <module>sql-db/multiple-pus</module>
                 <module>sql-db/panache-flyway</module>
                 <module>sql-db/reactive-rest-data-panache</module>
                 <module>sql-db/vertx-sql</module>
-                <module>sql-db/hibernate-reactive</module>
                 <module>sql-db/reactive-vanilla</module>
-                <module>sql-db/hibernate-fulltext-search</module>
                 <module>sql-db/narayana-transactions</module>
             </modules>
         </profile>
