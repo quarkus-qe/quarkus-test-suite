@@ -132,7 +132,7 @@ public class HeadersIT {
         try (Socket s = new Socket(uri.getHost(), uri.getPort());
                 PrintWriter pw = new PrintWriter(s.getOutputStream());
                 BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));) {
-            pw.print("GET /headers/any HTTP/1.0\n\r\n");
+            pw.print("GET /headers/any HTTP/1.0\r\n\r\n");
             pw.flush();
             String line;
             while ((line = br.readLine()) != null) {
