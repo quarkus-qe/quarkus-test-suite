@@ -8,7 +8,7 @@
         <relativePath>../..</relativePath>
     </parent>
     <artifactId>hibernate-fulltext-search</artifactId>
-    <name>Quarkus QE TS: Hibernate FullText Search</name>
+    <name>Quarkus QE TS: Hibernate modules: Hibernate FullText Search</name>
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
