@@ -9,7 +9,7 @@
     </parent>
     <artifactId>hibernate-reactive</artifactId>
     <packaging>jar</packaging>
-    <name>Quarkus QE TS: SQL Database: Hibernate Reactive</name>
+    <name>Quarkus QE TS: Hibernate modules: Hibernate Reactive</name>
     <dependencies>
         <dependency>
             <groupId>io.quarkus</groupId>

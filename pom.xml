@@ -614,6 +614,23 @@
             </modules>
         </profile>
         <profile>
+            <id>hibernate-modules</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>all-modules</name>
+                </property>
+            </activation>
+            <modules>
+                <module>env-info</module>
+                <module>hibernate/hibernate-orm</module>
+                <module>hibernate/hibernate-reactive</module>
+                <module>hibernate/hibernate-fulltext-search</module>
+                <module>hibernate/jakarta-data</module>
+                <module>hibernate/hibernate-offline-startup</module>
+            </modules>
+        </profile>
+        <profile>
             <id>sql-db-modules</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -623,18 +640,14 @@
             </activation>
             <modules>
                 <module>env-info</module>
-                <module>sql-db/hibernate</module>
                 <module>sql-db/sql-app</module>
                 <module>sql-db/sql-app-compatibility</module>
                 <module>sql-db/multiple-pus</module>
                 <module>sql-db/panache-flyway</module>
                 <module>sql-db/reactive-rest-data-panache</module>
                 <module>sql-db/vertx-sql</module>
-                <module>sql-db/hibernate-reactive</module>
                 <module>sql-db/reactive-vanilla</module>
-                <module>sql-db/hibernate-fulltext-search</module>
                 <module>sql-db/narayana-transactions</module>
-                <module>sql-db/jakarta-data</module>
             </modules>
         </profile>
         <profile>
