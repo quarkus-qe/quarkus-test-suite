@@ -11,7 +11,7 @@ jobs:
       fail-fast: false
       matrix:
         java: [ 21 ]
-        profiles: [ "root-modules", "http-modules,security-modules,spring-modules",
+        profiles: [ "root-modules", "http-modules,security-modules,spring-modules", "hibernate-modules",
                    "sql-db-modules", "root-modules -pl build/podman/,build/docker -Dtest-ubi8-compatibility",
                    "messaging-modules,websockets-modules,monitoring-modules,cache-modules,test-tooling-modules,nosql-db-modules"]
     steps:
@@ -49,11 +49,8 @@ jobs:
         java: [ 17 ]
         image: [ "ubi9-quarkus-mandrel-builder-image:jdk-21", "ubi-quarkus-mandrel-builder-image:jdk-21 -Dtest-ubi8-compatibility" ]
         profiles: [ "root-modules,websockets-modules,test-tooling-modules,nosql-db-modules",
-                   "http-modules,cache-modules",
-                   "security-modules,spring-modules",
-                    "sql-db-modules -pl env-info,sql-db/hibernate,sql-db/sql-app,sql-db/sql-app-compatibility,sql-db/multiple-pus,sql-db/panache-flyway,sql-db/hibernate-reactive,sql-db/jakarta-data",
-                    "sql-db-modules -pl env-info,sql-db/reactive-rest-data-panache,sql-db/vertx-sql,sql-db/reactive-vanilla,sql-db/hibernate-fulltext-search,sql-db/narayana-transactions",
-                   "messaging-modules,monitoring-modules"]
+                   "http-modules,cache-modules", "security-modules,spring-modules",
+                    "hibernate-modules", "sql-db-modules", "messaging-modules,monitoring-modules"]
     steps:
       - uses: actions/checkout@v5
       - name: Reclaim Disk Space
@@ -183,7 +180,7 @@ jobs:
       fail-fast: false
       matrix:
         java: [ 17, 21 ]
-        profiles: [ "root-modules", "http-modules,security-modules,spring-modules",
+        profiles: [ "root-modules", "http-modules,security-modules,spring-modules", "hibernate-modules",
                     "sql-db-modules", "root-modules -pl build/podman/,build/docker -Dtest-ubi8-compatibility",
                     "messaging-modules,websockets-modules,monitoring-modules,cache-modules,test-tooling-modules,nosql-db-modules"]
     steps:
@@ -227,11 +224,8 @@ jobs:
         java: [ 17 ]
         image: [ "ubi9-quarkus-mandrel-builder-image:jdk-21", "ubi-quarkus-mandrel-builder-image:jdk-21 -Dtest-ubi8-compatibility" ]
         profiles: [ "root-modules,websockets-modules,test-tooling-modules,nosql-db-modules",
-                    "http-modules,cache-modules",
-                    "security-modules,spring-modules",
-                    "sql-db-modules -pl env-info,sql-db/hibernate,sql-db/sql-app,sql-db/sql-app-compatibility,sql-db/multiple-pus,sql-db/panache-flyway,sql-db/hibernate-reactive,sql-db/jakarta-data",
-                    "sql-db-modules -pl env-info,sql-db/reactive-rest-data-panache,sql-db/vertx-sql,sql-db/reactive-vanilla,sql-db/hibernate-fulltext-search,sql-db/narayana-transactions",
-                    "messaging-modules,monitoring-modules"]
+                    "http-modules,cache-modules", "security-modules,spring-modules",
+                    "hibernate-modules", "sql-db-modules", "messaging-modules,monitoring-modules"]
     steps:
       - uses: actions/checkout@v5
       - name: Reclaim Disk Space
