@@ -52,8 +52,9 @@ If you have a look the main `pom.xml` you will notice that there are several pro
 * security-modules: cover all security stuff like OAuth, JWT, OpenId, Keycloak etc
 * messaging-modules: is focus on brokers as Kafka or Artemis-AMQP
 * monitor-modules: talk about metrics and tracing
-* sql-db-modules: is focus on SQL world, Panache, Hibernate, raw SQL etc
+* sql-db-modules: is focus on SQL world, Panache, Narayana, raw SQL etc.
 * nosql-db-modules: is focus on noSQL or schemaless DBs as MongoDB
+* hibernate-modules: is focused on Hibernate implementation of Jakarta Data, Jakarta JPA and other Hibernate libraries
 * spring-modules: is focus on Spring world
 * quarkus-cli-tests: enable Quarkus command client test
 
@@ -514,7 +515,7 @@ Module that covers, that logging works with various third-party solutions. The f
 - Syslog-type log (syslog-ng is used)
 - Option `quarkus.log.syslog.max-length` filters messages, which are too big
 
-### `sql-db/hibernate`
+### `hibernate/hibernate`
 
 This module contains Hibernate integration scenarios.
 
@@ -525,7 +526,7 @@ The features covered:
 - Reproducer for [QUARKUS-661](https://issues.redhat.com/browse/QUARKUS-661): `@TransactionScoped` Context does not call
   `@Predestroy` on `TransactionScoped` beans. This is covered under the Java package `io.quarkus.qe.hibernate.transaction`.
 
-### `sql-db/hibernate-fulltext-search`
+### `hibernate/hibernate-fulltext-search`
 
 This module covers `elasticSearch` fulltext look up, over a `Hibernate` multi-tenant scenario.
 Feature covered:
@@ -569,7 +570,7 @@ Container images used in the tests are:
 Functionally identical to `sql-db/sql-app`, but using only `quarkus-jdbc-oracle` driver. This is a workaround for the missing native Oracle coverage in `sql-db/sql-app`.
 
 
-### `sql-db/hibernate-reactive`
+### `hibernate/hibernate-reactive`
 Verifies that the application can work with data persisted in SQL database in reactive manner. Basically, the same as `sql-app`, but reactive.
 Covered DBs:
 - Postgres
@@ -641,7 +642,7 @@ OpenTelemetry JDBC instrumentation test coverage is also placed here. JDBC traci
 databases in JVM mode, native mode and OpenShift. Smoke tests for DEV mode are using PostgreSQL. Smallrye Context Propagation
 cooperation with OpenTelemetry in DEV mode is also placed in this module.
 
-### `sql-db/jakarta-data`
+### `hibernate/jakarta-data`
 
 Test coverage for Jakarta Data capabilities of Quarkus Hibernate ORM extension.
 Focus of this test coverage is on integration points between Jakarta Data and Quarkus like CDI, transactions and DEV mode.
@@ -1287,3 +1288,10 @@ Test coverage includes:
 Verifies the Quarkus build-time analytics feature: https://quarkus.io/guides/build-analytics.
 
 For details, see the module-specific README.md.
+
+### `hibernate/hibernate-offline-startup`
+
+This module tests Hibernate ORM offline startup functionality.
+The main focus is on Hibernate ORM multitenant scenarios where JDBC credentials are provided on the startup.
+It validates functionality across JVM, Dev, and native modes, and ensures compatibility with supported databases on bare-metal and OpenShift.
+Additionally, the tests cover the database dialect fine-tuning, Hibernate Reactive offline startup, and OpenTelemetry JDBC instrumentation.
