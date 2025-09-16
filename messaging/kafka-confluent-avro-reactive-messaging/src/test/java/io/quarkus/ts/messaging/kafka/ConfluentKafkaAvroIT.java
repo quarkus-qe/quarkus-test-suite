@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Tag;
 import io.quarkus.test.bootstrap.KafkaService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.services.Dependency;
 import io.quarkus.test.services.KafkaContainer;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.services.containers.model.KafkaVendor;
@@ -16,7 +17,7 @@ public class ConfluentKafkaAvroIT extends BaseKafkaAvroIT {
     @KafkaContainer(vendor = KafkaVendor.CONFLUENT, withRegistry = true)
     static final KafkaService kafka = new KafkaService();
 
-    @QuarkusApplication
+    @QuarkusApplication(dependencies = @Dependency(artifactId = "quarkus-resteasy-jsonb"))
     static final RestService app = new RestService()
             .withProperty("kafka.bootstrap.servers", kafka::getBootstrapUrl)
             .withProperty("confluent.registry.url", kafka::getRegistryUrl);
