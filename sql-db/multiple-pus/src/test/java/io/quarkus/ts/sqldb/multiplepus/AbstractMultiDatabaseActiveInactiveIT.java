@@ -5,6 +5,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.matchesRegex;
 import static org.hamcrest.Matchers.not;
 
 import java.util.Map;
@@ -30,7 +31,7 @@ public abstract class AbstractMultiDatabaseActiveInactiveIT {
     static final int MARIADB_PORT = 3306;
     static final int POSTGRESQL_PORT = 5432;
 
-    public static final String INACTIVE_DATASOURCE_ERROR = "Cannot retrieve the EntityManagerFactory/SessionFactory";
+    public static final String INACTIVE_DATASOURCE_REGEX = ".*Persistence unit '.*' was deactivated through configuration properties.*";
 
     @Test
     @Order(1)
@@ -183,21 +184,21 @@ public abstract class AbstractMultiDatabaseActiveInactiveIT {
         given().get("/fruit")
                 .then()
                 .statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR)
-                .body(containsString(INACTIVE_DATASOURCE_ERROR));
+                .body(matchesRegex(INACTIVE_DATASOURCE_REGEX));
     }
 
     public void checkVegetableIsInactive() {
         given().get("/vegetable")
                 .then()
                 .statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR)
-                .body(containsString(INACTIVE_DATASOURCE_ERROR));
+                .body(matchesRegex(INACTIVE_DATASOURCE_REGEX));
     }
 
     public void checkFungusIsInactive() {
         given().get("/fungus")
                 .then()
                 .statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR)
-                .body(containsString(INACTIVE_DATASOURCE_ERROR));
+                .body(matchesRegex(INACTIVE_DATASOURCE_REGEX));
     }
 
     /**

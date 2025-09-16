@@ -22,6 +22,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import io.quarkus.arc.InjectableInstance;
 import io.quarkus.hibernate.orm.PersistenceUnit;
 import io.quarkus.panache.common.Sort;
 import io.quarkus.ts.sqldb.multiplepus.model.fruit.Fruit;
@@ -33,7 +34,7 @@ public class FruitResource {
 
     @Inject
     @PersistenceUnit("fruits")
-    EntityManager entityManager;
+    InjectableInstance<EntityManager> entityManager;
 
     @GET
     public List<Fruit> getAll() {
