@@ -7,15 +7,16 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 
 import io.agroal.api.AgroalDataSource;
+import io.quarkus.arc.InjectableInstance;
 
 @Path("/datasource-producer")
 public class DatasourceProducerResource {
 
     @Inject
-    AgroalDataSource dataSource;
+    InjectableInstance<AgroalDataSource> dataSource;
 
     @GET
     public String get() throws SQLException {
-        return dataSource.getConnection().getMetaData().getDatabaseProductName();
+        return dataSource.get().getConnection().getMetaData().getDatabaseProductName();
     }
 }
