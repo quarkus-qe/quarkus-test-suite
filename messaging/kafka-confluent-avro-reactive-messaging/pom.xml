@@ -17,6 +17,8 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-resteasy-jsonb</artifactId>
+            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <!-- Quarkus extension for generating Java code from Avro schemas -->
         <!-- with this, you don't have to use avro-maven-plugin -->
@@ -45,6 +47,17 @@
         <dependency>
             <groupId>io.quarkus.qe</groupId>
             <artifactId>quarkus-test-service-kafka</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- Needed for issue https://github.com/quarkusio/quarkus/issues/48983 verification -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-smallrye-fault-tolerance</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-rest-client-jackson</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
