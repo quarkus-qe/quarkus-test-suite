@@ -22,7 +22,7 @@ jobs:
           git config user.name "Quarkus QE"
           git rebase quarkus_qe_target_repo/${GITHUB_BASE_REF}
       - id: files
-        uses: tj-actions/changed-files@v46
+        uses: tj-actions/changed-files@v47
         continue-on-error: true
       - id: detect-changes
         run: |
