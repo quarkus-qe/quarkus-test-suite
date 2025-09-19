@@ -8,6 +8,7 @@ import static org.hamcrest.CoreMatchers.is;
 import java.util.UUID;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.KeycloakService;
@@ -24,12 +25,17 @@ public abstract class AbstractOidcRestClientIT {
     static final String PONG_ENDPOINT = "/%s-pong";
     static final String WRONG_TOKEN = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
+    private static final String TOKEN_REFRESH_RESPONSE = "token refresh secret response";
+
     @LookupService
     static KeycloakService keycloak;
 
     @QuarkusApplication
     static RestService app = new RestService()
             .withProperty("quarkus.oidc.auth-server-url", () -> keycloak.getRealmUrl())
+            // token introspection is required for revoked access tokens to be actually checked against keycloak
+            .withProperty("quarkus.oidc.token.require-jwt-introspection-only", "true")
+            .withProperty("quarkus.resteasy-client-oidc-filter.refresh-on-unauthorized", "true")
             .withProperties(() -> keycloak.getTlsProperties());
 
     @Test
@@ -70,6 +76,19 @@ public abstract class AbstractOidcRestClientIT {
         assertPingPongCreate(pingEndpoint);
         assertPingPongUpdate(pingEndpoint);
         assertPingPongDelete(pingEndpoint);
+    }
+
+    @Test
+    @Tag("QUARKUS-6551")
+    public void testRefreshToken() {
+        // test default OIDC client with default filter (influenced by config property)
+        pingTokenRefreshEndpoints("filter", true);
+        // test named OIDC client with default filter (influenced by config property)
+        pingTokenRefreshEndpoints("namedFilter", true);
+        // test default OIDC client with refreshing enabled using request filter
+        pingTokenRefreshEndpoints("refreshEnabled", true);
+        // test default OIDC client with refreshing disabled using request filter
+        pingTokenRefreshEndpoints("refreshDisabled", false);
     }
 
     private void assertPongEndpoints(String endpointPrefix) {
@@ -169,4 +188,38 @@ public abstract class AbstractOidcRestClientIT {
                 .then().statusCode(HttpStatus.SC_OK).body(containsString("ping -> true"));
     }
 
+    private void pingTokenRefreshEndpoints(String endpoint, boolean shouldRefresh) {
+        // first request should always pass OK
+        tokenRefreshExpectSuccess(endpoint);
+        // after first request, the token is invalidated, but quarkus is not aware of it
+        // so second request should always fail on invalid token
+        // actual status code 500 because quarkus-side resource handling the RestClient response will take the authentication failure as server side error
+        tokenRefreshExportFailure(endpoint);
+
+        // If token is refreshed then third request should succeed again
+        // If not, token will still be invalid
+        if (shouldRefresh) {
+            tokenRefreshExpectSuccess(endpoint);
+        } else {
+            tokenRefreshExportFailure(endpoint);
+        }
+    }
+
+    private void tokenRefreshExpectSuccess(String endpoint) {
+        given()
+                .get("/token-refresh-public/" + endpoint)
+                .then()
+                .onFailMessage("Request should succeed for endpoint: " + endpoint)
+                .statusCode(200)
+                .body(containsString(TOKEN_REFRESH_RESPONSE));
+    }
+
+    private void tokenRefreshExportFailure(String endpoint) {
+        given()
+                .get("/token-refresh-public/" + endpoint)
+                .then()
+                .onFailMessage("Request should fail for endpoint: " + endpoint)
+                .statusCode(500)
+                .body(containsString("HTTP 401 Unauthorized"));
+    }
 }
