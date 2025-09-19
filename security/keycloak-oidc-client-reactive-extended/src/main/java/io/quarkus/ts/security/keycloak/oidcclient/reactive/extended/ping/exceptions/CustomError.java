@@ -58,4 +58,11 @@ public class CustomError {
         }
     }
 
+    @Override
+    public String toString() {
+        return "CustomError{" +
+                "code=" + code +
+                ", msg='" + msg + '\'' +
+                '}';
+    }
 }
