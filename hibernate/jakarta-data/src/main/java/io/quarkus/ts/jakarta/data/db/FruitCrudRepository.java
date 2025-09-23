@@ -2,7 +2,9 @@ package io.quarkus.ts.jakarta.data.db;
 
 import jakarta.data.repository.CrudRepository;
 import jakarta.data.repository.Query;
+import jakarta.data.repository.Repository;
 
+@Repository
 public interface FruitCrudRepository extends CrudRepository<Fruit, Long> {
 
     @Query("SELECT COUNT(this)")

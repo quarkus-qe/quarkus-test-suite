@@ -13,35 +13,17 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-
-import io.quarkus.arc.InjectableInstance;
 import io.quarkus.ts.jakarta.data.db.DayOfWeek;
-import io.quarkus.ts.jakarta.data.db.Db2FruitCrudRepository;
 import io.quarkus.ts.jakarta.data.db.Fruit;
 import io.quarkus.ts.jakarta.data.db.FruitCrudRepository;
-import io.quarkus.ts.jakarta.data.db.MariaDbFruitCrudRepository;
-import io.quarkus.ts.jakarta.data.db.MySQLFruitCrudRepository;
-import io.quarkus.ts.jakarta.data.db.OracleFruitCrudRepository;
-import io.quarkus.ts.jakarta.data.db.PgFruitCrudRepository;
-import io.quarkus.ts.jakarta.data.db.SqlServerFruitCrudRepository;
 
 @Path("/crud-repository")
 public final class CrudRepositoryResource {
 
     private final FruitCrudRepository fruitCrudRepository;
 
-    public CrudRepositoryResource(InjectableInstance<FruitCrudRepository> fruitCrudRepositoryInstance,
-            @ConfigProperty(name = "quarkus.profile") String datasource) {
-        fruitCrudRepository = switch (datasource) {
-            case "pg" -> fruitCrudRepositoryInstance.select(PgFruitCrudRepository.class).get();
-            case "mariadb" -> fruitCrudRepositoryInstance.select(MariaDbFruitCrudRepository.class).get();
-            case "mysql" -> fruitCrudRepositoryInstance.select(MySQLFruitCrudRepository.class).get();
-            case "oracle" -> fruitCrudRepositoryInstance.select(OracleFruitCrudRepository.class).get();
-            case "sql-server" -> fruitCrudRepositoryInstance.select(SqlServerFruitCrudRepository.class).get();
-            case "db2" -> fruitCrudRepositoryInstance.select(Db2FruitCrudRepository.class).get();
-            default -> throw new IllegalArgumentException("Unknown datasource: " + datasource);
-        };
+    CrudRepositoryResource(FruitCrudRepository fruitCrudRepository) {
+        this.fruitCrudRepository = fruitCrudRepository;
     }
 
     @Transactional
