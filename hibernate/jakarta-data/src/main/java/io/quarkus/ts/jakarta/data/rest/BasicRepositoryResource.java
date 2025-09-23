@@ -11,26 +11,12 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.hibernate.query.range.Range;
 
-import io.quarkus.arc.InjectableInstance;
 import io.quarkus.ts.jakarta.data.db.Author;
 import io.quarkus.ts.jakarta.data.db.AuthorRepository;
 import io.quarkus.ts.jakarta.data.db.Book;
 import io.quarkus.ts.jakarta.data.db.BookRepository;
-import io.quarkus.ts.jakarta.data.db.Db2AuthorRepository;
-import io.quarkus.ts.jakarta.data.db.Db2BookRepository;
-import io.quarkus.ts.jakarta.data.db.MariaDbAuthorRepository;
-import io.quarkus.ts.jakarta.data.db.MariaDbBookRepository;
-import io.quarkus.ts.jakarta.data.db.MySQLAuthorRepository;
-import io.quarkus.ts.jakarta.data.db.MySQLBookRepository;
-import io.quarkus.ts.jakarta.data.db.OracleAuthorRepository;
-import io.quarkus.ts.jakarta.data.db.OracleBookRepository;
-import io.quarkus.ts.jakarta.data.db.PgAuthorRepository;
-import io.quarkus.ts.jakarta.data.db.PgBookRepository;
-import io.quarkus.ts.jakarta.data.db.SqlServerAuthorRepository;
-import io.quarkus.ts.jakarta.data.db.SqlServerBookRepository;
 
 @Path("/basic-repository")
 public final class BasicRepositoryResource {
@@ -38,27 +24,9 @@ public final class BasicRepositoryResource {
     private final AuthorRepository authorRepository;
     private final BookRepository bookRepository;
 
-    public BasicRepositoryResource(InjectableInstance<AuthorRepository> authorRepositoryInstance,
-            InjectableInstance<BookRepository> bookRepositoryInstance,
-            @ConfigProperty(name = "quarkus.profile") String datasource) {
-        authorRepository = switch (datasource) {
-            case "pg" -> authorRepositoryInstance.select(PgAuthorRepository.class).get();
-            case "mariadb" -> authorRepositoryInstance.select(MariaDbAuthorRepository.class).get();
-            case "mysql" -> authorRepositoryInstance.select(MySQLAuthorRepository.class).get();
-            case "oracle" -> authorRepositoryInstance.select(OracleAuthorRepository.class).get();
-            case "sql-server" -> authorRepositoryInstance.select(SqlServerAuthorRepository.class).get();
-            case "db2" -> authorRepositoryInstance.select(Db2AuthorRepository.class).get();
-            default -> throw new IllegalArgumentException("Unknown datasource: " + datasource);
-        };
-        bookRepository = switch (datasource) {
-            case "pg" -> bookRepositoryInstance.select(PgBookRepository.class).get();
-            case "mariadb" -> bookRepositoryInstance.select(MariaDbBookRepository.class).get();
-            case "mysql" -> bookRepositoryInstance.select(MySQLBookRepository.class).get();
-            case "oracle" -> bookRepositoryInstance.select(OracleBookRepository.class).get();
-            case "sql-server" -> bookRepositoryInstance.select(SqlServerBookRepository.class).get();
-            case "db2" -> bookRepositoryInstance.select(Db2BookRepository.class).get();
-            default -> throw new IllegalArgumentException("Unknown datasource: " + datasource);
-        };
+    BasicRepositoryResource(AuthorRepository authorRepository, BookRepository bookRepository) {
+        this.authorRepository = authorRepository;
+        this.bookRepository = bookRepository;
     }
 
     @Transactional

@@ -4,10 +4,12 @@ import java.util.List;
 
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.data.repository.Query;
+import jakarta.data.repository.Repository;
 import jakarta.persistence.EntityManager;
 
 import io.quarkus.ts.jakarta.data.interceptor.MyInterceptorBinding;
 
+@Repository
 public interface FruitRepository {
 
     record View(long count, String names, String ids) {
