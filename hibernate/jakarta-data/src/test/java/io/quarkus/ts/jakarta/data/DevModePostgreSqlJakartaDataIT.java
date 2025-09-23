@@ -1,6 +1,5 @@
 package io.quarkus.ts.jakarta.data;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +11,6 @@ import io.quarkus.test.services.DevModeQuarkusApplication;
 import io.quarkus.test.utils.AwaitilityUtils;
 
 @QuarkusScenario
-@Disabled("https://github.com/quarkus-qe/quarkus-test-suite/issues/2631")
 public class DevModePostgreSqlJakartaDataIT extends AbstractJakartaDataIT {
 
     @Container(image = "${postgresql.latest.image}", port = 5432, expectedLog = "listening on IPv4 address")

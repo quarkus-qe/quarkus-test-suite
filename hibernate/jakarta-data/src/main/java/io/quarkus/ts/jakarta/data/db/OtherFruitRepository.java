@@ -6,6 +6,7 @@ import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
+import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
 import jakarta.validation.Valid;
@@ -13,6 +14,7 @@ import jakarta.validation.constraints.Min;
 
 import org.hibernate.annotations.processing.Pattern;
 
+@Repository
 public interface OtherFruitRepository {
 
     @Insert

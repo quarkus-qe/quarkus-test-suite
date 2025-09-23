@@ -1,7 +1,5 @@
 package io.quarkus.ts.jakarta.data;
 
-import org.junit.jupiter.api.Disabled;
-
 import io.quarkus.test.bootstrap.MariaDbService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -9,7 +7,6 @@ import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
-@Disabled("https://github.com/quarkus-qe/quarkus-test-suite/issues/2631")
 public class MariaDbJakartaDataIT extends AbstractJakartaDataIT {
 
     @Container(image = "${mariadb.11.image}", port = 3306, expectedLog = "socket: '.*/mysql.*sock'  port: 3306")
