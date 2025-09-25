@@ -22,7 +22,7 @@ jobs:
           check-latest: true
       - name: Build Quarkus 3.27
         run: |
-          git clone -b 3.26 https://github.com/quarkusio/quarkus.git && cd quarkus && ./mvnw -B --no-transfer-progress -s .github/mvn-settings.xml clean install -Dquickly -Dno-test-modules -Prelocations
+          git clone -b 3.27 https://github.com/quarkusio/quarkus.git && cd quarkus && ./mvnw -B --no-transfer-progress -s .github/mvn-settings.xml clean install -Dquickly -Dno-test-modules -Prelocations
       - name: Tar Maven Repo
         shell: bash
         run: tar -I 'pigz -9' -cf maven-repo.tgz -C ~ .m2/repository
@@ -317,12 +317,12 @@ jobs:
         run: tar -xzf maven-repo.tgz -C ~
       - name: Download Quarkus CLI
         shell: bash
-        run: mvn -B --no-transfer-progress org.apache.maven.plugins:maven-dependency-plugin:get -Dartifact=io.quarkus:quarkus-cli:3.26.999-SNAPSHOT:jar:runner
+        run: mvn -B --no-transfer-progress org.apache.maven.plugins:maven-dependency-plugin:get -Dartifact=io.quarkus:quarkus-cli:3.27.999-SNAPSHOT:jar:runner
       - name: Install Quarkus CLI
         run: |
           $quarkusCliFileContent = @"
           @ECHO OFF
-          java -jar %HOMEDRIVE%%HOMEPATH%\.m2\repository\io\quarkus\quarkus-cli\3.26.999-SNAPSHOT\quarkus-cli-3.26.999-SNAPSHOT-runner.jar %*
+          java -jar %HOMEDRIVE%%HOMEPATH%\.m2\repository\io\quarkus\quarkus-cli\3.27.999-SNAPSHOT\quarkus-cli-3.27.999-SNAPSHOT-runner.jar %*
           "@
           New-Item -Path "$(pwd)\quarkus-dev-cli.bat" -ItemType File
           Set-Content -Path "$(pwd)\quarkus-dev-cli.bat" -Value $quarkusCliFileContent
