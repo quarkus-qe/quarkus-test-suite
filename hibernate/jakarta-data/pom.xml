@@ -74,6 +74,7 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
+                    <annotationProcessorPathsUseDepMgmt>true</annotationProcessorPathsUseDepMgmt>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.hibernate.orm</groupId>

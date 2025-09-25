@@ -106,6 +106,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${compiler-plugin.version}</version>
                 <configuration>
+                    <annotationProcessorPathsUseDepMgmt>true</annotationProcessorPathsUseDepMgmt>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.mapstruct</groupId>

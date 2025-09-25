@@ -57,6 +57,7 @@
                     <execution>
                         <id>default-compile</id>
                         <configuration>
+                            <annotationProcessorPathsUseDepMgmt>true</annotationProcessorPathsUseDepMgmt>
                             <annotationProcessors>
                                 <annotationProcessor>org.hibernate.search.processor.HibernateSearchProcessor</annotationProcessor>
                             </annotationProcessors>
