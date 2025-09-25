@@ -43,6 +43,10 @@ public class Fruit {
     @Column
     private Double price;
 
+    @GenericField(aggregable = Aggregable.YES)
+    @Column
+    private Double rating;
+
     @IndexedEmbedded
     @OneToMany(mappedBy = "fruit", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<FruitProducer> producers = new ArrayList<>();
@@ -98,6 +102,14 @@ public class Fruit {
         this.producers = producers;
     }
 
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
+    }
+
     public void addProducer(FruitProducer producer) {
         this.producers.add(producer);
         producer.setFruit(this);
@@ -109,12 +121,12 @@ public class Fruit {
             return false;
         Fruit fruit = (Fruit) o;
         return Objects.equals(id, fruit.id) && Objects.equals(name, fruit.name) && Objects.equals(price, fruit.price)
-                && Objects.equals(producers, fruit.producers);
+                && Objects.equals(producers, fruit.producers) && Objects.equals(rating, fruit.rating);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, price, producers);
+        return Objects.hash(id, name, price, producers, rating);
     }
 
     @Override
@@ -124,6 +136,7 @@ public class Fruit {
                 ", name='" + name + '\'' +
                 ", price=" + price +
                 ", producers=" + producers +
+                ", rating=" + rating +
                 '}';
     }
 }

@@ -1,6 +1,7 @@
 package io.quarkus.ts.hibernate.search;
 
 import java.util.List;
+import java.util.Map;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -20,7 +21,9 @@ import jakarta.ws.rs.core.Response;
 
 import org.hibernate.search.engine.search.aggregation.AggregationKey;
 import org.hibernate.search.engine.search.predicate.dsl.TypedSearchPredicateFactory;
+import org.hibernate.search.engine.search.query.SearchResult;
 import org.hibernate.search.mapper.orm.session.SearchSession;
+import org.hibernate.search.util.common.data.Range;
 import org.jboss.logging.Logger;
 
 import io.smallrye.common.annotation.Blocking;
@@ -144,6 +147,44 @@ public class FruitResource {
                 .fetch(fetch);
         Double averagePrice = result.aggregation(avgPriceKey);
         return new MetricAggregationsResponseDto(averagePrice, result.hits().size());
+    }
+
+    @GET
+    @Path("/range-aggregations")
+    public FruitPriceReport getRangeAggregations() {
+        AggregationKey<Map<Range<Double>, FruitPriceReport.PriceAggregation>> priceAggregationsKey = AggregationKey
+                .of("priceAggregationsKey");
+        SearchResult<Fruit> result = searchSession.search(Fruit.class)
+                .where(TypedSearchPredicateFactory::matchAll)
+                .aggregation(priceAggregationsKey, f -> f.range()
+                        .field("price", Double.class)
+                        .range(0.0, 10.0)
+                        .range(10.0, 20.0)
+                        .range(20.0, null)
+                        .value(f.composite()
+                                .from(
+                                        f.avg().field("price", Double.class),
+                                        f.min().field("price", Double.class),
+                                        f.max().field("price", Double.class))
+                                .as(FruitPriceReport.PriceAggregation::new)))
+                .fetch(20);
+        var aggregations = result.aggregation(priceAggregationsKey);
+        FruitPriceReport.PriceAggregation zeroToTen = null;
+        FruitPriceReport.PriceAggregation tenToTwenty = null;
+        FruitPriceReport.PriceAggregation twentyToInfinity = null;
+        for (Map.Entry<Range<Double>, FruitPriceReport.PriceAggregation> entry : aggregations.entrySet()) {
+            Range<Double> range = entry.getKey();
+            FruitPriceReport.PriceAggregation priceAggregation = entry.getValue();
+            double lowerBound = range.lowerBoundValue().orElseThrow();
+            if (lowerBound == 0.0) {
+                zeroToTen = priceAggregation;
+            } else if (lowerBound == 10.0) {
+                tenToTwenty = priceAggregation;
+            } else if (lowerBound == 20.0) {
+                twentyToInfinity = priceAggregation;
+            }
+        }
+        return new FruitPriceReport(zeroToTen, tenToTwenty, twentyToInfinity);
     }
 
     @Transactional
