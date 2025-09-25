@@ -8,11 +8,15 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import org.hibernate.Session;
 
+import io.quarkus.hibernate.orm.PersistenceUnitExtension;
+import io.quarkus.qe.hibernate.interceptor.SessionEventInterceptor;
 import io.quarkus.qe.hibernate.items.MyEntity;
 import io.quarkus.qe.hibernate.items.MyEntityId;
 
@@ -22,6 +26,10 @@ public class SessionResource {
     @Named("named")
     @Inject
     Session session;
+
+    @PersistenceUnitExtension("named")
+    @Inject
+    SessionEventInterceptor interceptor;
 
     @Transactional
     @Path("/persist/{id}")
@@ -61,5 +69,22 @@ public class SessionResource {
             return Response.status(404).build();
         }
         return Response.ok(data).build();
+    }
+
+    @Transactional
+    @Path("/merge/{id}")
+    @POST
+    public void merge(@PathParam("id") int id, String data) {
+        var entity = new MyEntity();
+        entity.setAnId(new MyEntityId(id));
+        entity.setData(data);
+        session.merge(entity);
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/merge/intercepted-data")
+    public SessionEventInterceptor.MergeData getInterceptedMergeData() {
+        return interceptor.getMergeData();
     }
 }
