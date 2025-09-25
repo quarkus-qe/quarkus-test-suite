@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.qe.hibernate.data.TestDataEntity;
+import io.quarkus.qe.hibernate.interceptor.SessionEventInterceptor;
 import io.quarkus.test.bootstrap.LookupService;
 import io.quarkus.test.bootstrap.RestService;
 import io.restassured.http.ContentType;
@@ -528,6 +529,56 @@ public abstract class BaseHibernateIT {
                 .queryParam("cacheable", false)
                 .get("/stateless-session/get-content-using-query-with-cacheable-hint")
                 .then().statusCode(HttpStatus.SC_NOT_FOUND);
+    }
+
+    @Tag("QUARKUS-6545")
+    @Test
+    void testSessionMergeEvents() {
+        // create instance
+        app.given()
+                .body("Some data")
+                .post("/session/persist/6006")
+                .then()
+                .statusCode(HttpStatus.SC_NO_CONTENT);
+        // assert its there
+        app.given()
+                .get("/session/find/6006")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body(is("Some data"));
+        // merge instance
+        app.given()
+                .body("Merger data")
+                .post("/session/merge/6006")
+                .then()
+                .statusCode(HttpStatus.SC_NO_CONTENT);
+        // assert its there and delete it
+        app.given()
+                .get("/session/find/6006")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body(is("Merger data"));
+        app.given()
+                .delete("/session/remove/6006")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body(is("true"));
+        app.given()
+                .get("/session/get-reference/6006")
+                .then()
+                .statusCode(HttpStatus.SC_NOT_FOUND);
+        // check that Hibernate fired respective events
+        var mergeData = app.given()
+                .get("/session/merge/intercepted-data")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body(Matchers.notNullValue())
+                .extract().as(SessionEventInterceptor.MergeData.class);
+        assertEquals("data", mergeData.changedPropertyName());
+        assertEquals("Some data", mergeData.originalState());
+        assertEquals("Merger data", mergeData.targetState());
+        assertEquals(6006, mergeData.entity().getAnId().getVal());
+        assertEquals("Merger data", mergeData.entity().getData());
     }
 
     private void givenPostConstructAndPreDestroyAreNotInvoked() {
