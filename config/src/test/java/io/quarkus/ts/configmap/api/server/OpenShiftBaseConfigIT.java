@@ -15,7 +15,6 @@ import java.util.concurrent.TimeUnit;
 import jakarta.inject.Inject;
 
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -34,7 +33,6 @@ public abstract class OpenShiftBaseConfigIT {
     @Inject
     static OpenShiftClient openshift;
 
-    @Order(1)
     @Test
     public void testSecretKeysHandler() {
         PropertiesSource.given = getApp()::given;
@@ -51,7 +49,6 @@ public abstract class OpenShiftBaseConfigIT {
         INJECTED_CONFIG.assertSecret(secretKey, secretVal);
     }
 
-    @Order(2)
     @Test
     public void configMapEndToEnd() {
         // Simple invocation
