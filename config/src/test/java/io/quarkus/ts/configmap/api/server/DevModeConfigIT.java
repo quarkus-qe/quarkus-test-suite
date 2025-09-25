@@ -11,7 +11,6 @@ import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 import java.util.Base64;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.DevModeQuarkusService;
@@ -33,7 +32,6 @@ public class DevModeConfigIT {
         PropertiesSource.given = app::given;
     }
 
-    @Order(1)
     @Test
     void configProfileDependentSecret() {
         // assert config properties only available with certain config profiles
@@ -48,7 +46,6 @@ public class DevModeConfigIT {
         INJECTED_PROPERTIES.assertSecret(secretKey, secretVal);
     }
 
-    @Order(2)
     @Test
     void changeSecretInRunningApp() {
         var secretKey = BASE64.secretKey(APP_PROPERTIES);
