@@ -2,21 +2,24 @@ CREATE TABLE "base".known_fruits
 (
   id   INT PRIMARY KEY,
   name VARCHAR(40),
-  price REAL
+  price REAL,
+  rating REAL
 );
 
 CREATE TABLE "company1".known_fruits
 (
   id   INT PRIMARY KEY,
   name VARCHAR(40),
-  price REAL
+  price REAL,
+  rating REAL
 );
 
 CREATE TABLE "company2".known_fruits
 (
   id   INT PRIMARY KEY,
   name VARCHAR(40),
-  price REAL
+  price REAL,
+  rating REAL
 );
 CREATE TABLE "base".fruit_producer (
  id SERIAL PRIMARY KEY,

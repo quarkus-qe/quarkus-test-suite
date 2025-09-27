@@ -1,6 +1,5 @@
 package io.quarkus.ts.hibernate.search;
 
-import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -12,6 +11,7 @@ import java.util.stream.Collectors;
 import jakarta.ws.rs.core.Response;
 
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.LookupService;
@@ -181,6 +181,64 @@ public abstract class AbstractMultitenantHibernateSearchIT {
                 .body("producers", hasSize(3))
                 .body("producers", Matchers.containsInAnyOrder("Mark", "Martin", "Luke"));
         delete(tenant, persistedFruit);
+    }
+
+    @Tag("QUARKUS-6545")
+    @Test
+    public void testRangeAggregations() {
+        String tenant = "base";
+        var fruit = new Fruit();
+        fruit.setName("apple");
+        fruit.setPrice(1.5);
+        fruit.setRating(7.6);
+        create(tenant, fruit);
+        var fruit2 = new Fruit();
+        fruit2.setName("pear");
+        fruit2.setPrice(15d);
+        fruit2.setRating(3.5);
+        create(tenant, fruit2);
+        var fruit3 = new Fruit();
+        fruit3.setName("peach");
+        fruit3.setPrice(13.5);
+        fruit3.setRating(1.2);
+        create(tenant, fruit3);
+        var fruit4 = new Fruit();
+        fruit4.setName("raspberry");
+        fruit4.setPrice(24.5);
+        fruit4.setRating(5.5);
+        create(tenant, fruit4);
+        var fruit5 = new Fruit();
+        fruit5.setName("blueberry");
+        fruit5.setPrice(35.5);
+        fruit5.setRating(0.8);
+        create(tenant, fruit5);
+        var fruit6 = new Fruit();
+        fruit6.setName("blueberry");
+        fruit6.setPrice(50.45);
+        fruit6.setRating(12.8);
+        create(tenant, fruit6);
+        // all fruits
+        app.given()
+                .pathParam("tenantId", tenant)
+                .get("/{tenantId}/fruits/range-aggregations")
+                .then().statusCode(200)
+                .body("zeroToTen.avg", is(1))
+                .body("zeroToTen.min", is(1))
+                .body("zeroToTen.max", is(1))
+                .body("tenToTwenty.avg", is(14))
+                .body("tenToTwenty.min", is(13))
+                .body("tenToTwenty.max", is(15))
+                .body("twentyToInfinity.avg", is(36))
+                .body("twentyToInfinity.min", is(24))
+                .body("twentyToInfinity.max", is(50));
+        // clean up after this test
+        app.given()
+                .pathParam("tenantId", tenant)
+                .queryParam("min-price", 0.0)
+                .queryParam("max-price", 52.0)
+                .delete("/{tenantId}/fruits/delete-by-price-range")
+                .then().statusCode(200)
+                .body(is("6"));
     }
 
     private ValidatableResponse create(String tenantId, Fruit fruit) {
