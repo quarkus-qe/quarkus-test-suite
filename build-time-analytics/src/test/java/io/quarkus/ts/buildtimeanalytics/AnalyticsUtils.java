@@ -36,8 +36,7 @@ public class AnalyticsUtils {
             "quarkus-core",
             "quarkus-grpc",
             "quarkus-hibernate-orm",
-            // Enable when https://github.com/quarkusio/quarkus/issues/50247 is fixed
-            //"quarkus-hibernate-orm-panache",
+            "quarkus-hibernate-orm-panache",
             "quarkus-hibernate-validator",
             "quarkus-infinispan-client",
             "quarkus-jackson",
@@ -65,8 +64,7 @@ public class AnalyticsUtils {
             "quarkus-smallrye-graphql-client",
             "quarkus-smallrye-reactive-streams-operators",
             "quarkus-spring-boot-properties",
-            // Enable when https://github.com/quarkusio/quarkus/issues/50247 is fixed
-            //"quarkus-spring-data-jpa",
+            "quarkus-spring-data-jpa",
             "quarkus-spring-di",
             "quarkus-spring-security",
             "quarkus-undertow",
@@ -75,8 +73,7 @@ public class AnalyticsUtils {
     public static final String[] EXTENSION_SET_B = new String[] {
             "quarkus-avro",
             "quarkus-container-image-openshift",
-            // Enable when https://github.com/quarkusio/quarkus/issues/50247 is fixed
-            //"quarkus-hibernate-orm-rest-data-panache",
+            "quarkus-hibernate-orm-rest-data-panache",
             "quarkus-rest-client-jaxrs",
             "quarkus-jdbc-mariadb",
             "quarkus-jdbc-mssql",
@@ -100,8 +97,7 @@ public class AnalyticsUtils {
             "quarkus-messaging-kafka",
             "quarkus-spring-cache",
             "quarkus-spring-cloud-config-client",
-            // Enable when https://github.com/quarkusio/quarkus/issues/50247 is fixed
-            //"quarkus-spring-data-rest",
+            "quarkus-spring-data-rest",
             "quarkus-spring-scheduled",
             "quarkus-spring-web",
             "quarkus-websockets",

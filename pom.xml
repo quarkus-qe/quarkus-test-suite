@@ -546,8 +546,7 @@
                 <module>security/bouncycastle-fips</module>
                 <module>security/form-authn</module>
                 <module>security/https</module>
-                <!-- TODO enable when https://github.com/quarkusio/quarkus/issues/50247 is fixed-->
-                <!-- <module>security/jpa</module> -->
+                <module>security/jpa</module>
                 <module>security/jpa-reactive</module>
                 <module>security/jwt</module>
                 <module>security/keycloak</module>
