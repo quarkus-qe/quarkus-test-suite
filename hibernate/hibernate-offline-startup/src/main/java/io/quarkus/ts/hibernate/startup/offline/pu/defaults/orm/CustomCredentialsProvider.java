@@ -4,7 +4,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.control.ActivateRequestContext;
 
 import io.quarkus.credentials.CredentialsProvider;
 import io.quarkus.logging.Log;
@@ -22,8 +21,6 @@ public class CustomCredentialsProvider implements CredentialsProvider {
         this.requestScopedData = requestScopedData;
     }
 
-    // TODO: drop the activation when https://github.com/quarkusio/quarkus/issues/50154 is fixed
-    @ActivateRequestContext
     @Override
     public Map<String, String> getCredentials(String credentialsProviderName) {
         if (requestScopedData.foundCredentials()) {
