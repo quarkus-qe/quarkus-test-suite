@@ -14,7 +14,6 @@ import java.nio.charset.StandardCharsets;
 import org.apache.http.HttpStatus;
 import org.awaitility.Awaitility;
 import org.jboss.logging.Logger;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
@@ -107,7 +106,6 @@ public class WebSocketsNextMetricsIT {
 
     @Test
     @Order(2)
-    @Disabled("https://github.com/quarkusio/quarkus/issues/47409")
     public void serverErrorMetricsTest() throws URISyntaxException, InterruptedException {
         Client client = createClient("/failing");
         getServer().logs().assertContains("Error on websocket: Websocket failed to open");
