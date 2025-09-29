@@ -8,10 +8,8 @@ import io.vertx.ext.web.RoutingContext;
 @RequestScoped
 public final class RequestScopedData {
 
-    // TODO: make this member variables instead when https://github.com/quarkusio/quarkus/issues/50154 is fixed
-    //      or get the credentials directly from the RoutingContext instead
-    private static volatile String user;
-    private static volatile String password;
+    private volatile String user;
+    private volatile String password;
 
     @Inject
     RoutingContext routingContext;
