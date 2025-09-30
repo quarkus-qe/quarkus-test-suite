@@ -1,6 +1,5 @@
 package io.quarkus.ts.hibernate.search;
 
-import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -12,6 +11,7 @@ import java.util.stream.Collectors;
 import jakarta.ws.rs.core.Response;
 
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.LookupService;
@@ -181,6 +181,51 @@ public abstract class AbstractMultitenantHibernateSearchIT {
                 .body("producers", hasSize(3))
                 .body("producers", Matchers.containsInAnyOrder("Mark", "Martin", "Luke"));
         delete(tenant, persistedFruit);
+    }
+
+    @Tag("QUARKUS-6545")
+    @Test
+    public void testRangeAggregations() {
+        String tenant = "base";
+        try {
+            createFruit(tenant, "apple", 1.5);
+            createFruit(tenant, "pear", 15d);
+            createFruit(tenant, "peach", 13.5);
+            createFruit(tenant, "raspberry", 24.5);
+            createFruit(tenant, "blueberry", 35.5);
+            createFruit(tenant, "strawberry", 50.45);
+
+            // all fruits
+            app.given()
+                    .pathParam("tenantId", tenant)
+                    .get("/{tenantId}/fruits/range-aggregations")
+                    .then().statusCode(200)
+                    .body("zeroToTen.avg", is(1))
+                    .body("zeroToTen.min", is(1))
+                    .body("zeroToTen.max", is(1))
+                    .body("tenToTwenty.avg", is(14))
+                    .body("tenToTwenty.min", is(13))
+                    .body("tenToTwenty.max", is(15))
+                    .body("twentyToInfinity.avg", is(36))
+                    .body("twentyToInfinity.min", is(24))
+                    .body("twentyToInfinity.max", is(50));
+        } finally {
+            // clean up after this test
+            app.given()
+                    .pathParam("tenantId", tenant)
+                    .queryParam("min-price", 0.0)
+                    .queryParam("max-price", 52.0)
+                    .delete("/{tenantId}/fruits/delete-by-price-range")
+                    .then().statusCode(200)
+                    .body(is("6"));
+        }
+    }
+
+    private void createFruit(String tenantId, String fruitName, double fruitPrice) {
+        var fruit = new Fruit();
+        fruit.setName(fruitName);
+        fruit.setPrice(fruitPrice);
+        create(tenantId, fruit);
     }
 
     private ValidatableResponse create(String tenantId, Fruit fruit) {
