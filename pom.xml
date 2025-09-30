@@ -29,7 +29,7 @@
         <jsoup.version>1.21.2</jsoup.version>
         <quarkiverse.config.version>2.4.0</quarkiverse.config.version>
         <quarkiverse.pact.version>1.6.0</quarkiverse.pact.version>
-        <smallrye-stork.version>2.7.4</smallrye-stork.version>
+        <smallrye-stork.version>2.7.5</smallrye-stork.version>
         <assertj.version>3.27.6</assertj.version>
         <htmlunit.version>4.16.0</htmlunit.version>
         <java.websocket.version>1.6.0</java.websocket.version>
