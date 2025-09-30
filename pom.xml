@@ -844,6 +844,7 @@
                                         <!-- Kafka  (amq-streams) requires separate properties for image and version -->
                                         <amq-streams.image>registry.redhat.io/amq-streams/kafka-40-rhel9</amq-streams.image>
                                         <amq-streams.version>3.0.0</amq-streams.version>
+                                        <consul.image>registry.connect.redhat.com/hashicorp/consul:1.21</consul.image>
                                     </systemPropertyVariables>
                                     <rerunFailingTestsCount>${oc.reruns}</rerunFailingTestsCount>
                                 </configuration>
