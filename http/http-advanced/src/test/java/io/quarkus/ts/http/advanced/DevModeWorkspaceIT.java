@@ -1,5 +1,7 @@
 package io.quarkus.ts.http.advanced;
 
+import static io.quarkus.test.utils.AwaitilityUtils.AwaitilitySettings.usingTimeout;
+import static java.time.Duration.ofSeconds;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
 
@@ -21,6 +23,7 @@ import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.DevModeQuarkusApplication;
+import io.quarkus.test.utils.AwaitilityUtils;
 import io.quarkus.test.utils.FileUtils;
 import io.restassured.response.Response;
 
@@ -77,11 +80,14 @@ public class DevModeWorkspaceIT {
                 ElementHandle save = page.waitForSelector(".mainMenuBarButtons > vaadin-button:nth-child(1)");
                 save.click();
 
-                Path file = app.getServiceFolder()
-                        .resolve(Path.of("src", "main", "java", "io", "quarkus", "ts", "http", "advanced",
-                                "PathSpecificHeadersResource.java"));
-                String content = FileUtils.loadFile(file.toFile());
-                Assertions.assertTrue(content.contains("@Path(\"/this\")"), file + " wasn't edited: " + code);
+                AwaitilityUtils.untilAsserted(() -> {
+                    Path file = app.getServiceFolder()
+                            .resolve(Path.of("src", "main", "java", "io", "quarkus", "ts", "http", "advanced",
+                                    "PathSpecificHeadersResource.java"));
+                    String content = FileUtils.loadFile(file.toFile());
+                    Assertions.assertTrue(content.contains("@Path(\"/this\")"),
+                            file + " wasn't edited:" + System.lineSeparator() + content);
+                }, usingTimeout(ofSeconds(5)));
 
                 // Sometimes the app returns the old results, so let's refresh the page
                 page.reload();
