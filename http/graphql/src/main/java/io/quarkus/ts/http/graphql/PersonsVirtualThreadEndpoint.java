@@ -1,50 +1,34 @@
-package io.quarkus.ts.http.graphql.telemetry;
+package io.quarkus.ts.http.graphql;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.eclipse.microprofile.graphql.Description;
 import org.eclipse.microprofile.graphql.GraphQLApi;
+import org.eclipse.microprofile.graphql.Mutation;
 import org.eclipse.microprofile.graphql.Name;
 import org.eclipse.microprofile.graphql.Query;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;
-import io.smallrye.mutiny.Multi;
-import io.smallrye.mutiny.Uni;
 
 @GraphQLApi
-public class PersonsEndpoint {
-    private final Person[] philosophers;
+public class PersonsVirtualThreadEndpoint extends PersonsEndpointBase {
 
-    public PersonsEndpoint() {
-        final Person plato = new Person("Plato");
-        final Person aristotle = new Person("Aristotle");
-        plato.setFriend(aristotle);
-        aristotle.setFriend(plato);
-        philosophers = new Person[] { plato, aristotle };
-    }
-
-    @Query("philosophers")
+    @RunOnVirtualThread
+    @Query("philosophers_vt")
     @Description("Get a couple of Greek philosophers")
-    public Person[] getPhilosophers() {
+    public List<Person> getPhilosophers() {
+        failIfNotVirtualThread();
         return philosophers;
-    }
-
-    @Query("friend")
-    public Person getPhilosopher(@Name("name") String name) {
-        for (Person philosopher : philosophers) {
-            if (philosopher.getName().equals(name)) {
-                return philosopher.getFriend();
-            }
-        }
-        throw new NoSuchElementException(name);
     }
 
     @RunOnVirtualThread
     @Query("friend_vt")
-    public Person getPhilosopherUsingVirtualThread(@Name("name") String name) {
+    public Person getPhilosopher(@Name("name") String name) {
         failIfNotVirtualThread();
         for (Person philosopher : philosophers) {
             if (philosopher.getName().equals(name)) {
@@ -54,12 +38,27 @@ public class PersonsEndpoint {
         throw new NoSuchElementException(name);
     }
 
-    @Query("friend_r")
-    public Uni<Person> getPhilosopherReactively(@Name("name") String name) {
-        return Multi.createFrom().items(philosophers)
-                .filter(person -> person.getName().equals(name))
-                .map(Person::getFriend)
-                .toUni();
+    @RunOnVirtualThread
+    @Mutation("create_vt")
+    public Person createPhilosopher(@Name("name") String name) {
+        failIfNotVirtualThread();
+        Person philosopher = new Person(name);
+        philosophers.add(philosopher);
+        return philosopher;
+    }
+
+    @RunOnVirtualThread
+    @Query("map_vt")
+    public Map<PhilosophyEra, Person> getPhilosophersMap() {
+        failIfNotVirtualThread();
+        return philosophersMap;
+    }
+
+    @RunOnVirtualThread
+    @Query("error_vt")
+    public String throwError() throws PhilosophyException {
+        failIfNotVirtualThread();
+        throw new PhilosophyException();
     }
 
     private static void failIfNotVirtualThread() {

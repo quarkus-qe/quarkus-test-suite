@@ -12,8 +12,12 @@ import java.util.stream.Stream;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledForJreRange;
+import org.junit.jupiter.api.condition.JRE;
 
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
@@ -275,13 +279,32 @@ public abstract class BaseJwtSecurityIT {
         Stream.of("USA", "Canada", "Australia").forEach(this::executeGraphQLRequest);
     }
 
+    @DisabledForJreRange(max = JRE.JAVA_20, disabledReason = "VTs supported for Java 21+")
+    @Tag("QUARKUS-6521")
+    @Test
+    public void testSecuredGraphQLEndpointRunningOnVirtualThread() {
+        Stream.of("USA", "Canada", "Australia").forEach(expectedSubClaim -> executeGraphQLRequest(expectedSubClaim, true));
+        // the subject claim 'Austria' is not allowed
+        givenWithToken(createTokenWithSubClaim("Austria"))
+                .body("{\"query\":\"{\nsubject_vt\n}\",\"variables\":null}")
+                .when().post("/graphql")
+                .then()
+                .body("errors", Matchers.hasSize(1))
+                .body("data.subject_vt", Matchers.nullValue());
+    }
+
     private void executeGraphQLRequest(String expectedSubClaim) {
+        executeGraphQLRequest(expectedSubClaim, false);
+    }
+
+    private void executeGraphQLRequest(String expectedSubClaim, boolean runOnVirtualThread) {
+        String query = "subject" + (runOnVirtualThread ? "_vt" : "");
         givenWithToken(createTokenWithSubClaim(expectedSubClaim))
-                .body("{\"query\":\"{\nsubject\n}\",\"variables\":null}")
+                .body("{\"query\":\"{\n" + query + "\n}\",\"variables\":null}")
                 .when().post("/graphql")
                 .then()
                 .statusCode(200)
-                .body("data.subject", CoreMatchers.equalTo(expectedSubClaim));
+                .body("data." + query, CoreMatchers.equalTo(expectedSubClaim));
     }
 
     protected abstract RequestSpecification givenWithToken(String token);
