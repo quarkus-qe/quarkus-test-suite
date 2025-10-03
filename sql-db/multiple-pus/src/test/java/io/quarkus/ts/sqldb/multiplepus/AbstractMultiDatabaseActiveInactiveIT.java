@@ -5,6 +5,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
 import java.util.Map;
@@ -14,8 +15,11 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.condition.DisabledForJreRange;
+import org.junit.jupiter.api.condition.JRE;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import io.quarkus.test.bootstrap.RestService;
@@ -138,6 +142,58 @@ public abstract class AbstractMultiDatabaseActiveInactiveIT {
     public void vegetableActiveCheckMetrics() {
         checkMetricsIfDatasourceIsPresent("vegetables");
         checkMetricsIfDatasourceNotPresent("fruits");
+    }
+
+    @DisabledForJreRange(max = JRE.JAVA_20, disabledReason = "VTs supported for Java 21+")
+    @Tag("QUARKUS-6521")
+    @Test
+    @Order(10)
+    @DisplayName("Check the active datasource can be used from GraphQL endpoint running on a virtual thread")
+    public void testGraphQLWithVirtualThreadsAndPostgreSQL() {
+        Integer latestVegetableId = null;
+        try {
+            Vegetable vegetable = new Vegetable();
+            vegetable.name = "Onion";
+
+            latestVegetableId = getApp()
+                    .given()
+                    .basePath("graphql")
+                    .contentType("application/json")
+                    .body("""
+                            {
+                                "query": "mutation { vegetable(name:\\"%s\\") { id } }"
+                            }
+                            """.formatted(vegetable.name))
+                    .post()
+                    .then()
+                    .statusCode(HttpStatus.SC_OK)
+                    .extract().jsonPath().getInt("data.vegetable.id");
+
+            getApp()
+                    .given()
+                    .basePath("graphql")
+                    .contentType("application/json")
+                    .body("""
+                            {
+                                "query": "{ vegetable(id:%d) { name } }"
+                            }
+                            """.formatted(latestVegetableId))
+                    .post()
+                    .then()
+                    .statusCode(HttpStatus.SC_OK)
+                    .body("data.vegetable.name", is(vegetable.name));
+
+            getApp()
+                    .given()
+                    .get("/q/metrics")
+                    .then()
+                    .statusCode(HttpStatus.SC_OK)
+                    .body(containsString("jvm_threads_virtual_pinned_seconds_sum 0.0"));
+        } finally {
+            if (latestVegetableId != null) {
+                deleteByIdRequest("/vegetable/" + latestVegetableId);
+            }
+        }
     }
 
     public int createRequest(PanacheEntity edibles, String name, String path, Map<String, String> headers) {
