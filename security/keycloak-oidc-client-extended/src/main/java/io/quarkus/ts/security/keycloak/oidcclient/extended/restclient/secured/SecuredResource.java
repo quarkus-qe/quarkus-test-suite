@@ -7,6 +7,7 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.SecurityContext;
@@ -50,5 +51,12 @@ public class SecuredResource {
     @RolesAllowed("admin")
     public String admin() {
         return "Restricted area! Admin access granted!";
+    }
+
+    @GET
+    @Path("/echoToken")
+    @RolesAllowed("**")
+    public String echoToken(@HeaderParam("Authorization") String authorization) {
+        return authorization.split(" ")[1];
     }
 }
