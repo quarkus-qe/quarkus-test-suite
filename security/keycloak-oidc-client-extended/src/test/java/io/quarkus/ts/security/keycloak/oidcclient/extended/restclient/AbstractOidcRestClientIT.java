@@ -4,6 +4,8 @@ import static io.quarkus.ts.security.keycloak.oidcclient.extended.restclient.Tok
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.UUID;
 
@@ -89,6 +91,32 @@ public abstract class AbstractOidcRestClientIT {
         pingTokenRefreshEndpoints("refreshEnabled", true);
         // test default OIDC client with refreshing disabled using request filter
         pingTokenRefreshEndpoints("refreshDisabled", false);
+    }
+
+    @Test
+    @Tag("QUARKUS-6474")
+    public void testPeriodicTokenRefresh() throws InterruptedException {
+        // get first token, this will start to make the app periodically check for token validity
+        // accessing this endpoint will also reset counter of checks for token validity
+        String firstToken = app.given().get("/token-echo").getBody().asString();
+
+        // give the app some time to check for token refresh several times and also actually refresh the token
+        Thread.sleep(2000);
+
+        int tokenRefreshCount = Integer
+                .parseInt(app.given().given().get("/token-echo/refresh-counts").getBody().asString());
+
+        // after this time, original token should be expired and new token should be given
+        String secondToken = app.given().get("/token-echo").getBody().asString();
+
+        // refresh-interval is configured to 0.5s so app should check every 0.5 if token is valid
+        // if property "refresh-interval" is not configured, it will check only once - when the token is actually needed during HTTP request
+        assertTrue(tokenRefreshCount > 3,
+                "There should be more than 3 checks for token refresh, but was: " + tokenRefreshCount);
+
+        // OIDC client used here has artificially shortened the token validity time to 1 second using "access-token-expiry-skew"
+        // so after a short time waiting, there should be new token
+        assertNotEquals(firstToken, secondToken, "Access token should change after expiry time");
     }
 
     private void assertPongEndpoints(String endpointPrefix) {
