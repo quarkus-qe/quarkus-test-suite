@@ -5,6 +5,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 
 import io.quarkus.qute.Template;
+import io.quarkus.qute.TemplateException;
 
 @Path("template")
 public class TemplateCacheResource {
@@ -23,8 +24,8 @@ public class TemplateCacheResource {
     public String getQuteTemplate() {
         try {
             return cached.render();
-        } catch (IllegalStateException e) {
-            return e.getMessage();
+        } catch (TemplateException e) {
+            return e.getCause().getMessage();
         }
     }
 
