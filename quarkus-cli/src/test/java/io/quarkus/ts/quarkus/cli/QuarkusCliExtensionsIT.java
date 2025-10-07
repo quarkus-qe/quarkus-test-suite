@@ -32,6 +32,7 @@ public class QuarkusCliExtensionsIT {
     static final String REST_EXTENSION_ARTIFACT = "quarkus-rest";
     static final String QUARKUS_BOM = "quarkus-bom";
     static final String REST_EXTENSION_GUIDE = "https://quarkus.io/guides/rest";
+    static final String SUPPORT_SCOPE = "Support scope";
     static final List<String> EXPECTED_PLATFORM_VERSIONS = Arrays.asList("2.0.0.Final", "2.1.0.Final");
     static final ListExtensionRequest NO_STREAM = new ListExtensionRequest(null); // --stream and --platform-bom are not compatible
 
@@ -68,6 +69,12 @@ public class QuarkusCliExtensionsIT {
     public void shouldListExtensionsUsingFull() {
         result = cliClient.listExtensions("--full");
         assertListFullOptionOutput();
+    }
+
+    @Test
+    public void shouldListExtensionsUsingSupportScope() {
+        result = cliClient.listExtensions("--support-scope");
+        assertListSupportScopeOptionOutput();
     }
 
     @Test
@@ -140,6 +147,13 @@ public class QuarkusCliExtensionsIT {
                 && result.getOutput().contains(REST_EXTENSION_ARTIFACT)
                 && result.getOutput().contains(REST_EXTENSION_GUIDE),
                 "--full option output is unexpected. Output: " + result.getOutput());
+    }
+
+    private void assertListSupportScopeOptionOutput() {
+        // Only checking if Support scope column is present
+        // as to see the support scope value the registry needs to be setup
+        assertTrue(result.getOutput().contains(SUPPORT_SCOPE),
+                "--support-scope option output is unexpected. Output: " + result.getOutput());
     }
 
 }
