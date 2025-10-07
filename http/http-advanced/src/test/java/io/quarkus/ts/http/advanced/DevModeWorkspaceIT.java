@@ -6,6 +6,8 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
 
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.http.HttpStatus;
@@ -13,9 +15,12 @@ import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.ElementHandle;
+import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
 
@@ -35,12 +40,12 @@ public class DevModeWorkspaceIT {
     static final RestService app = new RestService();
 
     @Test
-    public void workSpaceExists() {
+    public void workspaceExists() {
         app.given().when().get("/q/dev-ui/workspace").then().statusCode(HttpStatus.SC_OK);
     }
 
     @Test
-    public void workSpaceContainsText() {
+    public void workspaceContainsText() {
         var pageURL = app.getURI(Protocol.HTTP).withPath("/q/dev-ui/workspace").toString();
         try (Playwright playwright = Playwright.create()) {
             try (Browser browser = playwright.firefox().launch()) {
@@ -55,7 +60,30 @@ public class DevModeWorkspaceIT {
     }
 
     @Test
-    public void workSpaceCanBeEdited() {
+    @DisabledOnOs(value = { OS.WINDOWS }, disabledReason = "https://issues.redhat.com/browse/QUARKUS-6747")
+    public void workspaceHasFolders() {
+        var pageURL = app.getURI(Protocol.HTTP).withPath("/q/dev-ui/workspace").toString();
+        try (Playwright playwright = Playwright.create()) {
+            try (Browser browser = playwright.firefox().launch()) {
+                Page page = browser.newContext().newPage();
+                page.navigate(pageURL);
+
+                Locator tree = page.locator("#directoryTree");
+                String representation = tree.ariaSnapshot();
+                String message = " The format of the tree is the following: \n" + representation;
+                List<String> lines = Arrays.stream(representation.split("\n"))
+                        .map(String::strip)
+                        .toList();
+                Assertions.assertTrue(lines.stream().anyMatch(line -> line.contains("src") && line.endsWith("src")),
+                        "There is no folder named 'src'." + message);
+                Assertions.assertTrue(lines.stream().anyMatch(line -> line.contains("main") && line.endsWith("main")),
+                        "There is folder named 'main'." + message);
+            }
+        }
+    }
+
+    @Test
+    public void workspaceCanBeEdited() {
         app.given().when().get("/api/filter/any")
                 .then().statusCode(HttpStatus.SC_OK).body(containsString("ok"));
         app.given().when().get("/api/filter/this")
