@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Map;
@@ -207,6 +208,27 @@ public abstract class BaseOidcSecurityIT {
         // Assert that the old refresh token is no longer valid
         assertEquals(HttpStatus.SC_BAD_REQUEST, refreshGrantResponse.statusCode());
         assertEquals("invalid_grant", refreshGrantResponse.jsonPath().getString("error"));
+    }
+
+    @Test
+    public void noMetadataUnlessEnabled() {
+        given()
+                .when()
+                .auth().oauth2(getUserAccessToken())
+                .get(".well-known/oauth-protected-resource")
+                .then()
+                .statusCode(HttpStatus.SC_NOT_FOUND);
+
+        Response response = given()
+                .when()
+                .get("/user");
+        response.then().statusCode(HttpStatus.SC_UNAUTHORIZED);
+        response.headers().asList().forEach(header -> {
+            assertFalse(header.getValue().contains("resource_metadata"),
+                    "Header contains info about a private resource: " + header);
+            assertFalse(header.getValue().contains(".well-known"),
+                    "Header may contain info about a private resource: " + header);
+        });
     }
 
     protected abstract KeycloakService getKeycloak();
