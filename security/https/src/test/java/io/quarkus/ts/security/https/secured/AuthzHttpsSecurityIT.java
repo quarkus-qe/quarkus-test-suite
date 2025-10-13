@@ -35,11 +35,12 @@ public class AuthzHttpsSecurityIT {
     public void httpsAuthenticatedAndAuthorizedClient() {
         var webClient = app.mutinyHttps(CLIENT_CN);
 
-        var response = webClient.get(HELLO_FULL_PATH).sendAndAwait().bodyAsString();
-        assertEquals("Hello CN=client, HTTPS: true, isUser: true, isGuest: false", response);
+        var response = webClient.get(HELLO_FULL_PATH).sendAndAwait();
+        assertEquals("Hello CN=client, HTTPS: true, isUser: true, isGuest: false", response.bodyAsString());
 
-        response = webClient.get(SECURED_PATH).sendAndAwait().bodyAsString();
-        assertEquals("Client certificate: CN=client", response);
+        response = webClient.get(SECURED_PATH).sendAndAwait();
+        assertEquals(HttpStatus.SC_OK, response.statusCode());
+        assertEquals("Client certificate: CN=client", response.bodyAsString());
     }
 
     @Test
