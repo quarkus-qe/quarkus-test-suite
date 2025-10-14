@@ -18,7 +18,8 @@ public class MySqlSha256JpaIT extends BaseJpaSecurityRealmIT {
     static MySqlService database = new MySqlService();
 
     @QuarkusApplication(classes = { AdminResource.class, PublicResource.class, UserResource.class,
-            SHA256PasswordProvider.class, SHA256UserEntity.class, CreateUserWithSHA256PassResource.class })
+            SHA256PasswordProvider.class, SHA256UserEntity.class, CreateUserWithSHA256PassResource.class,
+            HttpAuthorizationConfiguration.class, HttpAuthenticationConfiguration.class })
     static RestService app = new RestService().withProperties("mysql.properties")
             .withProperty("quarkus.datasource.username", database.getUser())
             .withProperty("quarkus.datasource.password", database.getPassword())
