@@ -5,7 +5,7 @@ import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
-public class FormAuthnIT extends FormAuthnBase {
-    @QuarkusApplication
-    static RestService app = new RestService().withProperties("formAuthN.properties");
+public class FormAuthnProgrammaticIT extends FormAuthnBase {
+    @QuarkusApplication(classes = { UserResource.class, FormAuthnProgrammaticConfiguration.class })
+    static RestService app = new RestService();
 }

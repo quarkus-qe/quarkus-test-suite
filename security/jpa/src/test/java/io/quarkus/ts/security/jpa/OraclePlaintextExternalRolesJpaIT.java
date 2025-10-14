@@ -21,7 +21,8 @@ public class OraclePlaintextExternalRolesJpaIT extends BaseJpaSecurityRealmIT {
     static OracleService database = new OracleService();
 
     @QuarkusApplication(classes = { AdminResource.class, PublicResource.class,
-            UserResource.class, PlaintextExternalRolesUserEntity.class, RoleEntity.class })
+            UserResource.class, PlaintextExternalRolesUserEntity.class, RoleEntity.class,
+            HttpAuthorizationConfiguration.class, HttpAuthenticationConfiguration.class })
     static RestService app = new RestService().withProperties("oracle.properties")
             .withProperty("quarkus.datasource.username", database.getUser())
             .withProperty("quarkus.datasource.password", database.getPassword())
