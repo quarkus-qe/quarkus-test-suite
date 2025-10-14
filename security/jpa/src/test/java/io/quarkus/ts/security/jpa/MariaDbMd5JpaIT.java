@@ -19,7 +19,8 @@ public class MariaDbMd5JpaIT extends BaseJpaSecurityRealmIT {
     static MariaDbService database = new MariaDbService();
 
     @QuarkusApplication(classes = { AdminResource.class, PublicResource.class, UserResource.class,
-            MD5PasswordProvider.class, MD5UserEntity.class, CreateUserWithMD5PassResource.class })
+            MD5PasswordProvider.class, MD5UserEntity.class, CreateUserWithMD5PassResource.class,
+            HttpAuthorizationConfiguration.class, HttpAuthenticationConfiguration.class })
     static RestService app = new RestService()
             .withProperties("mariadb_app.properties")
             .withProperty("quarkus.datasource.username", database.getUser())

@@ -20,7 +20,8 @@ public class OracleSha512JpaIT extends BaseJpaSecurityRealmIT {
     static OracleService database = new OracleService();
 
     @QuarkusApplication(classes = { AdminResource.class, PublicResource.class, UserResource.class,
-            SHA512PasswordProvider.class, SHA512UserEntity.class, CreateUserWithSHA512PassResource.class })
+            SHA512PasswordProvider.class, SHA512UserEntity.class, CreateUserWithSHA512PassResource.class,
+            HttpAuthorizationConfiguration.class, HttpAuthenticationConfiguration.class })
     static RestService app = new RestService().withProperties("oracle.properties")
             .withProperty("quarkus.datasource.username", database.getUser())
             .withProperty("quarkus.datasource.password", database.getPassword())
