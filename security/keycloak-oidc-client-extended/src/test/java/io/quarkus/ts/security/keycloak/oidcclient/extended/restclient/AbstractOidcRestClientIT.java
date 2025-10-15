@@ -4,6 +4,7 @@ import static io.quarkus.ts.security.keycloak.oidcclient.extended.restclient.Tok
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -20,6 +21,7 @@ import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.security.keycloak.oidcclient.extended.restclient.model.Score;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 
 public abstract class AbstractOidcRestClientIT {
 
@@ -98,7 +100,10 @@ public abstract class AbstractOidcRestClientIT {
     public void testPeriodicTokenRefresh() throws InterruptedException {
         // get first token, this will start to make the app periodically check for token validity
         // accessing this endpoint will also reset counter of checks for token validity
-        String firstToken = app.given().get("/token-echo").getBody().asString();
+        Response firstTokenRequest = app.given().get("/token-echo");
+        // assert that token was successfully acquired and used
+        assertEquals(HttpStatus.SC_OK, firstTokenRequest.getStatusCode(), "App should acquire token and work with it.");
+        String firstToken = firstTokenRequest.getBody().asString();
 
         // give the app some time to check for token refresh several times and also actually refresh the token
         Thread.sleep(2000);
@@ -107,7 +112,10 @@ public abstract class AbstractOidcRestClientIT {
                 .parseInt(app.given().given().get("/token-echo/refresh-counts").getBody().asString());
 
         // after this time, original token should be expired and new token should be given
-        String secondToken = app.given().get("/token-echo").getBody().asString();
+        Response secondTokenRequest = app.given().get("/token-echo");
+        // assert that token was successfully acquired and used
+        assertEquals(HttpStatus.SC_OK, secondTokenRequest.getStatusCode(), "App should acquire token and work with it.");
+        String secondToken = secondTokenRequest.getBody().asString();
 
         // refresh-interval is configured to 0.5s so app should check every 0.5 if token is valid
         // if property "refresh-interval" is not configured, it will check only once - when the token is actually needed during HTTP request
