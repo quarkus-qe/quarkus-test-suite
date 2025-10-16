@@ -118,6 +118,7 @@ public class QuarkusCliCreateJvmApplicationIT {
 
     @Tag("QUARKUS-1071")
     @TestQuarkusCli
+    @Disabled("https://issues.redhat.com/browse/QUARKUS-6773")
     public void shouldCreateApplicationWithGradleOnJvm(QuarkusVersionAwareCliClient cliClient) {
 
         // Create application
