@@ -10,6 +10,7 @@ import io.quarkus.test.services.Dependency;
 import io.quarkus.test.services.DevModeQuarkusApplication;
 import io.smallrye.common.os.OS;
 
+@Tag("fips-incompatible") // TODO: enable when https://github.com/quarkusio/quarkus/issues/40526 gets fixed
 @QuarkusScenario
 @Tag("QUARKUS-6243")
 public class DevModeMySQLHQLConsoleIT extends AbstractHQLConsoleIT {
