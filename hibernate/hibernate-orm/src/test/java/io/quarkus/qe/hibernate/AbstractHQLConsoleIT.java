@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
@@ -90,6 +91,7 @@ public abstract class AbstractHQLConsoleIT {
         assertTrue(cities.containsAll(List.of("Prague", "Brno", "Poznan")));
     }
 
+    @Disabled("https://issues.redhat.com/browse/QUARKUS-6243")
     @Test
     @Order(5)
     public void testGetMultipleOrdersWithNestedValues() throws Exception {
@@ -113,6 +115,7 @@ public abstract class AbstractHQLConsoleIT {
         assertTrue(productNames.containsAll(List.of("Laptop", "Mouse", "Keyboard")));
     }
 
+    @Disabled("https://issues.redhat.com/browse/QUARKUS-6243")
     @Test
     @Order(6)
     public void testHandlePagination() throws Exception {
@@ -143,6 +146,7 @@ public abstract class AbstractHQLConsoleIT {
         assertEquals("Camera", page3.get("data").get(0).get("productName").asText());
     }
 
+    @Disabled("https://issues.redhat.com/browse/QUARKUS-6243")
     @Test
     @Order(7)
     public void testInsertNewOrder() throws Exception {
