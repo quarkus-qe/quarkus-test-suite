@@ -1052,10 +1052,8 @@
             </build>
         </profile>
         <profile>
-            <id>mariadb-11-fips</id>
+            <id>fips-overrides</id>
             <activation>
-                <!-- MariaDB 11.4 is not starting in FIPS-enabled environment, use 10.11 as a workaround -->
-                <!-- TODO: drop this profile when https://issues.redhat.com/browse/QUARKUS-5984 is fixed -->
                 <property>
                     <name>env.FIPS</name>
                     <value>fips</value>
@@ -1074,7 +1072,12 @@
                                 </goals>
                                 <configuration>
                                     <systemPropertyVariables>
+                                        <!-- MariaDB 11.4 is not starting in FIPS-enabled environment, use 10.11 as a workaround -->
+                                        <!-- TODO: drop this property when https://issues.redhat.com/browse/QUARKUS-5984 is fixed -->
                                         <mariadb.11.image>registry.redhat.io/rhel9/mariadb-1011:latest</mariadb.11.image>
+                                        <!-- MongoDB 8.0 is not starting in FIPS-enabled environment, use 7.0 as a workaround -->
+                                        <!-- TODO: drop this property when https://github.com/quarkus-qe/quarkus-test-suite/issues/2717 is fixed -->
+                                        <mongodb.image>docker.io/library/mongo:7.0</mongodb.image>
                                     </systemPropertyVariables>
                                 </configuration>
                             </execution>
