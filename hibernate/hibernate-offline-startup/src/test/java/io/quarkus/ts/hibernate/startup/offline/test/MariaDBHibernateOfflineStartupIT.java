@@ -16,6 +16,9 @@ import io.quarkus.test.services.QuarkusApplication;
 public class MariaDBHibernateOfflineStartupIT extends AbstractHibernateOfflineStartupIT {
 
     @Container(image = "${mariadb.11.image}", expectedLog = "socket: '.*/mysql.*sock'  port: 3306", mounts = {
+            // the MariaDB image has dynamically mounted files based on the actual resolved image
+            // for FIPS-enabled environment, see https://issues.redhat.com/browse/QUARKUS-5984
+            // if you change the image or mounting, please don't forget to change that code in FixedPortResourceBuilder
             @Mount(from = "mysql-init.sql", to = "/docker-entrypoint-initdb.d/init.sql")
     }, port = 3306, builder = FixedPortResourceBuilder.class)
     static final MariaDbService db = new MariaDbService().setAutoStart(false);

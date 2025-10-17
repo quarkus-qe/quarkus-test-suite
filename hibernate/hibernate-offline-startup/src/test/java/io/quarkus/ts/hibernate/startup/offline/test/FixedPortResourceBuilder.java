@@ -52,6 +52,7 @@ public final class FixedPortResourceBuilder extends ContainerManagedResourceBuil
     private static final class FixedPortManagedResource extends GenericDockerContainerManagedResource {
 
         private static final PropertyLookup DB2_IMAGE_PROPERTY = new PropertyLookup("db2.image");
+        private static final PropertyLookup MARIADB_IMAGE_PROPERTY = new PropertyLookup("mariadb.11.image");
         private final FixedPortResourceBuilder model;
         private final Supplier<Mount[]> mounts;
 
@@ -83,10 +84,24 @@ public final class FixedPortResourceBuilder extends ContainerManagedResourceBuil
 
             container.withCreateContainerCmdModifier(cmd -> cmd.withName(DockerUtils.generateDockerContainerName()));
 
-            if (mounts.get() != null) {
-                for (var mount : mounts.get()) {
-                    Log.info(model.getContext().getOwner(), "Mounting " + mount.from() + " to " + mount.to());
-                    container.withClasspathResourceMapping(mount.from(), mount.to(), BindMode.READ_ONLY, SelinuxContext.SHARED);
+            boolean requiresDynamicMounting = isRedHatMariaDbImage();
+            if (requiresDynamicMounting) {
+                // TODO: drop this when https://issues.redhat.com/browse/QUARKUS-5984 is resolved
+                //   it adapts mounting paths when we use MariaDB 10.11 image provided by Red Hat
+                //   and activated by our POM.xml profile in FIPS-enabled environment
+                Log.info(
+                        "Detected Red Hat MariaDB container image, mounting the database config to the '/etc/my.cnf.d/my.cnf' location instead");
+                container.withClasspathResourceMapping("mysql-init.sql", "/tmp/init.sql", BindMode.READ_ONLY,
+                        SelinuxContext.SHARED);
+                container.withClasspathResourceMapping("mysql-my-conf.config", "/etc/my.cnf.d/my.cnf", BindMode.READ_ONLY,
+                        SelinuxContext.SHARED);
+            } else {
+                if (mounts.get() != null) {
+                    for (var mount : mounts.get()) {
+                        Log.info(model.getContext().getOwner(), "Mounting " + mount.from() + " to " + mount.to());
+                        container.withClasspathResourceMapping(mount.from(), mount.to(), BindMode.READ_ONLY,
+                                SelinuxContext.SHARED);
+                    }
                 }
             }
 
@@ -95,6 +110,11 @@ public final class FixedPortResourceBuilder extends ContainerManagedResourceBuil
 
         private boolean isDb2Image() {
             return DB2_IMAGE_PROPERTY.get().equals(model.getImage());
+        }
+
+        private boolean isRedHatMariaDbImage() {
+            String mariaDbImage = MARIADB_IMAGE_PROPERTY.get();
+            return mariaDbImage.equals(model.getImage()) && mariaDbImage.contains("redhat");
         }
     }
 
