@@ -1,6 +1,6 @@
 package io.quarkus.ts.security.webauthn;
 
-import org.junit.jupiter.api.Tag;
+import java.util.Map;
 
 import io.quarkus.test.bootstrap.MySqlService;
 import io.quarkus.test.bootstrap.RestService;
@@ -8,7 +8,6 @@ import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
-@Tag("fips-incompatible") // TODO: enable when the https://github.com/eclipse-vertx/vertx-sql-client/issues/1436 is fixed
 @QuarkusScenario
 public class MySqlWebAuthnIT extends AbstractWebAuthnTest {
 
@@ -21,7 +20,18 @@ public class MySqlWebAuthnIT extends AbstractWebAuthnTest {
     static RestService app = new RestService().withProperties("mysql.properties")
             .withProperty("quarkus.datasource.username", database::getUser)
             .withProperty("quarkus.datasource.password", database::getPassword)
-            .withProperty("quarkus.datasource.reactive.url", database::getReactiveUrl);
+            .withProperty("quarkus.datasource.reactive.url", database::getReactiveUrl)
+            .withProperties(() -> {
+                boolean fipsEnabledEnv = System.getProperty("excludedGroups", "").contains("fips-incompatible");
+                if (fipsEnabledEnv) {
+                    // TODO: drop when Quarkus migrates to Vert.x with https://github.com/eclipse-vertx/vertx-sql-client/issues/1539
+                    // see https://github.com/eclipse-vertx/vertx-sql-client/issues/1436#issuecomment-3109720406
+                    return Map.of(
+                            "quarkus.datasource.reactive.mysql.ssl-mode", "preferred",
+                            "quarkus.datasource.reactive.trust-all", "true");
+                }
+                return Map.of();
+            });
 
     @Override
     protected RestService getApp() {
