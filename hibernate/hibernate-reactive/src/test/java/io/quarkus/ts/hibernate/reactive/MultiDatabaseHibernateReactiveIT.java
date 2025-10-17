@@ -2,6 +2,8 @@ package io.quarkus.ts.hibernate.reactive;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Map;
+
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -73,7 +75,18 @@ public class MultiDatabaseHibernateReactiveIT extends AbstractDatabaseHibernateR
             .withProperty("fruits.url", postgresql2::getReactiveUrl)
             .withProperty("cars.url", mysql::getReactiveUrl)
             .withProperty("db.username", SQL_USER)
-            .withProperty("db.password", SQL_PASSWORD);
+            .withProperty("db.password", SQL_PASSWORD)
+            .withProperties(() -> {
+                boolean fipsEnabledEnv = System.getProperty("excludedGroups", "").contains("fips-incompatible");
+                if (fipsEnabledEnv) {
+                    // TODO: drop when Quarkus migrates to Vert.x with https://github.com/eclipse-vertx/vertx-sql-client/issues/1539
+                    // see https://github.com/eclipse-vertx/vertx-sql-client/issues/1436#issuecomment-3109720406
+                    return Map.of(
+                            "quarkus.datasource.\"cars\".reactive.mysql.ssl-mode", "preferred",
+                            "quarkus.datasource.\"cars\".reactive.trust-all", "true");
+                }
+                return Map.of();
+            });
 
     @Override
     protected RestService getApp() {
