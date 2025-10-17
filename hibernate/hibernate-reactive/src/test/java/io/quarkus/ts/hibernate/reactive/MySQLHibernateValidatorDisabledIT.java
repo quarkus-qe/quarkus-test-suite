@@ -3,6 +3,8 @@ package io.quarkus.ts.hibernate.reactive;
 import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.Map;
+
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -13,7 +15,6 @@ import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
-@Tag("fips-incompatible") // TODO: enable when the https://github.com/eclipse-vertx/vertx-sql-client/issues/1436 is fixed
 @Tag("QUARKUS-6242")
 @QuarkusScenario
 public class MySQLHibernateValidatorDisabledIT {
@@ -34,7 +35,18 @@ public class MySQLHibernateValidatorDisabledIT {
             .withProperty("quarkus.datasource.username", MYSQL_USER)
             .withProperty("quarkus.datasource.password", MYSQL_PASSWORD)
             .withProperty("quarkus.datasource.reactive.url", database::getReactiveUrl)
-            .withProperty("quarkus.hibernate-orm.validation.mode", "none");
+            .withProperty("quarkus.hibernate-orm.validation.mode", "none")
+            .withProperties(() -> {
+                boolean fipsEnabledEnv = System.getProperty("excludedGroups", "").contains("fips-incompatible");
+                if (fipsEnabledEnv) {
+                    // TODO: drop when Quarkus migrates to Vert.x with https://github.com/eclipse-vertx/vertx-sql-client/issues/1539
+                    // see https://github.com/eclipse-vertx/vertx-sql-client/issues/1436#issuecomment-3109720406
+                    return Map.of(
+                            "quarkus.datasource.reactive.mysql.ssl-mode", "preferred",
+                            "quarkus.datasource.reactive.trust-all", "true");
+                }
+                return Map.of();
+            });
 
     @Test
     public void validationCreatePersonWithValidName() {
