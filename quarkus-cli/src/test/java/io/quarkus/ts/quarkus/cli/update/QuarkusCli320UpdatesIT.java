@@ -1,7 +1,5 @@
 package io.quarkus.ts.quarkus.cli.update;
 
-import static io.quarkus.test.util.QuarkusCLIUtils.checkDependenciesUpdate;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
