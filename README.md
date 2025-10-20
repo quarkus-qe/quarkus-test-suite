@@ -763,6 +763,7 @@ Test cases:
 - When calling `/ping` or `/pong` endpoints with incorrect bearer token, then it should return 401 Unauthorized.
 - When calling `/ping` endpoint with valid bearer token, then it should return 200 OK and "ping pong" as response.
 - When calling `/pong` endpoint with valid bearer token, then it should return 200 OK and "pong" as response.
+- Validation of OIDC Step-Up Authentication (@AuthenticationContext) scenarios, covering ACR and maxAge constraints, interaction with RBAC, Authorization Code Flow, and WebSocket endpoints.
 
 Variants:
 - Using REST endpoints (quarkus-resteasy extension)
