@@ -1,6 +1,5 @@
 package io.quarkus.ts.http.graphql;
 
-import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Tag;

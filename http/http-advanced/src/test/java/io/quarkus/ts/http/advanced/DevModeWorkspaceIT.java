@@ -2,7 +2,6 @@ package io.quarkus.ts.http.advanced;
 
 import static io.quarkus.test.utils.AwaitilityUtils.AwaitilitySettings.usingTimeout;
 import static java.time.Duration.ofSeconds;
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
 
 import java.nio.file.Path;

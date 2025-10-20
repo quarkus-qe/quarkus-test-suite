@@ -1,6 +1,5 @@
 package io.quarkus.ts.monitoring.micrometeropentelemetry.test;
 
-import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;

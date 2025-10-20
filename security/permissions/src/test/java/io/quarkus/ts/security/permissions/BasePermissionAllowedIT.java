@@ -1,6 +1,5 @@
 package io.quarkus.ts.security.permissions;
 
-import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.http.HttpStatus;
