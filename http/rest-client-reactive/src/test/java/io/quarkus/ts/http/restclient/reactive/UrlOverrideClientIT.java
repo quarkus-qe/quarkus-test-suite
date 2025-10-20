@@ -77,7 +77,7 @@ public class UrlOverrideClientIT {
 
     @Test
     public void shouldFail() {
-        // redirect the request to non-existing host which should result in failure to execute the erquest
+        // redirect the request to non-existing host which should result in failure to execute the request
         Response response = app.given().get("/testUrlOverride/overrideHost/?host=nonExistingHost");
         assertEquals(500, response.statusCode(), "Request should fail with code 500");
         app.logs().assertContains("UnknownHostException", "nonExistingHost");

@@ -94,7 +94,7 @@ public class CompressionHandlerIT {
     }
 
     private void assertContentIsNotTextPlain(String path, String ContentType) {
-        // by default restassurance has GZIP and DEFLATE decoders, we are going to remove Gzip in order to read a raw Gzipped body
+        // by default REST-Assured has GZIP and DEFLATE decoders, we are going to remove Gzip in order to read a raw Gzipped body
         RestAssuredConfig config = RestAssured.config().decoderConfig(decoderConfig().contentDecoders(DEFLATE));
         String rawBody = app.given().config(config)
                 .header("Accept-encoding", "gzip")

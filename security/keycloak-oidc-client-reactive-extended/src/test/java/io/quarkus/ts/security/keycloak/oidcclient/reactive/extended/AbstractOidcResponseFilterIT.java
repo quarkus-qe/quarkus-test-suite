@@ -207,7 +207,7 @@ public abstract class AbstractOidcResponseFilterIT {
 
     /**
      * JWKS Server-side test scenario
-     * a secured enpoint is accesed
+     * a secured endpoint is accessed
      * the OIDC authentication mechanism in Quarkus (used quarkus-oidc extension)
      * and automatically (This triggers the server side) retrieves the JWKS.
      */
