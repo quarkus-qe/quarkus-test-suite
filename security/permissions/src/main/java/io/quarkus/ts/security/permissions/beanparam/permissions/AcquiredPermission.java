@@ -47,8 +47,7 @@ public class AcquiredPermission extends BasicPermission {
                 || p instanceof CommonFieldPermission) {
             return p.implies(this);
         }
-        if (p instanceof AcquiredPermission) {
-            AcquiredPermission that = (AcquiredPermission) p;
+        if (p instanceof AcquiredPermission that) {
             if (!getName().equals(that.getName())) {
                 return false;
             }
