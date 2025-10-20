@@ -41,7 +41,7 @@ public class CityResource {
     private final ObjectMapper objectMapper = new YAMLMapper();
 
     @Inject
-    private CityListWrapperSerializer serializer;
+    CityListWrapperSerializer serializer;
 
     private List<City> cityList = new ArrayList<>();
 
