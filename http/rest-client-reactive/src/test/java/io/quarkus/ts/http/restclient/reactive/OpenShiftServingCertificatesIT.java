@@ -94,7 +94,7 @@ public class OpenShiftServingCertificatesIT {
             .withProperty("quarkus.rest-client.hero.uri", () -> server.getURI(Protocol.HTTPS).getRestAssuredStyleUri())
             .withProperties(() -> {
                 // add the 'client' service certificates, FW only supports mounting service certificates for one service
-                // TODO: we could improve FW to support as many service certificates as necessry
+                // TODO: we could improve FW to support as many service certificates as necessary
                 var annotationVal = buildAnnotationProp("service.beta.openshift.io/serving-cert-secret-name",
                         "client-serving-certificates-secret");
                 var annotationKey = createAnnotationPropertyKey();

@@ -857,7 +857,7 @@ To test WebAuthn we have set up a reactive Mysql database container.
 However,testing WebAuthn can be challenging because it typically requires a hardware token. To address this,
 we've created 'MyWebAuthnHardware' class to simulate that hardware token.
 
-Additionally, we utilize some webauthn enpoints such as "/q/webauthn/register" and "/q/webauthn/callback".
+Additionally, we utilize some webauthn endpoints such as "/q/webauthn/register" and "/q/webauthn/callback".
 
 Restrictions are defined using role-based access control (RBAC) annotations such as `@RolesAllowed`.
 

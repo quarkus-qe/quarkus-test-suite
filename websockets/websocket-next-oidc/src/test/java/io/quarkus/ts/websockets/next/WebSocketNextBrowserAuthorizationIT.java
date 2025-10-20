@@ -130,7 +130,7 @@ public class WebSocketNextBrowserAuthorizationIT {
 
         Map<String, Object> result = evaluateAndConvert(
                 """
-                        // This JS function establishes a secure WebSocket connection using 2 subbprotocols 'bearer-token-carrier'
+                        // This JS function establishes a secure WebSocket connection using 2 subprotocols 'bearer-token-carrier'
                         // and the subprotocol with the encoded authorization
                         ([wssUrl, subprotocol]) => {
                             return new Promise((resolve, reject) => {

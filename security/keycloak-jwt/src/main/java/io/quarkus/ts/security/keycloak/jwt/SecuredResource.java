@@ -13,7 +13,7 @@ import org.eclipse.microprofile.jwt.Claims;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 @Path("/secured")
-@RequestScoped // required! because we're injecting unproxyable types in the @Dependent scope
+@RequestScoped // required! because we're injecting non-proxyable types in the @Dependent scope
 public class SecuredResource {
     @Inject
     JsonWebToken jwt;
