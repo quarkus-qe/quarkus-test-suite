@@ -31,8 +31,7 @@ public class UndertowMissingServletClassIT {
     }
 
     public static void replaceForInvalidXML(Service service) {
-        if (service instanceof RestService) {
-            RestService restService = (RestService) service;
+        if (service instanceof RestService restService) {
             Path invalidWebXml = Path.of("src/test/resources/META-INF/invalid-web.xml");
 
             Path targetWebXml = restService.getServiceFolder().resolve("META-INF/web.xml");

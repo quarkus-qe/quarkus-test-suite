@@ -55,8 +55,7 @@ public class ResourcesFinderResource {
         JarFile jarFile;
         String rootEntryPath = "";
 
-        if (con instanceof JarURLConnection) {
-            JarURLConnection jarCon = (JarURLConnection) con;
+        if (con instanceof JarURLConnection jarCon) {
             jarFile = jarCon.getJarFile();
             JarEntry jarEntry = jarCon.getJarEntry();
             rootEntryPath = (jarEntry != null ? jarEntry.getName() : "");
