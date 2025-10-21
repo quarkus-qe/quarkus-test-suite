@@ -9,3 +9,5 @@ services:
       MYSQL_USER: myuser
       MYSQL_PASSWORD: mypassword
       MYSQL_DATABASE: mydb
+    labels:
+      io.quarkus.devservices.compose.wait_for.logs: .*/mysql.*sock.*port.*3306.*
