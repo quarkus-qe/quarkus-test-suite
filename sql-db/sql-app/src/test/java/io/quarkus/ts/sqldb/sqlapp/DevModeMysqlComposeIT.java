@@ -7,7 +7,6 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.DevModeQuarkusApplication;
 
-@Tag("fips-incompatible") // TODO: enable when https://github.com/quarkusio/quarkus/issues/40526 gets fixed
 @Tag("QUARKUS-6234")
 @QuarkusScenario
 public class DevModeMysqlComposeIT extends AbstractSqlDatabaseIT {

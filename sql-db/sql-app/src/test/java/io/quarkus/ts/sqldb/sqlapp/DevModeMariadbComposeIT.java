@@ -13,7 +13,7 @@ public class DevModeMariadbComposeIT extends AbstractSqlDatabaseIT {
 
     @DevModeQuarkusApplication(properties = "mariadb_app.properties")
     static RestService app = new RestService()
-            .withProperty("quarkus.compose.devservices.files", "src/main/resources/mariadb-compose-devservices.yml")
+            .withProperty("quarkus.compose.devservices.files", "src/main/resources/mysql-compose-devservices.yml")
             .withProperty("quarkus.compose.devservices.env-variables.IMAGE", "${mariadb.11.image}");
 
     @Test
