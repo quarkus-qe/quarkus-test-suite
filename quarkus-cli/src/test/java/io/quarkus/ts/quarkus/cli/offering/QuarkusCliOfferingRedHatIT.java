@@ -13,6 +13,8 @@ import java.io.IOException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 
 import io.quarkus.test.bootstrap.QuarkusCliClient;
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -25,6 +27,7 @@ import io.quarkus.test.services.quarkus.model.QuarkusProperties;
 @QuarkusScenario
 @DisabledOnNative(reason = "Only for JVM verification")
 @EnabledOnQuarkusVersion(version = ".*redhat.*", reason = "Need set up registry config for prod testing")
+@DisabledOnOs(value = OS.WINDOWS, disabledReason = "https://issues.redhat.com/browse/QUARKUS-6780")
 public class QuarkusCliOfferingRedHatIT extends QuarkusCliOfferingBase {
 
     @BeforeAll
