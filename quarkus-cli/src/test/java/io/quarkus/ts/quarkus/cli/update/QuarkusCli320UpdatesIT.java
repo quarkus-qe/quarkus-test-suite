@@ -52,6 +52,9 @@ public class QuarkusCli320UpdatesIT extends AbstractQuarkusCliUpdateIT {
         oldProperties.put("quarkus.log.console.json", "true");
         newProperties.put("quarkus.log.console.json.enabled", "true");
 
-        QuarkusCLIUtils.checkPropertiesUpdate(quarkusCLIAppManager, oldProperties, newProperties);
+        // TODO: drop using temp dir when https://github.com/quarkusio/quarkus-updates/issues/394 is fixed
+        try (var ignored = cliClient.useTemporaryDirectory()) {
+            QuarkusCLIUtils.checkPropertiesUpdate(quarkusCLIAppManager, oldProperties, newProperties);
+        }
     }
 }
