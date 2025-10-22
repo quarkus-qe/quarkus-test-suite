@@ -5,7 +5,6 @@ import static io.quarkus.test.utils.ImageUtil.getImageVersion;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 
@@ -18,7 +17,6 @@ import io.quarkus.test.utils.DockerUtils;
 import io.quarkus.test.utils.SocketUtils;
 
 @QuarkusScenario
-@Tag("podman-incompatible") //TODO: https://github.com/quarkusio/quarkus/issues/38003
 @DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkusio/quarkus/issues/43375")
 public class DevModeOracleDevServiceUserExperienceIT {
 
