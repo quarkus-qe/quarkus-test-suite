@@ -249,8 +249,9 @@ public class QuarkusCli327UpdatesIT extends AbstractQuarkusCliUpdateIT {
                 .contains("var ignored = CascadeType.REMOVE;")
                 .doesNotContain("var ignored = CascadeType.DELETE;")
                 // test method 'update' is rewritten to 'merge'
-                .contains("session.merge(new MyEntity(12L));")
-                .doesNotContain("session.update(new MyEntity(12L));")
+                // this was reverted in https://github.com/quarkusio/quarkus-updates/pull/392
+                .doesNotContain("session.merge(new MyEntity(12L));")
+                .contains("session.update(new MyEntity(12L));")
                 // test method 'save' is rewritten to 'persist'
                 .contains("session.persist(new MyEntity(10L));")
                 .doesNotContain("session.save(new MyEntity(10L));")
