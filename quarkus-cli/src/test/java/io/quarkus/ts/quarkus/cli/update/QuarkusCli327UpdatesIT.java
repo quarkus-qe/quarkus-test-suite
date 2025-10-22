@@ -114,7 +114,12 @@ public class QuarkusCli327UpdatesIT extends AbstractQuarkusCliUpdateIT {
         oldProperties.put("quarkus.hibernate-orm.\"fantastic\".database.generation.halt-on-error", "true");
         newProperties.put("quarkus.hibernate-orm.\"fantastic\".schema-management.halt-on-error", "true");
 
-        QuarkusCLIUtils.checkPropertiesUpdate(quarkusCLIAppManager, oldProperties, newProperties);
+        // here we create application in a temporary directory so that we also have a scenario
+        // where we test the CLI update command in a folder hierarchy without other maven projects
+        // it can make a difference, see for example https://github.com/quarkusio/quarkus-updates/issues/394
+        try (var ignored = cliClient.useTemporaryDirectory()) {
+            QuarkusCLIUtils.checkPropertiesUpdate(quarkusCLIAppManager, oldProperties, newProperties);
+        }
     }
 
     /**
@@ -221,7 +226,10 @@ public class QuarkusCli327UpdatesIT extends AbstractQuarkusCliUpdateIT {
         oldProperties.put("quarkus.log.handler.socket.\"whatever\".async.enable", "true");
         newProperties.put("quarkus.log.handler.socket.\"whatever\".async.enabled", "true");
 
-        QuarkusCLIUtils.checkPropertiesUpdate(quarkusCLIAppManager, oldProperties, newProperties);
+        // TODO: drop using temp dir when https://github.com/quarkusio/quarkus-updates/issues/394 is fixed
+        try (var ignored = cliClient.useTemporaryDirectory()) {
+            QuarkusCLIUtils.checkPropertiesUpdate(quarkusCLIAppManager, oldProperties, newProperties);
+        }
     }
 
     /**
