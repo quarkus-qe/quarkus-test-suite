@@ -1,1 +1,0 @@
-INSERT INTO todo(id, title, completed) VALUES (nextval('todo_seq'), 'Finish the blog post', false);
