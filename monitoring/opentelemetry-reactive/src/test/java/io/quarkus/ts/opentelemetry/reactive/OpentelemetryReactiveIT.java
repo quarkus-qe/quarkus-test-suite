@@ -244,8 +244,7 @@ public class OpentelemetryReactiveIT {
     }
 
     private void verifyStandardSourceCodeAttributesArePresent(String operationName) {
-        verifyAttributeValue(operationName, "code.namespace", PingResource.class.getName());
-        verifyAttributeValue(operationName, "code.function", "callPong");
+        verifyAttributeValue(operationName, "code.function.name", PingResource.class.getName() + ".callPong");
     }
 
     private void verifyAttributeValue(String operationName, String attributeName, String attributeValue) {
