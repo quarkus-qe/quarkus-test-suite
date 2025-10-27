@@ -668,20 +668,6 @@
             </modules>
         </profile>
         <profile>
-            <id>service-binding-modules</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-                <property>
-                    <name>all-modules</name>
-                </property>
-            </activation>
-            <modules>
-                <module>env-info</module>
-                <module>service-binding/postgresql-crunchy-classic</module>
-                <module>service-binding/postgresql-crunchy-reactive</module>
-            </modules>
-        </profile>
-        <profile>
             <id>spring-modules</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
