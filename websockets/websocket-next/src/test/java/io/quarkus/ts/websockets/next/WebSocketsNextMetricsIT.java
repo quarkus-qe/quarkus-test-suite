@@ -4,6 +4,7 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static java.time.Duration.ofSeconds;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -14,7 +15,6 @@ import java.nio.charset.StandardCharsets;
 import org.apache.http.HttpStatus;
 import org.awaitility.Awaitility;
 import org.jboss.logging.Logger;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
@@ -41,8 +41,8 @@ public class WebSocketsNextMetricsIT {
     private static final String TOTAL_SERVER_MESSAGES_INBOUND_FORMAT = "quarkus_websockets_server_count_total{direction=\"INBOUND\",uri=\"/chat/:username\"} %s.0";
     private static final String TOTAL_SERVER_BYTES_OUTBOUND_FORMAT = "quarkus_websockets_server_bytes_total{direction=\"OUTBOUND\",uri=\"/chat/:username\"} %s.0";
     private static final String TOTAL_SERVER_BYTES_INBOUND_FORMAT = "quarkus_websockets_server_bytes_total{direction=\"INBOUND\",uri=\"/chat/:username\"} %s.0";
-    private static final String TOTAL_SERVER_CONNECTION_ERRORS_FORMAT = "quarkus_websockets_server_connections_opened_errors_total{uri=\"/failing\"} %s.0";
-    private static final String TOTAL_SERVER_ENDPOINT_ERRORS_FORMAT = "quarkus_websockets_server_endpoint_count_errors_total{uri=\"/failing\"} %s.0";
+    private static final String TOTAL_SERVER_CONNECTIONS_ONOPEN_ERRORS_FORMAT = "quarkus_websockets_server_connections_onopen_errors_total{uri=\"/failing-onopen-error-no-handler\"} %s.0";
+    private static final String TOTAL_SERVER_ENDPOINT_ERRORS_FORMAT = "quarkus_websockets_server_endpoint_count_errors_total{uri=\"%s\"} %%s.0";
     private static final String TOTAL_CLIENT_CONNECTIONS_OPEN_FORMAT = "quarkus_websockets_client_connections_opened_total{uri=\"/chat/{username}\"} %s.0";
     private static final String TOTAL_CLIENT_CONNECTIONS_CLOSED_FORMAT = "quarkus_websockets_client_connections_closed_total{uri=\"/chat/{username}\"} %s.0";
     private static final String TOTAL_CLIENT_MESSAGES_OUTBOUND_FORMAT = "quarkus_websockets_client_count_total{direction=\"OUTBOUND\",uri=\"/chat/{username}\"} %s.0";
@@ -107,19 +107,47 @@ public class WebSocketsNextMetricsIT {
 
     @Test
     @Order(2)
-    @Disabled("https://github.com/quarkusio/quarkus/issues/47409")
-    public void serverErrorMetricsTest() throws URISyntaxException, InterruptedException {
-        Client client = createClient("/failing");
-        getServer().logs().assertContains("Error on websocket: Websocket failed to open");
-        thenCounterIs(TOTAL_SERVER_CONNECTION_ERRORS_FORMAT, 1);
-        client.send("Create an error");
-        getServer().logs().assertContains("Error on websocket: Create an error");
-        thenCounterIs(TOTAL_SERVER_ENDPOINT_ERRORS_FORMAT, 1);
+    public void serverErrorMetricsWithoutOnErrorHandlerTest() throws URISyntaxException, InterruptedException {
+        String endpointPath = "/failing-onopen-error-no-handler";
+        Client client = createClient(endpointPath);
+
+        // No @OnError present, the onOpen() exception causes a connection failure
+        getServer().logs().assertContains("Websocket failed to open");
+
+        // Since there is no error handler, the onOpen error counter must increment
+        thenCounterIs(TOTAL_SERVER_CONNECTIONS_ONOPEN_ERRORS_FORMAT, 1);
+
+        // Quarkus counts endpoint errors even if @OnError annotation is not present
+        String noHandlerUriFormat = String.format(TOTAL_SERVER_ENDPOINT_ERRORS_FORMAT, endpointPath);
+        thenCounterIs(noHandlerUriFormat, 1);
+
         client.close();
     }
 
     @Test
     @Order(3)
+    public void serverErrorMetricsWithOnErrorHandlerTest() throws URISyntaxException, InterruptedException {
+        String endpointPath = "/failing-onopen-error-with-handler";
+        Client client = createClient(endpointPath);
+
+        // The @OnError method handles the exception thrown from onOpen()
+        getServer().logs().assertContains("Error on websocket: Websocket failed to open");
+
+        // Because the failure is handled, the onOpen error counter should not appear in metrics
+        thenCounterAbsent("quarkus_websockets_server_connections_onopen_errors_total",
+                "/failing-onopen-error-with-handler");
+
+        client.send("Create an error");
+        getServer().logs().assertContains("Error on websocket: Create an error");
+
+        String handlerUriFormat = String.format(TOTAL_SERVER_ENDPOINT_ERRORS_FORMAT, endpointPath);
+        thenCounterIs(handlerUriFormat, 2);
+
+        client.close();
+    }
+
+    @Test
+    @Order(4)
     public void clientMessageMetricsTest() throws URISyntaxException, InterruptedException {
         Client client = createClient("/chat/alice");
         assertMessage("alice joined", client);
@@ -150,7 +178,7 @@ public class WebSocketsNextMetricsIT {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     public void clientErrorMetricsTest() throws InterruptedException {
         given().get("/pingPongRes/connect");
         Thread.sleep(10000); // client pings every two seconds, third pong response produces RTE
@@ -167,6 +195,10 @@ public class WebSocketsNextMetricsIT {
 
     private void thenCounterIs(String counterFormat, int expectedCounter) {
         callMetrics().body(containsString(String.format(counterFormat, expectedCounter)));
+    }
+
+    private void thenCounterAbsent(String counterName, String uri) {
+        callMetrics().body(not(containsString(counterName + "{uri=\"" + uri + "\"")));
     }
 
     private URI getUri(String with) throws URISyntaxException {

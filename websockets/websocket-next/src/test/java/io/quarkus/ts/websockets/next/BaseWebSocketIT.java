@@ -71,7 +71,7 @@ public abstract class BaseWebSocketIT {
 
     @Test
     public void onErrorEventTest() throws URISyntaxException, InterruptedException {
-        Client client = createClient("/failing");
+        Client client = createClient("/failing-onopen-error-with-handler");
         getServer().logs().assertContains("Error on websocket: Websocket failed to open");
 
         client.send("Random failure");
