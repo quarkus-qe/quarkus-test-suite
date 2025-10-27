@@ -66,8 +66,7 @@ public class ProdAmqpReactiveIT extends BaseAmqpReactiveIT {
     }
 
     private void verifyStandardSourceCodeAttributesArePresent(String operationName) {
-        verifyAttributeValue(operationName, "code.namespace", PriceResource.class.getName());
-        verifyAttributeValue(operationName, "code.function", "price");
+        verifyAttributeValue(operationName, "code.function.name", PriceResource.class.getName() + ".price");
     }
 
     private void verifyAttributeValue(String operationName, String attributeName, String attributeValue) {
