@@ -37,7 +37,8 @@ public class ConfigValueIT {
     }
 
     // Clarification: https://github.com/quarkusio/quarkus/issues/27231#issuecomment-1211783882
+    // See also: https://github.com/quarkusio/quarkus/pull/50745
     private String getExpectedSourceNameValue() {
-        return QuarkusProperties.isNativeEnabled() ? "DefaultValuesConfigSource" : "PropertiesConfigSource";
+        return QuarkusProperties.isNativeEnabled() ? "Runtime Values" : "PropertiesConfigSource";
     }
 }
