@@ -165,7 +165,7 @@ jobs:
       - name: Archive flaky run report
         id: archive-flaky-run-report
         if: ${{ hashFiles('**/flaky-run-report-linux-jvm-latest.json') != '' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: flaky-run-report-linux-jvm-latest
           path: target/flaky-run-report-linux-jvm-latest.json
@@ -173,7 +173,7 @@ jobs:
         if: failure()
         run: |
           zip -R artifacts-latest-linux-jvm${{ matrix.java }}.zip '*-reports/*'
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         if: failure()
         with:
           name: artifacts-latest-linux-jvm${{ matrix.java }}
@@ -220,7 +220,7 @@ jobs:
       - name: Archive flaky run report
         id: archive-flaky-run-report
         if: ${{ hashFiles('**/flaky-run-report-linux-native-latest.json') != '' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: flaky-run-report-linux-native-latest
           path: target/flaky-run-report-linux-native-latest.json
@@ -228,7 +228,7 @@ jobs:
         if: failure()
         run: |
           zip -R artifacts-latest-linux-native${{ matrix.java }}.zip '*-reports/*'
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         if: failure()
         with:
           name: artifacts-latest-linux-native${{ matrix.java }}
@@ -287,7 +287,7 @@ jobs:
       - name: Archive flaky run report
         id: archive-flaky-run-report
         if: ${{ hashFiles('**/flaky-run-report-windows-jvm-latest.json') != '' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: flaky-run-report-windows-jvm-latest
           path: target/flaky-run-report-windows-jvm-latest.json
@@ -299,7 +299,7 @@ jobs:
           /usr/bin/find . -name '*-reports/*' -type d | tar -czf artifacts-latest-windows-jvm${{ matrix.java }}.tar -T -
       - name: Archive artifacts
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: artifacts-latest-windows-jvm${{ matrix.java }}
           path: artifacts-latest-windows-jvm${{ matrix.java }}.tar
@@ -331,7 +331,7 @@ jobs:
           IS_WINDOWS_JVM: ${{ needs.windows-build-jvm-latest.outputs.has-flaky-tests == 'true' }}
       - name: Archive 'jobs-with-flaky-tests' artifact
         if: ${{ hashFiles('**/jobs-with-flaky-tests') != '' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: jobs-with-flaky-tests
           path: jobs-with-flaky-tests
@@ -341,7 +341,7 @@ jobs:
           PR_NUMBER: ${{ github.event.number }}
         run: echo $PR_NUMBER > pr-number
       - name: Archive PR number
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: ${{ hashFiles('**/jobs-with-flaky-tests') != '' }}
         with:
           name: pr-number
