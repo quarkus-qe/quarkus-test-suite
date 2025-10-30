@@ -29,12 +29,14 @@ import org.junit.jupiter.api.TestMethodOrder;
 import io.quarkus.test.bootstrap.JaegerService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnSemeruJdk;
 import io.quarkus.test.services.JaegerContainer;
 import io.quarkus.test.services.QuarkusApplication;
 import io.restassured.response.Response;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class) // order methods as SDK autoconfigure test expects previous traces
 @QuarkusScenario
+@DisabledOnSemeruJdk(reason = "Flight Recorder is not supported on IBM Semeru Runtime")
 public class OpenTelemetryIT {
 
     private Response resp;

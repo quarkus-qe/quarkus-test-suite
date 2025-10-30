@@ -10,10 +10,12 @@ import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnSemeruJdk;
 import io.quarkus.ts.http.reactiveroutes.validation.utils.ValidationErrorResponse;
 import io.vertx.core.json.Json;
 
 @QuarkusScenario
+@DisabledOnSemeruJdk(reason = "https://github.com/eclipse-openj9/openj9/issues/22812")
 public class ValidationOnRequestBodyRouteHandlerIT {
 
     @Test

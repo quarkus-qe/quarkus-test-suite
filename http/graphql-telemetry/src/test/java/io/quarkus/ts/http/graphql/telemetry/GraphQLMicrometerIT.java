@@ -21,6 +21,7 @@ import org.junit.jupiter.api.condition.JRE;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnSemeruJdk;
 import io.quarkus.test.services.Dependency;
 import io.quarkus.test.services.QuarkusApplication;
 import io.restassured.response.Response;
@@ -29,6 +30,7 @@ import io.restassured.response.ValidatableResponse;
 @DisabledForJreRange(max = JRE.JAVA_20, disabledReason = "VTs supported for Java 21+")
 @Tag("QUARKUS-6521")
 @QuarkusScenario
+@DisabledOnSemeruJdk(reason = "Flight Recorder is not supported on IBM Semeru Runtime")
 public class GraphQLMicrometerIT {
 
     private static final String JVM_THREADS_VIRTUAL = "jvm_threads_virtual_";

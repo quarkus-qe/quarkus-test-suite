@@ -19,6 +19,7 @@ import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.logging.Log;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnSemeruJdk;
 import io.quarkus.test.services.JaegerContainer;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.services.URILike;
@@ -39,6 +40,7 @@ import io.vertx.junit5.VertxExtension;
 @Tag("QUARKUS-4550")
 @ExtendWith(VertxExtension.class)
 @QuarkusScenario
+@DisabledOnSemeruJdk(reason = "Flight Recorder is not supported on IBM Semeru Runtime")
 public class OpenTelemetryProxyIT {
 
     private static final int PAGE_LIMIT = 10;
