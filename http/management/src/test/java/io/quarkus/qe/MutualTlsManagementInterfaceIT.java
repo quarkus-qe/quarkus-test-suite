@@ -1,7 +1,7 @@
 package io.quarkus.qe;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Assertions;
@@ -79,13 +79,18 @@ public class MutualTlsManagementInterfaceIT {
     private static void callManagementPingRouteAndExpectFailure(String clientCn) {
         // this client certs are not in the server truststore, therefore they cannot be trusted
         try {
+            // TODO: this says that it tests client certificates that are not in the trust store
+            //  and I can see that the Mutiny client is configured with client certificates, but JDK sends
+            //  "certificate_required" possibly due to https://bugs.openjdk.org/browse/JDK-8365440
+            //  we should check if server receives client certificates or not; if so, behavior is correct
             app.mutinyHttps(clientCn).get("/management-ping").sendAndAwait();
             // this must never happen, basically as SSL handshake must throw exception
             Assertions.fail("SSL handshake didn't fail even though certificate host is unknown");
         } catch (Exception e) {
             // failure is expected
-            assertTrue(e.getMessage().contains("Received fatal alert: bad_certificate"),
-                    "Expected failure over bad certificate, but got: " + e.getMessage());
+            assertThat(e.getMessage())
+                    .containsAnyOf("Received fatal alert: bad_certificate", "Received fatal alert: certificate_required")
+                    .describedAs("Expected SSL handshake failure, but got: " + e);
         }
     }
 }
