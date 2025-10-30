@@ -23,12 +23,14 @@ import org.junit.jupiter.api.condition.JRE;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import io.quarkus.test.bootstrap.RestService;
+import io.quarkus.test.scenarios.annotations.DisabledOnSemeruJdk;
 import io.quarkus.ts.sqldb.multiplepus.model.fruit.Fruit;
 import io.quarkus.ts.sqldb.multiplepus.model.fungus.Fungus;
 import io.quarkus.ts.sqldb.multiplepus.model.vegetable.Vegetable;
 import io.restassured.http.ContentType;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@DisabledOnSemeruJdk(reason = "Flight Recorder is not supported on IBM Semeru Runtime")
 public abstract class AbstractMultiDatabaseActiveInactiveIT {
 
     static final int MARIADB_PORT = 3306;

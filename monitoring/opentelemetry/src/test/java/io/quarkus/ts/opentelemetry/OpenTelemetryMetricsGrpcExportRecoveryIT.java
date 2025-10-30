@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.logging.Log;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnSemeruJdk;
 import io.quarkus.test.services.QuarkusApplication;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
@@ -29,6 +30,7 @@ import io.vertx.junit5.VertxExtension;
 @Tag("https://github.com/quarkusio/quarkus/pull/47245")
 @QuarkusScenario
 @ExtendWith(VertxExtension.class)
+@DisabledOnSemeruJdk(reason = "Flight Recorder is not supported on IBM Semeru Runtime")
 public class OpenTelemetryMetricsGrpcExportRecoveryIT {
 
     private static final int METRICS_COLLECTOR_PORT = 9998;
