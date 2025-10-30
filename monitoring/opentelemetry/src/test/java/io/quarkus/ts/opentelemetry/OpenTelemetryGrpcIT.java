@@ -14,10 +14,12 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.bootstrap.JaegerService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnSemeruJdk;
 import io.quarkus.test.services.JaegerContainer;
 import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
+@DisabledOnSemeruJdk(reason = "Flight Recorder is not supported on IBM Semeru Runtime")
 public class OpenTelemetryGrpcIT {
 
     @JaegerContainer(useOtlpCollector = true)

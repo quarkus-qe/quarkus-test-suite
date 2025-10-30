@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnNative;
+import io.quarkus.test.scenarios.annotations.DisabledOnSemeruJdk;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.utils.AwaitilityUtils;
 import io.quarkus.ts.opentelemetry.reactive.metrics.gc.RunGarbageCollectorTrigger;
@@ -30,6 +31,7 @@ import io.quarkus.ts.opentelemetry.reactive.metrics.gc.RunGarbageCollectorTrigge
  */
 @QuarkusScenario
 @DisabledOnNative(reason = "To save time and resources needed for building the apps")
+@DisabledOnSemeruJdk(reason = "Flight Recorder is not supported on IBM Semeru Runtime")
 public class OpenTelemetryMetricsIT {
     private static final Duration TIME_TO_LOGS_READY = Duration.ofSeconds(15); // metric.export.interval is 10s
     /**

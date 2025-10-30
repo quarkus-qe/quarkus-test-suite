@@ -21,12 +21,14 @@ import org.junit.jupiter.api.TestMethodOrder;
 import io.quarkus.test.bootstrap.DevModeQuarkusService;
 import io.quarkus.test.bootstrap.JaegerService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnSemeruJdk;
 import io.quarkus.test.services.DevModeQuarkusApplication;
 import io.quarkus.test.services.JaegerContainer;
 import io.restassured.response.Response;
 
 @QuarkusScenario
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@DisabledOnSemeruJdk(reason = "Flight Recorder is not supported on IBM Semeru Runtime")
 public class DevModeOpenTelemetryIT {
 
     private static final Logger LOG = Logger.getLogger(DevModeOpenTelemetryIT.class);
