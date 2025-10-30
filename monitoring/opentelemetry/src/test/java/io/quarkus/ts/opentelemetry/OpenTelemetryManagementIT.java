@@ -18,6 +18,7 @@ import io.quarkus.test.bootstrap.JaegerService;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnSemeruJdk;
 import io.quarkus.test.security.certificate.Certificate;
 import io.quarkus.test.security.certificate.PemClientCertificate;
 import io.quarkus.test.services.JaegerContainer;
@@ -25,6 +26,7 @@ import io.quarkus.test.services.QuarkusApplication;
 
 @Tag("QUARKUS-4592")
 @QuarkusScenario
+@DisabledOnSemeruJdk(reason = "Flight Recorder is not supported on IBM Semeru Runtime")
 public class OpenTelemetryManagementIT {
     @JaegerContainer(tls = true, builder = JaegerLocalhostDockerManagerResource.class)
     static final JaegerService jaeger = new JaegerService();

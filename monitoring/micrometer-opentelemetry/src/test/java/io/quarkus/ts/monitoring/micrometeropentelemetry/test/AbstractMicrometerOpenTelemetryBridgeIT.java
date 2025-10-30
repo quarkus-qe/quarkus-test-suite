@@ -21,6 +21,7 @@ import io.quarkus.test.bootstrap.LookupService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.utils.AwaitilityUtils;
+import io.quarkus.test.utils.JavaUtils;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
@@ -235,9 +236,12 @@ public abstract class AbstractMicrometerOpenTelemetryBridgeIT {
     @DisabledOnNative(reason = "JVM binder is for JVM verification only")
     @Test
     void testAutomaticallyGeneratedMicrometerMetrics_JvmBinder() {
-        // the metaspace can hardly be 0, so just test that some bytes are measured
+        // Semeru JDK has different metrics than OpenJDK, when checking metrics we need to get different one
+        // for openjdk, the metaspace can hardly be 0, so just test that some bytes are measured
+        String metricsId = JavaUtils.isRunningSemeruJdk() ? "JIT code cache" : "Metaspace";
+
         long metaspaceValue = queryPrometheusAndWaitForMetrics("jvm_memory_used_bytes").extract().jsonPath().getLong(
-                "data.result.find { it.metric.id == 'Metaspace' }.value.get(1)");
+                "data.result.find { it.metric.id == '" + metricsId + "' }.value.get(1)");
         Assertions.assertTrue(metaspaceValue > 0);
     }
 

@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnNative;
+import io.quarkus.test.scenarios.annotations.DisabledOnSemeruJdk;
 import io.quarkus.test.services.QuarkusApplication;
 import io.restassured.RestAssured;
 import io.restassured.config.RestAssuredConfig;
@@ -26,6 +27,7 @@ import io.restassured.response.Response;
 @Tag("QUARKUS-2487")
 // Native coverage on Reactive-routes is out of scope. TestPlan QUARKUS-2487
 @DisabledOnNative
+@DisabledOnSemeruJdk(reason = "https://github.com/eclipse-openj9/openj9/issues/22812")
 @QuarkusScenario
 public class CompressionHandlerIT {
 

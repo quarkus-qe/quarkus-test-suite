@@ -22,12 +22,14 @@ import org.junit.jupiter.api.condition.OS;
 import io.quarkus.test.bootstrap.GrafanaService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnSemeruJdk;
 import io.quarkus.test.services.GrafanaContainer;
 import io.quarkus.test.services.QuarkusApplication;
 import io.restassured.response.Response;
 
 @Tag("QUARKUS-5623")
 @QuarkusScenario
+@DisabledOnSemeruJdk(reason = "Flight Recorder is not supported on IBM Semeru Runtime")
 public class OpenTelemetryLoggingIT {
     private static final String SERVICE_NAME = "logging-app";
 
