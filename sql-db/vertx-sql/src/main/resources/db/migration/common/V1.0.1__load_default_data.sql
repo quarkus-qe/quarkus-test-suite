@@ -2,7 +2,7 @@ INSERT INTO airports (iata_code, city) VALUES ('MAD', 'Madrid');
 INSERT INTO airports (iata_code, city) VALUES ('BCN', 'Barcelona');
 INSERT INTO airports (iata_code, city) VALUES ('LHR', 'London');
 INSERT INTO airports (iata_code, city) VALUES ('CDG', 'Paris');
-INSERT INTO airports (iata_code, city) VALUES ('FRA', 'Frakfurt');
+INSERT INTO airports (iata_code, city) VALUES ('FRA', 'Frankfurt');
 INSERT INTO airports (iata_code, city) VALUES ('IST', 'Istanbul');
 INSERT INTO airports (iata_code, city) VALUES ('AMS', 'Amsterdam');
 INSERT INTO airports (iata_code, city) VALUES ('FCO', 'Rome');
