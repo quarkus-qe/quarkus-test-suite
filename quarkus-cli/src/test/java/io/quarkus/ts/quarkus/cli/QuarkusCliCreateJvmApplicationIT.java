@@ -31,7 +31,6 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.awaitility.core.ConditionTimeoutException;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.OS;
@@ -240,26 +239,31 @@ public class QuarkusCliCreateJvmApplicationIT {
         //app.given().get().then().statusCode(HttpStatus.SC_OK);
     }
 
-    // TODO: enable when Kogito for Quarkus 3 is available; currently there is no kogito-quarks-rules extension available for Quarkus 3 judging by the code.quarkus.io
-    @Disabled("Disabled until Kogito extensions for Quarkus 3 are published in code.quarkus.io")
     @Tag("QUARKUS-1073")
     @Tag("QUARKUS-1070")
     @Test
     public void shouldCreateApplicationOnJvmFromMultipleBoms() {
         // Create application using:
-        // 1. Kogito dependencies
+        // 1. Camel dependencies
         // 2. Prettytime dependencies
-        // It will result into several boms added: quarkus-bom and kogito-bom.
+        // It will result into several boms added: quarkus-bom and camel-bom.
         // Also, it verifies that quarkiverse dependencies can be added too.
-        final String kogitoExtension = "kogito-quarkus-rules";
+        final String camelExtension = "camel-quarkus-rest";
         final String prettytimeExtension = "quarkus-prettytime";
-        QuarkusCliRestService app = cliClient.createApplication("app", defaults().withExtensions(kogitoExtension,
-                prettytimeExtension, REST_EXTENSION, REST_JACKSON_EXTENSION));
+        // The snapshot not providing platform-bom so it use the latest stream in registry
+        // otherwise when the quarkus version is defined (3.27.0) or if it's snapshot of some quarkus stream (3.27.999-SNAPSHOT)
+        // it will set the correct stream to use
+        String quarkusStream = QuarkusProperties.getVersion().equals("999-SNAPSHOT") ? null
+                : QuarkusProperties.getVersion().replaceAll("^(\\d+\\.\\d+).*", "$1");
+        // This can't use `--platform-bom` as it contain quarkiverse extension
+        QuarkusCliRestService app = cliClient.createApplication("app",
+                defaults().withPlatformBom(null).withStream(quarkusStream).withExtensions(camelExtension,
+                        prettytimeExtension, REST_EXTENSION, REST_JACKSON_EXTENSION));
 
         // Should build on Jvm
         Result result = app.buildOnJvm();
         assertTrue(result.isSuccessful(), "The application didn't build on JVM. Output: " + result.getOutput());
-        assertInstalledExtensions(app, kogitoExtension, prettytimeExtension, REST_EXTENSION,
+        assertInstalledExtensions(app, camelExtension, prettytimeExtension, REST_EXTENSION,
                 REST_JACKSON_EXTENSION);
     }
 
