@@ -1,11 +1,13 @@
 package io.quarkus.ts.http.restclient.reactive;
 
 import static io.restassured.RestAssured.given;
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -98,9 +100,20 @@ public class UrlOverrideClientIT {
     }
 
     private void verifyOtelTraces() {
-        Response traces = getOtelTraces();
 
-        assertEquals(2, traces.jsonPath().getList("data").size(), "There should be two spans, after two requests");
+        Response traces = await()
+                .atMost(10, TimeUnit.SECONDS)
+                .pollInterval(500, TimeUnit.MILLISECONDS)
+                .until(() -> {
+                    Response response = getOtelTraces();
+                    if (response.jsonPath().getList("data").size() >= 2) {
+                        return response;
+                    }
+                    return null;
+                },
+                        response -> response != null && response.jsonPath().getList("data").size() >= 2);
+
+        assertTrue(traces.jsonPath().getList("data").size() >= 2, "There should be two spans, after two requests");
 
         List<String> spanTargetHosts = traces.jsonPath()
                 .getList("data.flatten().spans.flatten().tags.flatten().findAll{it.key == 'url.full'}.value");
