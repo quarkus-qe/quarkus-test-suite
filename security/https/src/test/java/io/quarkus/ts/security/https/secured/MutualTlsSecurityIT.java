@@ -85,10 +85,6 @@ public class MutualTlsSecurityIT {
     private static void callSecuredEndpointAndExpectFailure(String clientCn) {
         // this client certs are not in the server truststore, therefore they cannot be trusted
         try {
-            // TODO: this says that it tests client certificates that are not in the trust store
-            //  and I can see that the Mutiny client is configured with client certificates, but JDK sends
-            //  "certificate_required" possibly due to https://bugs.openjdk.org/browse/JDK-8365440
-            //  we should check if server receives client certificates or not; if so, behavior is correct
             app.mutinyHttps(clientCn).get(MTLS_PATH).sendAndAwait();
             // this must never happen, basically as SSL handshake must throw exception
             Assertions.fail("SSL handshake didn't fail even though certificate host is unknown");
