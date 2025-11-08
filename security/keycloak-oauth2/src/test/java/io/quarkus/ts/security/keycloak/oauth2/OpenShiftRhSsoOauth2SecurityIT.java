@@ -9,6 +9,7 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import io.quarkus.test.bootstrap.KeycloakService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
+import io.quarkus.test.services.Certificate;
 import io.quarkus.test.services.KeycloakContainer;
 import io.quarkus.test.services.QuarkusApplication;
 
@@ -16,13 +17,16 @@ import io.quarkus.test.services.QuarkusApplication;
 @EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
 public class OpenShiftRhSsoOauth2SecurityIT extends BaseOauth2SecurityIT {
 
-    @KeycloakContainer(command = { "start-dev", "--import-realm" }, image = "${rhbk.image}")
+    @KeycloakContainer(runKeycloakInProdMode = true, certificateFormat = Certificate.Format.PEM)
     static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
 
     @QuarkusApplication
     static RestService app = new RestService()
             .withProperty("quarkus.oauth2.introspection-url",
-                    () -> keycloak.getRealmUrl() + "/protocol/openid-connect/token/introspect");
+                    () -> keycloak.getRealmUrl() + "/protocol/openid-connect/token/introspect")
+            .withProperties(() -> keycloak.getTlsProperties())
+            // The Oauth2 not supporting the TLS registry so this needs to be set
+            .withProperty("quarkus.oauth2.ca-cert-file", "${quarkus.tls.keycloak.trust-store.pem.certs}");
 
     @Override
     protected KeycloakService getKeycloak() {
