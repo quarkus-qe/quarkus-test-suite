@@ -1,5 +1,14 @@
 package io.quarkus.ts.security.keycloak.oidcclient.reactive.extended.ping.clients;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.util.Optional;
+
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -8,6 +17,8 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.MediaType;
 
 import org.eclipse.microprofile.config.Config;
@@ -49,7 +60,7 @@ public interface LookupAuthorizationPongClient {
     @Produces(MediaType.TEXT_PLAIN)
     boolean deletePongById(@PathParam("id") String id);
 
-    default String lookupAuth() {
+    default String lookupAuth() throws KeyStoreException {
         Config config = ConfigProvider.getConfig();
 
         String oidcAuthUrl = config.getValue("quarkus.oidc.auth-server-url", String.class);
@@ -66,9 +77,39 @@ public interface LookupAuthorizationPongClient {
                 .grantType("password")
                 .username("test-user")
                 .password("test-user")
+                .resteasyClient(createClientWithTrustStore(config))
                 .build();
 
         String keycloakToken = keycloak.tokenManager().getAccessToken().getToken();
         return "Bearer " + keycloakToken;
+    }
+
+    default Client createClientWithTrustStore(Config config) throws KeyStoreException {
+        Optional<String> truststorePathP12 = config.getOptionalValue("quarkus.tls.keycloak.trust-store.p12.path", String.class);
+        Optional<String> truststorePathJks = config.getOptionalValue("quarkus.tls.keycloak.trust-store.jks.path", String.class);
+        String truststorePassword;
+        String trustStorePath;
+        KeyStore trustStore;
+
+        if (truststorePathP12.isPresent()) {
+            trustStorePath = truststorePathP12.get();
+            truststorePassword = config.getValue("quarkus.tls.keycloak.trust-store.p12.password", String.class);
+            trustStore = KeyStore.getInstance("PKCS12");
+        } else if (truststorePathJks.isPresent()) {
+            trustStorePath = truststorePathJks.get();
+            truststorePassword = config.getValue("quarkus.tls.keycloak.trust-store.jks.password", String.class);
+            trustStore = KeyStore.getInstance("JKS");
+        } else {
+            return ClientBuilder.newClient();
+        }
+
+        try (InputStream trustStoreStream = new FileInputStream(trustStorePath)) {
+            trustStore.load(trustStoreStream, truststorePassword.toCharArray());
+        } catch (IOException | NoSuchAlgorithmException | CertificateException e) {
+            throw new IllegalStateException("Unable to load truststore for custom Keycloak resteasy client", e);
+        }
+        return ClientBuilder.newBuilder()
+                .trustStore(trustStore)
+                .build();
     }
 }
