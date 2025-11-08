@@ -34,6 +34,7 @@ public abstract class AbstractOidcRestClientIT {
     @QuarkusApplication
     static RestService app = new RestService()
             .withProperty("quarkus.oidc.auth-server-url", () -> keycloak.getRealmUrl())
+            .withProperties(() -> keycloak.getTlsProperties())
             // token introspection is required for revoked access tokens to be actually checked against keycloak
             .withProperty("quarkus.oidc.token.require-jwt-introspection-only", "true")
             .withProperty("quarkus.rest-client-oidc-filter.refresh-on-unauthorized", "true");

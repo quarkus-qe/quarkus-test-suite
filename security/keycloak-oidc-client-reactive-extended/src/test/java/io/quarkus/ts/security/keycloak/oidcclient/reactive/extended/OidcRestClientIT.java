@@ -11,7 +11,8 @@ import io.quarkus.test.services.KeycloakContainer;
 @QuarkusScenario
 public class OidcRestClientIT extends AbstractOidcRestClientIT {
 
-    @KeycloakContainer(command = { "start-dev", "--import-realm", "--features=token-exchange" })
+    @KeycloakContainer(command = { "start", "--import-realm", "--features=token-exchange",
+            "--hostname-strict=false" }, runKeycloakInProdMode = true)
     static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
 
 }
