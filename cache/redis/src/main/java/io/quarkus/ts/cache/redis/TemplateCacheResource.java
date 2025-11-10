@@ -26,6 +26,8 @@ public class TemplateCacheResource {
             return cached.render();
         } catch (TemplateException e) {
             return e.getCause().getMessage();
+        } catch (IllegalStateException e) {
+            return e.getMessage();
         }
     }
 
