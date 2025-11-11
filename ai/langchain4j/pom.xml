@@ -11,6 +11,8 @@
     <packaging>jar</packaging>
     <name>Quarkus QE TS: AI LangChain4J</name>
     <properties>
+        <!-- The line below is required because we have empty src/main: https://github.com/quarkusio/quarkus/issues/33061 -->
+        <quarkus.build.skip>true</quarkus.build.skip>
         <skipTests>true</skipTests>
         <skipITs>true</skipITs>
     </properties>
