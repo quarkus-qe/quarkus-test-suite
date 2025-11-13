@@ -41,5 +41,10 @@
             <artifactId>quarkus-test-service-consul</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.quarkus.qe</groupId>
+            <artifactId>quarkus-test-cli</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>
