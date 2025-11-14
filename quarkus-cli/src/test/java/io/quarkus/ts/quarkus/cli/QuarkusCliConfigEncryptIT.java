@@ -181,11 +181,11 @@ public class QuarkusCliConfigEncryptIT {
                         """)
                 .assertCommandOutputContains("[-k=<encryptionKey>] SECRET")
                 .assertCommandOutputContains("""
-                        The Secret value to encrypt
+                        The secret value to encrypt
                         """)
                 .assertCommandOutputContains("-f, --format=<encryptionKeyFormat>")
                 .assertCommandOutputContains("""
-                        The Encryption Key Format (base64 / plain)
+                        The encryption key format (base64 / plain)
                         """)
                 .assertCommandOutputContains("""
                         Print more context on errors and exceptions
@@ -195,7 +195,7 @@ public class QuarkusCliConfigEncryptIT {
                         """)
                 .assertCommandOutputContains("Verbose mode")
                 .assertCommandOutputContains("-k, --key=<encryptionKey>")
-                .assertCommandOutputContains("The Encryption Key");
+                .assertCommandOutputContains("The encryption Key");
     }
 
     @Order(7)
