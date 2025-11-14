@@ -23,10 +23,13 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-infinispan-client</artifactId>
         </dependency>
+        <!-- Removed in https://github.com/quarkusio/quarkus/pull/51011
+        TODO: remove or add version base on https://github.com/quarkusio/quarkus/pull/51011#issuecomment-3532650582 response
         <dependency>
             <groupId>org.infinispan</groupId>
             <artifactId>infinispan-query-dsl</artifactId>
         </dependency>
+        -->
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-smallrye-health</artifactId>
