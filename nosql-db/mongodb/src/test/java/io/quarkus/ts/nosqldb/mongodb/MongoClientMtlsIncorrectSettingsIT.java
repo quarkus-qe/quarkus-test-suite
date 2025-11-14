@@ -2,6 +2,7 @@ package io.quarkus.ts.nosqldb.mongodb;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 
@@ -85,9 +86,7 @@ public class MongoClientMtlsIncorrectSettingsIT {
     @Test
     @Order(4)
     public void testIncorrectConfigurationName() {
-        restartAppWithIncorrectConfigurationName();
-        sendPostRequest();
-        app.logs().assertContains("Unable to find the TLS configuration for name " + INCORRECT_CONFIGURATION_NAME);
+        failStartAppWithIncorrectConfigurationName();
     }
 
     private void sendPostRequest() {
@@ -115,11 +114,13 @@ public class MongoClientMtlsIncorrectSettingsIT {
         app.start();
     }
 
-    private static void restartAppWithIncorrectConfigurationName() {
+    private static void failStartAppWithIncorrectConfigurationName() {
         app.stop();
         app.withProperty("quarkus.mongodb.tls-configuration-name", INCORRECT_CONFIGURATION_NAME)
                 .withProperty("quarkus.tls.mongo.key-store.p12.path", CLIENT_PREFIX + KEYSTORE)
                 .withProperty("quarkus.tls.mongo.trust-store.p12.path", CLIENT_PREFIX + TRUSTSTORE);
-        app.start();
+        assertThrows(AssertionError.class, () -> app.start(),
+                "Should fail to start because property quarkus.mongodb.tls-configuration-name' is set to incorrect configuration name");
+        app.logs().assertContains("Unable to find the TLS configuration for name " + INCORRECT_CONFIGURATION_NAME);
     }
 }
