@@ -17,7 +17,7 @@ import io.quarkus.test.services.QuarkusApplication;
 @EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
 public class OpenShiftRhSsoOauth2SecurityIT extends BaseOauth2SecurityIT {
 
-    @KeycloakContainer(runKeycloakInProdMode = true, certificateFormat = Certificate.Format.PEM)
+    @KeycloakContainer(runKeycloakInProdMode = true, certificateFormat = Certificate.Format.PEM, image = "${rhbk.image}")
     static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
 
     @QuarkusApplication
