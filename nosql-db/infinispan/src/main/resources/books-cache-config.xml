@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<distributed-cache name="books" mode="SYNC">
+    <encoding media-type="application/x-protostream"/>
+    <locking isolation="REPEATABLE_READ"/>
+    <transaction locking="PESSIMISTIC" mode="NON_XA"/>
+</distributed-cache>
