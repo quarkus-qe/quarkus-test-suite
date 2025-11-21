@@ -15,7 +15,7 @@ jobs:
                    "sql-db-modules", "root-modules -pl build/podman/,build/docker -Dtest-ubi8-compatibility",
                    "messaging-modules,websockets-modules,monitoring-modules,cache-modules,test-tooling-modules,nosql-db-modules"]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Reclaim Disk Space
         run: .github/ci-prerequisites.sh
       - name: Install JDK {{ matrix.java }}
@@ -52,7 +52,7 @@ jobs:
                    "http-modules,cache-modules", "security-modules,spring-modules",
                     "hibernate-modules", "sql-db-modules", "messaging-modules,monitoring-modules"]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Reclaim Disk Space
         run: .github/ci-prerequisites.sh
       - name: Install JDK {{ matrix.java }}
@@ -87,7 +87,7 @@ jobs:
       matrix:
         java: [ 21 ]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Install JDK {{ matrix.java }}
         uses: actions/setup-java@v5
         with:
@@ -137,7 +137,7 @@ jobs:
         graalvm-version: [ "mandrel-latest" ]
         graalvm-java-version: [ "21" ]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Install JDK {{ matrix.java }}
         uses: actions/setup-java@v5
         with:
@@ -184,7 +184,7 @@ jobs:
                     "sql-db-modules", "root-modules -pl build/podman/,build/docker -Dtest-ubi8-compatibility",
                     "messaging-modules,websockets-modules,monitoring-modules,cache-modules,test-tooling-modules,nosql-db-modules"]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Reclaim Disk Space
         run: .github/ci-prerequisites.sh
       - name: Install JDK {{ matrix.java }}
@@ -227,7 +227,7 @@ jobs:
                     "http-modules,cache-modules", "security-modules,spring-modules",
                     "hibernate-modules", "sql-db-modules", "messaging-modules,monitoring-modules"]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Reclaim Disk Space
         run: .github/ci-prerequisites.sh
       - name: Install JDK {{ matrix.java }}
