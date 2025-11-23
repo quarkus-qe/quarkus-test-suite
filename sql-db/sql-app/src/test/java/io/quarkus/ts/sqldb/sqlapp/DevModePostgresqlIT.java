@@ -17,6 +17,6 @@ public class DevModePostgresqlIT extends AbstractSqlDatabaseIT {
 
     @Test
     public void postgresqlContainerShouldBeStarted() {
-        app.logs().assertContains("Creating container for image: docker.io/postgres");
+        app.logs().assertContains("Creating container for image: docker.io/library/postgres");
     }
 }
