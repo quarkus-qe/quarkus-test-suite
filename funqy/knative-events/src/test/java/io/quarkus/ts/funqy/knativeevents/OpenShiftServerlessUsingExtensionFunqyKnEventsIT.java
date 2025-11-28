@@ -29,7 +29,7 @@ import io.restassured.common.mapper.TypeRef;
 @Tag("use-quarkus-openshift-extension")
 @Tag("serverless")
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
-public class ServerlessExtensionOpenShiftFunqyKnEventsIT {
+public class OpenShiftServerlessUsingExtensionFunqyKnEventsIT {
 
     @QuarkusApplication
     static FunqyKnativeEventsService service = new OpenShiftExtensionFunqyKnativeEventsService()

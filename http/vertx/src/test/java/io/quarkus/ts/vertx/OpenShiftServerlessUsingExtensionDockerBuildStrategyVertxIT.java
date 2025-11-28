@@ -1,21 +1,22 @@
-package io.quarkus.ts.http.minimum;
-
-import static io.restassured.RestAssured.given;
+package io.quarkus.ts.vertx;
 
 import org.junit.jupiter.api.Tag;
 
+import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftDeploymentStrategy;
 import io.quarkus.test.scenarios.OpenShiftScenario;
+import io.quarkus.test.services.QuarkusApplication;
 import io.restassured.specification.RequestSpecification;
 
 @Tag("use-quarkus-openshift-extension")
 @Tag("serverless")
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtensionAndDockerBuildStrategy)
-public class ServerlessExtensionDockerBuildStrategyOpenShiftHttpMinimumIT extends HttpMinimumIT {
-    private RequestSpecification HTTPS_CLIENT_SPEC = given().relaxedHTTPSValidation();
+public class OpenShiftServerlessUsingExtensionDockerBuildStrategyVertxIT extends AbstractVertxIT {
+    @QuarkusApplication
+    static RestService app = new RestService();
 
     @Override
-    protected RequestSpecification givenSpec() {
-        return HTTPS_CLIENT_SPEC;
+    public RequestSpecification requests() {
+        return app.given().relaxedHTTPSValidation();
     }
 }
