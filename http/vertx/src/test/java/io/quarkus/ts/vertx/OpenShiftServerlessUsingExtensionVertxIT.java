@@ -10,8 +10,8 @@ import io.restassured.specification.RequestSpecification;
 
 @Tag("use-quarkus-openshift-extension")
 @Tag("serverless")
-@OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtensionAndDockerBuildStrategy)
-public class ServerlessExtensionDockerBuildStrategyOpenShiftVertxIT extends AbstractVertxIT {
+@OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
+public class OpenShiftServerlessUsingExtensionVertxIT extends AbstractVertxIT {
     @QuarkusApplication
     static RestService app = new RestService();
 
