@@ -174,14 +174,14 @@ public class QuarkusCliConfigEncryptIT {
                 .assertCommandOutputContains("encryption key is generated unless a specific key is set with the --key option")
                 .assertCommandOutputContains("Usage: quarkus config encrypt [-eh] [--verbose] [-f=<encryptionKeyFormat>]")
                 .assertCommandOutputContains("[-k=<encryptionKey>] SECRET")
-                .assertCommandOutputContains("The Secret value to encrypt")
+                .assertCommandOutputContains("The secret value to encrypt")
                 .assertCommandOutputContains("-f, --format=<encryptionKeyFormat>")
-                .assertCommandOutputContains("The Encryption Key Format (base64 / plain)")
+                .assertCommandOutputContains("The encryption key format (base64 / plain)")
                 .assertCommandOutputContains("Print more context on errors and exceptions")
                 .assertCommandOutputContains("Display this help message")
                 .assertCommandOutputContains("Verbose mode")
                 .assertCommandOutputContains("-k, --key=<encryptionKey>")
-                .assertCommandOutputContains("The Encryption Key");
+                .assertCommandOutputContains("The encryption key");
     }
 
     @Order(7)
