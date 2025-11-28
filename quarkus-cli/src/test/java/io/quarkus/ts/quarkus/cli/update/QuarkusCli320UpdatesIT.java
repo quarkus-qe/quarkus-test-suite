@@ -13,10 +13,17 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import io.quarkus.test.scenarios.annotations.EnabledOnQuarkusVersion;
+import io.quarkus.test.scenarios.annotations.EnabledOnQuarkusVersions;
 import io.quarkus.test.util.IQuarkusCLIAppManager;
 import io.quarkus.test.util.QuarkusCLIUtils;
 
 @Tag("quarkus-cli")
+@EnabledOnQuarkusVersions(value = {
+        // run the test only for upstream and RHBQ 3.20
+        @EnabledOnQuarkusVersion(version = "3.20.*redhat.*", reason = "https://github.com/quarkus-qe/quarkus-test-framework/issues/1766"),
+        @EnabledOnQuarkusVersion(version = "(?!.*redhat.*).*", reason = "https://github.com/quarkus-qe/quarkus-test-framework/issues/1766")
+})
 public class QuarkusCli320UpdatesIT extends AbstractQuarkusCliUpdateIT {
     private static final DefaultArtifactVersion oldVersion = new DefaultArtifactVersion("3.15");
     private static final DefaultArtifactVersion newVersion = new DefaultArtifactVersion("3.20");
