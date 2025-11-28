@@ -19,6 +19,7 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.jboss.logging.Logger;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
@@ -66,9 +67,16 @@ public class QuarkusCliOfferingUtils {
                     .filter(dependency -> dependency.getArtifactId().equals(LANGCHAIN4J_ARTIFACT_ID_NAME))
                     .toList();
             assertEquals(1, dependencies.size(), "Langchain4j bom should be present only once");
-            assertEquals(expectedLangchain4jVersion, dependencies.get(0).getVersion(),
+            String version = dependencies.get(0).getVersion();
+            if (version.startsWith("${") && version.endsWith("}")) {
+                String property = version.substring(2, version.length() - 1);
+                String message = "Langchain4j bom uses version " + version + " but there is no such property in the POM!";
+                version = (String) model.getProperties().get(property);
+                Assertions.assertNotNull(version, message);
+            }
+            assertEquals(expectedLangchain4jVersion, version,
                     "Langchain4j bom should have " + expectedLangchain4jVersion
-                            + " set instead of " + dependencies.get(0).getVersion());
+                            + " set instead of " + version);
         } catch (IOException | XmlPullParserException e) {
             fail(e.getMessage());
         }
@@ -81,46 +89,57 @@ public class QuarkusCliOfferingUtils {
      * @throws IOException
      */
     public static void updateRegistryConfigFileWithOffering(String offering) throws IOException {
-        DumperOptions options = new DumperOptions();
-        options.setIndent(2);
-        options.setPrettyFlow(true);
-        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+        ParsedYaml config = ParsedYaml.parseYaml(QUARKUS_TEST_CONFIG);
 
-        Yaml yaml = new Yaml(options);
-
-        Map<String, Object> data;
-        try (InputStream inputStream = new FileInputStream(QUARKUS_TEST_CONFIG)) {
-            data = yaml.load(inputStream);
-        }
-
-        updateRegistryConfig((List<Object>) data.get("registries"), offering);
+        config.updateRegistryConfig(offering);
 
         try (Writer writer = new FileWriter(QUARKUS_TEST_CONFIG)) {
             log.info("Quarkus config in use is: located at " + QUARKUS_TEST_CONFIG.getAbsolutePath()
-                    + " and content of config is:\n" + data);
-            yaml.dump(data, writer);
+                    + " and content of config is:\n" + config.data());
+            config.writeTo(writer);
         }
     }
 
-    /**
-     * Iterate over registries and add offering value to registry with name of {@link #QUARKUS_REGISTRY_ID}
-     *
-     * @param registries list of all set registries
-     * @param offering offering value e.g. ibm, redhat
-     */
-    private static void updateRegistryConfig(List<Object> registries, String offering) {
-        for (Object item : registries) {
-            if (item instanceof Map) {
-                Map<String, Object> registryMap = (Map<String, Object>) item;
-                if (registryMap.containsKey(QUARKUS_REGISTRY_ID)) {
-                    // Get the testing registry and set the offering
-                    Map<String, Object> details = (Map<String, Object>) registryMap.get(QUARKUS_REGISTRY_ID);
-                    details.put("offering", offering);
-                    return;
+    private record ParsedYaml(Yaml yaml, Map<String, Object> data) {
+        static @NotNull ParsedYaml parseYaml(File file) throws IOException {
+            DumperOptions options = new DumperOptions();
+            options.setIndent(2);
+            options.setPrettyFlow(true);
+            options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+
+            Yaml yaml = new Yaml(options);
+
+            Map<String, Object> data;
+            try (InputStream inputStream = new FileInputStream(file)) {
+                data = yaml.load(inputStream);
+            }
+            return new ParsedYaml(yaml, data);
+        }
+
+        void writeTo(Writer writer) {
+            yaml.dump(data, writer);
+        }
+
+        /**
+         * Iterate over registries and add offering value to registry with name of {@link #QUARKUS_REGISTRY_ID}
+         *
+         * @param offering offering value e.g. ibm, redhat
+         */
+        private void updateRegistryConfig(String offering) {
+            List<Object> registries = (List<Object>) this.data.get("registries");
+            for (Object item : registries) {
+                if (item instanceof Map) {
+                    Map<String, Object> registryMap = (Map<String, Object>) item;
+                    if (registryMap.containsKey(QUARKUS_REGISTRY_ID)) {
+                        // Get the testing registry and set the offering
+                        Map<String, Object> details = (Map<String, Object>) registryMap.get(QUARKUS_REGISTRY_ID);
+                        details.put("offering", offering);
+                        return;
+                    }
                 }
             }
+            Assertions.fail(QUARKUS_REGISTRY_ID + " registry is not present in quarkus config");
         }
-        Assertions.fail(QUARKUS_REGISTRY_ID + " registry is not present in quarkus config");
     }
 
     public static String getQuarkusVersionWithoutNumberSuffix() {

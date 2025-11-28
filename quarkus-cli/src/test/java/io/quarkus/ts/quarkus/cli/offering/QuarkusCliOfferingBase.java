@@ -16,11 +16,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 import jakarta.inject.Inject;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.QuarkusCliClient;
@@ -40,12 +42,14 @@ public abstract class QuarkusCliOfferingBase {
 
     @BeforeAll
     public static void prepareConfigBackup() throws IOException {
-        FileUtils.copyFile(QUARKUS_CONFIG, QUARKUS_TEST_CONFIG);
+        FileUtils.copyFile(QUARKUS_CONFIG, QUARKUS_TEST_CONFIG, StandardCopyOption.REPLACE_EXISTING);
     }
 
     @Test
+    @Disabled("https://issues.redhat.com/browse/QUARKUS-6947")
     public void listedExtensionShouldContainSupportScope() {
-        QuarkusCliClient.Result result = cliClient.listExtensions("--support-scope");
+        QuarkusCliClient.Result result = cliClient.listExtensions("--support-scope",
+                "--config=" + QUARKUS_TEST_CONFIG.getAbsolutePath());
         assertTrue(result.getOutput().contains(REST_EXTENSION_NAME)
                 && result.getOutput().contains(REST_EXTENSION_ARTIFACT),
                 "--support-scope option output should contain" + REST_EXTENSION_ARTIFACT + ". Output: " + result.getOutput());
@@ -58,6 +62,7 @@ public abstract class QuarkusCliOfferingBase {
     }
 
     @Test
+    @Disabled("https://issues.redhat.com/browse/QUARKUS-6954")
     public void createAndBuildAppWhenOfferingIsSet() throws IOException {
         // Check if it's possible to create and build app when the offering is set in registry
         Path pathToTmpDirectory = Files.createTempDirectory("cli");
@@ -66,7 +71,8 @@ public abstract class QuarkusCliOfferingBase {
         FileUtils.copyFile(QUARKUS_TEST_CONFIG, pathToConfigInTmpDirectory);
 
         QuarkusCliRestService app = cliClient.createApplication("app",
-                defaults().withExtensions(REST_EXTENSION_ARTIFACT, LANGCHAIN4J_OPENAI_EXTENSION_ARTIFACT),
+                defaults().withExtensions(REST_EXTENSION_ARTIFACT, LANGCHAIN4J_OPENAI_EXTENSION_ARTIFACT)
+                        .withExtraArgs("--config=" + QUARKUS_TEST_CONFIG.getAbsolutePath()),
                 pathToTmpDirectory.toAbsolutePath().toString());
         File pom = app.getFileFromApplication("pom.xml");
         assertCorrectPlatformBom(pom, getQuarkusPlatformGroupId());

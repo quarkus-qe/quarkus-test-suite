@@ -31,6 +31,7 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.awaitility.core.ConditionTimeoutException;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.OS;
@@ -118,6 +119,7 @@ public class QuarkusCliCreateJvmApplicationIT {
 
     @Tag("QUARKUS-1071")
     @TestQuarkusCli
+    @Disabled("https://issues.redhat.com/browse/QUARKUS-6955#")
     public void shouldCreateApplicationWithGradleOnJvm(QuarkusVersionAwareCliClient cliClient) {
 
         // Create application

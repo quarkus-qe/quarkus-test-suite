@@ -14,8 +14,15 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.QuarkusCliRestService;
+import io.quarkus.test.scenarios.annotations.EnabledOnQuarkusVersion;
+import io.quarkus.test.scenarios.annotations.EnabledOnQuarkusVersions;
 
 @Tag("quarkus-cli")
+@EnabledOnQuarkusVersions(value = {
+        // run the test only for upstream and RHBQ 3.15
+        @EnabledOnQuarkusVersion(version = "3.15.*redhat.*", reason = "https://github.com/quarkus-qe/quarkus-test-framework/issues/1766"),
+        @EnabledOnQuarkusVersion(version = "(?!.*redhat.*).*", reason = "https://github.com/quarkus-qe/quarkus-test-framework/issues/1766")
+})
 public class QuarkusCli35to315UpdateIT extends AbstractQuarkusCliUpdateIT {
     private static final DefaultArtifactVersion oldVersion = new DefaultArtifactVersion("3.2");
     private static final DefaultArtifactVersion newVersion = new DefaultArtifactVersion("3.15");
