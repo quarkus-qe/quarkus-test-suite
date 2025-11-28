@@ -1,4 +1,4 @@
-package io.quarkus.ts.many.extensions;
+package io.quarkus.ts.http.minimum;
 
 import static io.restassured.RestAssured.given;
 
@@ -10,9 +10,8 @@ import io.restassured.specification.RequestSpecification;
 
 @Tag("use-quarkus-openshift-extension")
 @Tag("serverless")
-@OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
-public class ServerlessExtensionOpenShiftManyExtensionsIT extends ManyExtensionsIT {
-
+@OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtensionAndDockerBuildStrategy)
+public class OpenShiftServerlessUsingExtensionDockerBuildStrategyHttpMinimumIT extends HttpMinimumIT {
     private RequestSpecification HTTPS_CLIENT_SPEC = given().relaxedHTTPSValidation();
 
     @Override

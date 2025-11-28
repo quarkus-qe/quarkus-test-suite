@@ -11,7 +11,7 @@ import io.restassured.specification.RequestSpecification;
 @Tag("use-quarkus-openshift-extension")
 @Tag("serverless")
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
-public class ServerlessExtensionOpenShiftHttpMinimumIT extends HttpMinimumIT {
+public class OpenShiftServerlessUsingExtensionHttpMinimumIT extends HttpMinimumIT {
     private RequestSpecification HTTPS_CLIENT_SPEC = given().relaxedHTTPSValidation();
 
     @Override
