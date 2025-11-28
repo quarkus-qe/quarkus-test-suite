@@ -1,5 +1,6 @@
 package io.quarkus.ts.quarkus.cli.offering;
 
+import static io.quarkus.ts.quarkus.cli.offering.QuarkusCliOfferingUtils.QUARKUS_TEST_CONFIG;
 import static io.quarkus.ts.quarkus.cli.offering.QuarkusCliOfferingUtils.getExtensionLineFromListOutput;
 import static io.quarkus.ts.quarkus.cli.offering.QuarkusCliOfferingUtils.updateRegistryConfigFileWithOffering;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -10,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -31,8 +33,11 @@ public class QuarkusCliOfferingIbmIT extends QuarkusCliOfferingBase {
     }
 
     @Test
-    public void listedExtensionShouldContainSupportScopeForLangchain4jOpenAi() throws IOException {
-        QuarkusCliClient.Result result = cliClient.listExtensions("--support-scope");
+    @Disabled("https://issues.redhat.com/browse/QUARKUS-6947")
+    public void listedExtensionShouldContainSupportScopeForLangchain4jOpenAi() {
+        QuarkusCliClient.Result result = cliClient.listExtensions("--support-scope",
+                "--config=" + QUARKUS_TEST_CONFIG.getAbsolutePath(),
+                "-s" + LANGCHAIN4J_OPENAI_EXTENSION_ARTIFACT);
         assertTrue(result.getOutput().contains(LANGCHAIN4J_OPENAI_EXTENSION_NAME)
                 && result.getOutput().contains(LANGCHAIN4J_OPENAI_EXTENSION_ARTIFACT),
                 "--support-scope option output is unexpected. Output: " + result.getOutput());

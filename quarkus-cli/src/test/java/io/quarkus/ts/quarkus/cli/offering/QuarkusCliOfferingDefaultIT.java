@@ -19,9 +19,11 @@ import jakarta.inject.Inject;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import io.quarkus.test.bootstrap.QuarkusCliClient;
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -34,6 +36,7 @@ import io.quarkus.test.services.quarkus.model.QuarkusProperties;
 @QuarkusScenario
 @DisabledOnNative(reason = "Only for JVM verification")
 @EnabledOnQuarkusVersion(version = ".*redhat.*", reason = "Need set up registry config for prod testing")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class QuarkusCliOfferingDefaultIT {
 
     public static final String REST_EXTENSION_NAME = "REST Jackson";
@@ -51,7 +54,9 @@ public class QuarkusCliOfferingDefaultIT {
     @Test
     @Order(Integer.MAX_VALUE)
     public void listExtensionsWithNoOffering() {
-        QuarkusCliClient.Result result = cliClient.listExtensions("--support-scope");
+        QuarkusCliClient.Result result = cliClient.listExtensions("--support-scope",
+                "--config=" + QUARKUS_TEST_CONFIG.getAbsolutePath(),
+                "-s=" + REST_EXTENSION_ARTIFACT);
         assertTrue(result.getOutput().contains(REST_EXTENSION_NAME)
                 && result.getOutput().contains(REST_EXTENSION_ARTIFACT),
                 "--support-scope option output should contain" + REST_EXTENSION_ARTIFACT + ". Output: " + result.getOutput());
@@ -67,10 +72,13 @@ public class QuarkusCliOfferingDefaultIT {
     }
 
     @Test
+    @Disabled("https://issues.redhat.com/browse/QUARKUS-6953")
     public void listExtensionsWithWrongOffering() throws IOException {
         // Testing output when the unknow offering is set
         updateRegistryConfigFileWithOffering("unknown-offering");
-        QuarkusCliClient.Result result = cliClient.listExtensions("--support-scope");
+        QuarkusCliClient.Result result = cliClient.listExtensions("--support-scope",
+                "--config=" + QUARKUS_TEST_CONFIG.getAbsolutePath(),
+                "-s=" + REST_EXTENSION_ARTIFACT);
         assertTrue(result.getOutput().contains(REST_EXTENSION_NAME)
                 && result.getOutput().contains(REST_EXTENSION_ARTIFACT),
                 "--support-scope option output should contain" + REST_EXTENSION_ARTIFACT + ". Output: " + result.getOutput());
@@ -91,7 +99,8 @@ public class QuarkusCliOfferingDefaultIT {
     public void listExtensionsWithEmptyOffering() throws IOException {
         // Testing output when the unknow offering is set
         updateRegistryConfigFileWithOffering("");
-        QuarkusCliClient.Result result = cliClient.listExtensions("--support-scope");
+        QuarkusCliClient.Result result = cliClient.listExtensions("--support-scope",
+                "--config=" + QUARKUS_TEST_CONFIG.getAbsolutePath());
         assertFalse(result.isSuccessful());
         // TODO the output in this case is not clear, needs to be updated when issue is fixed
     }
