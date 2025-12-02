@@ -45,7 +45,6 @@ public class DevModeWorkspaceIT {
     }
 
     @Test
-    @DisabledOnOs(value = { OS.WINDOWS }, disabledReason = "https://issues.redhat.com/browse/QUARKUS-6747")
     public void workspaceContainsText() {
         var pageURL = app.getURI(Protocol.HTTP).withPath("/q/dev-ui/workspace").toString();
         try (Playwright playwright = Playwright.create()) {
@@ -84,7 +83,6 @@ public class DevModeWorkspaceIT {
     }
 
     @Test
-    @DisabledOnOs(value = { OS.WINDOWS }, disabledReason = "https://issues.redhat.com/browse/QUARKUS-6747")
     public void workspaceCanBeEdited() {
         app.given().when().get("/api/filter/any")
                 .then().statusCode(HttpStatus.SC_OK).body(containsString("ok"));
