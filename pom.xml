@@ -157,8 +157,8 @@
     <repositories>
         <!-- repository where framework snapshots are deployed -->
         <repository>
-            <id>maven-snapshots-central</id>
-            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+            <id>jboss-community-snapshots</id>
+            <url>https://repository.jboss.org/nexus/repository/quarkus-snapshots/</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
@@ -169,8 +169,8 @@
     </repositories>
     <pluginRepositories>
         <pluginRepository>
-            <id>quarkus-snapshots-plugin-repository</id>
-            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+            <id>jboss-community-snapshots</id>
+            <url>https://repository.jboss.org/nexus/repository/quarkus-snapshots/</url>
             <releases>
                 <enabled>false</enabled>
             </releases>
