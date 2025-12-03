@@ -14,8 +14,6 @@ import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledOnOs;
-import org.junit.jupiter.api.condition.OS;
 
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.ElementHandle;
@@ -59,7 +57,6 @@ public class DevModeWorkspaceIT {
     }
 
     @Test
-    @DisabledOnOs(value = { OS.WINDOWS }, disabledReason = "https://issues.redhat.com/browse/QUARKUS-6747")
     public void workspaceHasFolders() {
         var pageURL = app.getURI(Protocol.HTTP).withPath("/q/dev-ui/workspace").toString();
         try (Playwright playwright = Playwright.create()) {
