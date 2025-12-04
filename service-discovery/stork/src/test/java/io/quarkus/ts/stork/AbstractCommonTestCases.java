@@ -1,5 +1,7 @@
 package io.quarkus.ts.stork;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 
@@ -7,8 +9,6 @@ import org.apache.http.HttpStatus;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.restassured.response.ValidatableResponse;
-
-import junit.framework.AssertionFailedError;
 
 public class AbstractCommonTestCases {
 
@@ -29,7 +29,7 @@ public class AbstractCommonTestCases {
         try (ServerSocket socket = new ServerSocket(0)) {
             return String.valueOf(socket.getLocalPort());
         } catch (IOException e) {
-            throw new AssertionFailedError();
+            fail("Unable to find available port", e);
         }
     }
 }
