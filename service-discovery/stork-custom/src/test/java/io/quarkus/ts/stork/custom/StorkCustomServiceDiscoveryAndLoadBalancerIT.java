@@ -82,6 +82,7 @@ public class StorkCustomServiceDiscoveryAndLoadBalancerIT {
             return String.valueOf(socket.getLocalPort());
         } catch (IOException e) {
             fail("Unable to find available port", e);
+            return null;
         }
     }
 }

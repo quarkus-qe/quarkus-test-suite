@@ -1,6 +1,6 @@
 package io.quarkus.ts.http.grpc;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.jboss.logging.Logger;
@@ -50,7 +50,6 @@ public class GrpcEnumIT {
 
             assertEquals("logging-test", response.getName());
             assertEquals(DemoEnum.B, response.getEnum());
-
         }
     }
 }
