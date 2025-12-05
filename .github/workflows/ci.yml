@@ -112,7 +112,7 @@ jobs:
     needs: prepare-jvm-native-latest-modules-mvn-param
     strategy:
       matrix:
-        java: [ 17 ]
+        java: [ 21 ]
     steps:
       - uses: actions/checkout@v6
       - name: Install JDK {{ matrix.java }}
@@ -132,7 +132,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ 17 ]
+        java: [ 21 ]
         module-mvn-args: ${{ fromJSON(needs.prepare-jvm-native-latest-modules-mvn-param.outputs.JVM_MODULES_MAVEN_PARAM) }}
     outputs:
       has-flaky-tests: ${{steps.flaky-test-detector.outputs.has-flaky-tests}}
@@ -185,7 +185,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ 17 ]
+        java: [ 21 ]
         module-mvn-args: ${{ fromJSON(needs.prepare-jvm-native-latest-modules-mvn-param.outputs.NATIVE_MODULES_MAVEN_PARAM) }}
     outputs:
       has-flaky-tests: ${{steps.flaky-test-detector.outputs.has-flaky-tests}}
@@ -240,7 +240,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ 17 ]
+        java: [ 21 ]
         module-mvn-args: ${{ fromJSON(needs.prepare-jvm-native-latest-modules-mvn-param.outputs.JVM_MODULES_MAVEN_PARAM) }}
     outputs:
       has-flaky-tests: ${{steps.flaky-test-detector.outputs.has-flaky-tests}}

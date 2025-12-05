@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ 21 ]
+        java: [ 17, 21 ]
         profiles: [ "root-modules", "http-modules,security-modules,spring-modules", "hibernate-modules",
                    "sql-db-modules", "root-modules -pl build/podman/,build/docker -Dtest-ubi8-compatibility",
                    "messaging-modules,websockets-modules,monitoring-modules,cache-modules,test-tooling-modules,nosql-db-modules"]
@@ -46,7 +46,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ 17 ]
+        java: [ 21 ]
         image: [ "ubi9-quarkus-mandrel-builder-image:jdk-21", "ubi-quarkus-mandrel-builder-image:jdk-21 -Dtest-ubi8-compatibility" ]
         profiles: [ "root-modules,websockets-modules,test-tooling-modules,nosql-db-modules",
                    "http-modules,cache-modules", "security-modules,spring-modules",
@@ -133,7 +133,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ 17 ]
+        java: [ 21 ]
         graalvm-version: [ "mandrel-latest" ]
         graalvm-java-version: [ "21" ]
     steps:
@@ -179,7 +179,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ 17, 21 ]
+        java: [ 21 ]
         profiles: [ "root-modules", "http-modules,security-modules,spring-modules", "hibernate-modules",
                     "sql-db-modules", "root-modules -pl build/podman/,build/docker -Dtest-ubi8-compatibility",
                     "messaging-modules,websockets-modules,monitoring-modules,cache-modules,test-tooling-modules,nosql-db-modules"]
@@ -221,7 +221,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ 17 ]
+        java: [ 21 ]
         image: [ "ubi9-quarkus-mandrel-builder-image:jdk-21", "ubi-quarkus-mandrel-builder-image:jdk-21 -Dtest-ubi8-compatibility" ]
         profiles: [ "root-modules,websockets-modules,test-tooling-modules,nosql-db-modules",
                     "http-modules,cache-modules", "security-modules,spring-modules",
