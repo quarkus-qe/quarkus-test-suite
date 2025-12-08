@@ -5,7 +5,8 @@ import static io.quarkus.ts.http.graphql.Utils.sendGetQuery;
 import static io.quarkus.ts.http.graphql.Utils.sendQuery;
 import static io.restassured.RestAssured.given;
 
-import org.apache.http.HttpStatus;
+import java.net.HttpURLConnection;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -34,21 +35,20 @@ public class GraphQLDisabledGetIT {
 
     @Test
     public void emptyGet() {
-        Response response = given().basePath("graphql")
+        given().basePath("graphql")
                 .contentType("application/json")
-                .get();
-        Assertions.assertEquals(HttpStatus.SC_METHOD_NOT_ALLOWED, response.statusCode());
+                .get().then().assertThat().statusCode(HttpURLConnection.HTTP_BAD_METHOD);
     }
 
     @Test
     public void singleGet() {
         final Response response = sendGetQuery("friend(name:\"Aristotle\"){name}");
-        Assertions.assertEquals(HttpStatus.SC_METHOD_NOT_ALLOWED, response.statusCode());
+        response.then().assertThat().statusCode(HttpURLConnection.HTTP_BAD_METHOD);
     }
 
     @Test
     public void singleGetReactive() {
         final Response response = sendGetQuery("friend_reactive(name:\"Aristotle\"){name}");
-        Assertions.assertEquals(HttpStatus.SC_METHOD_NOT_ALLOWED, response.statusCode());
+        response.then().assertThat().statusCode(HttpURLConnection.HTTP_BAD_METHOD);
     }
 }
