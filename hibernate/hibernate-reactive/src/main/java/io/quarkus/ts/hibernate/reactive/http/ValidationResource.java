@@ -1,10 +1,15 @@
 package io.quarkus.ts.hibernate.reactive.http;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import jakarta.inject.Inject;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
@@ -17,12 +22,20 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.hibernate.reactive.mutiny.Mutiny;
 
 import io.quarkus.hibernate.reactive.panache.Panache;
+import io.quarkus.ts.hibernate.reactive.database.BookCollectionLegacyValid;
+import io.quarkus.ts.hibernate.reactive.database.BookCollectionTypeUseValid;
+import io.quarkus.ts.hibernate.reactive.database.ClientDevice;
+import io.quarkus.ts.hibernate.reactive.database.LibraryAuthor;
+import io.quarkus.ts.hibernate.reactive.database.LibraryBook;
 import io.quarkus.ts.hibernate.reactive.database.PersonEntity;
 import io.quarkus.ts.hibernate.reactive.database.XmlValidatedCustomer;
 import io.smallrye.mutiny.Uni;
 
 @Path("/validation")
 public class ValidationResource {
+
+    @Inject
+    Validator validator;
 
     @Inject
     Mutiny.SessionFactory sessionFactory;
@@ -136,5 +149,67 @@ public class ValidationResource {
 
                     return Response.ok(columnValidationResult).build();
                 });
+    }
+
+    @PUT
+    @Path("/author/{name}/{title}")
+    public Uni<Response> validateAuthor(String name, String title) {
+        return Panache.withTransaction(() -> {
+            LibraryAuthor author = new LibraryAuthor();
+            author.name = name;
+
+            LibraryBook book = new LibraryBook();
+            book.title = title;
+
+            book.author = author;
+            author.books.add(book);
+
+            return author.persistAndFlush();
+        })
+                .map(n -> Response.status(Response.Status.CREATED))
+                .onFailure().recoverWithItem(error -> Response.status(Response.Status.BAD_REQUEST).entity(error.getMessage()))
+                .map(Response.ResponseBuilder::build);
+    }
+
+    @PUT
+    @Path("/container/{mode}/{title}")
+    public Uni<Response> validateContainer(String mode, String title) {
+        return Panache.withTransaction(() -> {
+
+            LibraryBook book = new LibraryBook();
+            book.title = title;
+
+            Object dto = mode.equals("legacy")
+                    ? new BookCollectionLegacyValid(List.of(book))
+                    : new BookCollectionTypeUseValid(List.of(book));
+
+            Set<ConstraintViolation<Object>> violations = validator.validate(dto);
+            if (!violations.isEmpty()) {
+                throw new ConstraintViolationException(violations);
+            }
+
+            return Uni.createFrom().nullItem();
+        })
+                .map(n -> Response.status(Response.Status.CREATED))
+                .onFailure().recoverWithItem(error -> Response.status(Response.Status.BAD_REQUEST).entity(error.getMessage()))
+                .map(Response.ResponseBuilder::build);
+    }
+
+    @PUT
+    @Path("/device/{type}/{ip}")
+    public Uni<Response> createDevice(String type, String ip) {
+        return Panache.withTransaction(() -> {
+            ClientDevice device = new ClientDevice();
+            switch (type) {
+                case "ipv4" -> device.ipv4 = ip;
+                case "ipv6" -> device.ipv6 = ip;
+                default -> throw new IllegalArgumentException("Unknown type: " + type);
+            }
+
+            return device.persistAndFlush();
+        })
+                .map(n -> Response.status(Response.Status.CREATED))
+                .onFailure().recoverWithItem(error -> Response.status(Response.Status.BAD_REQUEST).entity(error.getMessage()))
+                .map(Response.ResponseBuilder::build);
     }
 }
