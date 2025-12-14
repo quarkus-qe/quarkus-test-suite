@@ -13,6 +13,10 @@ import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
+/**
+ * Validator DDL-only mode tests.
+ * Runtime validation is disabled in this mode, so invalid data is expected to be persisted successfully.
+ */
 @Tag("QUARKUS-6242")
 @QuarkusScenario
 @DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/2022")
@@ -58,6 +62,33 @@ public class OracleHibernateValidatorDdlModeIT extends AbstractHibernateValidato
     public void validationXmlInvalidCustomerName() {
         getApp().given()
                 .when().put("/validation/xml/customer/No/customer@example.com")
+                .then()
+                .statusCode(SC_CREATED);
+    }
+
+    @Test
+    @Override
+    public void validationCyclicCascadeInvalidBook() {
+        getApp().given()
+                .put("/validation/author/Unknown/No")
+                .then()
+                .statusCode(SC_CREATED);
+    }
+
+    @Test
+    @Override
+    public void validationRejectIPv6ForIPv4Field() {
+        getApp().given()
+                .put("/validation/device/ipv4/2001:db8::1")
+                .then()
+                .statusCode(SC_CREATED);
+    }
+
+    @Test
+    @Override
+    public void validationRejectIpv4ForIpv6Field() {
+        getApp().given()
+                .put("/validation/device/ipv6/1.2.3.4")
                 .then()
                 .statusCode(SC_CREATED);
     }

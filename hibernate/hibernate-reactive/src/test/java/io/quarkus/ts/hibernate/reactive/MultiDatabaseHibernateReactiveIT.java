@@ -18,7 +18,12 @@ import io.quarkus.ts.hibernate.reactive.database.Author;
 import io.quarkus.ts.hibernate.reactive.database.AuthorIdGenerator;
 import io.quarkus.ts.hibernate.reactive.database.AuthorRepository;
 import io.quarkus.ts.hibernate.reactive.database.Book;
+import io.quarkus.ts.hibernate.reactive.database.BookCollectionLegacyValid;
+import io.quarkus.ts.hibernate.reactive.database.BookCollectionTypeUseValid;
+import io.quarkus.ts.hibernate.reactive.database.ClientDevice;
 import io.quarkus.ts.hibernate.reactive.database.ISBNConverter;
+import io.quarkus.ts.hibernate.reactive.database.LibraryAuthor;
+import io.quarkus.ts.hibernate.reactive.database.LibraryBook;
 import io.quarkus.ts.hibernate.reactive.database.PersonEntity;
 import io.quarkus.ts.hibernate.reactive.database.XmlValidatedCustomer;
 import io.quarkus.ts.hibernate.reactive.http.ApplicationExceptionMapper;
@@ -68,7 +73,9 @@ public class MultiDatabaseHibernateReactiveIT extends AbstractDatabaseHibernateR
             // also include default classes
             Author.class, AuthorIdGenerator.class, AuthorRepository.class, Book.class, ISBNConverter.class, PersonEntity.class,
             ApplicationExceptionMapper.class, BookDescription.class, GroundedEndpoint.class, OtherResource.class,
-            PanacheEndpoint.class, SomeApi.class, ValidationResource.class, XmlValidatedCustomer.class
+            PanacheEndpoint.class, SomeApi.class, ValidationResource.class, XmlValidatedCustomer.class,
+            ClientDevice.class, BookCollectionLegacyValid.class, BookCollectionTypeUseValid.class, LibraryAuthor.class,
+            LibraryBook.class
     })
     static RestService app = new RestService()
             .withProperty("main.url", postgresql1::getReactiveUrl)
