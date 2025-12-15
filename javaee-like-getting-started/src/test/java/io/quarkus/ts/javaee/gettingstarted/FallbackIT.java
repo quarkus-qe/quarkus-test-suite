@@ -13,7 +13,7 @@ public class FallbackIT {
 
     private static final String WORK_METHOD = "work";
     private static final String FAIL_METHOD = "fail";
-    private static final String FALLBACK_METRIC = "base_ft_invocations_total{fallback=\"%s\",method=\"io.quarkus.ts.javaee.gettingstarted.FallbackResource.%s\",result=\"valueReturned\"} %s.0";
+    private static final String FALLBACK_METRIC = "ft_invocations_total{fallback=\"%s\",method=\"io.quarkus.ts.javaee.gettingstarted.FallbackResource.%s\",result=\"valueReturned\"} %s.0";
     private static final String FALLBACK_APPLIED = "applied";
     private static final String FALLBACK_NOT_APPLIED = "notApplied";
     private static final String ONE = "1";
