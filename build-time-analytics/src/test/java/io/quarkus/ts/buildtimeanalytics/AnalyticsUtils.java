@@ -90,7 +90,6 @@ public class AnalyticsUtils {
             "quarkus-smallrye-health",
             "quarkus-smallrye-jwt",
             "quarkus-smallrye-jwt-build",
-            "quarkus-smallrye-metrics",
             "quarkus-smallrye-openapi",
             "quarkus-opentelemetry",
             "quarkus-messaging",
