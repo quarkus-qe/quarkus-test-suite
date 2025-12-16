@@ -1182,6 +1182,13 @@ It covers different usages:
 
 Also test POJOs as cache value and cache expiration.
 
+### `cache/multi-provider`
+Verifies the `@CacheResult`, `@CacheInvalidate`, `@CacheInvalidateAll` and `@CacheKey` when two different cache providers are used.
+The used caches services are Caffeine and Redis.
+It covers different usages:
+1. from an application scoped service
+2. from a request scoped service
+
 ### `cache/redis`
 
 Verifies the `quarkus-redis-cache` extension using `@CacheResult`, `@CacheInvalidate`, `@CacheInvalidateAll` and `@CacheKey`.
