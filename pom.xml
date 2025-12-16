@@ -509,6 +509,7 @@
                 <module>cache/caffeine-resteasy</module>
                 <module>cache/redis</module>
                 <module>cache/infinispan</module>
+                <module>cache/multi-provider</module>
                 <module>infinispan-client</module>
             </modules>
         </profile>
