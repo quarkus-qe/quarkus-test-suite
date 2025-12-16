@@ -1,6 +1,8 @@
 package io.quarkus.ts.security.keycloak.oidcclient.reactive.extended;
 
 import static io.quarkus.ts.security.keycloak.oidcclient.reactive.extended.OidcItUtils.createToken;
+import static io.quarkus.ts.security.keycloak.oidcclient.reactive.extended.secured.method.MethodSecuredResource.PUBLIC_RESPONSE;
+import static io.quarkus.ts.security.keycloak.oidcclient.reactive.extended.secured.method.MethodSecuredResource.SECURED_RESPONSE;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
@@ -113,6 +115,31 @@ public abstract class AbstractOidcRestClientIT {
         pingTokenRefreshEndpoints("refreshEnabled", true);
         // test default OIDC client with refreshing disabled using request filter
         pingTokenRefreshEndpoints("refreshDisabled", false);
+    }
+
+    /**
+     * Test quarkus REST client, with only some method having authentication set up using @OidcClientFilter.
+     */
+    @Test
+    @Tag("QUARKUS-6971")
+    public void testMethodLevelOidcClientFilter() {
+        // getting public method without authentication should be no problem
+        app.given().get("/method-public/publicNoAuth").then().body(is(PUBLIC_RESPONSE));
+
+        // accessing public endpoint with authentication should cause no problem
+        app.given().get("/method-public/publicAuth").then().body(is(PUBLIC_RESPONSE));
+
+        // getting secured method without authentication should get denied
+        app.given().get("/method-public/securedNoAuth")
+                .then()
+                // CustomExceptionMapper is overriding the return code to 500
+                // we check body to actually verify that this was 401 Unauthorized
+                .statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR)
+                .body(containsString("Unauthorized, status code 401"));
+
+        // accessing secured endpoint with authentication should work
+        app.given().get("/method-public/securedAuth").then().body(is(SECURED_RESPONSE));
+        app.given().get("/method-public/securedNamedAuth").then().body(is(SECURED_RESPONSE));
     }
 
     private void assertPingEndpoints(String endpointPrefix) {

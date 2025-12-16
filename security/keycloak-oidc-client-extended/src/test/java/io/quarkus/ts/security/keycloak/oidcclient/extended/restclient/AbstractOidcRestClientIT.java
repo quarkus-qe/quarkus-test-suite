@@ -1,6 +1,8 @@
 package io.quarkus.ts.security.keycloak.oidcclient.extended.restclient;
 
 import static io.quarkus.ts.security.keycloak.oidcclient.extended.restclient.TokenUtils.createToken;
+import static io.quarkus.ts.security.keycloak.oidcclient.extended.restclient.secured.method.MethodSecuredResource.PUBLIC_RESPONSE;
+import static io.quarkus.ts.security.keycloak.oidcclient.extended.restclient.secured.method.MethodSecuredResource.SECURED_RESPONSE;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
@@ -125,6 +127,31 @@ public abstract class AbstractOidcRestClientIT {
         // OIDC client used here has artificially shortened the token validity time to 1 second using "access-token-expiry-skew"
         // so after a short time waiting, there should be new token
         assertNotEquals(firstToken, secondToken, "Access token should change after expiry time");
+    }
+
+    /**
+     * Test quarkus REST client, with only some method having authentication set up using @OidcClientFilter.
+     */
+    @Test
+    @Tag("QUARKUS-6971")
+    public void testMethodLevelOidcClientFilter() {
+        // getting public method without authentication should be no problem
+        app.given().get("/method-public/publicNoAuth").then().body(is(PUBLIC_RESPONSE));
+
+        // accessing public endpoint with authentication should cause no problem
+        app.given().get("/method-public/publicAuth").then().body(is(PUBLIC_RESPONSE));
+
+        // getting secured method without authentication should get denied
+        app.given().get("/method-public/securedNoAuth")
+                .then()
+                // CustomExceptionMapper is overriding the return code to 500
+                // we check body to actually verify that this was 401 Unauthorized
+                .statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR)
+                .body(containsString("HTTP 401 Unauthorized"));
+
+        // accessing secured endpoint with authentication should work
+        app.given().get("/method-public/securedAuth").then().body(is(SECURED_RESPONSE));
+        app.given().get("/method-public/securedNamedAuth").then().body(is(SECURED_RESPONSE));
     }
 
     private void assertPongEndpoints(String endpointPrefix) {
