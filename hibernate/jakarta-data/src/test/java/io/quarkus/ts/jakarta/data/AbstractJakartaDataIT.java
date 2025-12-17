@@ -515,10 +515,9 @@ public abstract class AbstractJakartaDataIT {
                 .auth().preemptive().basic("martin", "martin")
                 .get("/repository/query-with-cdi-security-interceptor")
                 .then().statusCode(200);
-        // TODO: enable when https://github.com/quarkusio/quarkus/issues/48884 gets fixed
-        //        app.given()
-        //                .get("/repository/query-with-cdi-security-interceptor")
-        //                .then().statusCode(401);
+        app.given()
+                .get("/repository/query-with-cdi-security-interceptor")
+                .then().statusCode(401);
     }
 
     @Order(28)
