@@ -9,7 +9,8 @@ public class HttpSecurityConfiguration {
     void configure(@Observes HttpSecurity httpSecurity) {
         httpSecurity
                 .path("/generate-token/*", "/token/*", "/filter-messages/*", "/token-refresh-public/*",
-                        "/filter-customization-messages/*", "/client-registration/*", "/method-public/*", "/method-secured/*")
+                        "/filter-customization-messages/*", "/client-registration/*", "/method-public/*", "/method-secured/*",
+                        "/rest-pong/public")
                 .permit()
                 .path("/*").authenticated();
     }
