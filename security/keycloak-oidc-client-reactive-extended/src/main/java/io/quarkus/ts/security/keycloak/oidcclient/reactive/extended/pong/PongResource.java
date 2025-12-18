@@ -52,4 +52,11 @@ public class PongResource {
     public boolean deleteById(@PathParam("id") String id) {
         return true;
     }
+
+    @GET
+    @Path("/public")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getPublicPong() {
+        return "pong public";
+    }
 }

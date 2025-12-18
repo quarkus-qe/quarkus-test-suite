@@ -5,13 +5,13 @@ import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_BASE_PATH;
 import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_FILE;
 
 import io.quarkus.test.bootstrap.KeycloakService;
-import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.services.KeycloakContainer;
 
-@QuarkusScenario
-public class TokenPropagationFilterIT extends AbstractTokenPropagationFilterIT {
+@OpenShiftScenario
+public class OpenShiftTokenPropagationFilterIT extends AbstractTokenPropagationFilterIT {
 
     @KeycloakContainer(runKeycloakInProdMode = true, command = { "start", "--import-realm", "--hostname-strict=false",
-            "--features=token-exchange" })
+            "--features=token-exchange" }, image = "${rhbk.image}")
     static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
 }
