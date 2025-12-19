@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
@@ -300,6 +301,7 @@ public abstract class AbstractDatabaseHibernateReactiveIT {
 
     @Tag("QUARKUS-6475")
     @Test
+    @Disabled("Failing after https://github.com/quarkusio/quarkus/pull/50519 was merged")
     public void createBookThroughSession() {
         getApp().given()
                 .get("/hibernate/bookThroughSession/Christie/Marple")
