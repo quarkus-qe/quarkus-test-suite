@@ -36,11 +36,11 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${compiler-plugin.version}</version>
                 <configuration>
+                    <annotationProcessorPathsUseDepMgmt>true</annotationProcessorPathsUseDepMgmt>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>io.smallrye.stork</groupId>
                             <artifactId>stork-configuration-generator</artifactId>
-                            <version>${smallrye-stork.version}</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
