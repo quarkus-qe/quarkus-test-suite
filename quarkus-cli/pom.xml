@@ -9,7 +9,7 @@
     </parent>
     <artifactId>quarkus-cli</artifactId>
     <packaging>jar</packaging>
-    <name>Quarkus QE TS: Quarkus CLI</name>
+    <name>Quarkus QE TS: Quarkus CLI - change to trigger CI for CLI</name>
     <dependencies>
         <dependency>
             <groupId>io.quarkus.qe</groupId>
