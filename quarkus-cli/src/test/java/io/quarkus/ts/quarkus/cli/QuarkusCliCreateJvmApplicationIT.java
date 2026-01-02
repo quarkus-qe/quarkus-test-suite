@@ -375,9 +375,19 @@ public class QuarkusCliCreateJvmApplicationIT {
     @Test
     public void devModeIgnoresPomPackaging() throws IOException {
         QuarkusCliRestService app = cliClient.createApplication("pomApp");
-        {//set packaging to POM
-            Path pom = app.getFileFromApplication("pom.xml").toPath();
-            List<String> content = Files.readAllLines(pom);
+        //set packaging to POM
+        Path pom = app.getFileFromApplication("pom.xml").toPath();
+        List<String> content = Files.readAllLines(pom);
+        boolean containsPackagingDefinition = content.stream().anyMatch(line -> line.contains("<packaging>"));
+        if (containsPackagingDefinition) {
+            for (int i = 0; i < content.size(); i++) {
+                String line = content.get(i);
+                if (line.endsWith("</packaging>")) {
+                    content.set(i, "<packaging>pom</packaging>");
+                    break;
+                }
+            }
+        } else {
             for (int i = 0; i < content.size(); i++) {
                 String line = content.get(i);
                 if (line.endsWith("<artifactId>pomApp</artifactId>")) {
@@ -385,8 +395,9 @@ public class QuarkusCliCreateJvmApplicationIT {
                     break;
                 }
             }
-            Files.write(pom, content);
         }
+        Files.write(pom, content);
+
         // Start using DEV mode
         assertEquals(Duration.ofSeconds(2),
                 app.getConfiguration().getAsDuration(Configuration.Property.SERVICE_STARTUP_TIMEOUT, null));
