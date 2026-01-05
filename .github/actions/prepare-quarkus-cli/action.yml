@@ -17,5 +17,6 @@ runs:
         java -jar ~/.m2/repository/io/quarkus/quarkus-cli/999-SNAPSHOT/quarkus-cli-999-SNAPSHOT-runner.jar "\$@"
         EOF
         chmod +x ./quarkus-dev-cli
+        ls -l ~/.m2/repository/io/quarkus/quarkus-cli/999-SNAPSHOT/quarkus-cli-999-SNAPSHOT-runner.jar
         ./quarkus-dev-cli version
 

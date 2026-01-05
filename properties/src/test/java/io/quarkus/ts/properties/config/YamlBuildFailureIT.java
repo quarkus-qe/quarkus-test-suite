@@ -34,6 +34,8 @@ public class YamlBuildFailureIT {
                 QuarkusCliClient.CreateApplicationRequest.defaults()
                         .withExtensions("quarkus-config-yaml", "quarkus-rest"));
 
+        LOG.info("Version info ... " + cliClient.getQuarkusVersion());
+
         Path pom = app.getFileFromApplication("pom.xml").toPath();
         Path newPom = withoutLine(pom, FOR_REMOVAL);
         Files.copy(newPom, pom, StandardCopyOption.REPLACE_EXISTING);
@@ -63,6 +65,8 @@ public class YamlBuildFailureIT {
         Path pom = source.toAbsolutePath();
         Path temporaryPom = pom.resolveSibling(pom.getFileName() + ".tmp");
         LOG.info("Removing " + forRemoval + " from " + pom + " using " + temporaryPom);
+        LOG.info("pom.xml ...");
+        LOG.info("======");
         try (Stream<String> lines = Files.lines(pom);
                 BufferedWriter writer = Files.newBufferedWriter(temporaryPom, StandardOpenOption.CREATE_NEW)) {
             lines
@@ -71,6 +75,7 @@ public class YamlBuildFailureIT {
                         try {
                             writer.write(line);
                             writer.newLine();
+                            LOG.info(line);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
@@ -78,6 +83,7 @@ public class YamlBuildFailureIT {
         } catch (IOException | RuntimeException e) {
             throw new RuntimeException("Failed to remove " + forRemoval + " from " + pom, e);
         }
+        LOG.info("======");
         return temporaryPom;
     }
 }
