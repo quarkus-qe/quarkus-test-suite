@@ -12,7 +12,6 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.stream.Stream;
 
-import jakarta.inject.Inject;
 import org.apache.http.HttpStatus;
 import org.jboss.logging.Logger;
 import org.junit.jupiter.api.Tag;
