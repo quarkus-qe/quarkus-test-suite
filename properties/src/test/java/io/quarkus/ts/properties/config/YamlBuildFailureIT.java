@@ -29,7 +29,6 @@ public class YamlBuildFailureIT {
     private static final Logger LOG = Logger.getLogger(YamlBuildFailureIT.class);
     private static final String FOR_REMOVAL = "<extensions>true</extensions>";
 
-
     @Inject
     static QuarkusCliClient cliClient;
 
@@ -60,7 +59,7 @@ public class YamlBuildFailureIT {
         Files.lines(pom).forEach(LOG::info);
         LOG.info("======");
 
-        QuarkusCliClient.Result result = app.buildOnJvm("--no-tests");
+        QuarkusCliClient.Result result = app.buildOnJvm("--no-tests", "--", "-X");
         assertTrue(result.isSuccessful(), "The application didn't build on JVM. Output: " + result.getOutput());
         // Start using DEV mode;
         app.start();
