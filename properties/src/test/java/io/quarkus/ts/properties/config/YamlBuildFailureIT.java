@@ -12,6 +12,7 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.stream.Stream;
 
+import jakarta.inject.Inject;
 import org.apache.http.HttpStatus;
 import org.jboss.logging.Logger;
 import org.junit.jupiter.api.Tag;
@@ -28,13 +29,15 @@ public class YamlBuildFailureIT {
     private static final Logger LOG = Logger.getLogger(YamlBuildFailureIT.class);
     private static final String FOR_REMOVAL = "<extensions>true</extensions>";
 
+
+    @Inject
+    static QuarkusCliClient cliClient;
+
     @TestQuarkusCli
-    public void verify(QuarkusVersionAwareCliClient cliClient) throws IOException {
+    public void verify() throws IOException {
         QuarkusCliRestService app = cliClient.createApplication("yaml-app",
                 QuarkusCliClient.CreateApplicationRequest.defaults()
                         .withExtensions("quarkus-config-yaml", "quarkus-rest"));
-
-        LOG.info("Version info ... " + cliClient.getQuarkusVersion());
 
         Path pom = app.getFileFromApplication("pom.xml").toPath();
         Path newPom = withoutLine(pom, FOR_REMOVAL);
@@ -50,6 +53,13 @@ public class YamlBuildFailureIT {
         Path resourceFile = app.getFileFromApplication("src/main/java/org/acme/", "GreetingResource.java").toPath();
         Path modifiedResourceFile = Paths.get("").resolve("src/test/java/org/acme/GreetingResource.java");
         Files.copy(modifiedResourceFile, resourceFile, StandardCopyOption.REPLACE_EXISTING);
+
+        LOG.info("Version info ... " + cliClient.getQuarkusVersion());
+        LOG.info("pom.xml ...");
+        LOG.info("======");
+        Files.lines(pom).forEach(LOG::info);
+        LOG.info("======");
+
         QuarkusCliClient.Result result = app.buildOnJvm("--no-tests");
         assertTrue(result.isSuccessful(), "The application didn't build on JVM. Output: " + result.getOutput());
         // Start using DEV mode;
@@ -65,8 +75,6 @@ public class YamlBuildFailureIT {
         Path pom = source.toAbsolutePath();
         Path temporaryPom = pom.resolveSibling(pom.getFileName() + ".tmp");
         LOG.info("Removing " + forRemoval + " from " + pom + " using " + temporaryPom);
-        LOG.info("pom.xml ...");
-        LOG.info("======");
         try (Stream<String> lines = Files.lines(pom);
                 BufferedWriter writer = Files.newBufferedWriter(temporaryPom, StandardOpenOption.CREATE_NEW)) {
             lines
@@ -83,7 +91,6 @@ public class YamlBuildFailureIT {
         } catch (IOException | RuntimeException e) {
             throw new RuntimeException("Failed to remove " + forRemoval + " from " + pom, e);
         }
-        LOG.info("======");
         return temporaryPom;
     }
 }
