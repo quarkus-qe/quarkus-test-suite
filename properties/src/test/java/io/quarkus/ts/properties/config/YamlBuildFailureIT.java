@@ -29,11 +29,8 @@ public class YamlBuildFailureIT {
     private static final Logger LOG = Logger.getLogger(YamlBuildFailureIT.class);
     private static final String FOR_REMOVAL = "<extensions>true</extensions>";
 
-    @Inject
-    static QuarkusCliClient cliClient;
-
     @TestQuarkusCli
-    public void verify() throws IOException {
+    public void verify(QuarkusVersionAwareCliClient cliClient) throws IOException {
         QuarkusCliRestService app = cliClient.createApplication("yaml-app",
                 QuarkusCliClient.CreateApplicationRequest.defaults()
                         .withExtensions("quarkus-config-yaml", "quarkus-rest"));
