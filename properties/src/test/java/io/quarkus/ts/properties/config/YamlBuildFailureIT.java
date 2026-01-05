@@ -78,7 +78,6 @@ public class YamlBuildFailureIT {
                         try {
                             writer.write(line);
                             writer.newLine();
-                            LOG.info(line);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
