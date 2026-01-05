@@ -55,7 +55,7 @@ public class YamlBuildFailureIT {
         Files.lines(pom).forEach(LOG::info);
         LOG.info("======");
 
-        QuarkusCliClient.Result result = app.buildOnJvm("--no-tests", "--", "-X");
+        QuarkusCliClient.Result result = app.buildOnJvm("--no-tests", "--", "-X", "-U");
         assertTrue(result.isSuccessful(), "The application didn't build on JVM. Output: " + result.getOutput());
         // Start using DEV mode;
         app.start();
