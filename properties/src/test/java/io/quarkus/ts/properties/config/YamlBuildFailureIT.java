@@ -35,8 +35,8 @@ public class YamlBuildFailureIT {
                         .withExtensions("quarkus-config-yaml", "quarkus-rest"));
 
         Path pom = app.getFileFromApplication("pom.xml").toPath();
-        Path newPom = withoutLine(pom, FOR_REMOVAL);
-        Files.copy(newPom, pom, StandardCopyOption.REPLACE_EXISTING);
+        //        Path newPom = withoutLine(pom, FOR_REMOVAL);
+        //        Files.copy(newPom, pom, StandardCopyOption.REPLACE_EXISTING);
         Path configFolder = app.getServiceFolder().resolve("src/main/resources/");
 
         //copy template file from test/resources to the app
