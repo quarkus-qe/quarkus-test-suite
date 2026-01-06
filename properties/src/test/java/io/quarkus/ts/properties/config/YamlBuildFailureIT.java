@@ -3,14 +3,14 @@ package io.quarkus.ts.properties.config;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.nio.file.StandardOpenOption;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.HttpStatus;
 import org.jboss.logging.Logger;
@@ -24,19 +24,19 @@ import io.quarkus.test.scenarios.TestQuarkusCli;
 
 @QuarkusScenario
 @Tag("quarkus-cli")
+@Tag("https://github.com/quarkusio/quarkus/pull/50790")
 public class YamlBuildFailureIT {
     private static final Logger LOG = Logger.getLogger(YamlBuildFailureIT.class);
-    private static final String FOR_REMOVAL = "<extensions>true</extensions>";
+    private static final String EXTENSIONS_LINE = "<extensions>true</extensions>";
+    private static final String PACKAGING_LINE = "<packaging>";
 
     @TestQuarkusCli
-    public void verify(QuarkusVersionAwareCliClient cliClient) throws IOException {
+    public void verifyDefaultJarPackageAndNoMavenExtesions(QuarkusVersionAwareCliClient cliClient) throws IOException {
         QuarkusCliRestService app = cliClient.createApplication("yaml-app",
                 QuarkusCliClient.CreateApplicationRequest.defaults()
                         .withExtensions("quarkus-config-yaml", "quarkus-rest"));
+        adjustPomXml(app.getFileFromApplication("pom.xml").toPath());
 
-        Path pom = app.getFileFromApplication("pom.xml").toPath();
-        Path newPom = withoutLine(pom, FOR_REMOVAL);
-        Files.copy(newPom, pom, StandardCopyOption.REPLACE_EXISTING);
         Path configFolder = app.getServiceFolder().resolve("src/main/resources/");
 
         //copy template file from test/resources to the app
@@ -59,25 +59,28 @@ public class YamlBuildFailureIT {
                 .body(is("Hello from modified file"));
     }
 
-    private static Path withoutLine(Path source, String forRemoval) {
-        Path pom = source.toAbsolutePath();
-        Path temporaryPom = pom.resolveSibling(pom.getFileName() + ".tmp");
-        LOG.info("Removing " + forRemoval + " from " + pom + " using " + temporaryPom);
-        try (Stream<String> lines = Files.lines(pom);
-                BufferedWriter writer = Files.newBufferedWriter(temporaryPom, StandardOpenOption.CREATE_NEW)) {
-            lines
-                    .filter(line -> !line.contains(forRemoval))
-                    .forEach(line -> {
-                        try {
-                            writer.write(line);
-                            writer.newLine();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    });
-        } catch (IOException | RuntimeException e) {
-            throw new RuntimeException("Failed to remove " + forRemoval + " from " + pom, e);
+    private static void adjustPomXml(Path pom) throws IOException {
+        List<String> newLines = new ArrayList<>();
+        for (String line : Files.readAllLines(pom, StandardCharsets.UTF_8)) {
+            if (line.contains(EXTENSIONS_LINE)) {
+                LOG.info("Removing Maven extensions support for quarkus-maven-plugin");
+                LOG.info("Adding Maven executions for quarkus-maven-plugin");
+                newLines.add("                <executions>");
+                newLines.add("                    <execution>");
+                newLines.add("                        <goals>");
+                newLines.add("                            <goal>build</goal>");
+                newLines.add("                            <goal>generate-code</goal>");
+                newLines.add("                            <goal>generate-code-tests</goal>");
+                newLines.add("                            <goal>native-image-agent</goal>");
+                newLines.add("                        </goals>");
+                newLines.add("                    </execution>");
+                newLines.add("                </executions>");
+            } else if (line.contains(PACKAGING_LINE)) {
+                LOG.info("Removing definition of packaging");
+            } else {
+                newLines.add(line);
+            }
         }
-        return temporaryPom;
+        Files.write(pom, newLines, StandardCharsets.UTF_8);
     }
 }
