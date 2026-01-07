@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -30,6 +31,7 @@ import io.quarkus.test.bootstrap.LookupService;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.ts.security.keycloak.oidcclient.extended.restclient.nocache.NoCacheFlow;
 import io.quarkus.ts.security.keycloak.oidcclient.extended.restclient.tokens.LogoutFlow;
 import io.quarkus.ts.security.keycloak.oidcclient.extended.restclient.tokens.LogoutTenantResolver;
 
@@ -40,7 +42,7 @@ public abstract class AbstractLogoutSinglePageAppFlowIT {
     @LookupService
     static KeycloakService keycloak;
 
-    @QuarkusApplication(classes = { LogoutFlow.class, LogoutTenantResolver.class })
+    @QuarkusApplication(classes = { LogoutFlow.class, LogoutTenantResolver.class, NoCacheFlow.class })
     static RestService app = new RestService()
             .withProperty("keycloak.url", () -> keycloak.getURI(Protocol.HTTPS).toString())
             .withProperties("logout.properties")
@@ -50,6 +52,10 @@ public abstract class AbstractLogoutSinglePageAppFlowIT {
     public void singlePageAppLogoutFlow() throws IOException {
         try (final WebClient webClient = createWebClient()) {
             HtmlPage page = loginToApp(webClient);
+
+            // validate https://github.com/quarkusio/quarkus/pull/50249
+            assertEquals("no-store", page.getWebResponse().getResponseHeaderValue("cache-control"),
+                    "There should be Cache-control HTTP header with value \"no-store\"");
 
             assertEquals("alice, cache size: 0", page.getBody().asNormalizedText());
             assertTrue(isCodeFlowCookiePresent(webClient));
@@ -90,6 +96,22 @@ public abstract class AbstractLogoutSinglePageAppFlowIT {
             assertEquals(302, response.getStatusCode());
 
             validateClearSiteDataHeader(response);
+        }
+    }
+
+    @Test
+    public void noCacheControlTest() throws IOException {
+        try (final WebClient webClient = createWebClient()) {
+            HtmlPage page = webClient.getPage(app.getURI(Protocol.HTTP).toString() + "/no-cache");
+
+            HtmlForm form = page.getHtmlElementById("kc-form-login");
+            form.getInputByName("username").type("alice");
+            form.getInputByName("password").type("alice");
+            page = form.getButtonByName("login").click();
+
+            // validate https://github.com/quarkusio/quarkus/pull/50249
+            assertNull(page.getWebResponse().getResponseHeaderValue("cache-control"),
+                    "There should be no Cache-control HTTP header when this option is not enabled");
         }
     }
 
