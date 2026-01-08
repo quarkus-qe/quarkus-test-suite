@@ -650,6 +650,7 @@
                 <module>monitoring/opentelemetry</module>
                 <module>monitoring/opentelemetry-reactive</module>
                 <module>monitoring/micrometer-opentelemetry</module>
+                <module>monitoring/jfr</module>
             </modules>
         </profile>
         <profile>
