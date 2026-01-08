@@ -1,13 +1,15 @@
 package io.quarkus.ts.monitoring.jfr;
 
+import static io.quarkus.ts.monitoring.jfr.JfrUtils.RECORDING_PATH;
+import static io.quarkus.ts.monitoring.jfr.JfrUtils.getRecordedEventsByName;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.util.List;
+import java.nio.file.Files;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,23 +19,27 @@ import io.quarkus.test.scenarios.annotations.DisabledOnSemeruJdk;
 import io.quarkus.test.services.QuarkusApplication;
 
 import jdk.jfr.consumer.RecordedEvent;
-import jdk.jfr.consumer.RecordingFile;
 
 @QuarkusScenario
 @DisabledOnSemeruJdk(reason = "Semeru don't have full support for JFR yet")
 public class JavaFlightRecorderRestInfoIT {
 
-    public static final Path RECORDING_PATH = Path.of(System.getProperty("java.io.tmpdir"), "jfrRecording.jfr");
     private static final String ENDPOINT_PATH = "/hello";
 
     @QuarkusApplication
     static final RestService app = new RestService()
+            .onPreStop(JfrUtils::dumpJfrRecording)
             .withProperty("-XX:StartFlightRecording", "dumponexit=true,filename=" + RECORDING_PATH)
             .setAutoStart(false);
 
     @BeforeEach
     public void startApp() {
         app.start();
+    }
+
+    @AfterEach
+    public void cleanJfrRecording() throws IOException {
+        Files.deleteIfExists(RECORDING_PATH);
     }
 
     @Test
@@ -54,7 +60,7 @@ public class JavaFlightRecorderRestInfoIT {
     }
 
     @Test
-    public void checkRuntimeInfo() throws IOException {
+    public void checkPostEventRecord() throws IOException {
         given().post(ENDPOINT_PATH).then().statusCode(HttpStatus.SC_OK);
         app.stop();
 
@@ -68,11 +74,5 @@ public class JavaFlightRecorderRestInfoIT {
                 "The http method in record not match the http method which was used");
         assertEquals(HelloResource.class.getName(), appInfoRecord.getString("resourceClass"));
         assertEquals("postHello", appInfoRecord.getString("resourceMethod"));
-    }
-
-    private List<RecordedEvent> getRecordedEventsByName(String eventName) throws IOException {
-        return RecordingFile.readAllEvents(RECORDING_PATH).stream()
-                .filter(e -> e.getEventType().getName().equals(eventName))
-                .toList();
     }
 }
