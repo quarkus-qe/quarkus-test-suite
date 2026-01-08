@@ -12,9 +12,13 @@ import java.nio.file.Path;
 import java.util.List;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
+import io.quarkus.runtime.ImageMode;
 import io.quarkus.test.bootstrap.LookupService;
 import io.quarkus.test.bootstrap.RestService;
 import io.restassured.response.Response;
@@ -22,6 +26,7 @@ import io.restassured.response.Response;
 import jdk.jfr.consumer.RecordedEvent;
 import jdk.jfr.consumer.RecordingFile;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public abstract class AbstractJavaFlightRecorderAppInfoIT {
 
     public static final Path RECORDING_PATH = Path.of(System.getProperty("java.io.tmpdir"), "jfrRecording.jfr");
@@ -30,6 +35,7 @@ public abstract class AbstractJavaFlightRecorderAppInfoIT {
     static RestService app;
 
     @Test
+    @Order(1)
     public void checkAppInfo() throws IOException {
         app.start();
 
@@ -47,6 +53,7 @@ public abstract class AbstractJavaFlightRecorderAppInfoIT {
     }
 
     @Test
+    @Order(2)
     public void checkRuntimeInfo() throws IOException {
         app.start();
 
@@ -66,6 +73,7 @@ public abstract class AbstractJavaFlightRecorderAppInfoIT {
     }
 
     @Test
+    @Order(3)
     public void checkExtensionInfo() throws IOException {
         app.start();
         given().get("/hello").then().statusCode(HttpStatus.SC_OK);
@@ -82,6 +90,36 @@ public abstract class AbstractJavaFlightRecorderAppInfoIT {
                     .anyMatch(event -> installedExtension.equals(event.getString("name")));
             assertTrue(isExtensionPresentRecord, "Extension " + installedExtension + " not found in JFR record");
         }
+    }
+
+    @Tag("QUARKUS-6553")
+    @Test
+    @Order(4)
+    public void checkRuntimeInfoMultipleProfile() throws IOException {
+        app.withProperty("quarkus.profile", "prod,myProfile").start();
+        app.start();
+
+        String quarkusVersion = executeGetRequestForInfo("/runtime-info/quarkus-version");
+        String quarkusImageMode = executeGetRequestForInfo("/runtime-info/quarkus-image-mode");
+        String quarkusProfiles = executeGetRequestForInfo("/runtime-info/quarkus-profiles");
+
+        app.stop();
+
+        // Determinant which image mode the record should contain. For native ImageMode.NATIVE_BUILD should not be present.
+        String expectedImageMode = quarkusImageMode.contains("NATIVE") ? ImageMode.NATIVE_RUN.name() : ImageMode.JVM.name();
+
+        // Ensuring that runtime profiles are same as profile set by Quarkus property
+        assertEquals("myProfile,prod", quarkusProfiles, "Quarkus runtime profiles not match the set profiles");
+
+        var appInfoRecordList = getRecordedEventsByName("quarkus.runtime");
+        assertFalse(appInfoRecordList.isEmpty());
+
+        RecordedEvent appInfoRecord = appInfoRecordList.get(0);
+        assertEquals(quarkusVersion, appInfoRecord.getString("version"), "Quarkus version in record not match runtime version");
+        assertEquals(expectedImageMode, appInfoRecord.getString("imageMode"),
+                "Quarkus image mode in record not match runtime image mode");
+        assertThat("Quarkus profiles in record not match runtime profiles", quarkusProfiles,
+                containsString(appInfoRecord.getString("profiles")));
     }
 
     private List<RecordedEvent> getRecordedEventsByName(String eventName) throws IOException {
