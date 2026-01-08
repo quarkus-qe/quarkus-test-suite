@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import jakarta.inject.Inject;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
@@ -34,6 +35,7 @@ public class QuarkusCliSpecialCharsIT {
     static QuarkusCliClient cliClient;
 
     @Test
+    @Disabled("https://github.com/quarkusio/quarkus/issues/51848")
     public void shouldCreateApplicationOnJvmWithSpaces() {
         assertCreateJavaApplicationAtFolder(FOLDER_WITH_SPACES);
     }
