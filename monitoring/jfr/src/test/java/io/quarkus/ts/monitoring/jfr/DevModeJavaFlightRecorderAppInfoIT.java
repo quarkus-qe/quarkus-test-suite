@@ -1,5 +1,7 @@
 package io.quarkus.ts.monitoring.jfr;
 
+import static io.quarkus.ts.monitoring.jfr.JfrUtils.RECORDING_PATH;
+
 import org.junit.jupiter.api.Tag;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -14,6 +16,7 @@ public class DevModeJavaFlightRecorderAppInfoIT extends AbstractJavaFlightRecord
 
     @DevModeQuarkusApplication
     static final RestService app = new RestService()
+            .onPreStop(JfrUtils::dumpJfrRecording)
             .withProperty("jvm.args", "-XX:StartFlightRecording=dumponexit=true,filename=" + RECORDING_PATH)
             .setAutoStart(false);
 }
