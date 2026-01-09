@@ -222,7 +222,7 @@ jobs:
       fail-fast: false
       matrix:
         java: [ 21 ]
-        image: [ "ubi9-quarkus-mandrel-builder-image:jdk-21", "ubi-quarkus-mandrel-builder-image:jdk-21 -Dtest-ubi8-compatibility" ]
+        image: [ "ubi9-quarkus-mandrel-builder-image:jdk-21" ]
         profiles: [ "root-modules,websockets-modules,test-tooling-modules,nosql-db-modules",
                     "http-modules,cache-modules", "security-modules,spring-modules",
                     "hibernate-modules", "sql-db-modules", "messaging-modules,monitoring-modules"]
