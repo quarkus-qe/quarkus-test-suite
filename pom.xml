@@ -30,7 +30,7 @@
         <quarkiverse.config.version>2.4.0</quarkiverse.config.version>
         <quarkiverse.pact.version>1.6.0</quarkiverse.pact.version>
         <assertj.version>3.27.6</assertj.version>
-        <htmlunit.version>4.18.0</htmlunit.version>
+        <htmlunit.version>4.21.0</htmlunit.version>
         <java.websocket.version>1.6.0</java.websocket.version>
         <!-- Faster build when using -DskipTests -->
         <quarkus.build.skip>${skipTests}</quarkus.build.skip>
