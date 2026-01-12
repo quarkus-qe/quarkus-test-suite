@@ -58,7 +58,7 @@ public class ReactiveFailureCacheService {
                 .orElse(Set.of());
     }
 
-    @CacheResult(cacheName = CACHE_NAME)
+    @CacheResult(cacheName = CACHE_NAME, lockTimeout = 2000)
     public Uni<String> getSingleArgData(String key) {
         LOG.infof("Thread '%s' ENTERING getSingleArgData for key '%s'",
                 Thread.currentThread().getName(), key);
