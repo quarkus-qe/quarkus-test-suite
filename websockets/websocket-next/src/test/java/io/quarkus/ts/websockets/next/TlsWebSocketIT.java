@@ -21,6 +21,7 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Certificate;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.test.utils.AwaitilityUtils;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -64,20 +65,27 @@ public class TlsWebSocketIT extends BaseWebSocketIT {
 
         // connect server-side client
         server.given().queryParam("username", "bob").get("/tlsChatRes/connect");
+        awaitLastMessage("bob joined");
 
         try {
             // send message from local client and validate both clients got it
             client.send("Hi");
             assertMessage("alice: Hi", client);
-            assertEquals("alice: Hi", server.given().get("/tlsChatRes/getLastMessage").asString());
+            awaitLastMessage("alice: Hi");
 
             // send message from server-side client
             server.given().queryParam("message", "hello").get("/tlsChatRes/sendMessage");
             assertMessage("bob: hello", client);
+            awaitLastMessage("bob: hello");
         } finally {
             // disconnect server-side client
             server.given().get("/tlsChatRes/disconnect");
         }
+    }
+
+    private static void awaitLastMessage(String expectedMessage) {
+        AwaitilityUtils.untilAsserted(
+                () -> assertEquals(expectedMessage, server.given().get("/tlsChatRes/getLastMessage").asString()));
     }
 
     private X509TrustManager generateTrustManager()
