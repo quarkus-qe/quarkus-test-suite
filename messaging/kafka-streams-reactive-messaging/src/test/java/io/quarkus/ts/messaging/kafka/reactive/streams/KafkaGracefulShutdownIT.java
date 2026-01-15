@@ -25,6 +25,7 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.services.containers.model.KafkaVendor;
 import io.quarkus.ts.messaging.kafka.reactive.streams.shutdown.ReadinessObserver;
 import io.quarkus.ts.messaging.kafka.reactive.streams.shutdown.SlowTopicConsumer;
+import io.quarkus.ts.messaging.kafka.reactive.streams.shutdown.SlowTopicRebalanceListener;
 import io.quarkus.ts.messaging.kafka.reactive.streams.shutdown.SlowTopicResource;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -43,7 +44,8 @@ public class KafkaGracefulShutdownIT {
     static KafkaService kafka = new KafkaService();
 
     @QuarkusApplication(classes = { SlowTopicConsumer.class,
-            SlowTopicResource.class, ReadinessObserver.class }, properties = "kafka.graceful.shutdown.application.properties")
+            SlowTopicResource.class, ReadinessObserver.class,
+            SlowTopicRebalanceListener.class }, properties = "kafka.graceful.shutdown.application.properties")
     static RestService app = new RestService()
             .withProperty("kafka.bootstrap.servers", kafka::getBootstrapUrl)
             .withProperty("quarkus.kafka-streams.bootstrap-servers", kafka::getBootstrapUrl)
