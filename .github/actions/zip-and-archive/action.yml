@@ -1,0 +1,43 @@
+name: 'Zip and archive artifact'
+description: 'Zips reports and archives build artifact'
+inputs:
+  java:
+    description: 'Java version (e.g. 25)'
+    required: true
+  profiles:
+    description: 'Matrix profiles'
+    default: ""
+  os:
+    description: 'The operating system (e.g. Windows, Linux)'
+    required: true
+  mode:
+    description: 'JVM or native mode'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Zip Artifacts
+      id: zipper
+      shell: bash
+      run: |
+        SAFE_PROFILE=$(echo "${{ inputs.profiles }}" | sed 's/[^a-zA-Z0-9]//g')
+        # prefix with dash if not empty
+        SAFE_PROFILE=${SAFE_PROFILE:+-$SAFE_PROFILE}
+        ZIP_NAME="artifacts-${{ inputs.mode }}${{ inputs.java }}${SAFE_PROFILE}"
+        echo "artifact_file_name=$ZIP_NAME" >> $GITHUB_OUTPUT
+        
+        if [[ "${{ inputs.os }}" == "windows" ]]; then
+          echo "artifact_file_extension=tar" >> $GITHUB_OUTPUT
+          # Disambiguate windows find from cygwin find
+          /usr/bin/find . -path '*-reports/*' -type f | tar -czf "${ZIP_NAME}.tar" -T -
+        else
+          echo "artifact_file_extension=zip" >> $GITHUB_OUTPUT
+          zip -R "$ZIP_NAME.zip" '*-reports/*'
+        fi
+    - name: Archive artifacts
+      uses: actions/upload-artifact@v6
+      with:
+        name: ${{ steps.zipper.outputs.artifact_file_name }}
+        path: ${{ steps.zipper.outputs.artifact_file_name }}.${{ steps.zipper.outputs.artifact_file_extension }}
+        if-no-files-found: warn

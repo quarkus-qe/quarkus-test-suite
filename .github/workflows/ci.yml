@@ -169,15 +169,14 @@ jobs:
         with:
           name: flaky-run-report-linux-jvm-latest
           path: target/flaky-run-report-linux-jvm-latest.json
-      - name: Zip Artifacts
-        if: failure()
-        run: |
-          zip -R artifacts-latest-linux-jvm${{ matrix.java }}.zip '*-reports/*'
-      - uses: actions/upload-artifact@v5
+      - uses: ./.github/actions/zip-and-archive
+        name: Zip and archive artifacts
         if: failure()
         with:
-          name: artifacts-latest-linux-jvm${{ matrix.java }}
-          path: artifacts-latest-linux-jvm${{ matrix.java }}.zip
+          java: '${{ matrix.java }}'
+          os: 'linux'
+          profiles: '${{ matrix.module-mvn-args }}'
+          mode: 'jvm'
   linux-build-native-latest:
     name: Linux Native
     runs-on: ubuntu-latest
@@ -224,15 +223,14 @@ jobs:
         with:
           name: flaky-run-report-linux-native-latest
           path: target/flaky-run-report-linux-native-latest.json
-      - name: Zip Artifacts
-        if: failure()
-        run: |
-          zip -R artifacts-latest-linux-native${{ matrix.java }}.zip '*-reports/*'
-      - uses: actions/upload-artifact@v5
+      - uses: ./.github/actions/zip-and-archive
+        name: Zip and archive artifacts
         if: failure()
         with:
-          name: artifacts-latest-linux-native${{ matrix.java }}
-          path: artifacts-latest-linux-native${{ matrix.java }}.zip
+          java: '${{ matrix.java }}'
+          os: 'linux'
+          profiles: '${{ matrix.module-mvn-args }}'
+          mode: 'native'
   windows-build-jvm-latest:
     name: Windows JVM
     runs-on: windows-latest
@@ -288,18 +286,14 @@ jobs:
         with:
           name: flaky-run-report-windows-jvm-latest
           path: target/flaky-run-report-windows-jvm-latest.json
-      - name: Zip Artifacts
-        shell: bash
+      - uses: ./.github/actions/zip-and-archive
+        name: Zip and archive artifacts
         if: failure()
-        run: |
-          # Disambiguate windows find from cygwin find
-          /usr/bin/find . -name '*-reports/*' -type d | tar -czf artifacts-latest-windows-jvm${{ matrix.java }}.tar -T -
-      - name: Archive artifacts
-        if: failure()
-        uses: actions/upload-artifact@v5
         with:
-          name: artifacts-latest-windows-jvm${{ matrix.java }}
-          path: artifacts-latest-windows-jvm${{ matrix.java }}.tar
+          java: '${{ matrix.java }}'
+          os: 'windows'
+          profiles: '${{ matrix.module-mvn-args }}'
+          mode: 'jvm'
   detect-flaky-tests:
     name: Detect flaky tests
     runs-on: ubuntu-latest
