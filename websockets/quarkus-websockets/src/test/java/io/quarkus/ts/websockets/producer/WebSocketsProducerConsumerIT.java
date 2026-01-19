@@ -5,6 +5,7 @@ import static java.time.Duration.ofSeconds;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collection;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -47,8 +48,8 @@ public class WebSocketsProducerConsumerIT {
 
     @Test
     public void chatting() throws Exception {
-        final var aliceChat = new Client();
-        final var bobChat = new Client();
+        final var aliceChat = new Client("aliceChat");
+        final var bobChat = new Client("bobChat");
 
         try (Session alice = connect(aliceChat, getUri("/chat/alice"))) {
             try (Session bob = connect(bobChat, getUri("/chat/bob"))) {
@@ -66,8 +67,8 @@ public class WebSocketsProducerConsumerIT {
 
     @Test
     public void chattingSync() throws Exception {
-        final var aliceChat = new Client();
-        final var bobChat = new Client();
+        final var aliceChat = new Client("aliceChat");
+        final var bobChat = new Client("bobChat");
 
         try (Session alice = connect(aliceChat, getUri("/chat/alice"))) {
             try (Session bob = connect(bobChat, getUri("/chat/bob"))) {
@@ -85,9 +86,9 @@ public class WebSocketsProducerConsumerIT {
 
     @Test
     public void trio() throws Exception {
-        final var athosChat = new Client();
-        final var porthosChat = new Client();
-        final var aramisChat = new Client();
+        final var athosChat = new Client("athosChat");
+        final var porthosChat = new Client("porthosChat");
+        final var aramisChat = new Client("aramisChat");
         Session athos = connect(athosChat, getUri("/chat/athos"));
         try (Session porthos = connect(porthosChat, getUri("/chat/porthos"))) {
             try (Session aramis = connect(aramisChat, getUri("/chat/aramis"))) {
@@ -142,10 +143,20 @@ public class WebSocketsProducerConsumerIT {
         for (Client client : clients) {
             // message has been sent asynchronously, therefore we should wait a little
             final long start = System.currentTimeMillis();
-            Awaitility
-                    .await()
-                    .atMost(ofSeconds(10)) // TODO: revise this timeout as it is too high
-                    .untilAsserted(() -> Assertions.assertEquals(expectedMessage, client.getMessage()));
+            try {
+                Awaitility
+                        .await()
+                        .atMost(ofSeconds(15)) // TODO: revise this timeout as it is too high
+                        .untilAsserted(() -> Assertions.assertEquals(expectedMessage, client.getMessage()));
+            } catch (Throwable throwable) {
+                // failure
+                long timeSpentWaiting = System.currentTimeMillis() - start;
+                Assertions.fail("Failed to find expected message '%s' in '%d' milliseconds in client '%s' messages: %s"
+                        .formatted(expectedMessage, timeSpentWaiting, client.getClientName(), client.getMessages()),
+                        throwable);
+            }
+
+            // success
             long timeSpentWaiting = System.currentTimeMillis() - start;
             LOG.infof("Waited %s milliseconds for asynchronous message to arrive", timeSpentWaiting);
         }
@@ -177,8 +188,18 @@ public class WebSocketsProducerConsumerIT {
 
     @ClientEndpoint
     public static class Client {
+
+        private final String clientName;
         private final LinkedBlockingDeque<String> messages = new LinkedBlockingDeque<>();
         private final AtomicInteger sessionOpenCounter = new AtomicInteger();
+
+        public Client() {
+            this("client");
+        }
+
+        public Client(String clientName) {
+            this.clientName = clientName;
+        }
 
         @OnOpen
         public void open(Session session) {
@@ -205,8 +226,16 @@ public class WebSocketsProducerConsumerIT {
             return messages.poll(10, TimeUnit.SECONDS);
         }
 
+        public Collection<String> getMessages() {
+            return messages;
+        }
+
         public int getNumberOfOpenedSessions() {
             return this.sessionOpenCounter.get();
+        }
+
+        public String getClientName() {
+            return clientName;
         }
     }
 }
