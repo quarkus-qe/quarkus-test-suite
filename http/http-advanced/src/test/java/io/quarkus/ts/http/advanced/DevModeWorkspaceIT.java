@@ -92,19 +92,19 @@ public class DevModeWorkspaceIT {
                 page.navigate(pageURL);
 
                 // Check, that the correct file was opened
-                ElementHandle textArea = page.waitForSelector("#code");
+                Locator textArea = page.locator("#code");
                 String code = textArea.getAttribute("value");
                 Assertions.assertTrue(code.contains("PathSpecificHeadersResource"),
                         "The code doesn't contain the expected value: " + code);
 
                 //Edit the file and save the changes
                 code = code.replace("@Path(\"/any\")", "@Path(\"/this\")");
-                ElementHandle editor = textArea.waitForSelector(".cm-content");
+                Locator editor = textArea.locator(".cm-content");
                 // The focus need to be called on Chromium browser otherwise the fill insert the code to already existing
                 // on Firefox the behavioral are delete the text and paste the code.
                 editor.focus();
                 editor.fill(code);
-                ElementHandle save = page.waitForSelector(".mainMenuBarButtons > vaadin-button:nth-child(1)");
+                Locator save = page.locator(".mainMenuBarButtons > vaadin-button:nth-child(1)");
                 save.click();
 
                 AwaitilityUtils.untilAsserted(() -> {
@@ -119,7 +119,7 @@ public class DevModeWorkspaceIT {
                 // Sometimes the app returns the old results, so let's refresh the page
                 page.reload();
                 //check, that the changes are reflected in ui as well
-                textArea = page.waitForSelector("#code");
+                textArea = page.locator("#code");
                 textArea.getAttribute("value");
                 Assertions.assertTrue(code.contains("@Path(\"/this\")"),
                         "The code doesn't contain the expected value: " + code);
