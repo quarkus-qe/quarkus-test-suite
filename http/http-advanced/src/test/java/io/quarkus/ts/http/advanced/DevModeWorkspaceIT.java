@@ -45,7 +45,7 @@ public class DevModeWorkspaceIT {
     public void workspaceContainsText() {
         var pageURL = app.getURI(Protocol.HTTP).withPath("/q/dev-ui/workspace").toString();
         try (Playwright playwright = Playwright.create()) {
-            try (Browser browser = playwright.firefox().launch()) {
+            try (Browser browser = playwright.chromium().launch()) {
                 Page page = browser.newContext().newPage();
                 page.navigate(pageURL);
                 ElementHandle element = page.waitForSelector("#code");
@@ -60,7 +60,7 @@ public class DevModeWorkspaceIT {
     public void workspaceHasFolders() {
         var pageURL = app.getURI(Protocol.HTTP).withPath("/q/dev-ui/workspace").toString();
         try (Playwright playwright = Playwright.create()) {
-            try (Browser browser = playwright.firefox().launch()) {
+            try (Browser browser = playwright.chromium().launch()) {
                 Page page = browser.newContext().newPage();
                 page.navigate(pageURL);
 
@@ -87,7 +87,7 @@ public class DevModeWorkspaceIT {
 
         var pageURL = app.getURI(Protocol.HTTP).withPath("/q/dev-ui/workspace").toString();
         try (Playwright playwright = Playwright.create()) {
-            try (Browser browser = playwright.firefox().launch()) {
+            try (Browser browser = playwright.chromium().launch()) {
                 Page page = browser.newContext().newPage();
                 page.navigate(pageURL);
 
@@ -100,6 +100,9 @@ public class DevModeWorkspaceIT {
                 //Edit the file and save the changes
                 code = code.replace("@Path(\"/any\")", "@Path(\"/this\")");
                 ElementHandle editor = textArea.waitForSelector(".cm-content");
+                // The focus need to be called on Chromium browser otherwise the fill insert the code to already existing
+                // on Firefox the behavioral are delete the text and paste the code.
+                editor.focus();
                 editor.fill(code);
                 ElementHandle save = page.waitForSelector(".mainMenuBarButtons > vaadin-button:nth-child(1)");
                 save.click();
