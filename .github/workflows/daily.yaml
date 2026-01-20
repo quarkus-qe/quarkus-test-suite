@@ -75,6 +75,7 @@ jobs:
           os: 'linux'
           profiles: '${{ matrix.profiles }}'
           mode: 'native'
+          image: '${{ matrix.image }}'
   windows-build-jvm-latest:
     name: Windows JVM
     runs-on: windows-latest

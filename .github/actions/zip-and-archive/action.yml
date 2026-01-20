@@ -13,6 +13,9 @@ inputs:
   mode:
     description: 'JVM or native mode'
     required: true
+  image:
+    description: 'Optional image name'
+    required: false
 
 runs:
   using: "composite"
@@ -24,7 +27,18 @@ runs:
         SAFE_PROFILE=$(echo "${{ inputs.profiles }}" | sed 's/[^a-zA-Z0-9]//g')
         # prefix with dash if not empty
         SAFE_PROFILE=${SAFE_PROFILE:+-$SAFE_PROFILE}
-        ZIP_NAME="artifacts-${{ inputs.mode }}${{ inputs.java }}${SAFE_PROFILE}"
+
+        # currently we need to distinguish these two images:
+        # "ubi9-quarkus-mandrel-builder-image:jdk-21" and "ubi-quarkus-mandrel-builder-image:jdk-21 -Dtest-ubi8-compatibility"
+        if [[ -z "${{ inputs.label }}" ]]; then
+          LABEL=""
+        elif [[ "${{ inputs.label }}" =~ "ubi8" ]]; then
+          LABEL="-ubi8"
+        else
+          LABEL="-mandrel"
+        fi
+
+        ZIP_NAME="artifacts-${{ inputs.mode }}${{ inputs.java }}${SAFE_PROFILE}${LABEL}"
         echo "artifact_file_name=$ZIP_NAME" >> $GITHUB_OUTPUT
         
         if [[ "${{ inputs.os }}" == "windows" ]]; then
