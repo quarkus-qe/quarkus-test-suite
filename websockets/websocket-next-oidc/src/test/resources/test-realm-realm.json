@@ -10,7 +10,16 @@
       {
         "name": "admin"
       }
-    ]
+    ],
+    "client": {
+      "test-application-client": [
+        {
+          "name": "uma_protection",
+          "composite": false,
+          "clientRole": true
+        }
+      ]
+    }
   },
   "users": [
     {
