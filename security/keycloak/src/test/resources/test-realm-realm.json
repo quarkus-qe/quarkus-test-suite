@@ -11,7 +11,16 @@
       {
         "name": "test-admin-role"
       }
-    ]
+    ],
+    "client": {
+      "test-application-client": [
+        {
+          "name": "uma_protection",
+          "composite": false,
+          "clientRole": true
+        }
+      ]
+    }
   },
   "users": [
     {
