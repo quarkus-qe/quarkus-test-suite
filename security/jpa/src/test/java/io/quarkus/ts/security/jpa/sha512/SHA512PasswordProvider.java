@@ -1,4 +1,4 @@
-package io.quarkus.ts.security.jpa;
+package io.quarkus.ts.security.jpa.sha512;
 
 import jakarta.xml.bind.DatatypeConverter;
 

@@ -7,6 +7,9 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.ts.security.jpa.sha256.CreateUserWithSHA256PassResource;
+import io.quarkus.ts.security.jpa.sha256.SHA256PasswordProvider;
+import io.quarkus.ts.security.jpa.sha256.SHA256UserEntity;
 
 @Tag("QUARKUS-3866")
 @QuarkusScenario

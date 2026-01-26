@@ -7,6 +7,9 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.ts.security.jpa.md5.CreateUserWithMD5PassResource;
+import io.quarkus.ts.security.jpa.md5.MD5PasswordProvider;
+import io.quarkus.ts.security.jpa.md5.MD5UserEntity;
 
 @Tag("QUARKUS-3866")
 @QuarkusScenario
