@@ -1,4 +1,4 @@
-package io.quarkus.ts.security.jpa;
+package io.quarkus.ts.security.jpa.sha512;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,25 +12,25 @@ import io.quarkus.security.jpa.UserDefinition;
 import io.quarkus.security.jpa.Username;
 
 @UserDefinition
-@Table(name = "md5_entity")
+@Table(name = "sha512_entity")
 @Entity
-public class MD5UserEntity extends PanacheEntity {
+public class SHA512UserEntity extends PanacheEntity {
     @Column(name = "username")
     @Username
     public String username;
 
     @Column(name = "password")
-    @Password(value = PasswordType.CUSTOM, provider = MD5PasswordProvider.class)
+    @Password(value = PasswordType.CUSTOM, provider = SHA512PasswordProvider.class)
     public String password;
 
     @Column(name = "role")
     @Roles
     public String role;
 
-    public MD5UserEntity() {
+    public SHA512UserEntity() {
     }
 
-    public MD5UserEntity(String username, String password, String role) {
+    public SHA512UserEntity(String username, String password, String role) {
         this.username = username;
         this.password = password;
         this.role = role;

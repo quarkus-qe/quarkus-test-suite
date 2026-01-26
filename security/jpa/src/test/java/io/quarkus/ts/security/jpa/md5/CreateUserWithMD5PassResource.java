@@ -1,4 +1,4 @@
-package io.quarkus.ts.security.jpa;
+package io.quarkus.ts.security.jpa.md5;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -11,8 +11,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Response;
-
-import org.bouncycastle.util.encoders.Hex;
+import jakarta.xml.bind.DatatypeConverter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -22,7 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @ApplicationScoped
 @Produces("application/json")
 @Consumes("application/json")
-public class CreateUserWithSHA512PassResource {
+public class CreateUserWithMD5PassResource {
     @POST
     @Transactional
     public Response create(String jsonString) throws JsonProcessingException, NoSuchAlgorithmException {
@@ -34,11 +33,11 @@ public class CreateUserWithSHA512PassResource {
         String password = jsonNode.get("password").asText();
         String role = jsonNode.get("role").asText();
 
-        MessageDigest digest = MessageDigest.getInstance("SHA-512");
+        MessageDigest digest = MessageDigest.getInstance("MD5");
         byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
-        String sha512Password = new String(Hex.encode(hash));
+        String md5Password = DatatypeConverter.printHexBinary(hash);
 
-        SHA512UserEntity user = new SHA512UserEntity(username, sha512Password, role);
+        MD5UserEntity user = new MD5UserEntity(username, md5Password, role);
         user.persist();
         return Response.ok(user).status(201).build();
     }

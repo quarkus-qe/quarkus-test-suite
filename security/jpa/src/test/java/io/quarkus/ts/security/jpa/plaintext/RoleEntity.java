@@ -1,4 +1,4 @@
-package io.quarkus.ts.security.jpa;
+package io.quarkus.ts.security.jpa.plaintext;
 
 import java.util.List;
 

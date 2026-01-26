@@ -9,6 +9,8 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.ts.security.jpa.plaintext.PlaintextExternalRolesUserEntity;
+import io.quarkus.ts.security.jpa.plaintext.RoleEntity;
 
 @Tag("QUARKUS-3866")
 @QuarkusScenario

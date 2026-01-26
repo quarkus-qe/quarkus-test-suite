@@ -1,4 +1,4 @@
-package io.quarkus.ts.security.jpa;
+package io.quarkus.ts.security.jpa.sha256;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -1,4 +1,4 @@
-package io.quarkus.ts.security.jpa;
+package io.quarkus.ts.security.jpa.sha512;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @ApplicationScoped
 @Produces("application/json")
 @Consumes("application/json")
-public class CreateUserWithSHA256PassResource {
+public class CreateUserWithSHA512PassResource {
     @POST
     @Transactional
     public Response create(String jsonString) throws JsonProcessingException, NoSuchAlgorithmException {
@@ -34,11 +34,11 @@ public class CreateUserWithSHA256PassResource {
         String password = jsonNode.get("password").asText();
         String role = jsonNode.get("role").asText();
 
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        MessageDigest digest = MessageDigest.getInstance("SHA-512");
         byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
-        String sha256Password = new String(Hex.encode(hash));
+        String sha512Password = new String(Hex.encode(hash));
 
-        SHA256UserEntity user = new SHA256UserEntity(username, sha256Password, role);
+        SHA512UserEntity user = new SHA512UserEntity(username, sha512Password, role);
         user.persist();
         return Response.ok(user).status(201).build();
     }
