@@ -5,7 +5,6 @@ import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_BASE_PATH;
 import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_FILE;
 
 import io.quarkus.test.bootstrap.KeycloakService;
-import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.services.Certificate;
@@ -25,11 +24,4 @@ public class OpenShiftHttpAdvancedIT extends BaseHttpAdvancedIT {
     protected RestService getApp() {
         return app;
     }
-
-    @Override
-    protected Protocol getProtocol() {
-        // HTTPs is not supported in OpenShift yet. The same happens in OpenShift TS.
-        return Protocol.HTTP;
-    }
-
 }
