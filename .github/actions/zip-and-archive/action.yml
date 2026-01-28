@@ -38,7 +38,7 @@ runs:
           LABEL="-mandrel"
         fi
 
-        ZIP_NAME="artifacts-${{ inputs.mode }}${{ inputs.java }}${SAFE_PROFILE}${LABEL}"
+        ZIP_NAME="artifacts-${{ inputs.os }}-${{ inputs.mode }}${{ inputs.java }}${SAFE_PROFILE}${LABEL}"
         echo "artifact_file_name=$ZIP_NAME" >> $GITHUB_OUTPUT
         
         if [[ "${{ inputs.os }}" == "windows" ]]; then
