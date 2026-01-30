@@ -3,6 +3,7 @@ package io.quarkus.ts.hibernate.reactive;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -25,6 +26,8 @@ import io.quarkus.ts.hibernate.reactive.multidbSources.thirdDatabase.Car;
 import io.restassured.http.ContentType;
 
 @Tag("QUARKUS-6259")
+// TODO: Re-enable when backport will be producitized
+@Disabled("Disabled during 3.27.2.CR1 testing release due to missing backport of https://github.com/quarkusio/quarkus/pull/52011. Commented in Jira issue: https://issues.redhat.com/browse/QUARKUS-6876")
 @QuarkusScenario
 public class MixedSourcesIT {
     private static final String SQL_USER = "quarkus_test";
