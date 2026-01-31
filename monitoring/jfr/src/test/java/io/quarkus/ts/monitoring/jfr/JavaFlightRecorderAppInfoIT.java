@@ -17,6 +17,6 @@ public class JavaFlightRecorderAppInfoIT extends AbstractJavaFlightRecorderAppIn
     @QuarkusApplication
     static final RestService app = new RestService()
             .onPreStop(JfrUtils::dumpJfrRecording)
-            .withProperty("-XX:StartFlightRecording", "dumponexit=true,filename=" + RECORDING_PATH)
+            .withProperty("-XX", "StartFlightRecording=dumponexit=true,filename=" + RECORDING_PATH)
             .setAutoStart(false);
 }
