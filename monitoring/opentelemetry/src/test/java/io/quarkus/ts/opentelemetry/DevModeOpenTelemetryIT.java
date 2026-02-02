@@ -13,7 +13,6 @@ import java.util.function.Function;
 import org.apache.http.HttpStatus;
 import org.jboss.logging.Logger;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -62,7 +61,6 @@ public class DevModeOpenTelemetryIT {
 
     @Test
     @Order(1)
-    @Disabled("https://issues.redhat.com/browse/QUARKUS-6463")
     void checkThereIsNoTracesAfterRestart() {
         String operationName = "GET /hello";
         modifyAppPropertiesAndWait(props -> props.replace(getOtelEnabledProperty(true), getOtelEnabledProperty(false)));
