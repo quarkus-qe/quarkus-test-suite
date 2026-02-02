@@ -297,6 +297,20 @@ mvn -fae clean verify \
  -Dmaven.repo.local=/Users/rsvoboda/Downloads/rh-quarkus-1.7.1.GA-maven-repository/maven-repository
 ```
 
+## GH Actions caching maven repository
+
+This repository using GH cache to save and restore Quarkus 999-SNAPSHOT build.
+The save of cache happening every nigh at the start of [Daily Build](https://github.com/quarkus-qe/quarkus-test-suite/actions/workflows/daily.yaml).
+The saved cache is later restored in followup jobs to test Quarkus.
+The saved cache is also restored in PRs runs to speed the test execution removing need to build Quarkus 999-SNAPSHOT every time.
+
+The process is described in following image:
+![GH-cache-diagram.png](.github/readme-images/GH-cache-diagram.png)
+
+The GH cache offering space of 10GB where size of Quarkus build repository is around 1,2 - 1,4GB.
+When the cache overflow the oldest stored cache is deleted and replaced with newest.
+The newest cache is always used.
+
 ## Branching Strategy
 
 The `main` branch is always meant for latest upstream/downstream development. For each downstream major.minor version, there's a corresponding maintenance branch:
