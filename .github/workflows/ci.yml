@@ -121,6 +121,7 @@ jobs:
           distribution: 'temurin'
           java-version: ${{ matrix.java }}
           check-latest: true
+      - uses: ./.github/actions/cache-quarkus
       - name: Build with Maven
         run: |
           mvn -V -B --no-transfer-progress -s .github/mvn-settings.xml verify -Dall-modules -Dvalidate-format -DskipTests -DskipITs -Dquarkus.container-image.build=false -Dquarkus.container-image.push=false
@@ -147,7 +148,7 @@ jobs:
           distribution: 'temurin'
           java-version: ${{ matrix.java }}
           check-latest: true
-          cache: 'maven'
+      - uses: ./.github/actions/cache-quarkus
       - uses: ./.github/actions/prepare-quarkus-cli
       - uses: ./.github/actions/use-docker-mirror
       - name: Build with Maven
@@ -199,7 +200,7 @@ jobs:
           distribution: 'temurin'
           java-version: ${{ matrix.java }}
           check-latest: true
-          cache: 'maven'
+      - uses: ./.github/actions/cache-quarkus
       - uses: ./.github/actions/prepare-quarkus-cli
       - uses: ./.github/actions/use-docker-mirror
       - name: Build with Maven
@@ -250,7 +251,7 @@ jobs:
           distribution: 'temurin'
           java-version: ${{ matrix.java }}
           check-latest: true
-          cache: 'maven'
+      - uses: ./.github/actions/cache-quarkus
       - name: Set up Maven settings.xml
         run: Copy-Item -Path ".github/quarkus-snapshots-mvn-settings.xml" -Destination "$env:USERPROFILE/.m2/settings.xml"
       - name: Download Quarkus CLI
