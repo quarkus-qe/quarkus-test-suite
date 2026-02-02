@@ -124,20 +124,7 @@ jobs:
           java-version: ${{ matrix.java }}
           check-latest: true
       - uses: ./.github/actions/cache-quarkus
-      - name: Set up Maven settings.xml
-        run: Copy-Item -Path ".github/quarkus-snapshots-mvn-settings.xml" -Destination "$env:USERPROFILE/.m2/settings.xml"
-      - name: Download Quarkus CLI
-        shell: bash
-        run: mvn -B --no-transfer-progress org.apache.maven.plugins:maven-dependency-plugin:get -Dartifact=io.quarkus:quarkus-cli:999-SNAPSHOT:jar:runner
-      - name: Install Quarkus CLI
-        run: |
-          $quarkusCliFileContent = @"
-          @ECHO OFF
-          java -jar %HOMEDRIVE%%HOMEPATH%\.m2\repository\io\quarkus\quarkus-cli\999-SNAPSHOT\quarkus-cli-999-SNAPSHOT-runner.jar %*
-          "@
-          New-Item -Path "$(pwd)\quarkus-dev-cli.bat" -ItemType File
-          Set-Content -Path "$(pwd)\quarkus-dev-cli.bat" -Value $quarkusCliFileContent
-          ./quarkus-dev-cli.bat version
+      - uses: ./.github/actions/prepare-quarkus-cli-win
       - name: Build in JVM mode
         shell: bash
         run: |
