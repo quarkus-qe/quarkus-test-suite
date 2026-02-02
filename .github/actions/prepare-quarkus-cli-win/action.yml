@@ -1,0 +1,16 @@
+name: 'Create Quarkus CLI 999-SNAPSHOT'
+description: 'Creates Quarkus CLI based on the current Quarkus main (999-SNAPSHOT version)'
+runs:
+  using: "composite"
+  steps:
+    - name: Install Quarkus CLI
+      shell: pwsh
+      run: |
+        $quarkusCliFileContent = @"
+        @ECHO OFF
+        java -jar %HOMEDRIVE%%HOMEPATH%\.m2\repository\io\quarkus\quarkus-cli\999-SNAPSHOT\quarkus-cli-999-SNAPSHOT-runner.jar %*
+        "@
+        New-Item -Path "$(pwd)\quarkus-dev-cli.bat" -ItemType File
+        Set-Content -Path "$(pwd)\quarkus-dev-cli.bat" -Value $quarkusCliFileContent
+        ./quarkus-dev-cli.bat version
+
