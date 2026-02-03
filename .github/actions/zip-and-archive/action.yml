@@ -29,7 +29,7 @@ runs:
         SAFE_PROFILE=${SAFE_PROFILE:+-$SAFE_PROFILE}
 
         # currently we need to distinguish these two images:
-        # "ubi9-quarkus-mandrel-builder-image:jdk-21" and "ubi-quarkus-mandrel-builder-image:jdk-21 -Dtest-ubi8-compatibility"
+        # "ubi9-quarkus-mandrel-builder-image:jdk-25" and "ubi-quarkus-mandrel-builder-image:jdk-21 -Dtest-ubi8-compatibility"
         if [[ -z "${{ inputs.label }}" ]]; then
           LABEL=""
         elif [[ "${{ inputs.label }}" =~ "ubi8" ]]; then
