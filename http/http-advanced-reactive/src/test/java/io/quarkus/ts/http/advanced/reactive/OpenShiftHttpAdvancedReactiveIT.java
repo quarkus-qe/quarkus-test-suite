@@ -4,6 +4,10 @@ import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM;
 import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_BASE_PATH;
 import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_FILE;
 
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
+
 import io.quarkus.test.bootstrap.KeycloakService;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
@@ -13,6 +17,7 @@ import io.quarkus.test.services.KeycloakContainer;
 import io.quarkus.test.services.QuarkusApplication;
 
 @OpenShiftScenario
+@DisabledIfSystemProperty(named = "ts.s390x.missing.services.excludes", matches = "true", disabledReason = "Quarkus QE TS doesn't support TLS on Openshift for s390x")
 public class OpenShiftHttpAdvancedReactiveIT extends BaseHttpAdvancedReactiveIT {
 
     @KeycloakContainer(command = { "start-dev", "--import-realm", "--hostname-strict=false" }, image = "${rhbk.image}")
@@ -31,5 +36,13 @@ public class OpenShiftHttpAdvancedReactiveIT extends BaseHttpAdvancedReactiveIT 
     protected Protocol getProtocol() {
         // HTTPs is not supported in OpenShift yet. The same happens in OpenShift TS.
         return Protocol.HTTP;
+    }
+
+    @Override
+    @Test
+    @DisplayName("Http/2 Server test")
+    @DisabledIfSystemProperty(named = "ts.s390x.missing.services.excludes", matches = "true", disabledReason = "Quarkus QE TS doesn't support TLS on Openshift for s390x")
+    public void http2Server() throws InterruptedException {
+        super.http2Server();
     }
 }
