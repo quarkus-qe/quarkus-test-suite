@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -33,7 +32,6 @@ public class QuarkusCliOfferingIbmIT extends QuarkusCliOfferingBase {
     }
 
     @Test
-    @Disabled("https://issues.redhat.com/browse/QUARKUS-6947")
     public void listedExtensionShouldContainSupportScopeForLangchain4jOpenAi() {
         QuarkusCliClient.Result result = cliClient.listExtensions("--support-scope",
                 "--config=" + QUARKUS_TEST_CONFIG.getAbsolutePath(),
