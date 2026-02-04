@@ -71,8 +71,8 @@ public class QuarkusCliOfferingUtils {
             if (version.startsWith("${") && version.endsWith("}")) {
                 String property = version.substring(2, version.length() - 1);
                 String message = "Langchain4j bom uses version " + version + " but there is no such property in the POM!";
-                version = (String) model.getProperties().get(property);
-                Assertions.assertNotNull(version, message);
+                String versionFromProperty = (String) model.getProperties().get(property);
+                Assertions.assertNotNull(versionFromProperty, message);
             }
             assertEquals(expectedLangchain4jVersion, version,
                     "Langchain4j bom should have " + expectedLangchain4jVersion

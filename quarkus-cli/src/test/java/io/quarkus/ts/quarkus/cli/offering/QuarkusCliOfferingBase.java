@@ -22,7 +22,6 @@ import jakarta.inject.Inject;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.QuarkusCliClient;
@@ -46,7 +45,6 @@ public abstract class QuarkusCliOfferingBase {
     }
 
     @Test
-    @Disabled("https://issues.redhat.com/browse/QUARKUS-6947")
     public void listedExtensionShouldContainSupportScope() {
         QuarkusCliClient.Result result = cliClient.listExtensions("--support-scope",
                 "--config=" + QUARKUS_TEST_CONFIG.getAbsolutePath());
@@ -62,7 +60,6 @@ public abstract class QuarkusCliOfferingBase {
     }
 
     @Test
-    @Disabled("https://issues.redhat.com/browse/QUARKUS-6954")
     public void createAndBuildAppWhenOfferingIsSet() throws IOException {
         // Check if it's possible to create and build app when the offering is set in registry
         Path pathToTmpDirectory = Files.createTempDirectory("cli");

@@ -72,7 +72,6 @@ public class QuarkusCliOfferingDefaultIT {
     }
 
     @Test
-    @Disabled("https://issues.redhat.com/browse/QUARKUS-6953")
     public void listExtensionsWithWrongOffering() throws IOException {
         // Testing output when the unknow offering is set
         updateRegistryConfigFileWithOffering("unknown-offering");
