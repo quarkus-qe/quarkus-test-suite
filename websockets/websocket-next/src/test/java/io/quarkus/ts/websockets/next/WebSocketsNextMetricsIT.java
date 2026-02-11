@@ -26,6 +26,7 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Dependency;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.ts.websockets.next.client.WebSocketTestClient;
 import io.restassured.response.ValidatableResponse;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -64,13 +65,13 @@ public class WebSocketsNextMetricsIT {
     @Order(1)
     public void serverMessageMetricsTest() throws URISyntaxException, InterruptedException {
         // if the three clients join
-        Client aliceClient = createClient("/chat/alice");
+        WebSocketTestClient aliceClient = createClient("/chat/alice");
         String aliceJoinedMessage = "alice joined";
         assertMessage(aliceJoinedMessage, aliceClient);
-        Client bobClient = createClient("/chat/bob");
+        WebSocketTestClient bobClient = createClient("/chat/bob");
         String bobJoinedMessage = "bob joined";
         assertMessage(bobJoinedMessage, aliceClient, bobClient);
-        Client charlieClient = createClient("/chat/charlie");
+        WebSocketTestClient charlieClient = createClient("/chat/charlie");
         String charlieJoinedMessage = "charlie joined";
         assertMessage(charlieJoinedMessage, aliceClient, bobClient, charlieClient);
         // then client count is three
@@ -109,7 +110,7 @@ public class WebSocketsNextMetricsIT {
     @Order(2)
     public void serverErrorMetricsWithoutOnErrorHandlerTest() throws URISyntaxException, InterruptedException {
         String endpointPath = "/failing-onopen-error-no-handler";
-        Client client = createClient(endpointPath);
+        WebSocketTestClient client = createClient(endpointPath);
 
         // No @OnError present, the onOpen() exception causes a connection failure
         getServer().logs().assertContains("Websocket failed to open");
@@ -128,7 +129,7 @@ public class WebSocketsNextMetricsIT {
     @Order(3)
     public void serverErrorMetricsWithOnErrorHandlerTest() throws URISyntaxException, InterruptedException {
         String endpointPath = "/failing-onopen-error-with-handler";
-        Client client = createClient(endpointPath);
+        WebSocketTestClient client = createClient(endpointPath);
 
         // The @OnError method handles the exception thrown from onOpen()
         getServer().logs().assertContains("Error on websocket: Websocket failed to open");
@@ -149,7 +150,7 @@ public class WebSocketsNextMetricsIT {
     @Test
     @Order(4)
     public void clientMessageMetricsTest() throws URISyntaxException, InterruptedException {
-        Client client = createClient("/chat/alice");
+        WebSocketTestClient client = createClient("/chat/alice");
         assertMessage("alice joined", client);
         // connect server-side client
         given().queryParam("username", "bob").get("/userDataRes/connect"); // "bob joined"
@@ -205,17 +206,17 @@ public class WebSocketsNextMetricsIT {
         return new URI(getServer().getURI(Protocol.WS).toString()).resolve(with);
     }
 
-    private Client createClient(String endpoint)
+    private WebSocketTestClient createClient(String endpoint)
             throws URISyntaxException, InterruptedException {
-        Client client = new Client(getUri(endpoint), false);
+        WebSocketTestClient client = new WebSocketTestClient(getUri(endpoint), false);
         if (!client.connectBlocking()) {
             LOG.error("Websocket client fail to connect to " + endpoint);
         }
         return client;
     }
 
-    private void assertMessage(String expectedMessage, Client... clients) {
-        for (Client client : clients) {
+    private void assertMessage(String expectedMessage, WebSocketTestClient... clients) {
+        for (WebSocketTestClient client : clients) {
             Awaitility
                     .await()
                     .atMost(ofSeconds(2))
@@ -223,8 +224,8 @@ public class WebSocketsNextMetricsIT {
         }
     }
 
-    private void assertBinaryMessage(byte[] expectedMessage, Client... clients) {
-        for (Client client : clients) {
+    private void assertBinaryMessage(byte[] expectedMessage, WebSocketTestClient... clients) {
+        for (WebSocketTestClient client : clients) {
             Awaitility
                     .await()
                     .atMost(ofSeconds(2))

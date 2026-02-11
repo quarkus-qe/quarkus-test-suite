@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
+import io.quarkus.ts.websockets.next.client.WebSocketTestClient;
 
 public abstract class BaseWebSocketIT {
     private static final Logger LOG = Logger.getLogger(BaseWebSocketIT.class);
@@ -28,7 +29,7 @@ public abstract class BaseWebSocketIT {
 
     @Test
     public void basicTextTest() throws URISyntaxException, InterruptedException {
-        Client client = createClient("/chat/alice", false);
+        WebSocketTestClient client = createClient("/chat/alice", false);
         client.send("Hello world");
 
         assertMessage("alice joined", client);
@@ -37,7 +38,7 @@ public abstract class BaseWebSocketIT {
 
     @Test
     public void basicBinaryTest() throws URISyntaxException, InterruptedException {
-        Client client = createClient("/chat/alice");
+        WebSocketTestClient client = createClient("/chat/alice");
 
         byte[] data = HexFormat.of().parseHex("e04fd020ea3a6910a2d808002b30309d");
         client.send(data);
@@ -48,9 +49,9 @@ public abstract class BaseWebSocketIT {
 
     @Test
     public void chatTest() throws URISyntaxException, InterruptedException {
-        Client aliceClient = createClient("/chat/alice");
-        Client bobClient = createClient("/chat/bob");
-        Client charlieClient = createClient("/chat/charlie");
+        WebSocketTestClient aliceClient = createClient("/chat/alice");
+        WebSocketTestClient bobClient = createClient("/chat/bob");
+        WebSocketTestClient charlieClient = createClient("/chat/charlie");
 
         bobClient.send("Hello there");
         assertMessage("bob: Hello there", aliceClient, bobClient, charlieClient);
@@ -61,7 +62,7 @@ public abstract class BaseWebSocketIT {
 
     @Test
     public void reactiveTest() throws URISyntaxException, InterruptedException {
-        Client client = createClient("/reactive");
+        WebSocketTestClient client = createClient("/reactive");
         assertMessage("Hello", client);
 
         client.send("Lorem ipsum");
@@ -71,7 +72,7 @@ public abstract class BaseWebSocketIT {
 
     @Test
     public void onErrorEventTest() throws URISyntaxException, InterruptedException {
-        Client client = createClient("/failing-onopen-error-with-handler");
+        WebSocketTestClient client = createClient("/failing-onopen-error-with-handler");
         getServer().logs().assertContains("Error on websocket: Websocket failed to open");
 
         client.send("Random failure");
@@ -80,7 +81,7 @@ public abstract class BaseWebSocketIT {
 
     @Test
     public void nativeSerializationTest() throws URISyntaxException, InterruptedException {
-        Client client = createClient("/serialization/native");
+        WebSocketTestClient client = createClient("/serialization/native");
         assertMessage("{\"type\":\"OPEN\",\"message\":\"Connection opened\",\"payload\":null}", client);
 
         client.send("{\"type\":\"WRONG\",\"message\":\"oops\",\"payload\":null}");
@@ -91,7 +92,7 @@ public abstract class BaseWebSocketIT {
 
     @Test
     public void customSerializationTest() throws URISyntaxException, InterruptedException {
-        Client client = createClient("/serialization/custom");
+        WebSocketTestClient client = createClient("/serialization/custom");
         client.send("bob;hello");
         assertMessage("bob;received: hello", client);
     }
@@ -108,8 +109,8 @@ public abstract class BaseWebSocketIT {
          * In concurrent mode, the later message is faster and should arrive first.
          */
 
-        Client serialClient = createClient("/serial");
-        Client concurentClient = createClient("/concurrent");
+        WebSocketTestClient serialClient = createClient("/serial");
+        WebSocketTestClient concurentClient = createClient("/concurrent");
 
         serialClient.send("block");
         serialClient.send("go");
@@ -124,7 +125,7 @@ public abstract class BaseWebSocketIT {
 
     @Test
     public void userDataOnServerTest() throws URISyntaxException, InterruptedException {
-        Client client = createClient("/userData");
+        WebSocketTestClient client = createClient("/userData");
 
         client.send("get");
         assertMessage("messages sent: 0", client);
@@ -142,7 +143,7 @@ public abstract class BaseWebSocketIT {
 
     @Test
     public void userDataInClientTest() throws URISyntaxException, InterruptedException {
-        Client client = createClient("/chat/alice");
+        WebSocketTestClient client = createClient("/chat/alice");
         // connect server-side client
         given().queryParam("username", "bob").get("/userDataRes/connect");
 
@@ -159,8 +160,8 @@ public abstract class BaseWebSocketIT {
 
     @Test
     public void subWebSocketTest() throws URISyntaxException, InterruptedException {
-        Client parentClient = createClient("/parent");
-        Client nestedClient = createClient("/parent/nested");
+        WebSocketTestClient parentClient = createClient("/parent");
+        WebSocketTestClient nestedClient = createClient("/parent/nested");
 
         parentClient.send("foo");
         assertMessage("This is parent webSocket", parentClient);
@@ -172,11 +173,11 @@ public abstract class BaseWebSocketIT {
     // verify that custom logic for allowing/rejecting upgrade http-to-websocket works
     @Test
     public void httpToWebSocketUpgradeTest() throws URISyntaxException, InterruptedException {
-        Client rejectClient = new Client(getUri("/parent"), true);
+        WebSocketTestClient rejectClient = new WebSocketTestClient(getUri("/parent"), true);
         rejectClient.addHeader("Reject", "");
         assertFalse(rejectClient.connectBlocking(), "Upgrade from http to websocket should be rejected");
 
-        Client allowClient = new Client(getUri("/parent"), true);
+        WebSocketTestClient allowClient = new WebSocketTestClient(getUri("/parent"), true);
         assertTrue(allowClient.connectBlocking(), "Upgrade from http to websocket should be allowed");
     }
 
@@ -203,11 +204,11 @@ public abstract class BaseWebSocketIT {
     @Test
     public void authenticatedChatTest() throws URISyntaxException, InterruptedException {
         // verify that unauthenticated client cannot join the authenticated chat
-        Client anonymousClient = new Client(getUri("/authChat"));
+        WebSocketTestClient anonymousClient = new WebSocketTestClient(getUri("/authChat"));
         assertFalse(anonymousClient.connectBlocking(), "Anonymous connection should fail");
 
         // directly connect authenticated client and verify sent message
-        Client client = createAuthenticatedClient("/authChat", "alice", "password");
+        WebSocketTestClient client = createAuthenticatedClient("/authChat", "alice", "password");
         client.send("Hi");
         assertMessage("alice: Hi", client);
         client.close();
@@ -243,10 +244,10 @@ public abstract class BaseWebSocketIT {
     @Test
     public void propertiesAuthenticationTest() throws URISyntaxException, InterruptedException {
         // verify that unauthenticated client cannot join the properties secured endpoint
-        Client anonymousClient = new Client(getUri("/propertiesSecured"));
+        WebSocketTestClient anonymousClient = new WebSocketTestClient(getUri("/propertiesSecured"));
         assertFalse(anonymousClient.connectBlocking(), "Anonymous connection should fail");
 
-        Client authenticatedClient = createAuthenticatedClient("/propertiesSecured", "alice", "password");
+        WebSocketTestClient authenticatedClient = createAuthenticatedClient("/propertiesSecured", "alice", "password");
         authenticatedClient.send("hi");
 
         assertMessage("hi", authenticatedClient);
@@ -256,11 +257,11 @@ public abstract class BaseWebSocketIT {
     public void authorizedChatTest() throws URISyntaxException, InterruptedException {
         // adminChat allows only admins to send messages, but anyone can listen
         // alice has the admin role, so can submit messages to chat
-        Client adminClient = createAuthenticatedClient("/adminChat", "alice", "password");
+        WebSocketTestClient adminClient = createAuthenticatedClient("/adminChat", "alice", "password");
         // bob is not admin, so cannot submit messages to chat
-        Client userClient = createAuthenticatedClient("/adminChat", "bob", "secret");
+        WebSocketTestClient userClient = createAuthenticatedClient("/adminChat", "bob", "secret");
         // even anonymous client can join and listen, but cannot send messages
-        Client anonymousClient = createClient("/adminChat");
+        WebSocketTestClient anonymousClient = createClient("/adminChat");
 
         adminClient.send("Howdy");
         assertMessage("alice: Howdy", adminClient, userClient, anonymousClient);
@@ -276,12 +277,12 @@ public abstract class BaseWebSocketIT {
     public void restrictedChatTest() throws URISyntaxException, InterruptedException {
         // adminOnlyChat allow only admins to join the chat
         // alice has the admin role, so can submit messages to chat
-        Client adminClient = createAuthenticatedClient("/adminOnlyChat", "alice", "password");
+        WebSocketTestClient adminClient = createAuthenticatedClient("/adminOnlyChat", "alice", "password");
 
         adminClient.send("Hello there");
         assertMessage("alice: Hello there", adminClient);
 
-        Client userClient = new Client(getUri("/adminOnlyChat"));
+        WebSocketTestClient userClient = new WebSocketTestClient(getUri("/adminOnlyChat"));
         assertFalse(userClient.connectBlocking(), "User's connection to adminOnlyChat should fail");
     }
 
@@ -289,8 +290,8 @@ public abstract class BaseWebSocketIT {
         return new URI(getServer().getURI(Protocol.WS).toString()).resolve(with);
     }
 
-    protected void assertMessage(String expectedMessage, Client... clients) {
-        for (Client client : clients) {
+    protected void assertMessage(String expectedMessage, WebSocketTestClient... clients) {
+        for (WebSocketTestClient client : clients) {
             Awaitility
                     .await()
                     .atMost(ofSeconds(2))
@@ -321,13 +322,13 @@ public abstract class BaseWebSocketIT {
         }
     }
 
-    private Client createClient(String endpoint) throws URISyntaxException, InterruptedException {
+    private WebSocketTestClient createClient(String endpoint) throws URISyntaxException, InterruptedException {
         return createClient(endpoint, true);
     }
 
-    private Client createAuthenticatedClient(String endpoint, String username, String password)
+    private WebSocketTestClient createAuthenticatedClient(String endpoint, String username, String password)
             throws URISyntaxException, InterruptedException {
-        Client client = new Client(getUri(endpoint));
+        WebSocketTestClient client = new WebSocketTestClient(getUri(endpoint));
         String authString = username + ":" + password;
         client.addHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString(authString.getBytes()));
         if (!client.connectBlocking()) {
@@ -336,8 +337,9 @@ public abstract class BaseWebSocketIT {
         return client;
     }
 
-    private Client createClient(String endpoint, boolean ignoreJoinMessages) throws URISyntaxException, InterruptedException {
-        Client client = new Client(getUri(endpoint), ignoreJoinMessages);
+    private WebSocketTestClient createClient(String endpoint, boolean ignoreJoinMessages)
+            throws URISyntaxException, InterruptedException {
+        WebSocketTestClient client = new WebSocketTestClient(getUri(endpoint), ignoreJoinMessages);
         if (!client.connectBlocking()) {
             LOG.error("Websocket client fail to connect");
         }

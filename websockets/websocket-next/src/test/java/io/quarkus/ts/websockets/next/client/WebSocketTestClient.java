@@ -1,4 +1,4 @@
-package io.quarkus.ts.websockets.next;
+package io.quarkus.ts.websockets.next.client;
 
 import java.net.URI;
 import java.nio.ByteBuffer;
@@ -9,19 +9,19 @@ import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.jboss.logging.Logger;
 
-public class Client extends WebSocketClient {
-    private static final Logger LOG = Logger.getLogger(Client.class);
+public class WebSocketTestClient extends WebSocketClient {
+    private static final Logger LOG = Logger.getLogger(WebSocketTestClient.class);
 
     private final LinkedBlockingDeque<String> messages = new LinkedBlockingDeque<>();
     private final LinkedBlockingDeque<ByteBuffer> binaryMessages = new LinkedBlockingDeque<>();
     private final boolean ignoreJoinMessages;
 
-    public Client(URI serverUri, boolean ignoreJoinMessages) {
+    public WebSocketTestClient(URI serverUri, boolean ignoreJoinMessages) {
         super(serverUri);
         this.ignoreJoinMessages = ignoreJoinMessages;
     }
 
-    public Client(URI serverUri) {
+    public WebSocketTestClient(URI serverUri) {
         super(serverUri);
         this.ignoreJoinMessages = true;
     }

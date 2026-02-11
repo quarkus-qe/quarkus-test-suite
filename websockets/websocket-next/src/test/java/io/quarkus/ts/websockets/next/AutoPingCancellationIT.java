@@ -17,6 +17,7 @@ import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.ts.websockets.next.client.WebSocketTestClient;
 
 @Tag("https://github.com/quarkusio/quarkus/pull/47271")
 @QuarkusScenario
@@ -36,7 +37,7 @@ public class AutoPingCancellationIT {
     }
 
     private void createAndCloseConnections() {
-        List<Client> clients = new ArrayList<>();
+        List<WebSocketTestClient> clients = new ArrayList<>();
         CountDownLatch latch = new CountDownLatch(5);
 
         // Create 5 clients
@@ -44,7 +45,7 @@ public class AutoPingCancellationIT {
             final int clientId = i;
             new Thread(() -> {
                 try {
-                    Client client = createClient("/chat/user" + clientId);
+                    WebSocketTestClient client = createClient("/chat/user" + clientId);
                     clients.add(client);
                     LOG.info("Client " + clientId + " connected");
                     client.send("Test from client " + clientId);
@@ -71,7 +72,7 @@ public class AutoPingCancellationIT {
         }
 
         // Clean up any remaining open clients
-        for (Client client : clients) {
+        for (WebSocketTestClient client : clients) {
             try {
                 if (client.isOpen()) {
                     client.close();
@@ -96,8 +97,8 @@ public class AutoPingCancellationIT {
         return new URI(app.getURI(Protocol.WS).toString()).resolve(path);
     }
 
-    private Client createClient(String endpoint) throws URISyntaxException, InterruptedException {
-        Client client = new Client(getUri(endpoint));
+    private WebSocketTestClient createClient(String endpoint) throws URISyntaxException, InterruptedException {
+        WebSocketTestClient client = new WebSocketTestClient(getUri(endpoint));
         boolean connected = client.connectBlocking();
         if (!connected) {
             LOG.error("Failed to connect WebSocket client to " + endpoint);

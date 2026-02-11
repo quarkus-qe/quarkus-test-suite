@@ -22,6 +22,7 @@ import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Certificate;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.utils.AwaitilityUtils;
+import io.quarkus.ts.websockets.next.client.WebSocketTestClient;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -59,7 +60,7 @@ public class TlsWebSocketIT extends BaseWebSocketIT {
         sslContext.init(null, new X509TrustManager[] { generateTrustManager() }, null);
 
         // connect local client
-        Client client = new Client(securedURI);
+        WebSocketTestClient client = new WebSocketTestClient(securedURI);
         client.setSocketFactory(sslContext.getSocketFactory());
         client.connectBlocking();
 

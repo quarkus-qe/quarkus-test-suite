@@ -23,6 +23,7 @@ import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Dependency;
 import io.quarkus.test.services.JaegerContainer;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.ts.websockets.next.client.WebSocketTestClient;
 import io.restassured.response.Response;
 
 @QuarkusScenario
@@ -51,7 +52,7 @@ public class WebSocketsNextOpenTelemetryIT {
         String closeOperationName = "CLOSE /chat/:username";
 
         // client CLOSE trace should link to the OPEN trace via FOLLOWS_FROM reference
-        Client aliceClient = createClient("/chat/alice");
+        WebSocketTestClient aliceClient = createClient("/chat/alice");
         aliceClient.send("hello world");
         aliceClient.close();
 
@@ -86,9 +87,9 @@ public class WebSocketsNextOpenTelemetryIT {
         return new URI(getServer().getURI(Protocol.WS).toString()).resolve(with);
     }
 
-    private Client createClient(String endpoint)
+    private WebSocketTestClient createClient(String endpoint)
             throws URISyntaxException, InterruptedException {
-        Client client = new Client(getUri(endpoint), false);
+        WebSocketTestClient client = new WebSocketTestClient(getUri(endpoint), false);
         if (!client.connectBlocking()) {
             LOG.error("Websocket client fail to connect to " + endpoint);
         }
