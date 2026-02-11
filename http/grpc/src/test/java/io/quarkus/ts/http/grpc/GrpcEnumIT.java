@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.GrpcService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.grpc.demo.DemoEnum;
 import io.quarkus.ts.grpc.demo.DemoGrpc;
@@ -38,6 +39,7 @@ public class GrpcEnumIT {
     }
 
     @Test
+    @DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/52436")
     public void testServerSideEnumLoggingInNativeMode() {
         try (var channel = app.grpcChannel()) {
             EnumTriggerRequest request = EnumTriggerRequest.newBuilder()
