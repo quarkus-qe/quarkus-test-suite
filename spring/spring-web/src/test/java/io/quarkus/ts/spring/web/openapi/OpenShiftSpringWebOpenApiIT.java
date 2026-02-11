@@ -1,8 +1,8 @@
 package io.quarkus.ts.spring.web.openapi;
 
-import static io.quarkus.ts.spring.web.MariaDBConstants.IMAGE_1011;
-import static io.quarkus.ts.spring.web.MariaDBConstants.PORT;
-import static io.quarkus.ts.spring.web.MariaDBConstants.START_LOG_1011;
+import static io.quarkus.ts.spring.web.db.MariaDBConstants.IMAGE_1011;
+import static io.quarkus.ts.spring.web.db.MariaDBConstants.PORT;
+import static io.quarkus.ts.spring.web.db.MariaDBConstants.START_LOG_1011;
 
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.TestMethodOrder;

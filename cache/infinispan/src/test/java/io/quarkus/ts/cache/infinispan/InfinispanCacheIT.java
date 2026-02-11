@@ -1,7 +1,7 @@
 package io.quarkus.ts.cache.infinispan;
 
-import static io.quarkus.ts.cache.infinispan.ServiceWithCacheResource.APPLICATION_SCOPE_SERVICE_PATH;
-import static io.quarkus.ts.cache.infinispan.ServiceWithCacheResource.REQUEST_SCOPE_SERVICE_PATH;
+import static io.quarkus.ts.cache.infinispan.resources.ServiceWithCacheResource.APPLICATION_SCOPE_SERVICE_PATH;
+import static io.quarkus.ts.cache.infinispan.resources.ServiceWithCacheResource.REQUEST_SCOPE_SERVICE_PATH;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 

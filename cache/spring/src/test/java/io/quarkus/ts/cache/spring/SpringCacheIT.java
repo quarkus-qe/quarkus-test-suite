@@ -1,7 +1,7 @@
 package io.quarkus.ts.cache.spring;
 
-import static io.quarkus.ts.cache.spring.ServiceWithCacheResource.APPLICATION_SCOPE_SERVICE_PATH;
-import static io.quarkus.ts.cache.spring.ServiceWithCacheResource.REQUEST_SCOPE_SERVICE_PATH;
+import static io.quarkus.ts.cache.spring.resources.ServiceWithCacheResource.APPLICATION_SCOPE_SERVICE_PATH;
+import static io.quarkus.ts.cache.spring.resources.ServiceWithCacheResource.REQUEST_SCOPE_SERVICE_PATH;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -11,6 +11,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.ts.cache.spring.services.BaseServiceWithCache;
 
 @QuarkusScenario
 public class SpringCacheIT {

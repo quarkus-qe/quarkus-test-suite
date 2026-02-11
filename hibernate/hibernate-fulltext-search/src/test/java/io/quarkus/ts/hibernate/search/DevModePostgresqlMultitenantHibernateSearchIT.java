@@ -14,7 +14,7 @@ import io.quarkus.test.bootstrap.PostgresqlService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.DevModeQuarkusApplication;
-import io.quarkus.ts.hibernate.search.VegetableResource.NameAndDescription;
+import io.quarkus.ts.hibernate.search.vegetable.VegetableResource.NameAndDescription;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 

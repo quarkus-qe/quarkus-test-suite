@@ -41,8 +41,8 @@ public class DevModeGrpcIntegrationIT {
     };
 
     private static final String[] GRPC_SERVICE_IMPLEMENTATION_CLASSES = {
-            "io.quarkus.ts.http.advanced.GrpcInterceptorsService", "io.quarkus.ts.http.advanced.GrpcService",
-            "io.quarkus.ts.http.advanced.GrpcStreamingService"
+            "io.quarkus.ts.http.advanced.grpc.GrpcInterceptorsService", "io.quarkus.ts.http.advanced.grpc.GrpcService",
+            "io.quarkus.ts.http.advanced.grpc.GrpcStreamingService"
     };
 
     @DevModeQuarkusApplication(grpc = true)

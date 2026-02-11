@@ -1,16 +1,16 @@
 package io.quarkus.ts.http.advanced.reactive;
 
-import static io.quarkus.ts.http.advanced.reactive.MediaTypeResource.ANY_ENCODING;
-import static io.quarkus.ts.http.advanced.reactive.MediaTypeResource.APPLICATION_YAML;
-import static io.quarkus.ts.http.advanced.reactive.MediaTypeResource.ENGLISH;
-import static io.quarkus.ts.http.advanced.reactive.MediaTypeResource.JAPANESE;
-import static io.quarkus.ts.http.advanced.reactive.MediaTypeResource.MEDIA_TYPE_PATH;
-import static io.quarkus.ts.http.advanced.reactive.MultipartResource.FILE;
-import static io.quarkus.ts.http.advanced.reactive.MultipartResource.MULTIPART_FORM_PATH;
-import static io.quarkus.ts.http.advanced.reactive.MultipartResource.TEXT;
 import static io.quarkus.ts.http.advanced.reactive.MultipleResponseSerializersResource.APPLY_RESPONSE_SERIALIZER_PARAM_FLAG;
 import static io.quarkus.ts.http.advanced.reactive.MultipleResponseSerializersResource.MULTIPLE_RESPONSE_SERIALIZERS_PATH;
-import static io.quarkus.ts.http.advanced.reactive.SseEventUpdateResource.DATA_VALUE;
+import static io.quarkus.ts.http.advanced.reactive.mediatype.MediaTypeResource.ANY_ENCODING;
+import static io.quarkus.ts.http.advanced.reactive.mediatype.MediaTypeResource.APPLICATION_YAML;
+import static io.quarkus.ts.http.advanced.reactive.mediatype.MediaTypeResource.ENGLISH;
+import static io.quarkus.ts.http.advanced.reactive.mediatype.MediaTypeResource.JAPANESE;
+import static io.quarkus.ts.http.advanced.reactive.mediatype.MediaTypeResource.MEDIA_TYPE_PATH;
+import static io.quarkus.ts.http.advanced.reactive.multipart.MultipartResource.FILE;
+import static io.quarkus.ts.http.advanced.reactive.multipart.MultipartResource.MULTIPART_FORM_PATH;
+import static io.quarkus.ts.http.advanced.reactive.multipart.MultipartResource.TEXT;
+import static io.quarkus.ts.http.advanced.reactive.sse.SseEventUpdateResource.DATA_VALUE;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_OCTET_STREAM;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_XML;

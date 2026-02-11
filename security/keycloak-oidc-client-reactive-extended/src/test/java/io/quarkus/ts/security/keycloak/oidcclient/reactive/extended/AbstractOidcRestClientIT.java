@@ -1,8 +1,8 @@
 package io.quarkus.ts.security.keycloak.oidcclient.reactive.extended;
 
-import static io.quarkus.ts.security.keycloak.oidcclient.reactive.extended.OidcItUtils.createToken;
 import static io.quarkus.ts.security.keycloak.oidcclient.reactive.extended.secured.method.MethodSecuredResource.PUBLIC_RESPONSE;
 import static io.quarkus.ts.security.keycloak.oidcclient.reactive.extended.secured.method.MethodSecuredResource.SECURED_RESPONSE;
+import static io.quarkus.ts.security.keycloak.oidcclient.reactive.extended.utils.OidcItUtils.createToken;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;

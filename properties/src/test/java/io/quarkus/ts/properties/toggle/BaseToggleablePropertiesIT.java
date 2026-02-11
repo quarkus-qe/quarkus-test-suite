@@ -7,6 +7,7 @@ import org.awaitility.Awaitility;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
+import io.quarkus.ts.properties.toggle.services.ToggleableServices;
 import io.restassured.specification.RequestSpecification;
 
 public abstract class BaseToggleablePropertiesIT {

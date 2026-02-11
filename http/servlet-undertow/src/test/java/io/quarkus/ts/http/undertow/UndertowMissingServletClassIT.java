@@ -14,6 +14,7 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.bootstrap.Service;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.ts.http.undertow.builder.WithMissingServlet;
 
 @QuarkusScenario
 public class UndertowMissingServletClassIT {

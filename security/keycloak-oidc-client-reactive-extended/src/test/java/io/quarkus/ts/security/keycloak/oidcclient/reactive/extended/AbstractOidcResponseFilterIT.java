@@ -1,8 +1,8 @@
 package io.quarkus.ts.security.keycloak.oidcclient.reactive.extended;
 
-import static io.quarkus.ts.security.keycloak.oidcclient.reactive.extended.OidcItUtils.CLIENT_ID_DEFAULT;
-import static io.quarkus.ts.security.keycloak.oidcclient.reactive.extended.OidcItUtils.CLIENT_SECRET_DEFAULT;
-import static io.quarkus.ts.security.keycloak.oidcclient.reactive.extended.OidcItUtils.USER;
+import static io.quarkus.ts.security.keycloak.oidcclient.reactive.extended.utils.OidcItUtils.CLIENT_ID_DEFAULT;
+import static io.quarkus.ts.security.keycloak.oidcclient.reactive.extended.utils.OidcItUtils.CLIENT_SECRET_DEFAULT;
+import static io.quarkus.ts.security.keycloak.oidcclient.reactive.extended.utils.OidcItUtils.USER;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.equalTo;

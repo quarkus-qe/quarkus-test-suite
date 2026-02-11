@@ -24,6 +24,7 @@ import io.quarkus.test.services.KafkaContainer;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.services.containers.model.KafkaVendor;
 import io.quarkus.ts.messaging.infinispan.grpc.kafka.books.Book;
+import io.quarkus.ts.messaging.infinispan.grpc.kafka.utils.CertUtils;
 import io.restassured.http.ContentType;
 
 @DisabledOnFipsAndNative(reason = "QUARKUS-5233")

@@ -3,6 +3,7 @@ package io.quarkus.ts.properties.toggle;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.ts.properties.toggle.services.ToggleableServices;
 import io.restassured.specification.RequestSpecification;
 
 @QuarkusScenario

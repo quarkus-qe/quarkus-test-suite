@@ -1,13 +1,13 @@
 package io.quarkus.ts.configmap.api.server;
 
-import static io.quarkus.ts.configmap.api.server.PropertiesSource.APP_PROPERTIES;
-import static io.quarkus.ts.configmap.api.server.PropertiesSource.BUILT_CONFIG;
-import static io.quarkus.ts.configmap.api.server.PropertiesSource.INJECTED_CONFIG;
-import static io.quarkus.ts.configmap.api.server.PropertiesSource.INJECTED_PROPERTIES;
-import static io.quarkus.ts.configmap.api.server.SecretKeysHandler.BASE64;
-import static io.quarkus.ts.configmap.api.server.SecretKeysHandler.CRYPTO_AES_GCM_NO_PADDING;
-import static io.quarkus.ts.configmap.api.server.SecretKeysHandler.RSA;
-import static io.quarkus.ts.configmap.api.server.SecretKeysHandler.SHA256;
+import static io.quarkus.ts.configmap.api.server.config.PropertiesSource.APP_PROPERTIES;
+import static io.quarkus.ts.configmap.api.server.config.PropertiesSource.BUILT_CONFIG;
+import static io.quarkus.ts.configmap.api.server.config.PropertiesSource.INJECTED_CONFIG;
+import static io.quarkus.ts.configmap.api.server.config.PropertiesSource.INJECTED_PROPERTIES;
+import static io.quarkus.ts.configmap.api.server.config.SecretKeysHandler.BASE64;
+import static io.quarkus.ts.configmap.api.server.config.SecretKeysHandler.CRYPTO_AES_GCM_NO_PADDING;
+import static io.quarkus.ts.configmap.api.server.config.SecretKeysHandler.RSA;
+import static io.quarkus.ts.configmap.api.server.config.SecretKeysHandler.SHA256;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -15,6 +15,8 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.ts.configmap.api.server.config.PropertiesSource;
+import io.quarkus.ts.configmap.api.server.config.SecretKeysHandler;
 
 @DisabledOnFipsAndNative(reason = "https://issues.redhat.com/browse/MANDREL-245")
 @QuarkusScenario

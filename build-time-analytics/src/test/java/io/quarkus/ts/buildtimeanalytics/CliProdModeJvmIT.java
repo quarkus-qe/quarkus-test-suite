@@ -1,17 +1,17 @@
 package io.quarkus.ts.buildtimeanalytics;
 
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsFilesUtils.deleteConfigDir;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsFilesUtils.disableAnalyticsByLocalConfig;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsFilesUtils.disableAnalyticsByRemoteConfig;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsFilesUtils.recreateConfigDir;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsFilesUtils.useRefreshableRemoteConfig;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsUtils.EXTENSION_SET_A;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsUtils.EXTENSION_SET_B;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsUtils.QUARKUS_ANALYTICS_DISABLED_PROPERTY;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsUtils.QUARKUS_ANALYTICS_EVENT_PROD;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsUtils.QUARKUS_ANALYTICS_FAKE_URI_BASE;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsUtils.QUARKUS_ANALYTICS_TIMEOUT_PROPERTY;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsUtils.QUARKUS_ANALYTICS_URI_BASE_PROPERTY;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsFilesUtils.deleteConfigDir;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsFilesUtils.disableAnalyticsByLocalConfig;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsFilesUtils.disableAnalyticsByRemoteConfig;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsFilesUtils.recreateConfigDir;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsFilesUtils.useRefreshableRemoteConfig;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsUtils.EXTENSION_SET_A;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsUtils.EXTENSION_SET_B;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsUtils.QUARKUS_ANALYTICS_DISABLED_PROPERTY;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsUtils.QUARKUS_ANALYTICS_EVENT_PROD;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsUtils.QUARKUS_ANALYTICS_FAKE_URI_BASE;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsUtils.QUARKUS_ANALYTICS_TIMEOUT_PROPERTY;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsUtils.QUARKUS_ANALYTICS_URI_BASE_PROPERTY;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;

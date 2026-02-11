@@ -1,8 +1,8 @@
 package io.quarkus.ts.http.graphql;
 
-import static io.quarkus.ts.http.graphql.Utils.createQuery;
-import static io.quarkus.ts.http.graphql.Utils.sendGetQuery;
-import static io.quarkus.ts.http.graphql.Utils.sendQuery;
+import static io.quarkus.ts.http.graphql.utils.GraphQLUtils.createQuery;
+import static io.quarkus.ts.http.graphql.utils.GraphQLUtils.sendGetQuery;
+import static io.quarkus.ts.http.graphql.utils.GraphQLUtils.sendQuery;
 import static io.restassured.RestAssured.given;
 
 import java.net.HttpURLConnection;

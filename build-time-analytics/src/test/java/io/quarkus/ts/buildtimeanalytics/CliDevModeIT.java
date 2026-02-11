@@ -2,20 +2,20 @@ package io.quarkus.ts.buildtimeanalytics;
 
 import static io.quarkus.test.utils.AwaitilityUtils.untilAsserted;
 import static io.quarkus.test.utils.AwaitilityUtils.AwaitilitySettings.usingTimeout;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsFilesUtils.deleteConfigDir;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsFilesUtils.disableAnalyticsByLocalConfig;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsFilesUtils.recreateConfigDir;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsFilesUtils.useRefreshableRemoteConfig;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsUtils.ANALYTICS_ACTIVATION_LINK;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsUtils.ANALYTICS_ACTIVATION_PROMPT;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsUtils.EXTENSION_SET_A;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsUtils.EXTENSION_SET_B;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsUtils.QUARKUS_ANALYTICS_DISABLED_PROPERTY;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsUtils.QUARKUS_ANALYTICS_EVENT_DEV;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsUtils.QUARKUS_ANALYTICS_FAKE_URI_BASE;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsUtils.QUARKUS_ANALYTICS_TIMEOUT_PROPERTY;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsUtils.QUARKUS_ANALYTICS_URI_BASE_PROPERTY;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsUtils.UNRECOGNIZED_PROPERTY_FORMAT;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsFilesUtils.deleteConfigDir;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsFilesUtils.disableAnalyticsByLocalConfig;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsFilesUtils.recreateConfigDir;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsFilesUtils.useRefreshableRemoteConfig;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsUtils.ANALYTICS_ACTIVATION_LINK;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsUtils.ANALYTICS_ACTIVATION_PROMPT;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsUtils.EXTENSION_SET_A;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsUtils.EXTENSION_SET_B;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsUtils.QUARKUS_ANALYTICS_DISABLED_PROPERTY;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsUtils.QUARKUS_ANALYTICS_EVENT_DEV;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsUtils.QUARKUS_ANALYTICS_FAKE_URI_BASE;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsUtils.QUARKUS_ANALYTICS_TIMEOUT_PROPERTY;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsUtils.QUARKUS_ANALYTICS_URI_BASE_PROPERTY;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsUtils.UNRECOGNIZED_PROPERTY_FORMAT;
 
 import java.time.Duration;
 

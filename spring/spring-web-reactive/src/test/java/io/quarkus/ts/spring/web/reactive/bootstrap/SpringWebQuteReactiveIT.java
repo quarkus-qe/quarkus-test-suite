@@ -5,7 +5,7 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
-import io.quarkus.ts.spring.web.reactive.MariaDBConstants;
+import io.quarkus.ts.spring.web.reactive.db.MariaDBConstants;
 
 @QuarkusScenario
 public class SpringWebQuteReactiveIT extends AbstractSpringWebQuteReactiveIT {

@@ -23,6 +23,7 @@ import io.quarkus.test.security.certificate.Certificate;
 import io.quarkus.test.security.certificate.PemClientCertificate;
 import io.quarkus.test.services.JaegerContainer;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.ts.opentelemetry.jaeger.builder.JaegerLocalhostDockerManagerResource;
 
 @Tag("QUARKUS-4592")
 @QuarkusScenario

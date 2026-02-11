@@ -1,9 +1,9 @@
 package io.quarkus.ts.configmap.api.server;
 
-import static io.quarkus.ts.configmap.api.server.PropertiesSource.INJECTED_CONFIG;
-import static io.quarkus.ts.configmap.api.server.PropertiesSource.INJECTED_PROPERTIES;
-import static io.quarkus.ts.configmap.api.server.SecretKeysHandler.BASE64;
-import static io.quarkus.ts.configmap.api.server.SecretKeysHandler.CRYPTO_AES_GCM_NO_PADDING;
+import static io.quarkus.ts.configmap.api.server.config.PropertiesSource.INJECTED_CONFIG;
+import static io.quarkus.ts.configmap.api.server.config.PropertiesSource.INJECTED_PROPERTIES;
+import static io.quarkus.ts.configmap.api.server.config.SecretKeysHandler.BASE64;
+import static io.quarkus.ts.configmap.api.server.config.SecretKeysHandler.CRYPTO_AES_GCM_NO_PADDING;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsString;
@@ -22,6 +22,7 @@ import io.quarkus.test.bootstrap.Service;
 import io.quarkus.test.bootstrap.inject.OpenShiftClient;
 import io.quarkus.test.scenarios.OpenShiftDeploymentStrategy;
 import io.quarkus.test.scenarios.OpenShiftScenario;
+import io.quarkus.ts.configmap.api.server.config.PropertiesSource;
 
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
 public abstract class OpenShiftBaseConfigIT {

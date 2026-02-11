@@ -1,8 +1,8 @@
 package io.quarkus.ts.security.keycloak.oidcclient.reactive.extended;
 
-import static io.quarkus.ts.security.keycloak.oidcclient.reactive.extended.OidcItUtils.CLIENT_ID_DEFAULT;
-import static io.quarkus.ts.security.keycloak.oidcclient.reactive.extended.OidcItUtils.CLIENT_SECRET_DEFAULT;
-import static io.quarkus.ts.security.keycloak.oidcclient.reactive.extended.OidcItUtils.USER;
+import static io.quarkus.ts.security.keycloak.oidcclient.reactive.extended.utils.OidcItUtils.CLIENT_ID_DEFAULT;
+import static io.quarkus.ts.security.keycloak.oidcclient.reactive.extended.utils.OidcItUtils.CLIENT_SECRET_DEFAULT;
+import static io.quarkus.ts.security.keycloak.oidcclient.reactive.extended.utils.OidcItUtils.USER;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasItem;
 
@@ -14,6 +14,7 @@ import io.quarkus.test.bootstrap.KeycloakService;
 import io.quarkus.test.bootstrap.LookupService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.ts.security.keycloak.oidcclient.reactive.extended.utils.OidcItUtils;
 
 public abstract class AbstractOidcCustomizationFiltersKeycloakIT {
     static AccessTokenResponse tokenResponse;

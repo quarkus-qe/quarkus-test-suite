@@ -3,7 +3,7 @@ package io.quarkus.ts.security.keycloak.oidcclient.extended.restclient;
 import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM;
 import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_BASE_PATH;
 import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_FILE;
-import static io.quarkus.ts.security.keycloak.oidcclient.extended.restclient.TokenUtils.createToken;
+import static io.quarkus.ts.security.keycloak.oidcclient.extended.restclient.utils.TokenUtils.createToken;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

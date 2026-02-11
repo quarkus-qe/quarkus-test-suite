@@ -10,6 +10,7 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.ts.http.advanced.reactive.resourcefinder.ResourcesFinderResource;
 
 @QuarkusScenario
 @Tag("https://github.com/quarkusio/quarkus/pull/47378")
