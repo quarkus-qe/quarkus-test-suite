@@ -7,7 +7,7 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
-import io.quarkus.ts.spring.web.reactive.MariaDBConstants;
+import io.quarkus.ts.spring.web.reactive.db.MariaDBConstants;
 
 @OpenShiftScenario
 @EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")

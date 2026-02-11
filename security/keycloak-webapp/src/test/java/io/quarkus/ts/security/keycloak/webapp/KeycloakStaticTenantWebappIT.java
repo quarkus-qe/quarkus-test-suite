@@ -11,6 +11,7 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.KeycloakContainer;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.ts.security.keycloak.webapp.initializer.OidcTenantInitializer;
 
 @Tag("QUARKUS-5660")
 @QuarkusScenario

@@ -17,6 +17,8 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.bootstrap.LookupService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.services.URILike;
+import io.quarkus.ts.hibernate.search.fruit.Fruit;
+import io.quarkus.ts.hibernate.search.fruit.FruitProducer;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;

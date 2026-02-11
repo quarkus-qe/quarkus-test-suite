@@ -10,7 +10,7 @@ import jakarta.ws.rs.core.MediaType;
 
 import org.jboss.resteasy.reactive.RestQuery;
 
-import io.quarkus.ts.cache.infinispan.RequestScopeService;
+import io.quarkus.ts.cache.infinispan.services.RequestScopeService;
 
 @InterceptedRequestContextResponse
 @Path("/cache/cdi-request-context")

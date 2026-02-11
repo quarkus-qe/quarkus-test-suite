@@ -1,7 +1,7 @@
 package io.quarkus.ts.cache.multiprovider;
 
-import static io.quarkus.ts.cache.multiprovider.CacheServicesWithCacheResource.APPLICATION_SCOPE_SERVICE_PATH;
-import static io.quarkus.ts.cache.multiprovider.CacheServicesWithCacheResource.REQUEST_SCOPE_SERVICE_PATH;
+import static io.quarkus.ts.cache.multiprovider.resources.CacheServicesWithCacheResource.APPLICATION_SCOPE_SERVICE_PATH;
+import static io.quarkus.ts.cache.multiprovider.resources.CacheServicesWithCacheResource.REQUEST_SCOPE_SERVICE_PATH;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 

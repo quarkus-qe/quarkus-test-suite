@@ -11,7 +11,7 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import io.quarkus.cache.CacheInvalidate;
 import io.quarkus.cache.CacheInvalidateAll;
 import io.quarkus.cache.CacheResult;
-import io.quarkus.ts.cache.caffeine.restclient.types.Book;
+import io.quarkus.ts.cache.caffeine.restclient.dto.Book;
 
 @RegisterRestClient
 @Path("/book")

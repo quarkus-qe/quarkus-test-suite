@@ -1,6 +1,6 @@
 package io.quarkus.ts.http.advanced.reactive;
 
-import static io.quarkus.ts.http.advanced.reactive.CustomFramesResource.PING_DATA;
+import static io.quarkus.ts.http.advanced.reactive.http2.CustomFramesResource.PING_DATA;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
@@ -27,6 +27,8 @@ import io.quarkus.test.security.certificate.CertificateBuilder;
 import io.quarkus.test.services.Certificate;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.services.URILike;
+import io.quarkus.ts.http.advanced.reactive.http2.CustomFramesResource;
+import io.quarkus.ts.http.advanced.reactive.http2.MorningResource;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;

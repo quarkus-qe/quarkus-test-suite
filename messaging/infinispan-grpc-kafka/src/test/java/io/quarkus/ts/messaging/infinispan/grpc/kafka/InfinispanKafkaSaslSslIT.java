@@ -19,6 +19,7 @@ import io.quarkus.test.services.KafkaContainer;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.services.containers.model.KafkaProtocol;
 import io.quarkus.test.services.containers.model.KafkaVendor;
+import io.quarkus.ts.messaging.infinispan.grpc.kafka.utils.CertUtils;
 
 @DisabledOnFipsAndNative(reason = "QUARKUS-5233")
 @Tag("QUARKUS-4592")

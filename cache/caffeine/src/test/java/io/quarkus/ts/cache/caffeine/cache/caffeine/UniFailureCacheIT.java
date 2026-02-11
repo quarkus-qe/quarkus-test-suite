@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.ts.cache.caffeine.CollisionTestKey;
+import io.quarkus.ts.cache.caffeine.keys.CollisionTestKey;
 import io.restassured.response.Response;
 
 @QuarkusScenario

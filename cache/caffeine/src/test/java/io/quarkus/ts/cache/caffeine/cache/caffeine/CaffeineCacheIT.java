@@ -1,7 +1,7 @@
 package io.quarkus.ts.cache.caffeine.cache.caffeine;
 
-import static io.quarkus.ts.cache.caffeine.ServiceWithCacheResource.APPLICATION_SCOPE_SERVICE_PATH;
-import static io.quarkus.ts.cache.caffeine.ServiceWithCacheResource.REQUEST_SCOPE_SERVICE_PATH;
+import static io.quarkus.ts.cache.caffeine.resources.ServiceWithCacheResource.APPLICATION_SCOPE_SERVICE_PATH;
+import static io.quarkus.ts.cache.caffeine.resources.ServiceWithCacheResource.REQUEST_SCOPE_SERVICE_PATH;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;

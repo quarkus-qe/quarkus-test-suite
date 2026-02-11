@@ -1,7 +1,7 @@
 package io.quarkus.ts.http.graphql.telemetry;
 
-import static io.quarkus.ts.http.graphql.telemetry.Utils.createQuery;
-import static io.quarkus.ts.http.graphql.telemetry.Utils.sendQuery;
+import static io.quarkus.ts.http.graphql.telemetry.utils.GraphQLUtils.createQuery;
+import static io.quarkus.ts.http.graphql.telemetry.utils.GraphQLUtils.sendQuery;
 import static io.restassured.RestAssured.given;
 import static org.awaitility.Awaitility.await;
 

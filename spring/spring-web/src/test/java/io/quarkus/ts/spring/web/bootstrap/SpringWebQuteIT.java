@@ -1,8 +1,8 @@
 package io.quarkus.ts.spring.web.bootstrap;
 
-import static io.quarkus.ts.spring.web.MariaDBConstants.IMAGE_11;
-import static io.quarkus.ts.spring.web.MariaDBConstants.PORT;
-import static io.quarkus.ts.spring.web.MariaDBConstants.START_LOG_11;
+import static io.quarkus.ts.spring.web.db.MariaDBConstants.IMAGE_11;
+import static io.quarkus.ts.spring.web.db.MariaDBConstants.PORT;
+import static io.quarkus.ts.spring.web.db.MariaDBConstants.START_LOG_11;
 
 import io.quarkus.test.bootstrap.MariaDbService;
 import io.quarkus.test.bootstrap.RestService;

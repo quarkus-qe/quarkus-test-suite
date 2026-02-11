@@ -1,16 +1,16 @@
 package io.quarkus.ts.buildtimeanalytics;
 
 import static io.quarkus.test.bootstrap.QuarkusCliClient.CreateApplicationRequest.defaults;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsFilesUtils.getAnalyticsPayloadFile;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsFilesUtils.getPomFile;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsFilesUtils.getRemoteConfigFile;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsUtils.APP_NAME_WITH_DENIED_GROUP_ID;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsUtils.APP_NAME_WITH_NON_DENIED_GROUP_ID;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsUtils.QUARKUS_ANALYTICS_FAKE_URI_BASE;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsUtils.QUARKUS_ANALYTICS_IP;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsUtils.QUARKUS_ANALYTICS_URI_BASE_PROPERTY;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsUtils.QUARKUS_EXTENSION_VERSION_PATTERN;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsUtils.UNRECOGNIZED_PROPERTY_FORMAT;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsFilesUtils.getAnalyticsPayloadFile;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsFilesUtils.getPomFile;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsFilesUtils.getRemoteConfigFile;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsUtils.APP_NAME_WITH_DENIED_GROUP_ID;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsUtils.APP_NAME_WITH_NON_DENIED_GROUP_ID;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsUtils.QUARKUS_ANALYTICS_FAKE_URI_BASE;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsUtils.QUARKUS_ANALYTICS_IP;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsUtils.QUARKUS_ANALYTICS_URI_BASE_PROPERTY;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsUtils.QUARKUS_EXTENSION_VERSION_PATTERN;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsUtils.UNRECOGNIZED_PROPERTY_FORMAT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -39,6 +39,7 @@ import io.quarkus.test.bootstrap.QuarkusCliClient;
 import io.quarkus.test.bootstrap.QuarkusCliClient.Result;
 import io.quarkus.test.bootstrap.QuarkusCliRestService;
 import io.quarkus.test.services.quarkus.model.QuarkusProperties;
+import io.quarkus.ts.buildtimeanalytics.payload.PayloadExtension;
 import io.restassured.path.json.JsonPath;
 
 public abstract class AbstractAnalyticsIT {

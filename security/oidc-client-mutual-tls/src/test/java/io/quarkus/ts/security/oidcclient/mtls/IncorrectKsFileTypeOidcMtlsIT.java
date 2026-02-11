@@ -1,6 +1,6 @@
 package io.quarkus.ts.security.oidcclient.mtls;
 
-import static io.quarkus.ts.security.oidcclient.mtls.MutualTlsKeycloakService.newKeycloakInstance;
+import static io.quarkus.ts.security.oidcclient.mtls.service.MutualTlsKeycloakService.newKeycloakInstance;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;

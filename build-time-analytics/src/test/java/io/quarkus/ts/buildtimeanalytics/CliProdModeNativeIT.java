@@ -1,9 +1,9 @@
 package io.quarkus.ts.buildtimeanalytics;
 
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsFilesUtils.recreateConfigDir;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsUtils.EXTENSION_SET_A;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsUtils.EXTENSION_SET_B;
-import static io.quarkus.ts.buildtimeanalytics.AnalyticsUtils.QUARKUS_ANALYTICS_EVENT_PROD;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsFilesUtils.recreateConfigDir;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsUtils.EXTENSION_SET_A;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsUtils.EXTENSION_SET_B;
+import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsUtils.QUARKUS_ANALYTICS_EVENT_PROD;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;

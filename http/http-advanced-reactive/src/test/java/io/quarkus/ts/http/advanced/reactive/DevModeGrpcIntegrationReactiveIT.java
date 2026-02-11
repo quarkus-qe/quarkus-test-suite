@@ -43,8 +43,8 @@ public class DevModeGrpcIntegrationReactiveIT {
     };
 
     private static final String[] GRPC_SERVICE_IMPLEMENTATION_CLASSES = {
-            "io.quarkus.ts.http.advanced.reactive.GrpcService",
-            "io.quarkus.ts.http.advanced.reactive.GrpcStreamingService"
+            "io.quarkus.ts.http.advanced.reactive.grpc.GrpcService",
+            "io.quarkus.ts.http.advanced.reactive.grpc.GrpcStreamingService"
     };
 
     @DevModeQuarkusApplication(grpc = true)

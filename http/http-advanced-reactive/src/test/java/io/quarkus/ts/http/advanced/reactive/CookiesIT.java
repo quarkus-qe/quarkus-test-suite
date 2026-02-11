@@ -1,6 +1,6 @@
 package io.quarkus.ts.http.advanced.reactive;
 
-import static io.quarkus.ts.http.advanced.reactive.CookiesResource.TEST_COOKIE;
+import static io.quarkus.ts.http.advanced.reactive.cookies.CookiesResource.TEST_COOKIE;
 import static io.restassured.RestAssured.given;
 import static io.restassured.matcher.RestAssuredMatchers.detailedCookie;
 import static org.hamcrest.Matchers.containsString;
@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.ts.http.advanced.reactive.cookies.CookiesResource;
 import io.restassured.http.Cookie;
 import io.restassured.response.ValidatableResponse;
 

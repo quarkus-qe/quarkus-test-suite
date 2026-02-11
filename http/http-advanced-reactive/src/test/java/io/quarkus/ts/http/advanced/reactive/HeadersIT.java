@@ -23,6 +23,10 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.services.URILike;
+import io.quarkus.ts.http.advanced.reactive.headers.CustomHeaderResponse;
+import io.quarkus.ts.http.advanced.reactive.headers.HeadersMessageBodyWriter;
+import io.quarkus.ts.http.advanced.reactive.headers.HeadersResource;
+import io.quarkus.ts.http.advanced.reactive.headers.PathSpecificHeadersResource;
 import io.restassured.http.Header;
 import io.restassured.response.ValidatableResponse;
 

@@ -1,6 +1,6 @@
 package io.quarkus.ts.http.advanced.reactive;
 
-import static io.quarkus.ts.http.advanced.reactive.MultipartResource.MULTIPART_FORM_PATH;
+import static io.quarkus.ts.http.advanced.reactive.multipart.MultipartResource.MULTIPART_FORM_PATH;
 import static org.hamcrest.Matchers.equalTo;
 
 import java.io.ByteArrayInputStream;
@@ -15,6 +15,10 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.ts.http.advanced.reactive.mediatype.MediaTypeResource;
+import io.quarkus.ts.http.advanced.reactive.mediatype.MediaTypeWrapper;
+import io.quarkus.ts.http.advanced.reactive.multipart.MultipartFormDataDTO;
+import io.quarkus.ts.http.advanced.reactive.multipart.MultipartResource;
 
 @QuarkusScenario
 public class MultipartInputstreamIT {

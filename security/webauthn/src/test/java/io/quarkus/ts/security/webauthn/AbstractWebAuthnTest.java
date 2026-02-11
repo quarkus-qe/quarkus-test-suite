@@ -17,6 +17,8 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
+import io.quarkus.ts.security.webauthn.client.MyWebAuthnHardware;
+import io.quarkus.ts.security.webauthn.filter.CookieFilter;
 import io.restassured.RestAssured;
 import io.restassured.filter.Filter;
 import io.restassured.http.ContentType;

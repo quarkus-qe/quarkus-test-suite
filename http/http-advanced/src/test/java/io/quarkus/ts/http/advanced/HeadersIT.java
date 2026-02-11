@@ -16,6 +16,10 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.QuarkusApplication;
+import io.quarkus.ts.http.advanced.headers.CustomHeaderResponse;
+import io.quarkus.ts.http.advanced.headers.HeadersMessageBodyWriter;
+import io.quarkus.ts.http.advanced.headers.HeadersResource;
+import io.quarkus.ts.http.advanced.headers.PathSpecificHeadersResource;
 import io.restassured.http.Header;
 import io.restassured.response.ValidatableResponse;
 

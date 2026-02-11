@@ -18,6 +18,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import io.quarkus.panache.common.Sort;
+import io.quarkus.ts.sqldb.sqlapp.exception.ValidationExceptionMapper;
 
 @Path("/book")
 @Produces(MediaType.APPLICATION_JSON)
