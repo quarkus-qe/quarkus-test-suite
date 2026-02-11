@@ -38,7 +38,6 @@ public class AnalyticsUtils {
             "quarkus-hibernate-orm",
             "quarkus-hibernate-orm-panache",
             "quarkus-hibernate-validator",
-            "quarkus-infinispan-client",
             "quarkus-jackson",
             "quarkus-jaxb",
             "quarkus-jdbc-mysql",
