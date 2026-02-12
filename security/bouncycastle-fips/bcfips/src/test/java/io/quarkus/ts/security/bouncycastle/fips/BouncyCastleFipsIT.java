@@ -7,6 +7,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnFipsAndNative;
 
 // see https://github.com/quarkusio/quarkus/issues/43935 for context why this test is disabled
 @DisabledOnFipsAndNative(reason = "not supported in FIPS-enabled environment in native")
