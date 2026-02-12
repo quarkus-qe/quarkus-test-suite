@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v6
       - name: Reclaim Disk Space
         run: .github/ci-prerequisites.sh
-      - name: Install JDK {{ matrix.java }}
+      - name: Install JDK ${{ matrix.java }}
         uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
@@ -48,7 +48,7 @@ jobs:
       - uses: actions/checkout@v6
       - name: Reclaim Disk Space
         run: .github/ci-prerequisites.sh
-      - name: Install JDK {{ matrix.java }}
+      - name: Install JDK ${{ matrix.java }}
         uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
@@ -59,7 +59,7 @@ jobs:
       - uses: ./.github/actions/use-docker-mirror
       - name: Test in JVM mode
         run: |
-          mvn -fae -V -B --no-transfer-progress -fae clean verify -P ${{ matrix.profiles }} -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli"
+          mvn -fae -V -B --no-transfer-progress clean verify -P ${{ matrix.profiles }} -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli"
       - uses: ./.github/actions/zip-and-archive
         name: Zip and archive artifacts
         if: failure()
@@ -84,7 +84,7 @@ jobs:
       - uses: actions/checkout@v6
       - name: Reclaim Disk Space
         run: .github/ci-prerequisites.sh
-      - name: Install JDK {{ matrix.java }}
+      - name: Install JDK ${{ matrix.java }}
         uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
@@ -95,7 +95,7 @@ jobs:
       - uses: ./.github/actions/use-docker-mirror
       - name: Test in Native mode
         run: |
-          mvn -fae -V -B --no-transfer-progress -P ${{ matrix.profiles }} -fae clean verify -Dnative \
+          mvn -fae -V -B --no-transfer-progress -P ${{ matrix.profiles }} clean verify -Dnative \
             -Dquarkus.native.builder-image=quay.io/quarkus/${{ matrix.image }} \
             -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli"
       - uses: ./.github/actions/zip-and-archive
@@ -117,7 +117,7 @@ jobs:
         java: [ 21, 25 ]
     steps:
       - uses: actions/checkout@v6
-      - name: Install JDK {{ matrix.java }}
+      - name: Install JDK ${{ matrix.java }}
         uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
@@ -148,7 +148,7 @@ jobs:
         graalvm-java-version: [ "21" ]
     steps:
       - uses: actions/checkout@v6
-      - name: Install JDK {{ matrix.java }}
+      - name: Install JDK ${{ matrix.java }}
         uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
@@ -193,7 +193,7 @@ jobs:
       - uses: actions/checkout@v6
       - name: Reclaim Disk Space
         run: .github/ci-prerequisites.sh
-      - name: Install JDK {{ matrix.java }}
+      - name: Install JDK ${{ matrix.java }}
         uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
@@ -210,7 +210,7 @@ jobs:
           password: ${{ secrets.RED_HAT_REGISTRY_PASSWORD }}
       - name: Test in JVM mode
         run: |
-          mvn -fae -V -B --no-transfer-progress -fae clean verify -Daarch64 -P ${{ matrix.profiles }} -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli"
+          mvn -fae -V -B --no-transfer-progress clean verify -Daarch64 -P ${{ matrix.profiles }} -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli"
       - uses: ./.github/actions/zip-and-archive
         name: Zip and archive artifacts
         if: failure()
@@ -235,7 +235,7 @@ jobs:
       - uses: actions/checkout@v6
       - name: Reclaim Disk Space
         run: .github/ci-prerequisites.sh
-      - name: Install JDK {{ matrix.java }}
+      - name: Install JDK ${{ matrix.java }}
         uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
@@ -252,7 +252,7 @@ jobs:
           password: ${{ secrets.RED_HAT_REGISTRY_PASSWORD }}
       - name: Test in Native mode
         run: |
-          mvn -fae -V -B --no-transfer-progress -P ${{ matrix.profiles }} -fae clean verify -Daarch64 -Dnative \
+          mvn -fae -V -B --no-transfer-progress -P ${{ matrix.profiles }} clean verify -Daarch64 -Dnative \
             -Dquarkus.native.builder-image=quay.io/quarkus/${{ matrix.image }} \
             -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli"
       - uses: ./.github/actions/zip-and-archive
