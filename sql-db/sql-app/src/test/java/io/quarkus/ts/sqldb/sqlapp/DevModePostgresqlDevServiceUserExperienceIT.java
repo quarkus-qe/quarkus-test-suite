@@ -52,7 +52,7 @@ public class DevModePostgresqlDevServiceUserExperienceIT {
         app.logs().assertContains(String.format("Pulling docker image: %s:%s", POSTGRES_NAME, POSTGRESQL_VERSION));
         app.logs().assertContains("Please be patient; this may take some time but only needs to be done once");
         app.logs().assertContains("Starting to pull image");
-        app.logs().assertContains("Dev Services for PostgreSQL started");
+        app.logs().assertContains("Dev Services for default datasource (postgresql) started");
     }
 
     @Test
