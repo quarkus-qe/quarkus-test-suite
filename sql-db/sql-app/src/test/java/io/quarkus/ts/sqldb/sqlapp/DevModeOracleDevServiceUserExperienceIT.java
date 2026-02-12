@@ -36,7 +36,7 @@ public class DevModeOracleDevServiceUserExperienceIT {
         app.logs().assertContains("Pulling docker image: " + ORACLE_NAME);
         app.logs().assertContains("Please be patient; this may take some time but only needs to be done once");
         app.logs().assertContains("Starting to pull image");
-        app.logs().assertContains("Dev Services for Oracle started");
+        app.logs().assertContains("Dev Services for default datasource (oracle) started");
     }
 
     @Test

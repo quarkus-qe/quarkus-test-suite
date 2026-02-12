@@ -36,7 +36,7 @@ public class DevModeMariadbDevServicesUserExperienceIT {
         app.logs().assertContains(String.format("Pulling docker image: %s:%s", MARIA_DB_NAME, MARIA_DB_VERSION));
         app.logs().assertContains("Please be patient; this may take some time but only needs to be done once");
         app.logs().assertContains("Starting to pull image");
-        app.logs().assertContains("Dev Services for MariaDB started");
+        app.logs().assertContains("Dev Services for default datasource (mariadb) started");
     }
 
     @Test
