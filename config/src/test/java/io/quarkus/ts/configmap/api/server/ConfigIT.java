@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnFipsAndNative;
 import io.quarkus.test.services.QuarkusApplication;
 
 @DisabledOnFipsAndNative(reason = "https://issues.redhat.com/browse/MANDREL-245")
