@@ -34,7 +34,7 @@ public class DevModeReactiveMysqlDevServiceUserExperienceIT {
         app.logs().assertContains(String.format("Pulling docker image: %s:%s", MYSQL_NAME, MYSQL_VERSION));
         app.logs().assertContains("Please be patient; this may take some time but only needs to be done once");
         app.logs().assertContains("Starting to pull image");
-        app.logs().assertContains("Dev Services for MySQL started");
+        app.logs().assertContains("Dev Services for datasource mysql (mysql) started");
     }
 
     @Test
