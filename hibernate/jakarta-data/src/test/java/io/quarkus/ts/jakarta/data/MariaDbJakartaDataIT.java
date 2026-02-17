@@ -9,7 +9,7 @@ import io.quarkus.test.services.QuarkusApplication;
 @QuarkusScenario
 public class MariaDbJakartaDataIT extends AbstractJakartaDataIT {
 
-    @Container(image = "${mariadb.11.image}", port = 3306, expectedLog = "socket: '.*/mysql.*sock'  port: 3306")
+    @Container(image = "${mariadb.11.image}", port = 3306, expectedLog = "socket: '.*sock'  port: 3306")
     static final MariaDbService database = new MariaDbService();
 
     @QuarkusApplication

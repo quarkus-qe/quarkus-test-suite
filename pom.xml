@@ -295,7 +295,7 @@
                                 <elastic.9x.image>docker.io/library/elasticsearch:9.1.4</elastic.9x.image>
                                 <mysql.upstream.80.image>docker.io/library/mysql:8.4</mysql.upstream.80.image>
                                 <mysql.80.image>${mysql.80.image}</mysql.80.image>
-                                <mariadb.11.image>docker.io/library/mariadb:11.8</mariadb.11.image>
+                                <mariadb.11.image>docker.io/library/mariadb:11.8-ubi9</mariadb.11.image>
                                 <mssql.image>mcr.microsoft.com/mssql/rhel/server:2022-latest</mssql.image>
                                 <!-- Oracle image - we aim to use same version as Dev Services for Oracle so that we only download one image -->
                                 <oracle.image>docker.io/gvenzl/oracle-free:23-slim-faststart</oracle.image>
@@ -1051,9 +1051,6 @@
                                 </goals>
                                 <configuration>
                                     <systemPropertyVariables>
-                                        <!-- MariaDB 11.4 is not starting in FIPS-enabled environment, use 10.11 as a workaround -->
-                                        <!-- TODO: drop this property when https://issues.redhat.com/browse/QUARKUS-5984 is fixed -->
-                                        <mariadb.11.image>registry.redhat.io/rhel9/mariadb-1011:latest</mariadb.11.image>
                                         <!-- MongoDB 8.0 is not starting in FIPS-enabled environment, use 7.0 as a workaround -->
                                         <!-- TODO: drop this property when https://github.com/quarkus-qe/quarkus-test-suite/issues/2717 is fixed -->
                                         <mongodb.image>docker.io/library/mongo:7.0</mongodb.image>
