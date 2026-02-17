@@ -14,7 +14,7 @@ import io.quarkus.test.services.QuarkusApplication;
 @OpenShiftScenario
 public class OpenShiftMariaDBHibernateOfflineStartupIT extends AbstractHibernateOfflineStartupIT {
 
-    @Container(image = "${mariadb.1011.image}", expectedLog = "socket: '.*/mysql.*sock'  port: 3306", mounts = {
+    @Container(image = "${mariadb.1011.image}", expectedLog = "socket: '.*sock'  port: 3306", mounts = {
             @Mount(from = "mysql-init.sql", to = "/tmp/init.sql"),
             @Mount(from = "mysql-my-conf.config", to = "/etc/my.cnf.d/custom.cnf")
     }, port = 3306)
