@@ -440,6 +440,7 @@
             <modules>
                 <module>env-info</module>
                 <module>ai/langchain4j</module>
+                <module>ai/mcp</module>
             </modules>
         </profile>
         <profile>
