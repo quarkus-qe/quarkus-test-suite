@@ -25,7 +25,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        profiles: [ "root-modules-no-qute,monitoring-modules,spring-modules,test-tooling-modules",
+        profiles: [ "root-modules-no-qute,monitoring-modules,spring-modules,test-tooling-modules,ai-modules",
                     "http-modules",
                     "security-modules,cache-modules",
                     "sql-db-modules",
