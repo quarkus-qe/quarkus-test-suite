@@ -87,12 +87,12 @@ jobs:
           else
             JVM_MODULES_GROUPS=(
               " -P cache-modules,spring-modules,http-modules,test-tooling-modules,messaging-modules,monitoring-modules,websockets-modules"
-              " -P root-modules,hibernate-modules"
+              " -P root-modules,hibernate-modules,ai-modules"
               " -P security-modules,sql-db-modules,nosql-db-modules"
             )
           
             NATIVE_MODULES_GROUPS=(
-              " -P root-modules,websockets-modules,test-tooling-modules,nosql-db-modules"
+              " -P root-modules,websockets-modules,test-tooling-modules,nosql-db-modules,ai-modules"
               " -P http-modules,cache-modules"
               " -P security-modules,spring-modules"
               " -P hibernate-modules"
