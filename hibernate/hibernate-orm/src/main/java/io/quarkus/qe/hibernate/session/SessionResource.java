@@ -1,8 +1,11 @@
 package io.quarkus.qe.hibernate.session;
 
+import java.util.List;
+
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -87,4 +90,59 @@ public class SessionResource {
     public SessionEventInterceptor.MergeData getInterceptedMergeData() {
         return interceptor.getMergeData();
     }
+
+    @Path("/in-transaction/{id}")
+    @POST
+    @Transactional
+    public void inTransaction(@PathParam("id") int id, String data) {
+        session.inTransaction(transaction -> {
+            var entity = new MyEntity();
+            entity.setAnId(new MyEntityId(id));
+            entity.setData(data);
+            session.persist(entity);
+        });
+    }
+
+    @Path("/from-transaction/count")
+    @GET
+    @Transactional
+    public long fromTransaction() {
+        return session.fromTransaction(transaction -> session.createQuery("SELECT COUNT(e) FROM MyEntity e", Long.class)
+                .getSingleResult());
+    }
+
+    @Path("/from-transaction/{id}")
+    @GET
+    @Transactional
+    public String fromTransactionFind(@PathParam("id") int id) {
+        MyEntity entity = session.fromTransaction(transaction -> session.find(MyEntity.class, new MyEntityId(id)));
+        return entity != null ? entity.getData() : null;
+    }
+
+    @Transactional
+    @Path("/like-regexp")
+    @POST
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<String> testLikeRegexp(String pattern) {
+        return session.createQuery(
+                "SELECT e.data FROM MyEntity e WHERE e.data like regexp :pattern",
+                String.class)
+                .setParameter("pattern", pattern)
+                .getResultList();
+    }
+
+    @Transactional
+    @Path("/ilike-regexp")
+    @POST
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<String> testIlikeRegexp(String pattern) {
+        return session.createQuery(
+                "SELECT e.data FROM MyEntity e WHERE e.data ilike regexp :pattern",
+                String.class)
+                .setParameter("pattern", pattern)
+                .getResultList();
+    }
+
 }
