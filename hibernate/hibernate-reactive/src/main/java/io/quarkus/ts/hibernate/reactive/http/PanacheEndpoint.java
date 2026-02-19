@@ -20,6 +20,7 @@ import io.quarkus.hibernate.reactive.panache.common.WithSession;
 import io.quarkus.ts.hibernate.reactive.database.Author;
 import io.quarkus.ts.hibernate.reactive.database.AuthorRepository;
 import io.quarkus.ts.hibernate.reactive.database.Book;
+import io.quarkus.ts.hibernate.reactive.database.PersonEntity;
 import io.smallrye.mutiny.Uni;
 
 @Path("/library")
@@ -163,5 +164,16 @@ public class PanacheEndpoint {
                         : Response.ok(books))
                 .onFailure().recoverWithItem(error -> Response.status(Response.Status.BAD_REQUEST).entity(error.getMessage()))
                 .map(Response.ResponseBuilder::build);
+    }
+
+    @DELETE
+    @Path("/unmanaged/new")
+    public Uni<Response> deleteUnmanagedNew() {
+        PersonEntity unmanagedPerson = new PersonEntity();
+        return Panache.withTransaction(() -> unmanagedPerson.delete())
+                .replaceWith(Response.ok().build())
+                .onFailure().recoverWithItem(ex -> Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                        .entity(ex.getClass().getSimpleName())
+                        .build());
     }
 }
