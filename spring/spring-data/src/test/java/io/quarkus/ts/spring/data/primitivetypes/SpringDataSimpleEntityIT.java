@@ -6,6 +6,8 @@ import static org.hamcrest.core.Is.is;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -39,5 +41,16 @@ public class SpringDataSimpleEntityIT extends AbstractDbIT {
 
         List<Cat> cats = Arrays.asList(response.getBody().as(Cat[].class));
         cats.forEach(cat -> assertThat(cat.getDeathReason(), is("covid19")));
+    }
+
+    @Tag("QUARKUS-7171")
+    @Test
+    public void testQueryArgumentExceptionOnStringForEnumField() {
+        app.given()
+                .pathParam("status", "AVAILABLE")
+                .get("/product/find-by-status/{status}")
+                .then()
+                .statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+        app.logs().assertContains("Argument to query parameter has an incompatible type");
     }
 }

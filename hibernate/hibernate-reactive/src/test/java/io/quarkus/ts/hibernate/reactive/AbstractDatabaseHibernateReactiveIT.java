@@ -308,5 +308,14 @@ public abstract class AbstractDatabaseHibernateReactiveIT {
                 .body("books.size()", Matchers.is(1));
     }
 
+    @Tag("QUARKUS-7171")
+    @Test
+    public void deleteUnmanagedEntityThrowsIllegalArgumentException() {
+        Response response = getApp().given()
+                .delete("/library/unmanaged/new");
+        assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, response.statusCode());
+        assertThat(response.body().asString(), containsString("IllegalArgumentException"));
+    }
+
     protected abstract RestService getApp();
 }

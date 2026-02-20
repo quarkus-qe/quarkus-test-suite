@@ -6,6 +6,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -22,6 +23,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.qe.hibernate.data.TestDataEntity;
+import io.quarkus.qe.hibernate.flush.FlushEventListener;
 import io.quarkus.qe.hibernate.interceptor.SessionEventInterceptor;
 import io.quarkus.test.bootstrap.LookupService;
 import io.quarkus.test.bootstrap.RestService;
@@ -30,6 +32,7 @@ import io.restassured.response.ValidatableResponse;
 
 @Tag("QUARKUS-6261")
 @Tag("QUARKUS-3731")
+@Tag("QUARKUS-7171")
 public abstract class BaseHibernateIT {
 
     private static final String TRANSACTION_SCOPE_BASE_PATH = "/transaction-scope";
@@ -624,5 +627,124 @@ public abstract class BaseHibernateIT {
         return request
                 .get("/test-data/find-with-optional-read-only")
                 .then().statusCode(HttpStatus.SC_OK);
+    }
+
+    @Test
+    public void testFlushListenerFiresOnNoOpFlush() {
+
+        app.given()
+                .post("/flush-events/reset")
+                .then()
+                .statusCode(HttpStatus.SC_NO_CONTENT);
+
+        app.given()
+                .get("/flush-events/trigger-noop-flush")
+                .then()
+                .statusCode(HttpStatus.SC_OK);
+
+        FlushEventListener.FlushEventData data = getFlushEventData();
+
+        assertTrue(data.flushCount() >= 1,
+                "Hibernate 7.2 must trigger flush events even for read-only (no-op) flushes. Got: " + data.flushCount());
+    }
+
+    private FlushEventListener.FlushEventData getFlushEventData() {
+        return app.given()
+                .get("/flush-events/data")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .extract()
+                .as(FlushEventListener.FlushEventData.class);
+    }
+
+    @Test
+    public void testInTransactionHelper() {
+        int testId = 7001;
+        app.given()
+                .body("Test data for inTransaction")
+                .pathParam("id", testId)
+                .post("/session/in-transaction/{id}")
+                .then()
+                .statusCode(HttpStatus.SC_NO_CONTENT);
+
+        app.given()
+                .pathParam("id", testId)
+                .get("/session/find/{id}")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body(is("Test data for inTransaction"));
+        removeEntity(testId);
+    }
+
+    @Test
+    public void testFromTransactionFind() {
+        int testId = 7002;
+        app.given()
+                .body("Test data for fromTransaction find")
+                .pathParam("id", testId)
+                .post("/session/persist/{id}")
+                .then()
+                .statusCode(HttpStatus.SC_NO_CONTENT);
+
+        app.given()
+                .pathParam("id", testId)
+                .get("/session/from-transaction/{id}")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body(is("Test data for fromTransaction find"));
+        removeEntity(testId);
+    }
+
+    private static void removeEntity(int id) {
+        app.given()
+                .pathParam("id", id)
+                .delete("/session/remove/{id}")
+                .then()
+                .statusCode(HttpStatus.SC_OK);
+    }
+
+    @Test
+    void testHqlRegexpOperators() {
+        int id1 = 7007;
+        int id2 = 7008;
+        app.given()
+                .contentType(ContentType.TEXT)
+                .body("Test123")
+                .pathParam("id", id1)
+                .post("/session/persist/{id}").then()
+                .statusCode(HttpStatus.SC_NO_CONTENT);
+
+        app.given()
+                .contentType(ContentType.TEXT)
+                .body("test456")
+                .pathParam("id", id2)
+                .post("/session/persist/{id}")
+                .then()
+                .statusCode(HttpStatus.SC_NO_CONTENT);
+
+        String likeResult = app.given()
+                .contentType(ContentType.TEXT)
+                .body("Test[0-9]+")
+                .post("/session/like-regexp")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .extract()
+                .asString();
+        Assertions.assertTrue(likeResult.contains("Test123"), "like regexp should match Test123 (case-sensitive)");
+        Assertions.assertFalse(likeResult.contains("test456"), "like regexp should not match test456 (case-sensitive)");
+
+        String ilikeResult = app.given()
+                .contentType(ContentType.TEXT)
+                .body("test[0-9]+")
+                .post("/session/ilike-regexp")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .extract()
+                .asString();
+        Assertions.assertTrue(ilikeResult.contains("Test123"), "ilike regexp should match Test123 (case-insensitive)");
+        Assertions.assertTrue(ilikeResult.contains("test456"), "ilike regexp should match test456 (case-insensitive)");
+
+        app.given().pathParam("id", id1).delete("/session/remove/{id}").then().statusCode(HttpStatus.SC_OK);
+        app.given().pathParam("id", id2).delete("/session/remove/{id}").then().statusCode(HttpStatus.SC_OK);
     }
 }

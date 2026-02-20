@@ -292,7 +292,7 @@
                                 <amqbroker.1.0x.image>quay.io/artemiscloud/activemq-artemis-broker:1.0.32</amqbroker.1.0x.image>
                                 <redpanda.image>redpandadata/redpanda:v25.2.2</redpanda.image>
                                 <postgresql.latest.image>${postgresql.latest.image}</postgresql.latest.image>
-                                <elastic.9x.image>docker.io/library/elasticsearch:9.1.4</elastic.9x.image>
+                                <elastic.9x.image>docker.io/library/elasticsearch:9.2.2</elastic.9x.image>
                                 <mysql.upstream.80.image>docker.io/library/mysql:8.4</mysql.upstream.80.image>
                                 <mysql.80.image>${mysql.80.image}</mysql.80.image>
                                 <mariadb.11.image>docker.io/library/mariadb:11.8</mariadb.11.image>
