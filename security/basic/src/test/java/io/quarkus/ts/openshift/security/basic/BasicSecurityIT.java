@@ -158,6 +158,17 @@ public class BasicSecurityIT {
                 .body(equalTo("Hello, user albert"));
     }
 
+    @Test
+    public void invalidBase64ShouldTriggerAuthenticationFailedException() {
+        given()
+                .header("Authorization", "Basic A")
+                .when()
+                .get("/everyone")
+                .then()
+                .statusCode(HttpStatus.SC_UNAUTHORIZED)
+                .header("Test-Auth-Exception", "AuthenticationFailedException");
+    }
+
     private ValidatableResponse test(String url, String username, String password) {
         RequestSpecification test = given();
         if (username != null && password != null) {
