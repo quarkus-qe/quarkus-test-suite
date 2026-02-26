@@ -453,6 +453,7 @@
             <modules>
                 <module>env-info</module>
                 <module>config</module>
+                <module>leak-checks</module>
                 <module>properties</module>
                 <module>build/docker</module>
                 <module>build/podman</module>
@@ -480,6 +481,7 @@
             <modules>
                 <module>env-info</module>
                 <module>config</module>
+                <module>leak-checks</module>
                 <module>properties</module>
                 <module>build/docker</module>
                 <module>build/podman</module>
