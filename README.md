@@ -505,6 +505,11 @@ Module that covers the runtime configuration to ensure the changes take effect. 
 - Properties from YAML and external files
 - Properties from Consul
 
+### `leak-checks`
+
+Includes tests for repeated application startup and shutdown using `@QuarkusMain` and `@QuarkusMainTest`.
+Validates correct resource and classloader cleanup using JVM-level metrics to detect potential memory retention or leak regressions.
+
 ### `logging/jboss`
 
 Module that covers the logging functionality using JBoss Logging Manager. The following scenarios are covered:
