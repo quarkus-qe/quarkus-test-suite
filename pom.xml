@@ -451,6 +451,7 @@
                 </property>
             </activation>
             <modules>
+                <module>leaks</module>
                 <module>env-info</module>
                 <module>config</module>
                 <module>properties</module>
