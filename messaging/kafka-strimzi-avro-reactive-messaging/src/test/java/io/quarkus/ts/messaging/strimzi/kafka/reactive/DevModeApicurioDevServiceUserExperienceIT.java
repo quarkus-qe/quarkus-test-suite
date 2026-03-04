@@ -30,7 +30,7 @@ public class DevModeApicurioDevServiceUserExperienceIT {
 
     @Test
     public void verifyIfUserIsInformedAboutApicurioServicePulling() {
-        appDevServices.logs().assertContains("Pulling docker image: quay.io/apicurio/apicurio-registry-mem");
+        appDevServices.logs().assertContains("Pulling docker image: quay.io/apicurio/apicurio-registry");
         appDevServices.logs().assertContains("Please be patient; this may take some time but only needs to be done once");
         appDevServices.logs().assertContains("Starting to pull image");
         appDevServices.logs().assertContains("Dev Services for Apicurio Registry started");
