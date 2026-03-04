@@ -1053,9 +1053,8 @@
                                 </goals>
                                 <configuration>
                                     <systemPropertyVariables>
-                                        <!-- MongoDB 8.0 is not starting in FIPS-enabled environment, use 7.0 as a workaround -->
-                                        <!-- TODO: drop this property when https://github.com/quarkus-qe/quarkus-test-suite/issues/2717 is fixed -->
-                                        <mongodb.image>docker.io/library/mongo:7.0</mongodb.image>
+                                        <!-- Docker library MongoDB 8.0 is not starting in FIPS-enabled environment, use the official MongoDB ubi image -->
+                                        <mongodb.image>docker.io/mongodb/mongodb-community-server:8.0-ubi9</mongodb.image>
                                     </systemPropertyVariables>
                                 </configuration>
                             </execution>
