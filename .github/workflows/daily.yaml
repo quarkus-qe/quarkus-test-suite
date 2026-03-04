@@ -203,7 +203,7 @@ jobs:
       - uses: ./.github/actions/prepare-quarkus-cli
       - uses: ./.github/actions/use-docker-mirror
       - name: Login to Red Hat registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: registry.redhat.io
           username: ${{ secrets.RED_HAT_REGISTRY_USERNAME }}
@@ -245,7 +245,7 @@ jobs:
       - uses: ./.github/actions/prepare-quarkus-cli
       - uses: ./.github/actions/use-docker-mirror
       - name: Login to Red Hat registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: registry.redhat.io
           username: ${{ secrets.RED_HAT_REGISTRY_USERNAME }}
