@@ -13,7 +13,7 @@ import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
 public class InfinispanIT {
-    @Container(image = "${infinispan.image}", port = 11222)
+    @Container(image = "${infinispan.image}", port = 11222, expectedLog = "${infinispan.expected-log}")
     static InfinispanService infinispan = new InfinispanService()
             .withUsername("admin")
             .withPassword("password");
