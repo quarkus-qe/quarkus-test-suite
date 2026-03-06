@@ -17,7 +17,7 @@ public class MySqlSha256JpaIT extends BaseJpaSecurityRealmIT {
 
     private static final int MYSQL_PORT = 3306;
 
-    @Container(image = "${mysql.80.image}", port = MYSQL_PORT, expectedLog = "port: " + MYSQL_PORT)
+    @Container(image = "${mysql.84.image}", port = MYSQL_PORT, expectedLog = "port: " + MYSQL_PORT)
     static MySqlService database = new MySqlService();
 
     @QuarkusApplication(classes = { AdminResource.class, PublicResource.class, UserResource.class,

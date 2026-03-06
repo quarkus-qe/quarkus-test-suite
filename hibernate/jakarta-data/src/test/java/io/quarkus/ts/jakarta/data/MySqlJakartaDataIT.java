@@ -9,7 +9,7 @@ import io.quarkus.test.services.QuarkusApplication;
 @QuarkusScenario
 public class MySqlJakartaDataIT extends AbstractJakartaDataIT {
 
-    @Container(image = "${mysql.80.image}", port = 3306, expectedLog = "Only MySQL server logs after this point")
+    @Container(image = "${mysql.84.image}", port = 3306, expectedLog = "ready for connections.* port: 3306")
     public static final MySqlService database = new MySqlService();
 
     @QuarkusApplication
