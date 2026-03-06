@@ -20,17 +20,17 @@ public class OpenShiftMysqlMultitenantHibernateSearchIT extends AbstractMultiten
     private static final String MAX_ALLOWED_PACKET_KEY = "MYSQL_MAX_ALLOWED_PACKET";
     private static final String EXPECTED_LOG = "Only MySQL server logs after this point";
 
-    @Container(image = "${mysql.80.image}", port = MYSQL_PORT, expectedLog = EXPECTED_LOG)
+    @Container(image = "${mysql.84.image}", port = MYSQL_PORT, expectedLog = EXPECTED_LOG)
     static MySqlService base = new MySqlService()
             .withDatabase("base")
             .withProperty(MAX_ALLOWED_PACKET_KEY, MAX_ALLOWED_PACKET_VALUE);
 
-    @Container(image = "${mysql.80.image}", port = MYSQL_PORT, expectedLog = EXPECTED_LOG)
+    @Container(image = "${mysql.84.image}", port = MYSQL_PORT, expectedLog = EXPECTED_LOG)
     static MySqlService company1 = new MySqlService()
             .withDatabase("company1")
             .withProperty(MAX_ALLOWED_PACKET_KEY, MAX_ALLOWED_PACKET_VALUE);
 
-    @Container(image = "${mysql.80.image}", port = MYSQL_PORT, expectedLog = EXPECTED_LOG)
+    @Container(image = "${mysql.84.image}", port = MYSQL_PORT, expectedLog = EXPECTED_LOG)
     static MySqlService company2 = new MySqlService()
             .withDatabase("company2")
             .withProperty(MAX_ALLOWED_PACKET_KEY, MAX_ALLOWED_PACKET_VALUE);

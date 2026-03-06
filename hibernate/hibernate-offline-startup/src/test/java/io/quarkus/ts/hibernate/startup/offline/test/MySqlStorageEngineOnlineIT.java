@@ -11,7 +11,7 @@ import io.quarkus.test.services.QuarkusApplication;
 @QuarkusScenario
 public class MySqlStorageEngineOnlineIT extends AbstractStorageEngineOnlineIT {
 
-    @Container(image = "${mysql.80.image}", expectedLog = "Only MySQL server logs after this point", mounts = {
+    @Container(image = "${mysql.84.image}", expectedLog = "ready for connections.* port: 3306", mounts = {
             @Mount(from = "mysql-init.sql", to = "/tmp/init.sql"),
             @Mount(from = "mysql-my-conf.config", to = "/etc/my.cnf.d/my.cnf")
     }, port = 3306, builder = FixedPortResourceBuilder.class)

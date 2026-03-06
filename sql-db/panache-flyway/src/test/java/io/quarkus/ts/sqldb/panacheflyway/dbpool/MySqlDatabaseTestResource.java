@@ -30,14 +30,14 @@ public class MySqlDatabaseTestResource implements QuarkusTestResourceLifecycleMa
 
     @Override
     public Map<String, String> start() {
-        String image = System.getProperty("mysql.80.image");
+        String image = System.getProperty("mysql.84.image");
 
         // we used managed version of 'org.testcontainers:mysql' and version '1.19.7' failed in FIPS-enabled environment
         // over 'SA/ECB/OAEPWithSHA-1AndMGF1Padding' cipher as SunJCE provider was not available in FIPS
         // hence for now, we use GenericContainer which allows to override waiting strategy that works in FIPS
         container = new GenericContainer<>(
                 DockerImageName.parse(image).asCompatibleSubstituteFor(MYSQL));
-        container.waitingFor(new LogMessageWaitStrategy().withRegEx(".*Only MySQL server logs after this point.*\\s"));
+        container.waitingFor(new LogMessageWaitStrategy().withRegEx(".*ready for connections.*\\s"));
         container.withExposedPorts(3306);
         container.withEnv(USER_PROPERTY, USER);
         container.withEnv(PASSWORD_PROPERTY, USER);
