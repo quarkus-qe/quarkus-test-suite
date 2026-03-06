@@ -21,14 +21,14 @@ import io.quarkus.test.utils.SocketUtils;
 @QuarkusScenario
 public class DevModeMysqlDevServiceUserExperienceIT {
 
-    private static final String MYSQL_NAME = getImageName("mysql.upstream.80.image");
-    private static final String MYSQL_VERSION = getImageVersion("mysql.upstream.80.image");
+    private static final String MYSQL_NAME = getImageName("mysql.84.image");
+    private static final String MYSQL_VERSION = getImageVersion("mysql.84.image");
 
     @DevModeQuarkusApplication
     static RestService app = new RestService()
             .withProperty("quarkus.datasource.db-kind", "mysql")
             .withProperty("quarkus.datasource.devservices.port", Integer.toString(SocketUtils.findAvailablePort()))
-            .withProperty("quarkus.datasource.devservices.image-name", "${mysql.upstream.80.image}")
+            .withProperty("quarkus.datasource.devservices.image-name", "${mysql.84.image}")
             .withProperty("quarkus.hibernate-orm.schema-management.strategy", "none")
             .onPreStart(s -> DockerUtils.removeImage(MYSQL_NAME, MYSQL_VERSION));
 

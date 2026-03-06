@@ -12,13 +12,13 @@ public class MysqlMultitenantHibernateSearchIT extends AbstractMultitenantHibern
     static final int ELASTIC_PORT = 9200;
     static final int MYSQL_PORT = 3306;
 
-    @Container(image = "${mysql.upstream.80.image}", port = MYSQL_PORT, expectedLog = "ready for connections")
+    @Container(image = "${mysql.84.image}", port = MYSQL_PORT, expectedLog = "ready for connections.* port: " + MYSQL_PORT)
     static MySqlService base = new MySqlService().withDatabase("base");
 
-    @Container(image = "${mysql.upstream.80.image}", port = MYSQL_PORT, expectedLog = "ready for connections")
+    @Container(image = "${mysql.84.image}", port = MYSQL_PORT, expectedLog = "ready for connections.* port: " + MYSQL_PORT)
     static MySqlService company1 = new MySqlService().withDatabase("company1");
 
-    @Container(image = "${mysql.upstream.80.image}", port = MYSQL_PORT, expectedLog = "ready for connections")
+    @Container(image = "${mysql.84.image}", port = MYSQL_PORT, expectedLog = "ready for connections.* port: " + MYSQL_PORT)
     static MySqlService company2 = new MySqlService().withDatabase("company2");
 
     @Container(image = "${elastic.9x.image}", port = ELASTIC_PORT, expectedLog = "started")
