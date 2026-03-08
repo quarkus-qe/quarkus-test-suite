@@ -4,7 +4,6 @@ import static io.quarkus.ts.http.restclient.reactive.resources.HttpVersionClient
 import static io.quarkus.ts.http.restclient.reactive.resources.HttpVersionClientResource.WRONG_HTTP_VERSION;
 import static org.hamcrest.Matchers.containsString;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -61,7 +60,6 @@ public class HttpVersionWithConfigKeyIT {
     }
 
     @Test
-    @Disabled("https://github.com/quarkusio/quarkus/issues/48927")
     public void testHttpSyncResponseWithSingleClientOnSingleClient() {
         app.given()
                 .get("/http2/http-synchronous-for-client-with-key")
@@ -71,7 +69,6 @@ public class HttpVersionWithConfigKeyIT {
     }
 
     @Test
-    @Disabled("https://github.com/quarkusio/quarkus/issues/48927")
     public void testHttpsSyncResponseWithSingleClientOnSingleClient() {
         app.given()
                 .get("/http2/https-synchronous-for-client-with-key")
