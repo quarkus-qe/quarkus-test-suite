@@ -7,14 +7,12 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.bootstrap.PostgresqlService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.GitRepositoryQuarkusApplication;
 import io.restassured.response.Response;
 import io.restassured.response.ResponseBody;
 
 @QuarkusScenario
-@DisabledOnNative(reason = "https://issues.redhat.com/browse/QUARKUS-6774")
 public class MoviesIT {
     private static final String DEFAULT_ARGS = "-DskipTests=true -DskipITs=true -Dquarkus.platform.version=${QUARKUS_PLATFORM_VERSION} -Dquarkus.platform.group-id=${QUARKUS_PLATFORM_GROUP-ID}";
     private static String key;

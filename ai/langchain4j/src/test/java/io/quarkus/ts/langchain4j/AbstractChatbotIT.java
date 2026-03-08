@@ -20,10 +20,8 @@ import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
-import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.URILike;
 
-@DisabledOnNative(reason = "https://issues.redhat.com/browse/QUARKUS-6774")
 public abstract class AbstractChatbotIT {
     protected static final Logger LOG = Logger.getLogger(AbstractChatbotIT.class);
     static final String DEFAULT_ARGS = "--no-transfer-progress -DskipTests=true -DskipITs=true -Dquarkus.platform.version=${QUARKUS_PLATFORM_VERSION} -Dquarkus.platform.group-id=${QUARKUS_PLATFORM_GROUP-ID}";
