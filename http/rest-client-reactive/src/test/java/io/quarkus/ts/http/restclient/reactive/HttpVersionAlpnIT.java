@@ -3,7 +3,6 @@ package io.quarkus.ts.http.restclient.reactive;
 import static io.quarkus.ts.http.restclient.reactive.resources.HttpVersionClientResource.NAME;
 import static org.hamcrest.Matchers.containsString;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -23,7 +22,6 @@ public class HttpVersionAlpnIT {
             .withProperty("quarkus.rest-client.alpn", "true");
 
     @Test
-    @Disabled("https://github.com/quarkusio/quarkus/issues/48927")
     public void testSyncResponseWithSingleClientOnGlobalClient() {
         app.given()
                 .get("/http2/https-synchronous")
@@ -42,7 +40,6 @@ public class HttpVersionAlpnIT {
     }
 
     @Test
-    @Disabled("https://github.com/quarkusio/quarkus/issues/48927")
     public void testSyncResponseWithSingleClientOnSingleClient() {
         app.given()
                 .get("/http2/https-synchronous-for-client-with-key")

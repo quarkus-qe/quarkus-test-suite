@@ -3,7 +3,6 @@ package io.quarkus.ts.http.restclient.reactive;
 import static io.quarkus.ts.http.restclient.reactive.resources.HttpVersionClientResource.NAME;
 import static org.hamcrest.Matchers.containsString;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -23,7 +22,6 @@ public class HttpVersionIT {
             .withProperty("quarkus.rest-client.http2", "true");
 
     @Test
-    @Disabled("https://github.com/quarkusio/quarkus/issues/48927")
     public void testHttpSyncResponseWithSingleClientOnGlobalClient() {
         app.given()
                 .get("/http2/http-synchronous")
@@ -33,7 +31,6 @@ public class HttpVersionIT {
     }
 
     @Test
-    @Disabled("https://github.com/quarkusio/quarkus/issues/48927")
     public void testHttpsSyncResponseWithSingleClientOnGlobalClient() {
         app.given()
                 .get("/http2/https-synchronous")
@@ -61,7 +58,6 @@ public class HttpVersionIT {
     }
 
     @Test
-    @Disabled("https://github.com/quarkusio/quarkus/issues/48927")
     public void testHttpSyncResponseWithSingleClientOnSingleClient() {
         app.given()
                 .get("/http2/http-synchronous-for-client-with-key")
@@ -71,7 +67,6 @@ public class HttpVersionIT {
     }
 
     @Test
-    @Disabled("https://github.com/quarkusio/quarkus/issues/48927")
     public void testHttpsSyncResponseWithSingleClientOnSingleClient() {
         app.given()
                 .get("/http2/https-synchronous-for-client-with-key")
