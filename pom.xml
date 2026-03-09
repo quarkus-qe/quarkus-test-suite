@@ -474,6 +474,8 @@
                 <module>qute/reactive</module>
                 <module>funqy/knative-events</module>
                 <module>build-time-analytics</module>
+                <module>packaging/quarkus</module>
+                <module>packaging/jar</module>
             </modules>
         </profile>
         <profile>
