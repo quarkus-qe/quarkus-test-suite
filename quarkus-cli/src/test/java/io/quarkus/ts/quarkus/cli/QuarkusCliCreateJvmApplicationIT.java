@@ -69,10 +69,13 @@ public class QuarkusCliCreateJvmApplicationIT {
 
     @Tag("QUARKUS-1071")
     @Tag("QUARKUS-1072")
+    @Tag("QUARKUS-7169")
     @TestQuarkusCli
     public void shouldCreateApplicationOnJvm(QuarkusVersionAwareCliClient cliClient) {
         // Create application
         QuarkusCliRestService app = cliClient.createApplication("app");
+
+        assertExpectedPackaging(app.getFileFromApplication("pom.xml"), "quarkus");
 
         // Should build on Jvm
         Result result = app.buildOnJvm();
@@ -423,6 +426,16 @@ public class QuarkusCliCreateJvmApplicationIT {
                     "Unexpected Java version defined in maven.compiler.release property of pom.xml. " +
                             "Java support tool should detect host Java version or use " +
                             "the provided one by --java argument");
+        } catch (IOException | XmlPullParserException e) {
+            fail(e.getMessage());
+        }
+    }
+
+    private void assertExpectedPackaging(File pomFile, String expectedPackaging) {
+        MavenXpp3Reader reader = new MavenXpp3Reader();
+        try (FileReader fileReader = new FileReader(pomFile)) {
+            Model model = reader.read(fileReader);
+            Assertions.assertEquals(expectedPackaging, model.getPackaging());
         } catch (IOException | XmlPullParserException e) {
             fail(e.getMessage());
         }
