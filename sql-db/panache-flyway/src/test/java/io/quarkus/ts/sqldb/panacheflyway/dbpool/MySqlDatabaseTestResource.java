@@ -25,6 +25,7 @@ public class MySqlDatabaseTestResource implements QuarkusTestResourceLifecycleMa
     private static final String PASSWORD_ROOT_PROPERTY = "MYSQL_ROOT_PASSWORD";
     private static final String DATABASE_PROPERTY = "MYSQL_DATABASE";
     private static final String USER = "user";
+    private static final int PORT = 3306;
 
     private GenericContainer<?> container;
 
@@ -37,15 +38,16 @@ public class MySqlDatabaseTestResource implements QuarkusTestResourceLifecycleMa
         // hence for now, we use GenericContainer which allows to override waiting strategy that works in FIPS
         container = new GenericContainer<>(
                 DockerImageName.parse(image).asCompatibleSubstituteFor(MYSQL));
-        container.waitingFor(new LogMessageWaitStrategy().withRegEx(".*ready for connections.*\\s"));
-        container.withExposedPorts(3306);
+        // We need to wait when the log msg with correct port is present as the ready msg is log multiple time
+        container.waitingFor(new LogMessageWaitStrategy().withRegEx(".*ready for connections.* port: " + PORT + ".*\\s"));
+        container.withExposedPorts(PORT);
         container.withEnv(USER_PROPERTY, USER);
         container.withEnv(PASSWORD_PROPERTY, USER);
         container.withEnv(PASSWORD_ROOT_PROPERTY, USER);
         container.withEnv(DATABASE_PROPERTY, DEFAULT_SCHEMA);
         container.start();
 
-        var jdbcUrl = "jdbc:mysql://%s:%d/%s".formatted(container.getHost(), container.getMappedPort(3306), DEFAULT_SCHEMA);
+        var jdbcUrl = "jdbc:mysql://%s:%d/%s".formatted(container.getHost(), container.getMappedPort(PORT), DEFAULT_SCHEMA);
         Map<String, String> config = new HashMap<>();
         config.put(defaultDataSource(QUARKUS_DB_JDBC_URL), jdbcUrl);
         config.put(defaultDataSource(QUARKUS_DB_USER), USER);
