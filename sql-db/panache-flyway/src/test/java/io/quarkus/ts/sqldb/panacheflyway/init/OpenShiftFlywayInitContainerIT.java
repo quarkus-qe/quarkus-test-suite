@@ -28,7 +28,7 @@ public class OpenShiftFlywayInitContainerIT {
             "app/target/kubernetes/openshift.yml");
     private static final String CUSTOM_IMAGE = "quay.io/quarkusqeteam/wait";
 
-    @Container(image = "${mysql.80.image}", port = 3306, expectedLog = "Only MySQL server logs after this point")
+    @Container(image = "${mysql.84.image}", port = 3306, expectedLog = "Only MySQL server logs after this point")
     static MySqlService database = new MySqlService();
 
     @QuarkusApplication

@@ -17,12 +17,12 @@ import io.quarkus.ts.transactions.recovery.TransactionExecutor;
 public class MysqlTransactionGeneralUsageIT extends TransactionCommons {
 
     static final int MYSQL_PORT = 3306;
-    @Container(image = "${mysql.80.image}", port = MYSQL_PORT, expectedLog = "port: " + MYSQL_PORT)
+    @Container(image = "${mysql.84.image}", port = MYSQL_PORT, expectedLog = "port: " + MYSQL_PORT)
     static final MySqlService database = new MySqlService().onPostStart(service -> {
         // enable transactions recovery for user
         var self = (MySqlService) service;
         // RH MySQL image allow login root user locally without using password and ignoring set root password
-        String passwordString = System.getProperty("mysql.80.image").contains("redhat") ? "" : "-p" + self.getPassword();
+        String passwordString = System.getProperty("mysql.84.image").contains("redhat") ? "" : "-p" + self.getPassword();
         try {
             self
                     .<GenericContainer<?>> getPropertyFromContext(DOCKER_INNER_CONTAINER)

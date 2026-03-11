@@ -14,7 +14,7 @@ import io.quarkus.test.services.QuarkusApplication;
 @OpenShiftScenario
 public class OpenShiftMySqlDBHibernateOfflineStartupIT extends AbstractHibernateOfflineStartupIT {
 
-    @Container(image = "${mysql.80.image}", expectedLog = "Only MySQL server logs after this point", mounts = {
+    @Container(image = "${mysql.84.image}", expectedLog = "Only MySQL server logs after this point", mounts = {
             @Mount(from = "mysql-init.sql", to = "/tmp/init.sql"),
             @Mount(from = "mysql-my-conf.config", to = "/etc/my.cnf.d/custom.cnf")
     }, port = 3306)
