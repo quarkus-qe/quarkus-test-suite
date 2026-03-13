@@ -50,6 +50,7 @@
         <exclude.quarkus.devmode.tests>no</exclude.quarkus.devmode.tests>
         <!-- Docker images used by both surefire and failsafe plugin -->
         <postgresql.latest.image>docker.io/library/postgres:18</postgresql.latest.image>
+        <postgis.latest.image>docker.io/postgis/postgis:17-3.5</postgis.latest.image>
         <mysql.80.image>registry.access.redhat.com/rhscl/mysql-80-rhel7:latest</mysql.80.image>
         <rhbk.image>registry.redhat.io/rhbk/keycloak-rhel9:26.4</rhbk.image>
         <wiremock-jre8.version>2.35.2</wiremock-jre8.version>
@@ -258,6 +259,7 @@
                         <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                         <!-- Services used in test suite -->
                         <postgresql.latest.image>${postgresql.latest.image}</postgresql.latest.image>
+                        <postgis.latest.image>${postgis.latest.image}</postgis.latest.image>
                         <mysql.80.image>${mysql.80.image}</mysql.80.image>
                     </systemPropertyVariables>
                 </configuration>
@@ -292,6 +294,7 @@
                                 <amqbroker.1.0x.image>quay.io/artemiscloud/activemq-artemis-broker:1.0.32</amqbroker.1.0x.image>
                                 <redpanda.image>redpandadata/redpanda:v25.3.9</redpanda.image>
                                 <postgresql.latest.image>${postgresql.latest.image}</postgresql.latest.image>
+                                <postgis.latest.image>${postgis.latest.image}</postgis.latest.image>
                                 <elastic.9x.image>docker.io/library/elasticsearch:9.3.1</elastic.9x.image>
                                 <mysql.upstream.80.image>docker.io/library/mysql:8.4</mysql.upstream.80.image>
                                 <mysql.80.image>${mysql.80.image}</mysql.80.image>
