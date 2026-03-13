@@ -43,7 +43,7 @@ jobs:
         java: [ 17, 21, 25 ]
         profiles: [ "root-modules", "http-modules,security-modules,spring-modules", "hibernate-modules",
                    "sql-db-modules", "root-modules -pl build/podman/,build/docker -Dtest-ubi8-compatibility",
-                   "messaging-modules,websockets-modules,monitoring-modules,cache-modules,test-tooling-modules,nosql-db-modules"]
+                   "messaging-modules,websockets-modules,monitoring-modules,cache-modules,test-tooling-modules,nosql-db-modules,ai-modules"]
     steps:
       - uses: actions/checkout@v6
       - name: Reclaim Disk Space
@@ -77,7 +77,7 @@ jobs:
       matrix:
         java: [ 21 ]
         image: [ "ubi9-quarkus-mandrel-builder-image:jdk-25", "ubi-quarkus-mandrel-builder-image:jdk-21 -Dtest-ubi8-compatibility" ]
-        profiles: [ "root-modules,websockets-modules,test-tooling-modules,nosql-db-modules",
+        profiles: [ "root-modules,websockets-modules,test-tooling-modules,nosql-db-modules,ai-modules",
                    "http-modules,cache-modules", "security-modules,spring-modules",
                     "hibernate-modules", "sql-db-modules", "messaging-modules,monitoring-modules"]
     steps:
@@ -188,7 +188,7 @@ jobs:
         java: [ 21, 25 ]
         profiles: [ "root-modules", "http-modules,security-modules,spring-modules", "hibernate-modules",
                     "sql-db-modules", "root-modules -pl build/podman/,build/docker -Dtest-ubi8-compatibility",
-                    "messaging-modules,websockets-modules,monitoring-modules,cache-modules,test-tooling-modules,nosql-db-modules"]
+                    "messaging-modules,websockets-modules,monitoring-modules,cache-modules,test-tooling-modules,nosql-db-modules,ai-modules"]
     steps:
       - uses: actions/checkout@v6
       - name: Reclaim Disk Space
@@ -228,7 +228,7 @@ jobs:
       matrix:
         java: [ 21 ]
         image: [ "ubi9-quarkus-mandrel-builder-image:jdk-21" ]
-        profiles: [ "root-modules,websockets-modules,test-tooling-modules,nosql-db-modules",
+        profiles: [ "root-modules,websockets-modules,test-tooling-modules,nosql-db-modules,ai-modules",
                     "http-modules,cache-modules", "security-modules,spring-modules",
                     "hibernate-modules", "sql-db-modules", "messaging-modules,monitoring-modules"]
     steps:
