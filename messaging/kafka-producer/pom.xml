@@ -19,6 +19,10 @@
             <artifactId>quarkus-reactive-routes</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-rest</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.quarkus.qe</groupId>
             <artifactId>quarkus-test-service-kafka</artifactId>
             <scope>test</scope>
