@@ -371,6 +371,17 @@ public abstract class BaseHttpAdvancedReactiveIT {
         Assertions.assertFalse(response.contains("Client"), "Client interceptor should not be invoked");
     }
 
+    @Test
+    @Tag("QUARKUS-7126")
+    public void testMediaTypePropagatedThroughWriterInterceptorChain() {
+        getApp().given()
+                .get(ROOT_PATH + "/media-type-writer-interceptor")
+                .then()
+                .statusCode(SC_OK)
+                .contentType(APPLICATION_JSON)
+                .body("message", is("ok"));
+    }
+
     @DisplayName("SSE check for event responses values containing empty data")
     @Test
     @Tag("QUARKUS-3701")
