@@ -18,12 +18,15 @@ import io.quarkus.test.utils.DockerUtils;
 @Tag("QUARKUS-1080")
 @QuarkusScenario
 public class DevModeReactiveMysqlDevServiceUserExperienceIT {
-    private static final String MYSQL_VERSION = getImageVersion("mysql.84.image");
-    private static final String MYSQL_NAME = getImageName("mysql.84.image");
+    private static final String MYSQL_VERSION = getImageVersion("mysql.upstream.image");
+    private static final String MYSQL_NAME = getImageName("mysql.upstream.image");
 
     @DevModeQuarkusApplication
     static RestService app = new RestService()
-            .withProperty("quarkus.datasource.mysql.devservices.image-name", "${mysql.84.image}")
+            // Do not change `mysql.upstream.image` as aarch64 using the RH image and when the
+            // `quarkus.datasource.mysql.devservices.image-name` devservice won't create default database with name `quarkus`
+            // but the database with name mysql is created. This causing rights problems for RH image and the image won't start.
+            .withProperty("quarkus.datasource.mysql.devservices.image-name", "${mysql.upstream.image}")
             .withProperty("quarkus.datasource.mariadb.devservices.enabled", "false")
             .withProperty("quarkus.datasource.mssql.devservices.enabled", "false")
             .withProperty("quarkus.datasource.devservices.enabled", "false")
