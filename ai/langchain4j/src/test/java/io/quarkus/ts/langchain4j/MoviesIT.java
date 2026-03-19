@@ -26,7 +26,7 @@ public class MoviesIT {
             // store data in /tmp/psql as in OpenShift we don't have permissions to /var/lib/postgresql/data
             .withProperty("PGDATA", "/tmp/psql");
 
-    @GitRepositoryQuarkusApplication(repo = "https://github.com/quarkiverse/quarkus-langchain4j.git", branch = "main", contextDir = "samples/movie-similarity-search", mavenArgs = DEFAULT_ARGS
+    @GitRepositoryQuarkusApplication(repo = "https://github.com/quarkiverse/quarkus-langchain4j.git", branch = "1.7", contextDir = "samples/movie-similarity-search", mavenArgs = DEFAULT_ARGS
             + " -Dsamples -Dplatform-deps")
     static final RestService app = new RestService()
             .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl)
