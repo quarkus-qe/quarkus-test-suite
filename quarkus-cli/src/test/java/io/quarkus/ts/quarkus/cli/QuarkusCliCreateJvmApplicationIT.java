@@ -36,7 +36,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.OS;
 
-import io.quarkus.logging.Log;
 import io.quarkus.test.bootstrap.QuarkusCliClient;
 import io.quarkus.test.bootstrap.QuarkusCliRestService;
 import io.quarkus.test.bootstrap.QuarkusVersionAwareCliClient;
@@ -129,8 +128,6 @@ public class QuarkusCliCreateJvmApplicationIT {
         QuarkusCliRestService app = cliClient.createApplication("app",
                 cliClient.getDefaultCreateApplicationRequest().withExtraArgs("--gradle"));
 
-        useQuarkusSnapshotFromSonatypeIfNeeded(app, cliClient.getQuarkusVersion());
-
         // Run Gradle Daemon to avoid file lock on quarkus-cli-command.out when the daemon is started as part of 'app.buildOnJvm()'
         runGradleDaemon(app);
         // Should build on Jvm
@@ -151,30 +148,6 @@ public class QuarkusCliCreateJvmApplicationIT {
 
         // Stop Gradle Daemon to save resources
         stopGradleDaemon(app);
-    }
-
-    private static void useQuarkusSnapshotFromSonatypeIfNeeded(QuarkusCliRestService app, String quarkusVersion) {
-        // must match only the 'main' branch snapshot, not 999-SNAPSHOT in other branches as they are not published
-        boolean is999Snapshot = "999-SNAPSHOT".equals(quarkusVersion);
-        var localRepository = System.getProperty("localRepository");
-        if (is999Snapshot && localRepository != null) {
-            if (!doesQuarkusSnapshotExistInLocalRepo(localRepository)) { // not adding external repository when not needed
-                Log.info("Configuring Sonatype Maven Snapshots repository to make Quarkus 999-SNAPSHOT available");
-                configureGradleSnapshotRepository(app, "build.gradle"); // Maven repository
-                configureGradleSnapshotRepository(app, "settings.gradle"); // plugin Maven repository
-            }
-        }
-    }
-
-    private static boolean doesQuarkusSnapshotExistInLocalRepo(String localRepository) {
-        // this is a smoke check, we know we will need this plugin and if it is there,
-        // it is very likely Quarkus core dependencies in 999-SNAPSHOT version are available as wel
-        return Files.exists(Path.of(localRepository)
-                .resolve("io")
-                .resolve("quarkus")
-                .resolve("io.quarkus.gradle.plugin")
-                .resolve("999-SNAPSHOT")
-                .resolve("io.quarkus.gradle.plugin-999-SNAPSHOT.jar"));
     }
 
     private void runGradleDaemon(QuarkusCliRestService app) {
@@ -258,7 +231,7 @@ public class QuarkusCliCreateJvmApplicationIT {
         // The snapshot not providing platform-bom so it use the latest stream in registry
         // otherwise when the quarkus version is defined (3.27.0) or if it's snapshot of some quarkus stream (3.27.999-SNAPSHOT)
         // it will set the correct stream to use
-        String quarkusStream = QuarkusProperties.getVersion().equals("999-SNAPSHOT") ? null
+        String quarkusStream = QuarkusProperties.getVersion().equals("3.33.999-SNAPSHOT") ? null
                 : QuarkusProperties.getVersion().replaceAll("^(\\d+\\.\\d+).*", "$1");
         // This can't use `--platform-bom` as it contain quarkiverse extension
         QuarkusCliRestService app = cliClient.createApplication("app",

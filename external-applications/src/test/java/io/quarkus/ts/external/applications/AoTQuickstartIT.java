@@ -23,7 +23,7 @@ public class AoTQuickstartIT {
     public static final String QUICKSTART_DIRECTORY = "getting-started-reactive";
     public static final String AOT_PROPERTIES = "-Dquarkus.package.jar.appcds.enabled=true -Dquarkus.package.jar.appcds.use-aot=true";
 
-    @GitRepositoryQuarkusApplication(repo = "https://github.com/quarkusio/quarkus-quickstarts.git", contextDir = QUICKSTART_DIRECTORY, branch = "development", mavenArgs = AOT_PROPERTIES
+    @GitRepositoryQuarkusApplication(repo = "https://github.com/quarkusio/quarkus-quickstarts.git", contextDir = QUICKSTART_DIRECTORY, branch = "3.33", mavenArgs = AOT_PROPERTIES
             + " -Dquarkus.platform.group-id=${QUARKUS_PLATFORM_GROUP-ID} -Dquarkus.platform.version=${QUARKUS_PLATFORM_VERSION}")
     static final RestService app = new RestService()
             .withProperty("-Xlog", "aot")
