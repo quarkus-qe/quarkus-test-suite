@@ -18,12 +18,12 @@ import io.quarkus.test.utils.DockerUtils;
 @Tag("QUARKUS-1080")
 @QuarkusScenario
 public class DevModeReactiveMysqlDevServiceUserExperienceIT {
-    private static final String MYSQL_VERSION = getImageVersion("mysql.84.image");
-    private static final String MYSQL_NAME = getImageName("mysql.84.image");
+    private static final String MYSQL_VERSION = getImageVersion("mysql.upstream.image");
+    private static final String MYSQL_NAME = getImageName("mysql.upstream.image");
 
     @DevModeQuarkusApplication
     static RestService app = new RestService()
-            .withProperty("quarkus.datasource.mysql.devservices.image-name", "${mysql.84.image}")
+            .withProperty("quarkus.datasource.mysql.devservices.image-name", "${mysql.upstream.image}")
             .withProperty("quarkus.datasource.mariadb.devservices.enabled", "false")
             .withProperty("quarkus.datasource.mssql.devservices.enabled", "false")
             .withProperty("quarkus.datasource.devservices.enabled", "false")
