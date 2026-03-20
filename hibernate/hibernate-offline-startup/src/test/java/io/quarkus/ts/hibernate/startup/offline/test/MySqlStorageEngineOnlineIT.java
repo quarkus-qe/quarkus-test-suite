@@ -12,7 +12,12 @@ import io.quarkus.test.services.QuarkusApplication;
 public class MySqlStorageEngineOnlineIT extends AbstractStorageEngineOnlineIT {
 
     @Container(image = "${mysql.84.image}", expectedLog = "ready for connections.* port: 3306", mounts = {
-            @Mount(from = "mysql-init.sql", to = "/docker-entrypoint-initdb.d/init.sql")
+            // Upstream MySQL is using `docker-entrypoint-initdb.d` to init DB
+            // RH image repository MySQL image using `my.cnf` script
+            // To ensure it will work for both images we need to mount it to both location
+            @Mount(from = "mysql-init.sql", to = "/docker-entrypoint-initdb.d/init.sql"),
+            @Mount(from = "mysql-init.sql", to = "/tmp/init.sql"),
+            @Mount(from = "mysql-my-conf.config", to = "/etc/my.cnf.d/my.cnf")
     }, port = 3306, builder = FixedPortResourceBuilder.class)
     static final MySqlService db = new MySqlService();
 
