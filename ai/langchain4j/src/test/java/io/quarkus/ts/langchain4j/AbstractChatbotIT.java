@@ -6,12 +6,10 @@ import java.net.http.WebSocket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import org.awaitility.Awaitility;
-import org.eclipse.microprofile.config.ConfigProvider;
 import org.jboss.logging.Logger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -21,17 +19,13 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.services.URILike;
+import io.quarkus.ts.langchain4j.auxiliary.WebSocketListener;
 
 public abstract class AbstractChatbotIT {
-    protected static final Logger LOG = Logger.getLogger(AbstractChatbotIT.class);
-    static final String DEFAULT_ARGS = "--no-transfer-progress -DskipTests=true -DskipITs=true -Dquarkus.platform.version=${QUARKUS_PLATFORM_VERSION} -Dquarkus.platform.group-id=${QUARKUS_PLATFORM_GROUP-ID}";
+    private static final Logger LOG = Logger.getLogger(AbstractChatbotIT.class);
     private static final int TIMEOUT = 10;
     private List<String> answers;
     private WebSocket webSocket;
-
-    static String getKey() {
-        return ConfigProvider.getConfig().getValue("quarkus.langchain4j.openai.api-key", String.class);
-    }
 
     @BeforeEach
     void setUp() throws ExecutionException, InterruptedException {
@@ -40,7 +34,7 @@ public abstract class AbstractChatbotIT {
         LOG.info("Connecting to: " + uri);
         answers = Collections.synchronizedList(new ArrayList<>());
         webSocket = HttpClient.newHttpClient().newWebSocketBuilder()
-                .buildAsync(URI.create(uri.toString()), new ChatbotIT.WebSocketListener(answers)).get();
+                .buildAsync(URI.create(uri.toString()), new WebSocketListener(answers)).get();
     }
 
     abstract RestService getApp();
@@ -83,31 +77,4 @@ public abstract class AbstractChatbotIT {
         Assertions.assertTrue(response.contains("25"));
     }
 
-    class WebSocketListener implements WebSocket.Listener {
-        private final List<String> answers;
-        private StringBuilder current;
-
-        WebSocketListener(List<String> answers) {
-            this.answers = answers;
-        }
-
-        @Override
-        public void onOpen(WebSocket webSocket) {
-            WebSocket.Listener.super.onOpen(webSocket);
-        }
-
-        @Override
-        public CompletionStage<?> onText(WebSocket webSocket, CharSequence data, boolean last) {
-            LOG.info("Message: " + data);
-            if (current == null) {
-                current = new StringBuilder();
-            }
-            current.append(data);
-            if (last) {
-                answers.add(current.toString());
-                current = null;
-            }
-            return WebSocket.Listener.super.onText(webSocket, data, last);
-        }
-    }
 }
