@@ -32,6 +32,7 @@
         <assertj.version>3.27.7</assertj.version>
         <htmlunit.version>4.21.0</htmlunit.version>
         <java.websocket.version>1.6.0</java.websocket.version>
+        <mcp-sdk.version>1.0.0</mcp-sdk.version>
         <!-- Faster build when using -DskipTests -->
         <quarkus.build.skip>${skipTests}</quarkus.build.skip>
         <!-- S2i configuration -->
@@ -121,6 +122,11 @@
                 <groupId>org.java-websocket</groupId>
                 <artifactId>Java-WebSocket</artifactId>
                 <version>${java.websocket.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.modelcontextprotocol.sdk</groupId>
+                <artifactId>mcp</artifactId>
+                <version>${mcp-sdk.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

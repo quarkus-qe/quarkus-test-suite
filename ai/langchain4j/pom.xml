@@ -15,11 +15,34 @@
         <quarkus.build.skip>true</quarkus.build.skip>
         <skipTests>true</skipTests>
         <skipITs>true</skipITs>
+        <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
     </properties>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>${quarkus.platform.group-id}</groupId>
+                <artifactId>quarkus-mcp-server-bom</artifactId>
+                <version>${quarkus.platform.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>io.quarkus.qe</groupId>
             <artifactId>quarkus-test-service-database</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- Required for tool tests, to create our own tool -->
+        <dependency>
+            <groupId>io.quarkiverse.mcp</groupId>
+            <artifactId>quarkus-mcp-server-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.modelcontextprotocol.sdk</groupId>
+            <artifactId>mcp</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

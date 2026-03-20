@@ -1,5 +1,7 @@
 package io.quarkus.ts.langchain4j;
 
+import static io.quarkus.ts.langchain4j.auxiliary.CommonTools.DEFAULT_ARGS;
+
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -14,7 +16,6 @@ import io.restassured.response.ResponseBody;
 
 @QuarkusScenario
 public class MoviesIT {
-    private static final String DEFAULT_ARGS = "-DskipTests=true -DskipITs=true -Dquarkus.platform.version=${QUARKUS_PLATFORM_VERSION} -Dquarkus.platform.group-id=${QUARKUS_PLATFORM_GROUP-ID}";
     private static String key;
 
     static {

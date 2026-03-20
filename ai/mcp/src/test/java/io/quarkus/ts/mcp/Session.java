@@ -126,7 +126,7 @@ class Session {
         int lastSize = 0;
         while (answers.isEmpty() || answers.size() != lastSize) {
             if (++repeats > 10) {
-                LOG.warn("We have waited for: " + repeats + " seconds and it is too much!");
+                LOG.warn("We have waited for: " + repeats / 2 + " seconds and it is too much!");
                 break;
             }
             lastSize = answers.size();
