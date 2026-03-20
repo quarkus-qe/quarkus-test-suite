@@ -10,6 +10,9 @@
     <packaging>jar</packaging>
     <artifactId>packaging-jar</artifactId>
     <name>Quarkus QE TS: Packaging: Jar</name>
+    <properties>
+        <ts.packaging>jar</ts.packaging>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>io.quarkus</groupId>
