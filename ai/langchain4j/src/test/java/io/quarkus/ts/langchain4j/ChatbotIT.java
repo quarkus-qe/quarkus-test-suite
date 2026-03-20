@@ -1,5 +1,8 @@
 package io.quarkus.ts.langchain4j;
 
+import static io.quarkus.ts.langchain4j.auxiliary.CommonTools.DEFAULT_ARGS;
+import static io.quarkus.ts.langchain4j.auxiliary.CommonTools.getKey;
+
 import io.quarkus.test.bootstrap.DefaultService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
