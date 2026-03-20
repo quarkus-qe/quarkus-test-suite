@@ -10,6 +10,9 @@
     <packaging>quarkus</packaging>
     <artifactId>packaging-quarkus</artifactId>
     <name>Quarkus QE TS: Packaging: Quarkus</name>
+    <properties>
+        <ts.packaging>quarkus</ts.packaging>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>io.quarkus</groupId>
