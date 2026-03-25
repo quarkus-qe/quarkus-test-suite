@@ -1,6 +1,7 @@
 package io.quarkus.ts.langchain4j;
 
 import static io.quarkus.ts.langchain4j.auxiliary.CommonTools.DEFAULT_ARGS;
+import static io.quarkus.ts.langchain4j.auxiliary.CommonTools.SAMPLE_BRANCH;
 import static io.quarkus.ts.langchain4j.auxiliary.CommonTools.getKey;
 
 import io.quarkus.test.bootstrap.DefaultService;
@@ -21,7 +22,7 @@ public class OpenShiftChatbotIT extends AbstractChatbotIT {
     // TODO when any of these issues is solved, change the properties code below:
     //  - https://github.com/quarkus-qe/quarkus-test-framework/issues/1737
     //  - https://github.com/quarkus-qe/quarkus-test-framework/issues/1582
-    @GitRepositoryQuarkusApplication(repo = "https://github.com/quarkiverse/quarkus-langchain4j.git", branch = "main", contextDir = "samples/chatbot", mavenArgs = DEFAULT_ARGS
+    @GitRepositoryQuarkusApplication(repo = "https://github.com/quarkiverse/quarkus-langchain4j.git", branch = SAMPLE_BRANCH, contextDir = "samples/chatbot", mavenArgs = DEFAULT_ARGS
             + " -Dsamples -Dplatform-deps")
     static final RestService app = new RestService()
             .withProperty("quarkus.redis.hosts",

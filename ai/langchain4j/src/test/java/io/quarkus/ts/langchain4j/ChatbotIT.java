@@ -1,6 +1,7 @@
 package io.quarkus.ts.langchain4j;
 
 import static io.quarkus.ts.langchain4j.auxiliary.CommonTools.DEFAULT_ARGS;
+import static io.quarkus.ts.langchain4j.auxiliary.CommonTools.SAMPLE_BRANCH;
 import static io.quarkus.ts.langchain4j.auxiliary.CommonTools.getKey;
 
 import io.quarkus.test.bootstrap.DefaultService;
@@ -15,7 +16,7 @@ public class ChatbotIT extends AbstractChatbotIT {
     @Container(image = "${redis.image}", port = 6379, expectedLog = "Ready to accept connections")
     static DefaultService redis = new DefaultService().withProperty("ALLOW_EMPTY_PASSWORD", "YES");
 
-    @GitRepositoryQuarkusApplication(repo = "https://github.com/quarkiverse/quarkus-langchain4j.git", branch = "main", contextDir = "samples/chatbot", mavenArgs = DEFAULT_ARGS
+    @GitRepositoryQuarkusApplication(repo = "https://github.com/quarkiverse/quarkus-langchain4j.git", branch = SAMPLE_BRANCH, contextDir = "samples/chatbot", mavenArgs = DEFAULT_ARGS
             + " -Dsamples -Dplatform-deps")
     static final RestService app = new RestService()
             .withProperty("quarkus.redis.hosts",
