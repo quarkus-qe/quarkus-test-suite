@@ -1,6 +1,7 @@
 package io.quarkus.ts.langchain4j;
 
 import static io.quarkus.ts.langchain4j.auxiliary.CommonTools.DEFAULT_ARGS;
+import static io.quarkus.ts.langchain4j.auxiliary.CommonTools.SAMPLE_BRANCH;
 
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.junit.jupiter.api.Assertions;
@@ -27,7 +28,7 @@ public class MoviesIT {
             // store data in /tmp/psql as in OpenShift we don't have permissions to /var/lib/postgresql/data
             .withProperty("PGDATA", "/tmp/psql");
 
-    @GitRepositoryQuarkusApplication(repo = "https://github.com/quarkiverse/quarkus-langchain4j.git", branch = "main", contextDir = "samples/movie-similarity-search", mavenArgs = DEFAULT_ARGS
+    @GitRepositoryQuarkusApplication(repo = "https://github.com/quarkiverse/quarkus-langchain4j.git", branch = SAMPLE_BRANCH, contextDir = "samples/movie-similarity-search", mavenArgs = DEFAULT_ARGS
             + " -Dsamples -Dplatform-deps")
     static final RestService app = new RestService()
             .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl)
