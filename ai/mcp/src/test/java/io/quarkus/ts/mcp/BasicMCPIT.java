@@ -119,7 +119,7 @@ public abstract class BasicMCPIT {
     }
 
     @Test
-    @DisabledOnNative(reason = "https://github.com/quarkiverse/quarkus-langchain4j/issues/2234")
+    @DisabledOnNative(reason = "https://github.com/quarkiverse/quarkus-langchain4j/issues/2287")
     public void roots() {
         Response before = client().given().get("/mcp/roots");
         Assertions.assertEquals(200, before.statusCode());

@@ -79,8 +79,7 @@ public class WebSocketIT extends BasicMCPIT {
     }
 
     @Test
-    @Disabled("https://github.com/quarkiverse/quarkus-mcp-server/issues/672")
-    //Icons work, but pagination doesn't
+    @DisabledOnNative(reason = "https://github.com/quarkiverse/quarkus-mcp-server/issues/706")
     void iconCheck() {
         Session session = new Session(getUrl(server));
         session.sendRequest("initialize", Session.initParamas());
