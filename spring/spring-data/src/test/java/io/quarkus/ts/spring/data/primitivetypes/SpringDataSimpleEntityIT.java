@@ -51,6 +51,6 @@ public class SpringDataSimpleEntityIT extends AbstractDbIT {
                 .get("/product/find-by-status/{status}")
                 .then()
                 .statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
-        app.logs().assertContains("Argument to query parameter has an incompatible type");
+        app.logs().assertContains("Argument to parameter at position 1 has an incompatible type");
     }
 }
