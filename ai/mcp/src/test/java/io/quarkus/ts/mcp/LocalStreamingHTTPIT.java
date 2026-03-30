@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.modelcontextprotocol.client.McpClient;
@@ -64,7 +63,6 @@ public class LocalStreamingHTTPIT extends BasicMCPIT {
     }
 
     @Test
-    @Disabled("https://github.com/quarkiverse/quarkus-mcp-server/issues/672")
     public void toolList() {
         thirdPartyClient.initialize();
 
