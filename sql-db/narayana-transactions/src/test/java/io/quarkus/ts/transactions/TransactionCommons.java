@@ -353,7 +353,8 @@ public abstract class TransactionCommons {
                     // that supports the recovery
                     getApp().logs().assertContains(
                             "ARJUNA016037: Could not find new XAResource to use for recovering non-serializable XAResource",
-                            "Datasource xa-ds-1 enables XA but transaction recovery is not enabled");
+                            "Datasource xa-ds-1 enables XA but transaction recovery is not enabled",
+                            "Datasource xa-ds-1 enables XA but transaction recovery is disabled");
                     untilAsserted(() -> assertRecoveryLogContainsTransactions(0));
                 }
                 assertJdbcObjectStoreContainsTransactions(1);
