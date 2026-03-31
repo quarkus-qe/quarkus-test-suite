@@ -25,7 +25,7 @@ public class Book {
 
     String title;
 
-    @ManyToOne(targetEntity = Book.class)
+    @ManyToOne(targetEntity = Author.class)
     private Author author;
 
     public String getTitle() {
