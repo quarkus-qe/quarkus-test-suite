@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.bootstrap.PostgresqlService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 import io.restassured.response.Response;
@@ -33,7 +32,6 @@ public class PostgresqlHandlerIT extends CommonTestCases {
 
     @Test
     @Tag("https://github.com/quarkusio/quarkus/issues/50140")
-    @DisabledOnQuarkusVersion(version = "3.27.0.*", reason = "This issue affected native and was fixed in 3.27.1")
     void manuallyCreatedPool() {
         Response response = app.given().get("pool/");
         assertEquals(200, response.statusCode());
