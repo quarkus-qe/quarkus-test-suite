@@ -207,7 +207,6 @@ public class WebSocketIT extends BasicMCPIT {
     }
 
     @Test
-    @DisabledOnNative(reason = "https://github.com/quarkiverse/quarkus-mcp-server/issues/679")
     void sampling() {
         Session session = new Session(getUrl(server));
         session.sendRequest("initialize", Session.initParamas());
@@ -262,7 +261,6 @@ public class WebSocketIT extends BasicMCPIT {
     }
 
     @Test
-    @DisabledOnNative(reason = "https://github.com/quarkiverse/quarkus-mcp-server/issues/679")
     void elicitation() {
         Session session = new Session(getUrl(server));
         session.sendRequest("initialize", Session.initParamas());
