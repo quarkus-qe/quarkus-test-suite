@@ -7,10 +7,8 @@ import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnFipsAndNative;
 import io.restassured.specification.RequestSpecification;
 
-@DisabledOnFipsAndNative(reason = "QUARKUS-5233")
 @QuarkusScenario
 public class ManyExtensionsIT {
 
