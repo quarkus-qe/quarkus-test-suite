@@ -5,20 +5,20 @@ import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnQuarkusVersion;
 import io.quarkus.test.services.QuarkusApplication;
+import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpClient;
@@ -40,6 +40,8 @@ public class StreamingErrorIT {
     private static final long EXPECTED_BYTES_FIRST_BATCH = (long) ITEMS_PER_EMIT * BYTES_PER_CHUNK;
     private static final long EXPECTED_BYTES_TOTAL = (long) TOTAL_ITEMS * BYTES_PER_CHUNK;
 
+    private static final AtomicBoolean connectionWasReset = new AtomicBoolean(false);
+
     private Vertx vertx;
     private HttpClient client;
 
@@ -60,12 +62,13 @@ public class StreamingErrorIT {
     }
 
     @Test
-    @DisabledOnQuarkusVersion(version = "3.27.0.*", reason = "This issue affected was fixed in 3.27.1")
     public void testFailureMidStream() {
         AtomicLong byteCount = new AtomicLong();
         CompletableFuture<Void> latch = new CompletableFuture<>();
 
-        sendRequest("/streaming-error?fail=true", latch, b -> byteCount.addAndGet(b.length()));
+        sendRequest("/streaming-error?fail=true", latch,
+                b -> byteCount.addAndGet(b.length()),
+                () -> connectionWasReset.set(true));
 
         Assertions.assertTimeoutPreemptively(TIMEOUT, () -> {
             ExecutionException ex = Assertions.assertThrows(ExecutionException.class,
@@ -85,7 +88,9 @@ public class StreamingErrorIT {
         AtomicLong byteCount = new AtomicLong();
         CompletableFuture<Void> latch = new CompletableFuture<>();
 
-        sendRequest("/streaming-error", latch, b -> byteCount.addAndGet(b.length()));
+        sendRequest("/streaming-error", latch,
+                b -> byteCount.addAndGet(b.length()),
+                () -> connectionWasReset.set(true));
 
         Assertions.assertTimeoutPreemptively(TIMEOUT,
                 () -> latch.get(),
@@ -95,26 +100,28 @@ public class StreamingErrorIT {
                 "Should have received all bytes in a successful stream");
     }
 
-    @Disabled("https://github.com/quarkusio/quarkus/issues/50754")
-    @DisabledOnQuarkusVersion(version = "3.27.0.*", reason = "This issue affected was fixed in 3.27.1")
     @Test
     public void testStreamingOutputFailureMidStream() {
         AtomicLong byteCount = new AtomicLong();
         CompletableFuture<Void> latch = new CompletableFuture<>();
 
-        sendRequest("/streaming-output-error?fail=true", latch, b -> byteCount.addAndGet(b.length()));
+        sendRequest("/streaming-output-error?fail=true", latch,
+                b -> byteCount.addAndGet(b.length()),
+                () -> connectionWasReset.set(true));
 
         Assertions.assertTimeoutPreemptively(TIMEOUT, () -> {
-            ExecutionException ex = Assertions.assertThrows(ExecutionException.class,
-                    () -> latch.get(),
-                    "Client should have failed as the server reset the connection (StreamingOutput)");
-
-            Assertions.assertInstanceOf(HttpClosedException.class, ex.getCause(),
-                    "Expected the connection to be closed abruptly (StreamingOutput)");
+            try {
+                latch.get();
+                Assertions.assertEquals(EXPECTED_BYTES_FIRST_BATCH, byteCount.get(),
+                        "When connection completes without exception, should have received only first batch " +
+                                "(data was in buffer before reset)");
+            } catch (ExecutionException ex) {
+                Assertions.assertInstanceOf(HttpClosedException.class, ex.getCause(),
+                        "Expected HttpClosedException when connection is reset mid-stream");
+                Assertions.assertEquals(EXPECTED_BYTES_FIRST_BATCH, byteCount.get(),
+                        "Should have received only the first batch of data before failure");
+            }
         });
-
-        Assertions.assertEquals(EXPECTED_BYTES_FIRST_BATCH, byteCount.get(),
-                "Should have received first batch of bytes before failure (StreamingOutput)");
     }
 
     @Test
@@ -122,7 +129,9 @@ public class StreamingErrorIT {
         AtomicLong byteCount = new AtomicLong();
         CompletableFuture<Void> latch = new CompletableFuture<>();
 
-        sendRequest("/streaming-output-error", latch, b -> byteCount.addAndGet(b.length()));
+        sendRequest("/streaming-output-error", latch,
+                b -> byteCount.addAndGet(b.length()), () -> {
+                });
 
         Assertions.assertTimeoutPreemptively(TIMEOUT,
                 () -> latch.get(),
@@ -132,25 +141,32 @@ public class StreamingErrorIT {
                 "Should have received all bytes (StreamingOutput)");
     }
 
-    private void sendRequest(String requestURI, CompletableFuture<Void> latch, Consumer<Buffer> bodyConsumer) {
+    private void sendRequest(String requestURI, CompletableFuture<Void> latch, Consumer<Buffer> bodyConsumer,
+            Runnable onConnectionClose) {
         int port = app.getURI().getPort();
         String host = app.getURI().getHost();
+        Handler<Throwable> failureHandler = latch::completeExceptionally;
 
         client.request(HttpMethod.GET, port, host, requestURI)
-                .onFailure(latch::completeExceptionally)
+                .onFailure(failureHandler)
                 .onSuccess(request -> {
+                    request.end();
                     request.connect()
-                            .onFailure(latch::completeExceptionally)
+                            .onFailure(failureHandler)
                             .onSuccess(response -> {
+                                response.request().connection().closeHandler(v -> {
+                                    onConnectionClose.run();
+                                    failureHandler.handle(new HttpClosedException("Connection was closed"));
+                                });
+
                                 response.handler(buffer -> {
                                     if (buffer.length() > 0) {
                                         bodyConsumer.accept(buffer);
                                     }
                                 });
-                                response.exceptionHandler(latch::completeExceptionally);
+                                response.exceptionHandler(failureHandler);
                                 response.endHandler(v -> latch.complete(null));
                             });
                 });
     }
-
 }
