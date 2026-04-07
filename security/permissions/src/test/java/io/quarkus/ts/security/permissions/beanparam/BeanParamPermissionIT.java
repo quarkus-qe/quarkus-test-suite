@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.containsString;
 import jakarta.ws.rs.core.MediaType;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -155,6 +156,7 @@ public class BeanParamPermissionIT extends BaseBeanParamPermissionsIT {
     }
 
     @Test
+    @Disabled("https://github.com/quarkusio/quarkus/issues/53477")
     public void testRecordBeanParamDenialInvalidDocumentId() {
         givenAuthenticatedUser(ADMIN)
                 .header("CustomAuthorization", "valid-token")
