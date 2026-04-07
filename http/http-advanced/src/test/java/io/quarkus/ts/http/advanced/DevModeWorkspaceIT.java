@@ -49,10 +49,12 @@ public class DevModeWorkspaceIT {
             try (Browser browser = playwright.chromium().launch()) {
                 Page page = browser.newContext().newPage();
                 page.navigate(pageURL);
-                ElementHandle element = page.waitForSelector("#code");
-                String code = element.getAttribute("value");
-                Assertions.assertTrue(code.startsWith("package io.quarkus.ts.http.advanced.headers;"),
-                        "The code doesn't contain the expected value: " + code);
+                AwaitilityUtils.untilAsserted(() -> {
+                    ElementHandle element = page.waitForSelector("#code");
+                    String code = element.getAttribute("value");
+                    Assertions.assertTrue(code.startsWith("package io.quarkus.ts.http.advanced.headers;"),
+                            "The code doesn't contain the expected value: " + code);
+                }, usingTimeout(ofSeconds(5)));
             }
         }
     }
@@ -93,19 +95,19 @@ public class DevModeWorkspaceIT {
                 page.navigate(pageURL);
 
                 // Check, that the correct file was opened
-                Locator textArea = page.locator("#code");
+                ElementHandle textArea = page.waitForSelector("#code");
                 String code = textArea.getAttribute("value");
                 Assertions.assertTrue(code.contains("PathSpecificHeadersResource"),
                         "The code doesn't contain the expected value: " + code);
 
                 //Edit the file and save the changes
                 code = code.replace("@Path(\"/any\")", "@Path(\"/this\")");
-                Locator editor = textArea.locator(".cm-content");
+                ElementHandle editor = textArea.waitForSelector(".cm-content");
                 // The focus need to be called on Chromium browser otherwise the fill insert the code to already existing
                 // on Firefox the behavioral are delete the text and paste the code.
                 editor.focus();
                 editor.fill(code);
-                Locator save = page.locator(".mainMenuBarButtons > vaadin-button:nth-child(1)");
+                ElementHandle save = page.waitForSelector(".mainMenuBarButtons > vaadin-button:nth-child(1)");
                 save.click();
 
                 AwaitilityUtils.untilAsserted(() -> {
@@ -120,7 +122,7 @@ public class DevModeWorkspaceIT {
                 // Sometimes the app returns the old results, so let's refresh the page
                 page.reload();
                 //check, that the changes are reflected in ui as well
-                textArea = page.locator("#code");
+                textArea = page.waitForSelector("#code");
                 textArea.getAttribute("value");
                 Assertions.assertTrue(code.contains("@Path(\"/this\")"),
                         "The code doesn't contain the expected value: " + code);
