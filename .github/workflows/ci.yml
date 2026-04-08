@@ -171,7 +171,9 @@ jobs:
         id: rename-flaky-test-run-report
         if: ${{ hashFiles('**/flaky-run-report.json') != '' }}
         shell: bash
-        run: mv target/flaky-run-report.json target/flaky-run-report-linux-jvm-latest.json
+        run: |
+          STRIPED_PROFILES=$(echo "${{ matrix.module-mvn-args }}" | sed 's/[^a-zA-Z0-9]//g')
+          mv target/flaky-run-report.json target/flaky-run-report-linux-jvm-"${{ matrix.java }}"-"${STRIPED_PROFILES}".json
       - name: Archive flaky run report
         id: archive-flaky-run-report
         if: ${{ hashFiles('**/flaky-run-report-linux-jvm-latest.json') != '' }}
@@ -227,7 +229,9 @@ jobs:
         id: rename-flaky-test-run-report
         if: ${{ hashFiles('**/flaky-run-report.json') != '' }}
         shell: bash
-        run: mv target/flaky-run-report.json target/flaky-run-report-linux-native-latest.json
+        run: |
+          STRIPED_PROFILES=$(echo "${{ matrix.module-mvn-args }}" | sed 's/[^a-zA-Z0-9]//g')
+          mv target/flaky-run-report.json target/flaky-run-report-linux-native-"${{ matrix.java }}"-"${STRIPED_PROFILES}".json
       - name: Archive flaky run report
         id: archive-flaky-run-report
         if: ${{ hashFiles('**/flaky-run-report-linux-native-latest.json') != '' }}
@@ -279,7 +283,9 @@ jobs:
         id: rename-flaky-test-run-report
         if: ${{ hashFiles('**/flaky-run-report.json') != '' }}
         shell: bash
-        run: mv target/flaky-run-report.json target/flaky-run-report-windows-jvm-latest.json
+        run: |
+          STRIPED_PROFILES=$(echo "${{ matrix.module-mvn-args }}" | sed 's/[^a-zA-Z0-9]//g')
+          mv target/flaky-run-report.json target/flaky-run-report-windows-jvm-"${{ matrix.java }}"-"${STRIPED_PROFILES}".json
       - name: Archive flaky run report
         id: archive-flaky-run-report
         if: ${{ hashFiles('**/flaky-run-report-windows-jvm-latest.json') != '' }}
