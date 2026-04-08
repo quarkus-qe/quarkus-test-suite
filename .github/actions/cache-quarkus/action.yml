@@ -1,9 +1,16 @@
 name: 'Restore maven cache'
 description: 'Restore maven cache created in daily build'
+inputs:
+  wait-before-restore:
+    description: 'Wait before restore to avoid old cache'
+    required: false
+    default: true
+    type: boolean
 runs:
   using: "composite"
   steps:
     - name: Sleep 2 minutes
+      if: ${{ inputs.wait-before-restore }}
       shell: bash
       # When running daily sometimes the old cache is used on some jobs. This delay should prevent it for most cases
       run: sleep 120

@@ -127,6 +127,8 @@ jobs:
           java-version: ${{ matrix.java }}
           check-latest: true
       - uses: ./.github/actions/cache-quarkus
+        with:
+          wait-before-restore: false
       - name: Build with Maven
         run: |
           mvn -V -B --no-transfer-progress -s .github/mvn-settings.xml verify -Dall-modules -Dvalidate-format -DskipTests -DskipITs -Dquarkus.container-image.build=false -Dquarkus.container-image.push=false
@@ -154,6 +156,8 @@ jobs:
           java-version: ${{ matrix.java }}
           check-latest: true
       - uses: ./.github/actions/cache-quarkus
+        with:
+          wait-before-restore: false
       - uses: ./.github/actions/prepare-quarkus-cli
       - uses: ./.github/actions/use-docker-mirror
       - name: Build with Maven
@@ -206,6 +210,8 @@ jobs:
           java-version: ${{ matrix.java }}
           check-latest: true
       - uses: ./.github/actions/cache-quarkus
+        with:
+          wait-before-restore: false
       - uses: ./.github/actions/prepare-quarkus-cli
       - uses: ./.github/actions/use-docker-mirror
       - name: Build with Maven
@@ -257,6 +263,8 @@ jobs:
           java-version: ${{ matrix.java }}
           check-latest: true
       - uses: ./.github/actions/cache-quarkus
+        with:
+          wait-before-restore: false
       - uses: ./.github/actions/prepare-quarkus-cli-win
       - name: Build in JVM mode
         shell: bash
