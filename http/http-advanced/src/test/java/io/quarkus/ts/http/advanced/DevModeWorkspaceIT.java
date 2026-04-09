@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.http.HttpStatus;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -29,6 +30,7 @@ import io.quarkus.test.utils.AwaitilityUtils;
 import io.quarkus.test.utils.FileUtils;
 import io.restassured.response.Response;
 
+@Disabled("Flaky test for 3.27 some tests failing com.microsoft.playwright.TimeoutError - Timeout 30000ms exceeded")
 @Tag("QUARKUS-6247")
 @QuarkusScenario
 public class DevModeWorkspaceIT {
