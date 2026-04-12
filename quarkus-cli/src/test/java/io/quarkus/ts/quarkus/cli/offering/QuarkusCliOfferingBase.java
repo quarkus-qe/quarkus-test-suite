@@ -34,7 +34,7 @@ public abstract class QuarkusCliOfferingBase {
     public static final String REST_SUPPORT_SCOPE = "supported";
     public static final String LANGCHAIN4J_OPENAI_EXTENSION_NAME = "LangChain4j OpenAI ";
     public static final String LANGCHAIN4J_OPENAI_EXTENSION_ARTIFACT = "quarkus-langchain4j-openai";
-    public static final String LANGCHAIN4J_OPENAI_SUPPORT_SCOPE = "tech-preview";
+    public static final String LANGCHAIN4J_OPENAI_SUPPORT_SCOPE = "supported";
 
     @Inject
     static QuarkusCliClient cliClient;
