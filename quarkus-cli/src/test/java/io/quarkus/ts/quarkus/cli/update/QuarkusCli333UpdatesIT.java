@@ -2,14 +2,12 @@ package io.quarkus.ts.quarkus.cli.update;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Stream;
 
@@ -18,7 +16,6 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -85,18 +82,17 @@ public class QuarkusCli333UpdatesIT extends AbstractQuarkusCliUpdateIT {
      * See https://github.com/quarkusio/quarkus/wiki/Migration-Guide-3.30#breaking-changes
      */
     @Test
-    @Disabled("https://github.com/quarkusio/quarkus/issues/53384")
     void testJDBCMetrics() throws IOException {
-        QuarkusCliRestService app = quarkusCLIAppManager.createApplicationWithExtensions("quarkus-jdbc-postgresql");
         Properties oldProperties = new Properties();
+        Properties newProperties = new Properties();
+
         oldProperties.put("quarkus.datasource.jdbc.enable-metrics", "true");
-        QuarkusCLIUtils.writePropertiesToPropertiesFile(app, oldProperties);
+        newProperties.put("quarkus.datasource.jdbc.metrics.enabled", "true");
 
-        quarkusCLIAppManager.updateApp(app);
-
-        Map<String, String> newProperties = app.getProperties();
-        assertNull(newProperties.get("quarkus.datasource.jdbc.enable-metrics"));
-        assertEquals("true", newProperties.get("quarkus.datasource.jdbc.metrics.enabled"));
+        // TODO: drop using temp dir when https://github.com/quarkusio/quarkus-updates/issues/394 is fixed
+        try (var ignored = cliClient.useTemporaryDirectory()) {
+            QuarkusCLIUtils.checkPropertiesUpdate(quarkusCLIAppManager, oldProperties, newProperties);
+        }
     }
 
     /**
