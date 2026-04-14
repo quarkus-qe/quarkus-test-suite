@@ -26,6 +26,7 @@ public class DevModeRedPandaDevServiceUserExperienceIT {
     @DevModeQuarkusApplication
     static RestService app = new RestService()
             .withProperty("quarkus.kafka.devservices.enabled", Boolean.TRUE.toString())
+            .withProperty("quarkus.kafka.devservices.provider", "redpanda")
             .withProperty("quarkus.kafka.devservices.image-name", "${redpanda.image}")
             .onPreStart(s -> DockerUtils.removeImage(RED_PANDA_IMAGE, RED_PANDA_VERSION));
 
