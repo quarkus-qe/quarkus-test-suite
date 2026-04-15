@@ -22,6 +22,7 @@ public class EntitylessEndpoint {
     @Startup
     @Transactional
     public void init() {
+        // TODO: remove once https://hibernate.atlassian.net/browse/HHH-20321 is fixed and fix is available in quarkus
         // Initiate the DB, since hibernate will not import SQL script if no entity is defined
         statelessSession.createNativeQuery("DROP TABLE IF EXISTS person;").executeUpdate();
         statelessSession.createNativeQuery("""
