@@ -20,6 +20,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import io.quarkus.test.bootstrap.QuarkusCliRestService;
+import io.quarkus.test.scenarios.annotations.EnabledOnQuarkusVersion;
 import io.quarkus.test.util.QuarkusCLIUtils;
 import io.quarkus.test.utils.FileUtils;
 
@@ -27,6 +28,7 @@ import io.quarkus.test.utils.FileUtils;
  * Tests Quarkus CLI update command recipes for changes between 3.20 and 3.27.
  */
 @Tag("quarkus-cli")
+@EnabledOnQuarkusVersion(version = "3.27.*redhat.*", reason = "https://github.com/quarkus-qe/quarkus-test-framework/issues/1766")
 public class QuarkusCli327UpdatesIT extends AbstractQuarkusCliUpdateIT {
 
     public QuarkusCli327UpdatesIT() {
