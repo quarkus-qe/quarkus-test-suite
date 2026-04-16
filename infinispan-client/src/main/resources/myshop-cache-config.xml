@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<infinispan>
+    <cache-container>
+        <distributed-cache name="myshop">
+            <encoding>
+                <key media-type="application/x-protostream"/>
+                <value media-type="application/x-protostream"/>
+            </encoding>
+            <memory max-count="5" when-full="REMOVE"/>
+        </distributed-cache>
+    </cache-container>
+</infinispan>

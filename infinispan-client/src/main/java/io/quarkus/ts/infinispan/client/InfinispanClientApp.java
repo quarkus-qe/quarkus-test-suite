@@ -31,17 +31,6 @@ public class InfinispanClientApp {
             "<distributed-cache name=\"%s\"></distributed-cache>" +
             "</cache-container></infinispan>";
 
-    private static final String MYSHOP_CACHE_CONFIG = """
-            <infinispan><cache-container>\
-            <distributed-cache name="%s">\
-            <encoding>
-            <key media-type="application/x-protostream"/>
-            <value media-type="application/x-protostream"/>
-            </encoding>\
-            <memory max-count="5" when-full="REMOVE"/>\
-            </distributed-cache>\
-            </cache-container></infinispan>""";
-
     void onStart(@Observes StartupEvent ev) {
         LOGGER.info("Create or get cache named mycache with the default configuration");
         RemoteCache<Object, Object> cache = cacheManager.administration().getOrCreateCache("mycache",
@@ -51,9 +40,6 @@ public class InfinispanClientApp {
             cache.put("counter", 0);
         }
 
-        LOGGER.info("Create or get cache named myshop with the x-protostream configuration");
-        RemoteCache<Object, Object> myshop = cacheManager.administration().getOrCreateCache("myshop",
-                new StringConfiguration(String.format(MYSHOP_CACHE_CONFIG, "myshop")));
         cache.addClientListener(new EventPrintListener());
     }
 
