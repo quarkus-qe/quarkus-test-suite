@@ -21,11 +21,23 @@ jobs:
           distribution: 'temurin'
           java-version: ${{ matrix.java }}
           check-latest: true
+      - name: Initialize Repository Path
+        run: |
+          # Save local repo to GH ENV to ensure that it's the same in all steps
+          mkdir -p maven-repository
+          echo "LOCAL_REPO=$(pwd)/maven-repository" >> $GITHUB_ENV
       - name: Build Quarkus 999-SNAPSHOT
         run: |
-          mkdir maven-repository
-          LOCAL_REPO="$(pwd)/maven-repository"
-          git clone https://github.com/quarkusio/quarkus.git && cd quarkus && ./mvnw -B --no-transfer-progress -s .github/mvn-settings.xml clean install -Dquickly -Dno-test-modules -Prelocations -Dmaven.repo.local=$LOCAL_REPO
+          git clone https://github.com/quarkusio/quarkus.git && cd quarkus
+          ./mvnw -B --no-transfer-progress -s .github/mvn-settings.xml clean install -Dquickly -Dno-test-modules -Prelocations -Dmaven.repo.local=${{ env.LOCAL_REPO }}
+      - name: Build Quarkus Platform 999-SNAPSHOT with Quarkus core 999-SNAPSHOT
+        run: |
+          git clone https://github.com/quarkusio/quarkus-platform.git && cd quarkus-platform
+          # platform has 999-SNAPSHOT even in non-main branches, we need to change that
+          ./mvnw versions:set --no-transfer-progress -s .github/mvn-settings.xml -DnewVersion=999-core-main-SNAPSHOT
+          ./mvnw versions:set-property -Dproperty=quarkus.version -DnewVersion=999-SNAPSHOT  -DgenerateBackupPoms=false -s .github/mvn-settings.xml
+          ./mvnw -Dsync --no-transfer-progress -s .github/mvn-settings.xml -Dmaven.repo.local=${{ env.LOCAL_REPO }}
+          ./mvnw --no-transfer-progress -s .github/mvn-settings.xml clean install -DskipTests -DskipITs -Prelease -Dgpg.skip=true -Dmaven.repo.local=${{ env.LOCAL_REPO }}
       - name: Cache Build Outputs
         uses: actions/cache/save@v5
         with:

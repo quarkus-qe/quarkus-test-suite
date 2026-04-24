@@ -13,7 +13,6 @@
     <properties>
         <!-- The line below is required because we have empty src/main: https://github.com/quarkusio/quarkus/issues/33061 -->
         <quarkus.build.skip>true</quarkus.build.skip>
-        <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -82,9 +81,6 @@
                                     <!-- S2i configuration for OpenShift -->
                                     <quarkus.s2i.base-jvm-image>${quarkus.s2i.base-jvm-image}</quarkus.s2i.base-jvm-image>
                                     <quarkus.s2i.base-native-image>${quarkus.s2i.base-native-image}</quarkus.s2i.base-native-image>
-                                    <!-- Passing values to cloned applications -->
-                                    <!-- Langchain4j extensions are not in core, so use platform prefix by default -->
-                                    <quarkus.platform.group-id>${quarkus.platform.group-id}</quarkus.platform.group-id>
                                 </systemPropertyVariables>
                             </configuration>
                         </execution>
