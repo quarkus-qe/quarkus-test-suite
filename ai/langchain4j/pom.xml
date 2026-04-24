@@ -15,7 +15,6 @@
         <quarkus.build.skip>true</quarkus.build.skip>
         <skipTests>true</skipTests>
         <skipITs>true</skipITs>
-        <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -75,9 +74,6 @@
                                     <quarkus.s2i.base-native-image>${quarkus.s2i.base-native-image}</quarkus.s2i.base-native-image>
                                     <!-- Services used in test suite -->
                                     <pgvector.image>docker.io/pgvector/pgvector:pg18</pgvector.image>
-                                    <!-- Passing values to cloned applications -->
-                                    <!-- Langchain4j extensions are not in core, so use platform prefix by default -->
-                                    <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
                                 </systemPropertyVariables>
                             </configuration>
                         </execution>
