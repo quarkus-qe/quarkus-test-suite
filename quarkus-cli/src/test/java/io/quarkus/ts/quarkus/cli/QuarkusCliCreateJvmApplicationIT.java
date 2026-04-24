@@ -36,6 +36,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.OS;
 
+import io.quarkus.builder.Version;
 import io.quarkus.logging.Log;
 import io.quarkus.test.bootstrap.QuarkusCliClient;
 import io.quarkus.test.bootstrap.QuarkusCliRestService;
@@ -258,8 +259,9 @@ public class QuarkusCliCreateJvmApplicationIT {
         // The snapshot not providing platform-bom so it use the latest stream in registry
         // otherwise when the quarkus version is defined (3.27.0) or if it's snapshot of some quarkus stream (3.27.999-SNAPSHOT)
         // it will set the correct stream to use
-        String quarkusStream = QuarkusProperties.getVersion().equals("3.999-SNAPSHOT") ? null
-                : QuarkusProperties.getVersion().replaceAll("^(\\d+\\.\\d+).*", "$1");
+        String version = Version.getVersion(); // We are interested in core version only
+        String quarkusStream = version.equals("3.999-SNAPSHOT") ? null
+                : version.replaceAll("^(\\d+\\.\\d+).*", "$1");
         // This can't use `--platform-bom` as it contain quarkiverse extension
         QuarkusCliRestService app = cliClient.createApplication("app",
                 defaults().withPlatformBom(null).withStream(quarkusStream).withExtensions(camelExtension,
