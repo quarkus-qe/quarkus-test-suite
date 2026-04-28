@@ -86,7 +86,8 @@ public class BearerFilesystemIT {
                 .then().statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
 
         app.logs()
-                .assertContains("Bearer token file at path " + getTokenFilePath() + " is empty or contains only whitespace");
+                .assertContains(
+                        "JWT bearer token file at path " + getTokenFilePath() + " is empty or contains only whitespace");
     }
 
     @Test
@@ -97,7 +98,7 @@ public class BearerFilesystemIT {
                 .get("/secured/getClaimsFromToken")
                 .then().statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
 
-        app.logs().assertContains("Bearer token or its expiry claim is invalid");
+        app.logs().assertContains("JWT bearer token or its expiry claim is invalid");
     }
 
     @Test
