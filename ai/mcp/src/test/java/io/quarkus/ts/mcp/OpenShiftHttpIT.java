@@ -25,6 +25,8 @@ public class OpenShiftHttpIT extends LocalStreamingHTTPIT {
             }, classes = { MCPClient.class })
     static final RestService client = new RestService()
             .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "streamable-http")
+            // todo remove the line below when https://github.com/quarkiverse/quarkus-langchain4j/issues/2159 is fixed
+            .withProperty("quarkus.langchain4j.mcp.filesystem.cache-tool-list", "false")
             .withProperty("quarkus.langchain4j.mcp.filesystem.url",
                     () -> server.getURI(Protocol.HTTP).withPath("/mcp").toString());
 

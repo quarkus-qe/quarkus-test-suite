@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -12,7 +11,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.Dependency;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.mcp.app.AdvancedServer;
@@ -50,7 +48,6 @@ public class WebSocketIT extends BasicMCPIT {
     }
 
     @Test
-    @Disabled("https://github.com/quarkiverse/quarkus-langchain4j/issues/2223")
     @Override // This test has access to more tools due to AdvancedServer class. They also may be in a different order
     public void toolChanges() {
         Response before = client().given().get("/mcp/tools");
@@ -79,7 +76,6 @@ public class WebSocketIT extends BasicMCPIT {
     }
 
     @Test
-    @DisabledOnNative(reason = "https://github.com/quarkiverse/quarkus-mcp-server/issues/706")
     void iconCheck() {
         Session session = new Session(getUrl(server));
         session.sendRequest("initialize", Session.initParamas());
