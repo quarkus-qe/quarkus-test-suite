@@ -222,7 +222,7 @@ public class FileServer {
     private String processStep(int step) {
         // Simulate work
         try {
-            Thread.sleep(1_000);
+            Thread.sleep(300);
             return String.valueOf(step);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

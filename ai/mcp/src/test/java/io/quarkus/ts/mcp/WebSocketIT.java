@@ -348,27 +348,29 @@ public class WebSocketIT extends BasicMCPIT {
         // and sends notifications on each of them
         // On the first notifications we do additional checks, to make sure, that progress tracker properly passes
         // both total number of steps and progress token
-        JsonNode first = session.getResponse();
-        session.clearHistory();
+
+        List<JsonNode> responses = session.getResponses();
+
+        Assertions.assertEquals(4, responses.size());
+
+        JsonNode first = responses.get(0);
         Assertions.assertEquals("notifications/progress", first.get("method").asText());
         Assertions.assertEquals(progressToken, first.get("params").get("progressToken").asText());
         Assertions.assertEquals(1, first.get("params").get("progress").asInt());
         Assertions.assertEquals(3, first.get("params").get("total").asInt());
         Assertions.assertEquals("Processing item #1", first.get("params").get("message").asText());
 
-        JsonNode second = session.getResponse();
-        session.clearHistory();
+        JsonNode second = responses.get(1);
         Assertions.assertEquals("notifications/progress", second.get("method").asText());
         Assertions.assertEquals(2, second.get("params").get("progress").asInt());
         Assertions.assertEquals("Processing item #2", second.get("params").get("message").asText());
 
-        JsonNode third = session.getResponse();
-        session.clearHistory();
+        JsonNode third = responses.get(2);
         Assertions.assertEquals("notifications/progress", third.get("method").asText());
         Assertions.assertEquals(3, third.get("params").get("progress").asInt());
         Assertions.assertEquals("Processing item #3", third.get("params").get("message").asText());
 
-        JsonNode result = session.getResponse().get("result");
+        JsonNode result = responses.get(3).get("result");
         Assertions.assertFalse(result.get("isError").asBoolean());
         Assertions.assertEquals("this is it: 123", result.get("content").get(0).get("text").asText());
     }
@@ -402,27 +404,27 @@ public class WebSocketIT extends BasicMCPIT {
         // and sends notifications on each of them
         // On the first notifications we do additional checks, to make sure, that notificationBuilder properly passes
         // both total number of steps and progress token
-        JsonNode first = session.getResponse();
-        session.clearHistory();
+        List<JsonNode> responses = session.getResponses();
+
+        Assertions.assertEquals(4, responses.size());
+        JsonNode first = responses.get(0);
         Assertions.assertEquals("notifications/progress", first.get("method").asText());
         Assertions.assertEquals(progressToken, first.get("params").get("progressToken").asText());
         Assertions.assertEquals(3, first.get("params").get("total").asInt());
         Assertions.assertEquals(1, first.get("params").get("progress").asInt());
         Assertions.assertEquals("Processing step 1 of 3", first.get("params").get("message").asText());
 
-        JsonNode second = session.getResponse();
-        session.clearHistory();
+        JsonNode second = responses.get(1);
         Assertions.assertEquals("notifications/progress", second.get("method").asText());
         Assertions.assertEquals(2, second.get("params").get("progress").asInt());
         Assertions.assertEquals("Processing step 2 of 3", second.get("params").get("message").asText());
 
-        JsonNode third = session.getResponse();
-        session.clearHistory();
+        JsonNode third = responses.get(2);
         Assertions.assertEquals("notifications/progress", third.get("method").asText());
         Assertions.assertEquals(3, third.get("params").get("progress").asInt());
         Assertions.assertEquals("Processing step 3 of 3", third.get("params").get("message").asText());
 
-        JsonNode result = session.getResponse().get("result");
+        JsonNode result = responses.get(3).get("result");
         Assertions.assertFalse(result.get("isError").asBoolean());
         Assertions.assertEquals("this is it: 123", result.get("content").get(0).get("text").asText());
     }
