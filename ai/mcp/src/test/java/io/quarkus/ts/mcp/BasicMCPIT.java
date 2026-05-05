@@ -5,11 +5,9 @@ import java.util.List;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
-import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.restassured.response.Response;
 
 public abstract class BasicMCPIT {
@@ -23,7 +21,6 @@ public abstract class BasicMCPIT {
     }
 
     @Test
-    @Disabled("https://github.com/quarkiverse/quarkus-langchain4j/issues/2223")
     public void tools() {
         Response response = client().given().get("/mcp/tools");
         Assertions.assertEquals(200, response.statusCode());
@@ -31,7 +28,6 @@ public abstract class BasicMCPIT {
     }
 
     @Test
-    @Disabled("https://github.com/quarkiverse/quarkus-langchain4j/issues/2223")
     public void args() {
         Response response = client().given().get("/mcp/tools/filereader/arguments");
         Assertions.assertEquals(200, response.statusCode());
@@ -84,16 +80,15 @@ public abstract class BasicMCPIT {
     }
 
     @Test
-    @Disabled("https://github.com/quarkiverse/quarkus-langchain4j/issues/2223")
     public void toolChanges() {
         Response before = client().given().get("/mcp/tools");
         Assertions.assertEquals(200, before.statusCode());
-        String initialTools = "[rootchecker, wait, filereader, meta]";
+        String initialTools = "[filereader, rootchecker, wait, meta]";
         Assertions.assertEquals(initialTools, before.body().asString());
 
         Response create = client().given().post("/mcp/meta/greeter");
         Assertions.assertEquals(200, create.statusCode());
-        String changedTools = "[rootchecker, wait, filereader, meta, greeter]";
+        String changedTools = "[filereader, rootchecker, wait, meta, greeter]";
 
         Response after = client().given().get("/mcp/tools");
         Assertions.assertEquals(200, after.statusCode());
@@ -119,7 +114,6 @@ public abstract class BasicMCPIT {
     }
 
     @Test
-    @DisabledOnNative(reason = "https://github.com/quarkiverse/quarkus-langchain4j/issues/2287")
     public void roots() {
         Response before = client().given().get("/mcp/roots");
         Assertions.assertEquals(200, before.statusCode());
