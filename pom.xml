@@ -56,7 +56,7 @@
         <mysql.upstream.image>docker.io/library/mysql:8.4</mysql.upstream.image>
         <mysql.84.image>${mysql.upstream.image}</mysql.84.image>
         <rhbk.image>registry.redhat.io/rhbk/keycloak-rhel9:26.4</rhbk.image>
-        <wiremock-jre8.version>2.35.2</wiremock-jre8.version>
+        <wiremock.version>3.13.2</wiremock.version>
         <build-reporter-maven-extension.version>3.13.1</build-reporter-maven-extension.version>
         <reruns>2</reruns>
         <oc.reruns>1</oc.reruns>
@@ -94,9 +94,9 @@
                 <version>${jsoup.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.github.tomakehurst</groupId>
-                <artifactId>wiremock-jre8</artifactId>
-                <version>${wiremock-jre8.version}</version>
+                <groupId>org.wiremock</groupId>
+                <artifactId>wiremock</artifactId>
+                <version>${wiremock.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
