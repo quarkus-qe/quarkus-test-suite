@@ -20,9 +20,9 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnNative;
-import io.quarkus.test.scenarios.annotations.DisabledOnSemeruJdk;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.utils.AwaitilityUtils;
+import io.quarkus.test.utils.JavaUtils;
 import io.quarkus.ts.opentelemetry.reactive.metrics.gc.RunGarbageCollectorTrigger;
 
 /**
@@ -31,7 +31,6 @@ import io.quarkus.ts.opentelemetry.reactive.metrics.gc.RunGarbageCollectorTrigge
  */
 @QuarkusScenario
 @DisabledOnNative(reason = "To save time and resources needed for building the apps")
-@DisabledOnSemeruJdk(reason = "Flight Recorder is not supported on IBM Semeru Runtime")
 public class OpenTelemetryMetricsIT {
     private static final Duration TIME_TO_LOGS_READY = Duration.ofSeconds(15); // metric.export.interval is 10s
     /**
@@ -70,12 +69,18 @@ public class OpenTelemetryMetricsIT {
         verifyNoDuplicateMetrics("jvm.cpu.time");
         metricAvailable(app, "jvm.cpu.recent_utilization");
         verifyNoDuplicateMetrics("jvm.cpu.recent_utilization");
-        metricAvailable(app, "jvm.cpu.limit");
-        verifyNoDuplicateMetrics("jvm.cpu.limit");
-        metricAvailable(app, "jvm.cpu.longlock");
-        verifyNoDuplicateMetrics("jvm.cpu.longlock");
-        metricAvailable(app, "jvm.cpu.context_switch");
-        verifyNoDuplicateMetrics("jvm.cpu.context_switch");
+        if (!JavaUtils.isRunningSemeruJdk()) {
+            // These metrics are not available on Semeru yet
+            // There was effort from OpenJ9 team, but it was not implemented
+            // https://github.com/open-telemetry/opentelemetry-java-instrumentation/issues/10443
+            // TODO remove Semeru check when Semeru JFR is enhanced/ support all features implemented in other Java distribution
+            metricAvailable(app, "jvm.cpu.limit");
+            verifyNoDuplicateMetrics("jvm.cpu.limit");
+            metricAvailable(app, "jvm.cpu.longlock");
+            verifyNoDuplicateMetrics("jvm.cpu.longlock");
+            metricAvailable(app, "jvm.cpu.context_switch");
+            verifyNoDuplicateMetrics("jvm.cpu.context_switch");
+        }
     }
 
     @Tag("https://github.com/quarkusio/quarkus/issues/46535")
