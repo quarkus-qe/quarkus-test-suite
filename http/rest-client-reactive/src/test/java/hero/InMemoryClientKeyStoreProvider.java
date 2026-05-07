@@ -7,8 +7,8 @@ import java.nio.file.Path;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import io.quarkus.logging.Log;
-import io.quarkus.tls.runtime.KeyStoreAndKeyCertOptions;
-import io.quarkus.tls.runtime.KeyStoreProvider;
+import io.quarkus.tls.KeyStoreAndKeyCertOptions;
+import io.quarkus.tls.KeyStoreProvider;
 import io.smallrye.common.annotation.Identifier;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
