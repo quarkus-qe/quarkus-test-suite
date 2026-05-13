@@ -22,8 +22,8 @@ public class OpenShiftToolsIT extends AbstractToolsIT {
     static final RestService server = new RestService()
             .withProperty("_ignored", "resource_with_destination::/tmp/playground/|playground/longword.txt")
             .withProperty("working.folder", "/tmp/playground/");
-
-    @GitRepositoryQuarkusApplication(repo = "https://github.com/quarkiverse/quarkus-langchain4j.git", branch = SAMPLE_BRANCH, contextDir = "samples/mcp-tools", mavenArgs = DEFAULT_ARGS
+    // TODO switch back to quarkus-qe/quarkus-langchain4j repo, when https://github.com/quarkus-qe/quarkus-test-framework/issues/1884 is fixed
+    @GitRepositoryQuarkusApplication(repo = "https://github.com/quarkus-qe/quarkus-langchain4j.git", branch = SAMPLE_BRANCH, contextDir = "samples/mcp-tools", mavenArgs = DEFAULT_ARGS
             + " -Dsamples -Dplatform-deps -Dquarkus.langchain4j.mcp.filesystem.transport-type=streamable-http")
     static final RestService client = new RestService()
             .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "streamable-http")
