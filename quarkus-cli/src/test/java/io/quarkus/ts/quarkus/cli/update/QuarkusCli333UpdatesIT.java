@@ -129,8 +129,9 @@ public class QuarkusCli333UpdatesIT extends AbstractQuarkusCliUpdateIT {
                 "Testcontainers dependency should keep its groupId");
         assertEquals("testcontainers-postgresql", postrgesSql.getArtifactId(),
                 "Testcontainers dependency should be renamed to testcontainers-postgresql");
-        assertTrue(postrgesSql.getVersion().matches("^2\\.\\d+\\.\\d+$"),
-                "Testcontainers dependency should be updated to version 2");
+        // TODO enable version check when https://redhat.atlassian.net/browse/QUARKUS-7802 if fixed
+        // assertTrue(postrgesSql.getVersion().matches("^2\\.\\d+\\.\\d+$"),
+        //        "Testcontainers dependency should be updated to version 2");
     }
 
     private static @NotNull List<String> getAllLinesWith(Path pom, String content) throws IOException {
