@@ -14,10 +14,12 @@ import org.junit.jupiter.api.condition.JRE;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnNative;
+import io.quarkus.test.scenarios.annotations.DisabledOnSemeruJdk;
 import io.quarkus.test.services.GitRepositoryQuarkusApplication;
 
 @DisabledOnNative(reason = "AoT is for JVM only")
 @DisabledForJreRange(max = JRE.JAVA_24, disabledReason = "The generation of AoT file from ITs is available for Java 25+")
+@DisabledOnSemeruJdk(reason = "The Semeru don't implement project Leyden. The Quarkus 3.35 add support for SCC (which is similar to Leyden)")
 @QuarkusScenario
 public class AoTQuickstartIT {
     public static final String QUICKSTART_DIRECTORY = "getting-started-reactive";
