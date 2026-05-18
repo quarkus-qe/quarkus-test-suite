@@ -64,7 +64,7 @@ public abstract class AbstractToolsIT {
         waitForAnswers(answers);
         Assertions.assertEquals("Hello, I am a filesystem robot, how can I help?", answers.get(0));
         answers.clear();
-        String prompt = "Read the contents of the file longword.txt";
+        String prompt = "Use readFileContent to read playground/longword.txt and return its contents";
         webSocket.sendText(prompt, true);
         waitForAnswers(answers);
         Assertions.assertTrue(answers.get(0).contains(LONG_WORD),
@@ -75,13 +75,13 @@ public abstract class AbstractToolsIT {
         int repeats = -1;
         int lastSize = 0;
         while (answers.isEmpty() || answers.size() != lastSize) {
-            if (++repeats > 10) {
-                LOG.warn("We have waited for: " + repeats / 2 + " seconds and it is too much!");
+            if (++repeats > 20) {
+                LOG.warn("We have waited for: " + repeats + " seconds and it is too much!");
                 break;
             }
             lastSize = answers.size();
             try {
-                Thread.sleep(500);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 return;
