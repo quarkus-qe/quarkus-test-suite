@@ -78,7 +78,22 @@
       "implicitFlowEnabled": false,
       "directAccessGrantsEnabled": true,
       "clientAuthenticatorType": "client-secret",
-      "secret": "test-service-client-secret"
+      "secret": "test-service-client-secret",
+      "protocolMappers": [
+        {
+          "name": "audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.client.audience": "test-service-client",
+            "id.token.claim": "false",
+            "lightweight.claim": "false",
+            "access.token.claim": "true",
+            "introspection.token.claim": "true"
+          }
+        }
+      ]
     },
     {
       "clientId": "test-jwt-client",
