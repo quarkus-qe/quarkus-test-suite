@@ -88,6 +88,19 @@
           }
         },
         {
+          "name": "audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.client.audience": "test-application-client",
+            "id.token.claim": "false",
+            "lightweight.claim": "false",
+            "access.token.claim": "true",
+            "introspection.token.claim": "true"
+          }
+        },
+        {
           "id": "12c7ffdd-f1bc-4e98-a625-20002527e1f4",
           "name": "add-roles-to-claim",
           "protocol": "openid-connect",
