@@ -1,8 +1,5 @@
 package io.quarkus.ts.security.keycloak.multitenant;
 
-import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM;
-import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_BASE_PATH;
-import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_FILE;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -19,9 +16,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.KeycloakService;
+import io.quarkus.test.bootstrap.LookupService;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
-import io.quarkus.test.services.KeycloakContainer;
 import io.quarkus.test.services.QuarkusApplication;
 
 public abstract class BaseAuthorizationCodeFlowFiltersIT {
@@ -29,9 +26,8 @@ public abstract class BaseAuthorizationCodeFlowFiltersIT {
     private static final String USER = "test-user";
     private WebClient webClient;
 
-    @KeycloakContainer(runKeycloakInProdMode = true)
-    static KeycloakService keycloak = new KeycloakService(
-            DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
+    @LookupService
+    static KeycloakService keycloak;
 
     @QuarkusApplication
     static RestService app = new RestService()
