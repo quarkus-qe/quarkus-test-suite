@@ -5,9 +5,11 @@ import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnFips;
 import io.quarkus.test.services.DevModeQuarkusApplication;
 
 @Tag("QUARKUS-959")
+@DisabledOnFips(reason = "https://redhat.atlassian.net/browse/QUARKUS-7816")
 @QuarkusScenario
 public class DevModeMariadbIT extends AbstractSqlDatabaseIT {
 
