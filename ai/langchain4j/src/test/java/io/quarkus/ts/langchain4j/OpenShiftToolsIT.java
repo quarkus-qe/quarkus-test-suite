@@ -13,7 +13,7 @@ import io.quarkus.test.services.GitRepositoryQuarkusApplication;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.langchain4j.auxiliary.MCPFileServer;
 
-@OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingContainerRegistry)
+@OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.Build)
 public class OpenShiftToolsIT extends AbstractToolsIT {
     @QuarkusApplication(boms = { @Dependency(artifactId = "quarkus-mcp-server-bom") }, dependencies = {
             @Dependency(artifactId = "quarkus-rest"),
