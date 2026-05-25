@@ -16,6 +16,7 @@ Thus, the architecture of this module is like this:
 - WebSocket classes run both basic tests and tests for server-only features. They use custom client (see Session class for details).
 
 Useful tips for making a standalone reproducer:
+- (if you're using OpenShift) change deployment strategy to registry (which we usually do not use due to issues with cross-compilation for ARM)
 - add property `quarkus.profile=debug`, you will see jsons, which are send between client and server and session info.
   - `-Dts.global.delete.folder.on.exit=false` option saves applications to `target/$TESTNAME/client/mvn-build` and to `target/$TESTNAME/server/mvn-build`  
 - For some server features the most convenient way is to run websocket tests, copy jsons and then use curl and http server to reproduce.

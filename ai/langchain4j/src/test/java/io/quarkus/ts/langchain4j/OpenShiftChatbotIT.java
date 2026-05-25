@@ -11,10 +11,7 @@ import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.GitRepositoryQuarkusApplication;
 
-// Why this test uses container registry strategy?
-// It is the easiest one to debug and create a standalone reproducer, when there is no quarkus-openshift extension.
-// Feel free to replace it with another.
-@OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingContainerRegistry)
+@OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.Build)
 public class OpenShiftChatbotIT extends AbstractChatbotIT {
     @Container(image = "${redis.image}", port = 6379, expectedLog = "Ready to accept connections")
     static DefaultService redis = new DefaultService().withProperty("ALLOW_EMPTY_PASSWORD", "YES");
