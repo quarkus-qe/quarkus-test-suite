@@ -55,6 +55,8 @@ public abstract class AbstractToolsIT {
         Assertions.assertEquals(LONG_WORD, text.text());
     }
 
+    private static final int MAX_ASK_RETRIES = 3;
+
     @Test
     void askAI() throws ExecutionException, InterruptedException {
         List<String> answers = Collections.synchronizedList(new ArrayList<>());
@@ -63,12 +65,21 @@ public abstract class AbstractToolsIT {
                 .buildAsync(URI.create(uri.toString()), new WebSocketListener(answers)).get();
         waitForAnswers(answers);
         Assertions.assertEquals("Hello, I am a filesystem robot, how can I help?", answers.get(0));
-        answers.clear();
         String prompt = "Use readFileContent to read playground/longword.txt and return its contents";
-        webSocket.sendText(prompt, true);
-        waitForAnswers(answers);
-        Assertions.assertTrue(answers.get(0).contains(LONG_WORD),
-                "AI was not able to read content of the file and returned this instead:" + answers);
+        List<String> lastAnswers = null;
+        for (int attempt = 1; attempt <= MAX_ASK_RETRIES; attempt++) {
+            answers.clear();
+            webSocket.sendText(prompt, true);
+            waitForAnswers(answers);
+            lastAnswers = List.copyOf(answers);
+            if (!answers.isEmpty() && answers.get(0).contains(LONG_WORD)) {
+                return;
+            }
+            LOG.warnf("Attempt %d/%d: AI did not use the tool, retrying. Response: %s",
+                    attempt, MAX_ASK_RETRIES, lastAnswers);
+        }
+        Assertions.fail("AI was not able to read content of the file after " + MAX_ASK_RETRIES
+                + " attempts. Last response: " + lastAnswers);
     }
 
     private void waitForAnswers(List<String> answers) {
