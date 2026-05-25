@@ -24,7 +24,7 @@ public class ToolsIT extends AbstractToolsIT {
             .withProperty("working.folder", () -> getFileFolder(ToolsIT.class));
 
     @GitRepositoryQuarkusApplication(repo = "https://github.com/quarkiverse/quarkus-langchain4j.git", branch = SAMPLE_BRANCH, contextDir = "samples/mcp-tools", mavenArgs = DEFAULT_ARGS
-            + " -Dsamples -Dplatform-deps -Dquarkus.langchain4j.mcp.filesystem.transport-type=streamable-http")
+            + " -Dquarkus.langchain4j.mcp.filesystem.transport-type=streamable-http")
     static final RestService client = new RestService()
             .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "streamable-http")
             .withProperty("quarkus.langchain4j.mcp.filesystem.url",

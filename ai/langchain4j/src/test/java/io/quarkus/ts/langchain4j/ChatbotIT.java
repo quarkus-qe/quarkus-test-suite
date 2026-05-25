@@ -16,8 +16,7 @@ public class ChatbotIT extends AbstractChatbotIT {
     @Container(image = "${redis.image}", port = 6379, expectedLog = "Ready to accept connections")
     static DefaultService redis = new DefaultService().withProperty("ALLOW_EMPTY_PASSWORD", "YES");
 
-    @GitRepositoryQuarkusApplication(repo = "https://github.com/quarkiverse/quarkus-langchain4j.git", branch = SAMPLE_BRANCH, contextDir = "samples/chatbot", mavenArgs = DEFAULT_ARGS
-            + " -Dsamples -Dplatform-deps")
+    @GitRepositoryQuarkusApplication(repo = "https://github.com/quarkiverse/quarkus-langchain4j.git", branch = SAMPLE_BRANCH, contextDir = "samples/chatbot", mavenArgs = DEFAULT_ARGS)
     static final RestService app = new RestService()
             .withProperty("quarkus.redis.hosts",
                     () -> {
