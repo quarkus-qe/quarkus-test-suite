@@ -156,7 +156,7 @@ public class BeanParamPermissionIT extends BaseBeanParamPermissionsIT {
 
     @Test
     public void testRecordBeanParamDenialInvalidDocumentId() {
-        givenAuthenticatedUser(ADMIN)
+        givenAuthenticatedUser(USER)
                 .header("CustomAuthorization", "valid-token")
                 .queryParam("docId", "invalid-id")
                 .queryParam("version", "1")
