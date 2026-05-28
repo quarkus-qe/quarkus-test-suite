@@ -1,10 +1,17 @@
 package io.quarkus.ts.transactions;
 
 import static io.quarkus.test.services.containers.DockerContainerManagedResource.DOCKER_INNER_CONTAINER;
+import static org.hamcrest.Matchers.containsString;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.apache.http.HttpStatus;
 import org.jboss.logging.Logger;
@@ -20,6 +27,7 @@ import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.services.SqlServerContainer;
 import io.quarkus.ts.transactions.recovery.TransactionExecutor;
+import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
 @Tag("fips-incompatible") // MSSQL works with BC JSSE FIPS which is not native-compatible, we test FIPS elsewhere
@@ -73,6 +81,33 @@ public class MssqlTransactionGeneralUsageIT extends TransactionCommons {
                 // update ae1_0 set amount=?,updatedAt=? from account ae1_0 where ae1_0.accountNumber=?
                 // however we shouldn't rely on alias generation logic, therefore we test the UPDATE statement is there
                 new Operation(actualOperationName -> actualOperationName.startsWith("UPDATE msdb.")) };
+    }
+
+    @Test
+    @Tag("QUARKUS-7365")
+    void testNoDataLeakWhenReaperFiresDuringPreparedStatement() throws Exception {
+        int concurrency = 2;
+        int iterations = 10;
+        ExecutorService executor = Executors.newFixedThreadPool(concurrency);
+        try {
+            for (int i = 0; i < iterations; i++) {
+                List<Future<?>> futures = IntStream.range(0, concurrency)
+                        .mapToObj(j -> executor.submit(() -> getApp().given()
+                                .param("name", "LEAKED")
+                                .contentType(ContentType.JSON)
+                                .patch("/client/update-with-prepare-before-timeout/" + ACCOUNT_NUMBER_FRANCISCO)))
+                        .collect(Collectors.toList());
+                for (Future<?> future : futures) {
+                    future.get();
+                }
+            }
+        } finally {
+            executor.shutdown();
+        }
+
+        var response = getApp().given().get("/client/" + ACCOUNT_NUMBER_FRANCISCO);
+        response.then().statusCode(HttpStatus.SC_OK)
+                .body(containsString(ACCOUNT_NUMBER_FRANCISCO), containsString("Francisco"));
     }
 
     @Test
