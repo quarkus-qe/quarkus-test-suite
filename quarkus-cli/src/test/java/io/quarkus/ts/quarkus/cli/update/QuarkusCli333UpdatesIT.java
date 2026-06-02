@@ -89,10 +89,7 @@ public class QuarkusCli333UpdatesIT extends AbstractQuarkusCliUpdateIT {
         oldProperties.put("quarkus.datasource.jdbc.enable-metrics", "true");
         newProperties.put("quarkus.datasource.jdbc.metrics.enabled", "true");
 
-        // TODO: drop using temp dir when https://github.com/quarkusio/quarkus-updates/issues/394 is fixed
-        try (var ignored = cliClient.useTemporaryDirectory()) {
-            QuarkusCLIUtils.checkPropertiesUpdate(quarkusCLIAppManager, oldProperties, newProperties);
-        }
+        QuarkusCLIUtils.checkPropertiesUpdate(quarkusCLIAppManager, oldProperties, newProperties);
     }
 
     /**
