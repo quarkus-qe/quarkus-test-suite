@@ -83,12 +83,12 @@ public abstract class BasicMCPIT {
     public void toolChanges() {
         Response before = client().given().get("/mcp/tools");
         Assertions.assertEquals(200, before.statusCode());
-        String initialTools = "[filereader, rootchecker, wait, meta]";
+        String initialTools = "[rootchecker, wait, filereader, meta]";
         Assertions.assertEquals(initialTools, before.body().asString());
 
         Response create = client().given().post("/mcp/meta/greeter");
         Assertions.assertEquals(200, create.statusCode());
-        String changedTools = "[filereader, rootchecker, wait, meta, greeter]";
+        String changedTools = "[rootchecker, wait, filereader, meta, greeter]";
 
         Response after = client().given().get("/mcp/tools");
         Assertions.assertEquals(200, after.statusCode());
