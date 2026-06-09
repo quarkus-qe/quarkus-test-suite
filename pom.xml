@@ -450,8 +450,11 @@
             </activation>
             <modules>
                 <module>env-info</module>
+                <!-- TODO: re-enable once we have aligned builds for LC4J/MCP server extensions
+                     See also https://github.com/quarkus-qe/quarkus-test-suite/pull/2978
                 <module>ai/langchain4j</module>
                 <module>ai/mcp</module>
+                -->
             </modules>
         </profile>
         <profile>
