@@ -1,4 +1,4 @@
-package io.quarkus.qe.hibernate;
+package io.quarkus.qe.hibernate.spatial;
 
 import io.quarkus.test.scenarios.OpenShiftScenario;
 

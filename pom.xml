@@ -684,6 +684,7 @@
                 <module>hibernate/hibernate-fulltext-search</module>
                 <module>hibernate/jakarta-data</module>
                 <module>hibernate/hibernate-offline-startup</module>
+                <module>hibernate/hibernate-spatial</module>
             </modules>
         </profile>
         <profile>
