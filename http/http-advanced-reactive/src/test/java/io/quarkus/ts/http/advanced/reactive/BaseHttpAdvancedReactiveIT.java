@@ -21,7 +21,7 @@ import static jakarta.ws.rs.core.MediaType.TEXT_XML;
 import static org.apache.http.HttpHeaders.ACCEPT_ENCODING;
 import static org.apache.http.HttpHeaders.ACCEPT_LANGUAGE;
 import static org.apache.http.HttpHeaders.CONTENT_TYPE;
-import static org.apache.http.HttpStatus.SC_INTERNAL_SERVER_ERROR;
+import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -262,7 +262,7 @@ public abstract class BaseHttpAdvancedReactiveIT {
         request
                 .post(ROOT_PATH + MULTIPART_FORM_PATH)
                 .then()
-                .statusCode(SC_INTERNAL_SERVER_ERROR);
+                .statusCode(SC_BAD_REQUEST);
     }
 
     @DisplayName("Jakarta REST RouterFilter and Vert.x Web Routes integration")
