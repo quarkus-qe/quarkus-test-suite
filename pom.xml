@@ -16,7 +16,7 @@
         <surefire-plugin.version>3.5.5</surefire-plugin.version>
         <failsafe-plugin.version>3.5.5</failsafe-plugin.version>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
-        <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
+        <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
         <quarkus.platform.version>3.33.999-SNAPSHOT</quarkus.platform.version>
         <quarkus.ide.version>3.33.1</quarkus.ide.version>
         <quarkus.qe.framework.version>1.8.4</quarkus.qe.framework.version>
@@ -179,12 +179,12 @@
         <pluginRepository>
             <id>quarkus-snapshots-plugin-repository</id>
             <url>https://central.sonatype.com/repository/maven-snapshots/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
         </pluginRepository>
     </pluginRepositories>
     <build>
@@ -323,6 +323,8 @@
                                 <keycloak.image>quay.io/keycloak/keycloak:26.5</keycloak.image>
                                 <bouncycastle.bctls-fips.version>1.0.12.2</bouncycastle.bctls-fips.version>
                                 <rhbk.image>${rhbk.image}</rhbk.image>
+                                <quarkus.platform.group-id>${quarkus.platform.group-id}</quarkus.platform.group-id>
+                                <quarkus.platform.version>${quarkus.platform.version}</quarkus.platform.version>
                             </systemPropertyVariables>
                         </configuration>
                     </execution>
@@ -448,6 +450,9 @@
                     <name>all-modules</name>
                 </property>
             </activation>
+            <properties>
+                <quarkus.platform.version>3.33.999-core-3.33-SNAPSHOT</quarkus.platform.version>
+            </properties>
             <modules>
                 <module>env-info</module>
                 <module>ai/langchain4j</module>
