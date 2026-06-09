@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 
 import io.quarkus.qe.hibernate.data.TestDataEntity;
 import io.quarkus.test.bootstrap.DevModeQuarkusService;
@@ -16,6 +17,7 @@ import io.quarkus.test.services.DevModeQuarkusApplication;
 import io.quarkus.test.utils.AwaitilityUtils;
 
 @QuarkusScenario
+@DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "postgis/postgis image used by Hibernate Spatial dev service is not available for aarch64")
 public class DevModeHibernateIT extends BaseHibernateIT {
 
     private static final String TEST_DATA_ENTITY_PATH = "src/main/java/io/quarkus/qe/hibernate/data/TestDataEntity.java";
