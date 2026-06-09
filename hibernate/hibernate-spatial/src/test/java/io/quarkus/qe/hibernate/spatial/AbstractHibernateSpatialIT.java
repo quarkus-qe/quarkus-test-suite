@@ -1,4 +1,4 @@
-package io.quarkus.qe.hibernate;
+package io.quarkus.qe.hibernate.spatial;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsInAnyOrder;

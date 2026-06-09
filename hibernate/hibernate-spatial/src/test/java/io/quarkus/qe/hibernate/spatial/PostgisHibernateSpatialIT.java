@@ -1,4 +1,4 @@
-package io.quarkus.qe.hibernate;
+package io.quarkus.qe.hibernate.spatial;
 
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 
