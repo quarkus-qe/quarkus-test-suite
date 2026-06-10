@@ -15,7 +15,10 @@ public class DevModeOtelCapabilitiesIT {
     static final RestService app = new RestService()
             .withProperty("quarkus.otel.traces.enabled", "false")
             .withProperty("quarkus.otel.metrics.enabled", "true")
-            .withProperty("quarkus.otel.logs.enabled", "true");
+            .withProperty("quarkus.otel.logs.enabled", "true")
+            // workaround for https://github.com/quarkusio/quarkus/issues/54759
+            .withProperty("grafana.endpoint", "http://localhost:0")
+            .withProperty("otel-collector.url", "http://localhost:0");
 
     @Test
     void testShouldNotContainFailedToExport() {
