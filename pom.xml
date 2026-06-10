@@ -443,7 +443,7 @@
         <profile>
             <id>ai-modules</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <activeByDefault>false</activeByDefault>
                 <property>
                     <name>all-modules</name>
                 </property>
