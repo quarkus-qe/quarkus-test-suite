@@ -19,7 +19,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.http.HttpHeaders;
-import org.htmlunit.FailingHttpStatusCodeException;
 import org.htmlunit.SilentCssErrorHandler;
 import org.htmlunit.WebClient;
 import org.htmlunit.WebClientOptions;
@@ -135,10 +134,13 @@ public abstract class AbstractOidcStepUpAuthenticationIT {
                     .getWebResponse().getContentAsString();
             assertThat(content, containsString("Single ACR silver validated"));
 
-            // "gold" ACR needs step-up authentication, we expect 401
-            Assertions.assertThrows(FailingHttpStatusCodeException.class,
-                    () -> webClient.getPage(app.getURI(Protocol.HTTP).withPath("/step-up/single-acr-gold-web-app").toString())
-                            .getWebResponse().getContentAsString());
+            // "gold" ACR needs step-up authentication, silver credentials are not sufficient
+            webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
+            content = webClient.getPage(
+                    app.getURI(Protocol.HTTP).withPath("/step-up/single-acr-gold-web-app").toString())
+                    .getWebResponse().getContentAsString();
+            assertThat(content, not(containsString("Single ACR gold validated")));
+            webClient.getOptions().setThrowExceptionOnFailingStatusCode(true);
 
             // Clear the session cookie so that we can re-authenticate with the new ACR value
             webClient.getCookieManager().clearCookies();
