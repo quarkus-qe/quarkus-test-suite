@@ -10,6 +10,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -19,10 +20,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.http.HttpHeaders;
-import org.htmlunit.FailingHttpStatusCodeException;
 import org.htmlunit.SilentCssErrorHandler;
 import org.htmlunit.WebClient;
 import org.htmlunit.WebClientOptions;
+import org.htmlunit.WebRequest;
 import org.htmlunit.WebResponse;
 import org.htmlunit.html.HtmlForm;
 import org.htmlunit.html.HtmlPage;
@@ -135,10 +136,15 @@ public abstract class AbstractOidcStepUpAuthenticationIT {
                     .getWebResponse().getContentAsString();
             assertThat(content, containsString("Single ACR silver validated"));
 
-            // "gold" ACR needs step-up authentication, we expect 401
-            Assertions.assertThrows(FailingHttpStatusCodeException.class,
-                    () -> webClient.getPage(app.getURI(Protocol.HTTP).withPath("/step-up/single-acr-gold-web-app").toString())
-                            .getWebResponse().getContentAsString());
+            // "gold" ACR needs step-up authentication; Quarkus redirects to Keycloak with acr_values=gold
+            // instead of returning 401 (see https://github.com/quarkusio/quarkus/pull/54785)
+            webClient.getOptions().setRedirectEnabled(false);
+            WebResponse stepUpResponse = webClient.loadWebResponse(new WebRequest(
+                    URI.create(app.getURI(Protocol.HTTP).withPath("/step-up/single-acr-gold-web-app").toString()).toURL()));
+            Assertions.assertEquals(302, stepUpResponse.getStatusCode());
+            String location = stepUpResponse.getResponseHeaderValue("location");
+            assertThat(location, containsString("acr_values=gold"));
+            webClient.getOptions().setRedirectEnabled(true);
 
             // Clear the session cookie so that we can re-authenticate with the new ACR value
             webClient.getCookieManager().clearCookies();
