@@ -67,6 +67,11 @@ public class QuarkusCliOfferingDefaultIT {
         String quarkusVersionWithoutNumber = getQuarkusVersionWithoutNumberSuffix();
         assertThat(REST_EXTENSION_ARTIFACT + " should not have support scope as no offering was selected",
                 extensionLine, not(containsString(REST_SUPPORT_SCOPE)));
+        if (quarkusVersionWithoutNumber.contains("SP")) {
+            // quarkusVersionWithoutNumber is based on platform version, extensions are based on core version
+            // Example:     platform version: 3.27.4.SP1-redhat-00001     core version: 3.27.4.redhat-00005
+            quarkusVersionWithoutNumber = quarkusVersionWithoutNumber.replaceAll("SP.-", "");
+        }
         assertThat(REST_EXTENSION_ARTIFACT + " should contain Quarkus version " + quarkusVersionWithoutNumber,
                 extensionLine, containsString(quarkusVersionWithoutNumber));
     }
