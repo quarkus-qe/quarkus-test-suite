@@ -11,14 +11,14 @@ import io.quarkus.ts.hibernate.reactive.AbstractDatabaseHibernateReactiveIT;
 
 @OpenShiftScenario
 @EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
-public class OpenShiftPostgresql13HibernateReactiveIT extends AbstractDatabaseHibernateReactiveIT {
+public class OpenShiftPostgresql15HibernateReactiveIT extends AbstractDatabaseHibernateReactiveIT {
 
     private static final String POSTGRES_USER = "quarkus_test";
     private static final String POSTGRES_PASSWORD = "quarkus_test";
     private static final String POSTGRES_DATABASE = "quarkus_test";
     private static final int POSTGRES_PORT = 5432;
 
-    @Container(image = "${postgresql.13.image}", port = POSTGRES_PORT, expectedLog = "listening on IPv4 address")
+    @Container(image = "${postgresql.15.image}", port = POSTGRES_PORT, expectedLog = "listening on IPv4 address")
     static PostgresqlService database = new PostgresqlService()
             .withUser(POSTGRES_USER)
             .withPassword(POSTGRES_PASSWORD)
