@@ -27,7 +27,7 @@ public class OpenShiftPostgresqlMultitenantHibernateSearchIT extends AbstractMul
             .withProperty("cluster.routing.allocation.disk.threshold_enabled", "false")
             .withProperty("xpack.security.enabled", "false");
 
-    @Container(image = "${postgresql.13.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
+    @Container(image = "${postgresql.latest.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
     static PostgresqlService database = new PostgresqlService();
 
     @QuarkusApplication
