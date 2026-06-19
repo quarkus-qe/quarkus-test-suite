@@ -44,7 +44,9 @@ public class DevModeOpenTelemetryIT {
     @DevModeQuarkusApplication(classes = { PingPongService.class, PingResource.class,
             PongResource.class })
     static DevModeQuarkusService otel = (DevModeQuarkusService) new DevModeQuarkusService()
-            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl);
+            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl)
+            // TODO: remove once https://github.com/quarkusio/quarkus/issues/54953 is fixed
+            .withProperty("quarkus.observability.lgtm.enabled", "false");
 
     @Test
     @Order(2)

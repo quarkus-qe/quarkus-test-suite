@@ -41,7 +41,9 @@ public class DevModeOpenTelemetryIT {
     static DevModeQuarkusService app = (DevModeQuarkusService) new DevModeQuarkusService()
             .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl)
             .withProperty("quarkus.datasource.jdbc.telemetry", "true")
-            .withProperty("quarkus.otel.enabled", "true");
+            .withProperty("quarkus.otel.enabled", "true")
+            // TODO: remove once https://github.com/quarkusio/quarkus/issues/54953 is fixed
+            .withProperty("quarkus.observability.lgtm.enabled", "false");
 
     @Test
     void testJdbcTraces() {
