@@ -8,6 +8,7 @@ import static io.restassured.RestAssured.given;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.KeyFactory;
@@ -64,17 +65,31 @@ public class BearerFilesystemIT {
             .withProperty("quarkus.oidc.token.require-jwt-introspection-only", "true")
             // set bearer token config
             .withProperty("quarkus.oidc.credentials.jwt.source", "bearer")
-            .withProperty("quarkus.oidc.credentials.jwt.token-path", BearerFilesystemIT::getTokenFilePath);
+            .withProperty("quarkus.oidc.credentials.jwt.token-path", BearerFilesystemIT::getTokenFilePath)
+            .onPreStart(s -> {
+                // WORKAROUND for https://github.com/quarkusio/quarkus/issues/55045
+                // Quarkus eagerly validates the bearer token file at startup.
+                // Write an already-expired dummy JWT so the file exists and passes startup
+                // validation; the token is expired so Quarkus will re-read the file on every
+                // request, which is exactly what the test scenarios need.
+                // Revert this workaround once the upstream issue is resolved.
+                long exp = System.currentTimeMillis() / 1000 - 1;
+                String header = Base64.encodeBase64URLSafeString("{\"alg\":\"none\"}".getBytes(StandardCharsets.UTF_8));
+                String payload = Base64.encodeBase64URLSafeString(
+                        ("{\"exp\":" + exp + "}").getBytes(StandardCharsets.UTF_8));
+                FileUtils.copyContentTo(header + "." + payload + ".dummy", Path.of(getTokenFilePath()));
+            });
 
     @Test
     @Order(1)
     public void missingTokenFileTest() throws Exception {
-        // without actual token in file,
+        // The onPreStart workaround creates a dummy token file; delete it so we can test the missing-file scenario.
+        Files.deleteIfExists(Path.of(getTokenFilePath()));
         given().auth().oauth2(createUserToken())
                 .get("/secured/getClaimsFromToken")
-                .then().statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+                .then().statusCode(HttpStatus.SC_UNAUTHORIZED);
 
-        app.logs().assertContains("Cannot find a valid JWT bearer token at path: " + getTokenFilePath());
+        app.logs().assertContains("Cannot find a file with a JWT bearer token at path: " + getTokenFilePath());
     }
 
     @Test
@@ -83,7 +98,7 @@ public class BearerFilesystemIT {
         FileUtils.copyContentTo("", Path.of(getTokenFilePath()));
         given().auth().oauth2(createUserToken())
                 .get("/secured/getClaimsFromToken")
-                .then().statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+                .then().statusCode(HttpStatus.SC_UNAUTHORIZED);
 
         app.logs()
                 .assertContains(
@@ -96,7 +111,7 @@ public class BearerFilesystemIT {
         FileUtils.copyContentTo("Invalid token string", Path.of(getTokenFilePath()));
         given().auth().oauth2(createUserToken())
                 .get("/secured/getClaimsFromToken")
-                .then().statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+                .then().statusCode(HttpStatus.SC_UNAUTHORIZED);
 
         app.logs().assertContains("JWT bearer token or its expiry claim is invalid");
     }
