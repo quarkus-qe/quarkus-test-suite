@@ -45,5 +45,9 @@
             <artifactId>jackson-dataformat-cbor</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-elytron-security-properties-file</artifactId>
+        </dependency>
     </dependencies>
 </project>
