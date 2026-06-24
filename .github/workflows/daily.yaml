@@ -27,7 +27,7 @@ jobs:
           LOCAL_REPO="$(pwd)/maven-repository"
           git clone https://github.com/quarkusio/quarkus.git && cd quarkus && ./mvnw -B --no-transfer-progress -s .github/mvn-settings.xml clean install -Dquickly -Dno-test-modules -Prelocations -Dmaven.repo.local=$LOCAL_REPO
       - name: Cache Build Outputs
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         with:
           # Keep same path ./action/cache-quarkus/action
           path: |
