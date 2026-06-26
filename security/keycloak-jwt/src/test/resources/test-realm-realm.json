@@ -91,6 +91,53 @@
       "redirectUris": [
         "*"
       ]
+    },
+    {
+      "clientId": "test-application-client-par",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "clientAuthenticatorType": "client-secret-jwt",
+      "secret": "AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow",
+      "attributes": {
+        "require.pushed.authorization.requests": "true"
+      },
+      "protocolMappers": [
+        {
+          "id": "68d0ec9a-57d7-4b00-b7e5-e2b93bdcd1e1",
+          "name": "realm roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute": "foo",
+            "access.token.claim": "true",
+            "claim.name": "realm_access.roles",
+            "jsonType.label": "String",
+            "multivalued": "true"
+          }
+        },
+        {
+          "id": "01384376-76e1-4ec3-8f20-be203d552440",
+          "name": "username",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "userinfo.token.claim": "true",
+            "user.attribute": "username",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "preferred_username",
+            "jsonType.label": "String"
+          }
+        }
+      ],
+      "redirectUris": [
+        "*"
+      ]
     }
   ]
 }
