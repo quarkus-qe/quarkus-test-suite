@@ -23,13 +23,15 @@ jobs:
           distribution: 'temurin'
           java-version: ${{ matrix.java }}
           check-latest: true
-      - name: Initialize Repository Path
+      - name: Install xsltproc
+        run: sudo apt install -qq -y xsltproc
+      - name: Initialize build environment properties
         run: |
           # Save local repo to GH ENV to ensure that it's the same in all steps
           mkdir -p maven-repository
           echo "LOCAL_REPO=$(pwd)/maven-repository" >> $GITHUB_ENV
-          echo "MVN_SETTINGS=$(pwd)/.github/mvn-settings.xml" >> $GITHUB_ENV
-      - name: Build Quarkus ${QUARKUS_BUILD}
+          echo "MVN_SETTINGS=$GITHUB_WORKSPACE/.github/mvn-settings.xml" >> $GITHUB_ENV
+      - name: Build Quarkus ${{ env.QUARKUS_BUILD }}
         run: |
           git clone -b 3.x https://github.com/quarkusio/quarkus.git && cd quarkus
           ./mvnw -B --no-transfer-progress -s ${{ env.MVN_SETTINGS }} clean install -Dquickly -Dno-test-modules -Prelocations -Dmaven.repo.local=${{ env.LOCAL_REPO }}
@@ -46,19 +48,20 @@ jobs:
         run: |
           git clone https://github.com/quarkiverse/quarkus-mcp-server.git && cd quarkus-mcp-server
           ./mvnw -B --no-transfer-progress -s ${{ env.MVN_SETTINGS }} clean install -DskipTests -Dquarkus.version=${QUARKUS_BUILD} -Dmaven.repo.local=${{ env.LOCAL_REPO }}
-      - name: Build Quarkus Platform main with Quarkus core ${QUARKUS_BUILD} (version 999-core-3.x-SNAPSHOT)
+      - name: Build Quarkus Platform main with Quarkus core ${{ env.QUARKUS_BUILD }} (version 999-core-3.x-SNAPSHOT)
         run: |
           git clone https://github.com/quarkusio/quarkus-platform.git && cd quarkus-platform
 
           # add some common options
           cat <<EOF >> .mvn/maven.config
-            --no-transfer-progress
-            -Dmaven.repo.local=${{ env.LOCAL_REPO }}
-            -s${{ env.MVN_SETTINGS }}
+          --no-transfer-progress
+          -Dmaven.repo.local=${{ env.LOCAL_REPO }}
+          -s
+          ${{ env.MVN_SETTINGS }}
           EOF
-          cp .github/minimise_platform.xsl .
-          chmod u+x ./github/build_platform.sh
-          PLATFORM_BUILD=999-core-3.x-SNAPSHOT MCP_BUILD=999-SNAPSHOT LANGCHAIN4J_BUILD=999-SNAPSHOT QUARKUS_BUILD=${QUARKUS_BUILD} ./github/build_platform.sh
+          cp $GITHUB_WORKSPACE/.github/minimise_platform.xsl .
+          chmod u+x $GITHUB_WORKSPACE/.github/build_platform.sh
+          PLATFORM_BUILD=999-core-3.x-SNAPSHOT MCP_BUILD=999-SNAPSHOT LANGCHAIN4J_BUILD=999-SNAPSHOT QUARKUS_BUILD=${QUARKUS_BUILD} $GITHUB_WORKSPACE/.github/build_platform.sh
       - name: Cache Build Outputs
         uses: actions/cache/save@v6
         with:
