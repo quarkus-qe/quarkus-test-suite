@@ -28,24 +28,25 @@ jobs:
           # Save local repo to GH ENV to ensure that it's the same in all steps
           mkdir -p maven-repository
           echo "LOCAL_REPO=$(pwd)/maven-repository" >> $GITHUB_ENV
+          echo "MVN_SETTINGS=$(pwd)/.github/mvn-settings.xml" >> $GITHUB_ENV
       - name: Build Quarkus ${QUARKUS_BUILD}
         run: |
           git clone -b 3.x https://github.com/quarkusio/quarkus.git && cd quarkus
-          ./mvnw -B --no-transfer-progress -s .github/mvn-settings.xml clean install -Dquickly -Dno-test-modules -Prelocations -Dmaven.repo.local=${{ env.LOCAL_REPO }}
+          ./mvnw -B --no-transfer-progress -s ${{ env.MVN_SETTINGS }} clean install -Dquickly -Dno-test-modules -Prelocations -Dmaven.repo.local=${{ env.LOCAL_REPO }}
       - name: Build Quarkus Langchain4j 999-SNAPSHOT
         run: |
           git clone https://github.com/quarkiverse/quarkus-langchain4j.git && cd quarkus-langchain4j
           
           # integration tests depend on platform by default (see https://github.com/quarkiverse/quarkus-langchain4j/issues/2633)
-          ./mvnw versions:set-property -Dproperty=quarkus.platform.version -DnewVersion=${QUARKUS_BUILD} -DgenerateBackupPoms=false
-          ./mvnw versions:set-property -Dproperty=quarkus.platform.group-id -DnewVersion=io.quarkus -DgenerateBackupPoms=false
+          ./mvnw versions:set-property -Dproperty=quarkus.platform.version -DnewVersion=${QUARKUS_BUILD} -DgenerateBackupPoms=false -B --no-transfer-progress -s ${{ env.MVN_SETTINGS }}
+          ./mvnw versions:set-property -Dproperty=quarkus.platform.group-id -DnewVersion=io.quarkus -DgenerateBackupPoms=false -B --no-transfer-progress -s ${{ env.MVN_SETTINGS }}
 
-          ./mvnw -B --no-transfer-progress -s .github/mvn-settings.xml clean install -DskipTests -Dquarkus.version=${QUARKUS_BUILD} -Dmaven.repo.local=${{ env.LOCAL_REPO }}
+          ./mvnw -B --no-transfer-progress -s ${{ env.MVN_SETTINGS }} clean install -DskipTests -Dquarkus.version=${QUARKUS_BUILD} -Dmaven.repo.local=${{ env.LOCAL_REPO }}
       - name: Build Quarkus MCP Server 999-SNAPSHOT
         run: |
           git clone https://github.com/quarkiverse/quarkus-mcp-server.git && cd quarkus-mcp-server
-          ./mvnw -B --no-transfer-progress -s .github/mvn-settings.xml clean install -DskipTests -Dquarkus.version=${QUARKUS_BUILD} -Dmaven.repo.local=${{ env.LOCAL_REPO }}
-      - name: Build Quarkus Platform main with Quarkus core ${QUARKUS_BUILD} (version 999-core-main-SNAPSHOT)
+          ./mvnw -B --no-transfer-progress -s ${{ env.MVN_SETTINGS }} clean install -DskipTests -Dquarkus.version=${QUARKUS_BUILD} -Dmaven.repo.local=${{ env.LOCAL_REPO }}
+      - name: Build Quarkus Platform main with Quarkus core ${QUARKUS_BUILD} (version 999-core-3.x-SNAPSHOT)
         run: |
           git clone https://github.com/quarkusio/quarkus-platform.git && cd quarkus-platform
 
@@ -53,11 +54,11 @@ jobs:
           cat <<EOF >> .mvn/maven.config
             --no-transfer-progress
             -Dmaven.repo.local=${{ env.LOCAL_REPO }}
-            -s.github/mvn-settings.xml
+            -s${{ env.MVN_SETTINGS }}
           EOF
           cp .github/minimise_platform.xsl .
           chmod u+x ./github/build_platform.sh
-          PLATFORM_BUILD=999-core-main-SNAPSHOT MCP_BUILD=999-SNAPSHOT LANGCHAIN4J_BUILD=999-SNAPSHOT QUARKUS_BUILD=${QUARKUS_BUILD} ./github/build_platform.sh
+          PLATFORM_BUILD=999-core-3.x-SNAPSHOT MCP_BUILD=999-SNAPSHOT LANGCHAIN4J_BUILD=999-SNAPSHOT QUARKUS_BUILD=${QUARKUS_BUILD} ./github/build_platform.sh
       - name: Cache Build Outputs
         uses: actions/cache/save@v6
         with:
