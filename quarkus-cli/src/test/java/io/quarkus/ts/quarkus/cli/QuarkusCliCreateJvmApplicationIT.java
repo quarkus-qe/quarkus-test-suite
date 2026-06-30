@@ -155,11 +155,11 @@ public class QuarkusCliCreateJvmApplicationIT {
 
     private static void useQuarkusSnapshotFromSonatypeIfNeeded(QuarkusCliRestService app, String quarkusVersion) {
         // must match only the 'main' branch snapshot, not 999-SNAPSHOT in other branches as they are not published
-        boolean is999Snapshot = "999-SNAPSHOT".equals(quarkusVersion);
+        boolean is999Snapshot = "3.999-SNAPSHOT".equals(quarkusVersion);
         var localRepository = System.getProperty("localRepository");
         if (is999Snapshot && localRepository != null) {
             if (!doesQuarkusSnapshotExistInLocalRepo(localRepository)) { // not adding external repository when not needed
-                Log.info("Configuring Sonatype Maven Snapshots repository to make Quarkus 999-SNAPSHOT available");
+                Log.info("Configuring Sonatype Maven Snapshots repository to make Quarkus 3.999-SNAPSHOT available");
                 configureGradleSnapshotRepository(app, "build.gradle"); // Maven repository
                 configureGradleSnapshotRepository(app, "settings.gradle"); // plugin Maven repository
             }
@@ -173,8 +173,8 @@ public class QuarkusCliCreateJvmApplicationIT {
                 .resolve("io")
                 .resolve("quarkus")
                 .resolve("io.quarkus.gradle.plugin")
-                .resolve("999-SNAPSHOT")
-                .resolve("io.quarkus.gradle.plugin-999-SNAPSHOT.jar"));
+                .resolve("3.999-SNAPSHOT")
+                .resolve("io.quarkus.gradle.plugin-3.999-SNAPSHOT.jar"));
     }
 
     private void runGradleDaemon(QuarkusCliRestService app) {
@@ -258,7 +258,7 @@ public class QuarkusCliCreateJvmApplicationIT {
         // The snapshot not providing platform-bom so it use the latest stream in registry
         // otherwise when the quarkus version is defined (3.27.0) or if it's snapshot of some quarkus stream (3.27.999-SNAPSHOT)
         // it will set the correct stream to use
-        String quarkusStream = QuarkusProperties.getVersion().equals("999-SNAPSHOT") ? null
+        String quarkusStream = QuarkusProperties.getVersion().equals("3.999-SNAPSHOT") ? null
                 : QuarkusProperties.getVersion().replaceAll("^(\\d+\\.\\d+).*", "$1");
         // This can't use `--platform-bom` as it contain quarkiverse extension
         QuarkusCliRestService app = cliClient.createApplication("app",
