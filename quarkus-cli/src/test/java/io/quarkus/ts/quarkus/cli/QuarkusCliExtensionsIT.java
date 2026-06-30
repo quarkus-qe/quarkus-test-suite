@@ -93,7 +93,7 @@ public class QuarkusCliExtensionsIT {
         assertListDefaultOptionOutput();
     }
 
-    @DisabledOnQuarkusSnapshot(reason = "999-SNAPSHOT is not pushed into the platform site")
+    @DisabledOnQuarkusSnapshot(reason = "3.999-SNAPSHOT is not pushed into the platform site")
     @Test
     public void shouldListExtensionsUsingStream() {
         var req = ListExtensionRequest.withSetStream();
