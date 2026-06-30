@@ -14,6 +14,11 @@ echo "Building platform ${PLATFORM_BUILD} using Quarkus Core ${QUARKUS_BUILD}, L
 ./mvnw versions:set-property -Dproperty=quarkus-langchain4j.version -DnewVersion=${LANGCHAIN4J_BUILD} -DgenerateBackupPoms=false
 ./mvnw versions:set-property -Dproperty=quarkus-mcp-server.version -DnewVersion=${MCP_BUILD} -DgenerateBackupPoms=false
 
+if [ ! $(which xsltproc) ]; then
+  echo "xsltproc is not installed!"
+  exit 1
+fi
+
 # mark everything as disabled
 xsltproc -o pom.xml minimise_platform.xsl pom.xml
 ./mvnw -Dsync
