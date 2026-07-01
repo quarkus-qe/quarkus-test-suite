@@ -17,8 +17,8 @@
         <surefire-plugin.version>3.5.6</surefire-plugin.version>
         <failsafe-plugin.version>3.5.6</failsafe-plugin.version>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
-        <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-        <quarkus.platform.version>3.999-SNAPSHOT</quarkus.platform.version>
+        <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
+        <quarkus.platform.version>999-core-3.x-SNAPSHOT</quarkus.platform.version>
         <quarkus.ide.version>3.30.0</quarkus.ide.version>
         <quarkus.qe.framework.version>999-SNAPSHOT</quarkus.qe.framework.version>
         <quarkus-qpid-jms.version>2.12.0</quarkus-qpid-jms.version>
@@ -180,12 +180,12 @@
         <pluginRepository>
             <id>quarkus-snapshots-plugin-repository</id>
             <url>https://central.sonatype.com/repository/maven-snapshots/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
         </pluginRepository>
     </pluginRepositories>
     <build>
@@ -324,6 +324,8 @@
                                 <keycloak.image>quay.io/keycloak/keycloak:26.6</keycloak.image>
                                 <bouncycastle.bctls-fips.version>1.0.12.2</bouncycastle.bctls-fips.version>
                                 <rhbk.image>${rhbk.image}</rhbk.image>
+                                <quarkus.platform.group-id>${quarkus.platform.group-id}</quarkus.platform.group-id>
+                                <quarkus.platform.version>${quarkus.platform.version}</quarkus.platform.version>
                             </systemPropertyVariables>
                         </configuration>
                     </execution>
@@ -433,6 +435,13 @@
     </build>
     <profiles>
         <profile>
+            <id>core-only</id>
+            <properties>
+                <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
+                <quarkus.platform.version>3.999-SNAPSHOT</quarkus.platform.version>
+            </properties>
+        </profile>
+        <profile>
             <id>env-info</id>
             <build>
                 <defaultGoal>clean compile</defaultGoal>
@@ -451,11 +460,8 @@
             </activation>
             <modules>
                 <module>env-info</module>
-                <!-- TODO: re-enable once we have aligned builds for LC4J/MCP server extensions
-                     See also https://github.com/quarkus-qe/quarkus-test-suite/pull/2978
                 <module>ai/langchain4j</module>
                 <module>ai/mcp</module>
-                -->
             </modules>
         </profile>
         <profile>
