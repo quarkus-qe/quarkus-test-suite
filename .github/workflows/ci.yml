@@ -160,6 +160,11 @@ jobs:
           wait-before-restore: false
       - uses: ./.github/actions/prepare-quarkus-cli
       - uses: ./.github/actions/use-docker-mirror
+      - name: Rebuild framework # FIXME Remove before merge
+        run: |
+          git clone -b fix/core+platform https://github.com/fedinskiy/quarkus-test-framework.git framework && cd framework
+          mvn -fae -B -nsu --no-transfer-progress clean install -Pframework -DskipTests
+          cd ..
       - name: Build with Maven
         run: |
           mvn -fae -V -B -nsu --no-transfer-progress clean verify -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli" ${{ matrix.module-mvn-args }} -am
@@ -270,6 +275,12 @@ jobs:
         with:
           wait-before-restore: false
       - uses: ./.github/actions/prepare-quarkus-cli-win
+      - name: Rebuild framework # FIXME Remove before merge
+        run: |
+          git clone -b fix/core+platform https://github.com/fedinskiy/quarkus-test-framework.git framework
+          cd framework
+          mvn -fae -B -nsu --no-transfer-progress clean install -P"framework" -D"skipTests"
+          cd ..
       - name: Build in JVM mode
         shell: bash
         run: |
