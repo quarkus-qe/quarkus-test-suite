@@ -56,7 +56,7 @@
         <!-- The upstream MySQL version is needed for DevMode as the RH image is not starting with Quarkus-->
         <mysql.upstream.image>docker.io/library/mysql:8.4</mysql.upstream.image>
         <mysql.84.image>${mysql.upstream.image}</mysql.84.image>
-        <rhbk.image>registry.redhat.io/rhbk/keycloak-rhel9:26.4</rhbk.image>
+        <rhbk.image>registry.redhat.io/rhbk/keycloak-rhel9:26.6</rhbk.image>
         <wiremock.version>3.13.2</wiremock.version>
         <build-reporter-maven-extension.version>3.13.1</build-reporter-maven-extension.version>
         <reruns>2</reruns>
