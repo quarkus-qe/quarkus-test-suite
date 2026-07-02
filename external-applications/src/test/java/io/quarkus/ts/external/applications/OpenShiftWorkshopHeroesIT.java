@@ -11,6 +11,7 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import io.quarkus.test.bootstrap.PostgresqlService;
@@ -25,6 +26,7 @@ import io.restassured.http.ContentType;
 @OpenShiftScenario
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
+@DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "The newest/3.x SNAPSHOT is not available in public repository.")
 public class OpenShiftWorkshopHeroesIT {
     private static String heroId;
 
