@@ -1,0 +1,111 @@
+{
+  "realm": "rar",
+  "enabled": true,
+  "sslRequired": "external",
+  "roles": {
+    "realm": [
+      {
+        "name": "user"
+      }
+    ]
+  },
+  "users": [
+    {
+      "username": "alice",
+      "email": "alice@localhost",
+      "firstName": "Alice",
+      "lastName": "Wonderland",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "alice"
+        }
+      ],
+      "realmRoles": [
+        "user"
+      ]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "oid4vc-rest-api",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "standardFlowEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "secret",
+      "redirectUris": [
+        "*"
+      ],
+      "directAccessGrantsEnabled": true,
+      "defaultClientScopes": [],
+      "optionalClientScopes": [
+        "oid4vc_natural_person_sd"
+      ],
+      "attributes": {
+        "oid4vci.enabled": "true"
+      }
+    }
+  ],
+  "clientScopes": [
+    {
+      "name": "oid4vc_natural_person_sd",
+      "description": "OID4VCI credential scope that represents a natural person in format: dc+sd-jwt",
+      "protocol": "oid4vc",
+      "attributes": {
+        "vc.credential_configuration_id": "oid4vc_natural_person_sd",
+        "vc.credential_contexts": "oid4vc_natural_person",
+        "vc.credential_build_config.sd_jwt.visible_claims": "id,iat,nbf,exp,jti",
+        "vc.credential_build_config.hash_algorithm": "SHA-256",
+        "vc.supported_credential_types": "oid4vc_natural_person",
+        "vc.format": "dc+sd-jwt",
+        "include.in.token.scope": "true",
+        "vc.cryptographic_binding_methods_supported": "jwk",
+        "vc.expiry_in_seconds": "31536000",
+        "vc.include_in_metadata": "true",
+        "vc.verifiable_credential_type": "oid4vc_natural_person",
+        "vc.credential_build_config.token_jws_type": "JWS",
+        "vc.sd_jwt.number_of_decoys": "10"
+      },
+      "protocolMappers": [
+        {
+          "name": "last-name",
+          "protocol": "oid4vc",
+          "protocolMapper": "oid4vc-user-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "claim.name": "familyName",
+            "userAttribute": "lastName",
+            "aggregateAttributes": "false"
+          }
+        },
+        {
+          "name": "first-name",
+          "protocol": "oid4vc",
+          "protocolMapper": "oid4vc-user-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "claim.name": "firstName",
+            "userAttribute": "firstName",
+            "aggregateAttributes": "false"
+          }
+        },
+        {
+          "name": "email",
+          "protocol": "oid4vc",
+          "protocolMapper": "oid4vc-user-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "claim.name": "email",
+            "userAttribute": "email",
+            "aggregateAttributes": "false"
+          }
+        }
+      ]
+    }
+  ],
+  "verifiableCredentialsEnabled": true
+}
