@@ -4,6 +4,8 @@ import static io.quarkus.ts.langchain4j.auxiliary.CommonTools.DEFAULT_ARGS;
 import static io.quarkus.ts.langchain4j.auxiliary.CommonTools.SAMPLE_BRANCH;
 import static io.quarkus.ts.langchain4j.auxiliary.CommonTools.getKey;
 
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
+
 import io.quarkus.test.bootstrap.DefaultService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftDeploymentStrategy;
@@ -11,6 +13,7 @@ import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.GitRepositoryQuarkusApplication;
 
+@DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "The newest/3.x SNAPSHOT is not available in public repository.")
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.Build)
 public class OpenShiftChatbotIT extends AbstractChatbotIT {
     @Container(image = "${redis.image}", port = 6379, expectedLog = "Ready to accept connections")

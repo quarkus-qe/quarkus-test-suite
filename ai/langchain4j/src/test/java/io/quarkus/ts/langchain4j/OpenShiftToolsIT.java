@@ -4,6 +4,8 @@ import static io.quarkus.ts.langchain4j.auxiliary.CommonTools.DEFAULT_ARGS;
 import static io.quarkus.ts.langchain4j.auxiliary.CommonTools.SAMPLE_BRANCH;
 import static io.quarkus.ts.langchain4j.auxiliary.CommonTools.getKey;
 
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
+
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftDeploymentStrategy;
@@ -13,6 +15,7 @@ import io.quarkus.test.services.GitRepositoryQuarkusApplication;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.langchain4j.auxiliary.MCPFileServer;
 
+@DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "The newest/3.x SNAPSHOT is not available in public repository.")
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.Build)
 public class OpenShiftToolsIT extends AbstractToolsIT {
     @QuarkusApplication(boms = { @Dependency(artifactId = "quarkus-mcp-server-bom") }, dependencies = {
