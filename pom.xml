@@ -450,7 +450,7 @@
             <id>core-only</id>
             <properties>
                 <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-                <quarkus.platform.version>3.999-SNAPSHOT</quarkus.platform.version>
+                <quarkus.platform.version>3.27.999-SNAPSHOT</quarkus.platform.version>
             </properties>
         </profile>
         <profile>
