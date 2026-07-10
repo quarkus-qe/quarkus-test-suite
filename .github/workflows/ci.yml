@@ -1,7 +1,11 @@
 name: "PR"
 on:
   - pull_request
-
+env:
+  PLATFORM_BUILD: 3.33.999-core-3.33-SNAPSHOT
+  QUARKUS_BUILD: 3.33.999-SNAPSHOT
+  LANGCHAIN4J_BUILD: 1.7.999-SNAPSHOT
+  MCP_BUILD: 1.10.999-SNAPSHOT
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -25,13 +29,45 @@ jobs:
           distribution: 'temurin'
           java-version: ${{ matrix.java }}
           check-latest: true
-      - name: Build Quarkus 3.33.999-SNAPSHOT
+      - name: Install xsltproc
+        run: sudo apt install -qq -y xsltproc
+      - name: Initialize build environment properties
         run: |
-          git clone -b 3.33 https://github.com/quarkusio/quarkus.git && cd quarkus && ./mvnw -B --no-transfer-progress -s .github/mvn-settings.xml clean install -Dquickly -Dno-test-modules -Prelocations
-      - name: Build Quarkus Platform 3.33.999-SNAPSHOT
+          echo "MVN_SETTINGS=$GITHUB_WORKSPACE/.github/mvn-settings.xml" >> $GITHUB_ENV
+      - name: Build Quarkus
         run: |
-          # TODO revert commit for excluding the camel-quarkus-integration-test-cxf-soap-grouped
-          git clone -b 3.33 https://github.com/quarkusio/quarkus-platform.git && cd quarkus-platform && ./mvnw versions:set -DnewVersion=3.33.999-SNAPSHOT -DgenerateBackupPoms=false && ./mvnw process-resources -Dquarkus.version=3.33.999-SNAPSHOT -Dquarkus.invoke-platform-project.skip=true && cd generated-platform-project && ../mvnw install -Dquarkus.version=3.33.999-SNAPSHOT -DskipTests -DskipITs -pl "-io.quarkus.platform:camel-quarkus-integration-test-cxf-soap-grouped"
+          git clone -b 3.33 https://github.com/quarkusio/quarkus.git && cd quarkus
+          ./mvnw -B --no-transfer-progress -s ${{ env.MVN_SETTINGS }} clean install -Dquickly -Dno-test-modules -Prelocations
+      - name: Build Quarkus Langchain4j
+        run: |
+          git clone -b 1.7 https://github.com/quarkiverse/quarkus-langchain4j.git && cd quarkus-langchain4j
+          ./mvnw versions:set -DnewVersion=${{ env.LANGCHAIN4J_BUILD }} -DgenerateBackupPoms=false -B --no-transfer-progress -s ${{ env.MVN_SETTINGS }}
+          # integration tests depend on platform by default (see https://github.com/quarkiverse/quarkus-langchain4j/issues/2633)
+          ./mvnw versions:set-property -Dproperty=quarkus.platform.version -DnewVersion=${QUARKUS_BUILD} -DgenerateBackupPoms=false -B --no-transfer-progress -s ${{ env.MVN_SETTINGS }}
+          ./mvnw versions:set-property -Dproperty=quarkus.platform.group-id -DnewVersion=io.quarkus -DgenerateBackupPoms=false -B --no-transfer-progress -s ${{ env.MVN_SETTINGS }}
+
+          ./mvnw -B --no-transfer-progress -s ${{ env.MVN_SETTINGS }} clean install -DskipTests -Dquarkus.version=${{ env.QUARKUS_BUILD }}
+      - name: Build Quarkus MCP Server
+        run: |
+          git clone -b 1.10.x https://github.com/quarkiverse/quarkus-mcp-server.git && cd quarkus-mcp-server
+          mvn versions:set -DnewVersion=${{ env.MCP_BUILD }} -DgenerateBackupPoms=false  -B --no-transfer-progress -s ${{ env.MVN_SETTINGS }}
+          ./mvnw -B --no-transfer-progress -s ${{ env.MVN_SETTINGS }} clean install -DskipTests -Dquarkus.version=${{ env.QUARKUS_BUILD }}
+      - name: Build Quarkus Platform 3.33 with Quarkus core ${{ env.QUARKUS_BUILD }} (version ${{ env.PLATFORM_BUILD }})
+        run: |
+          git clone -b 3.33 https://github.com/quarkusio/quarkus-platform.git && cd quarkus-platform
+
+          # add some common options
+          cat <<EOF >> .mvn/maven.config
+          --no-transfer-progress
+          -s
+          ${{ env.MVN_SETTINGS }}
+          EOF
+
+          wget -O build_platform.sh "https://github.com/quarkus-qe/quarkus-test-suite/raw/refs/heads/main/.github/build_platform.sh"
+          wget -O minimise_platform.xsl "https://github.com/quarkus-qe/quarkus-test-suite/raw/refs/heads/main/.github/minimise_platform.xsl"
+          chmod u+x build_platform.sh
+
+          PLATFORM_BUILD=${{ env.PLATFORM_BUILD }} MCP_BUILD=${{ env.MCP_BUILD }} LANGCHAIN4J_BUILD=${{ env.LANGCHAIN4J_BUILD }} QUARKUS_BUILD=${{ env.QUARKUS_BUILD }} ./build_platform.sh
       - name: Tar Maven Repo
         shell: bash
         run: tar -I 'pigz -9' -cf maven-repo.tgz -C ~ .m2/repository
