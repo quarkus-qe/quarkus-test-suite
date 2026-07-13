@@ -31,7 +31,7 @@ public class DevModeAmqpDevServiceUserExperienceIT {
 
     @Test
     public void verifyIfUserIsInformedAboutAmqpDevServicePulling() {
-        app.logs().assertContains("Pulling docker image: quay.io/artemiscloud/activemq-artemis-broker");
+        app.logs().assertContains("Pulling docker image: quay.io/arkmq-org/arkmq-org-broker");
         app.logs().assertContains("Please be patient; this may take some time but only needs to be done once");
         app.logs().assertContains("Starting to pull image");
         app.logs().assertContains("Dev Services for AMQP started");

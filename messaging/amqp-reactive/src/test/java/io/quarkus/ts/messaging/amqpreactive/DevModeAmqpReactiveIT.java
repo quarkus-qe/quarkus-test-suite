@@ -19,6 +19,6 @@ public class DevModeAmqpReactiveIT extends BaseAmqpReactiveIT {
 
     @Test
     public void amqpContainerShouldBeStarted() {
-        app.logs().assertContains("Creating container for image: quay.io/artemiscloud/activemq-artemis-broker");
+        app.logs().assertContains("Creating container for image: quay.io/arkmq-org/arkmq-org-broker");
     }
 }
