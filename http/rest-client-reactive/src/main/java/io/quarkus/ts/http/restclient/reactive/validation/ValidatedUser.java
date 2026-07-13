@@ -10,6 +10,9 @@ public class ValidatedUser {
     @NotNull(groups = ConvertedGroup.class)
     public String username;
 
+    public ValidatedUser() {
+    }
+
     public ValidatedUser(String value) {
         this.username = value;
     }
