@@ -702,6 +702,12 @@ public abstract class BaseHibernateIT {
                 .statusCode(HttpStatus.SC_OK);
     }
 
+    @Tag("QUARKUS-8067")
+    @Test
+    void testFilterDefInPackageInfoNoWarning() {
+        app.logs().assertDoesNotContain("Failed to index io.quarkus.qe.hibernate.items");
+    }
+
     @Test
     void testHqlRegexpOperators() {
         int id1 = 7007;
