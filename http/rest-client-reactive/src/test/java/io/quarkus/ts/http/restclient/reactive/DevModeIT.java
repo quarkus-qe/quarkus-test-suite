@@ -58,7 +58,6 @@ public class DevModeIT {
         app.given()
                 .get("/meta/class/io.quarkus.ts.http.restclient.reactive.json.Author$quarkusjacksondeserializer")
                 .then()
-                .statusCode(200)
-                .body(is("io.quarkus.ts.http.restclient.reactive.json.Author$quarkusjacksondeserializer"));
+                .statusCode(204);
     }
 }

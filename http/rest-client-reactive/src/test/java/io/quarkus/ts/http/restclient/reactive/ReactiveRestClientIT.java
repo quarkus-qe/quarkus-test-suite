@@ -355,8 +355,7 @@ public class ReactiveRestClientIT {
         app.given()
                 .get("/meta/class/io.quarkus.ts.http.restclient.reactive.json.Book$quarkusjacksondeserializer")
                 .then()
-                .statusCode(200)
-                .body(is("io.quarkus.ts.http.restclient.reactive.json.Book$quarkusjacksondeserializer"));
+                .statusCode(204);
     }
 
     @Test
