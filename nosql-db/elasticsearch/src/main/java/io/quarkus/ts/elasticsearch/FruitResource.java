@@ -5,6 +5,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.hc.core5.http.ParseException;
+
 import jakarta.inject.Inject;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.DELETE;
@@ -32,7 +34,7 @@ public class FruitResource {
 
     @GET
     @Path("/{id}")
-    public Fruit get(String id) throws IOException {
+    public Fruit get(String id) throws IOException, ParseException {
         return fruitService.get(id);
     }
 
@@ -44,7 +46,7 @@ public class FruitResource {
 
     @GET
     @Path("/search")
-    public List<Fruit> search(@RestQuery String name, @RestQuery String color) throws IOException {
+    public List<Fruit> search(@RestQuery String name, @RestQuery String color) throws IOException, ParseException {
         if (name != null) {
             return fruitService.searchByName(name);
         } else if (color != null) {

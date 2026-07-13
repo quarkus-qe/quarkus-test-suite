@@ -5,19 +5,21 @@ import java.io.IOException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
-import org.apache.http.util.EntityUtils;
-import org.elasticsearch.client.Request;
-import org.elasticsearch.client.Response;
-import org.elasticsearch.client.RestClient;
+import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+
+import co.elastic.clients.transport.rest5_client.low_level.Request;
+import co.elastic.clients.transport.rest5_client.low_level.Response;
+import co.elastic.clients.transport.rest5_client.low_level.Rest5Client;
 
 import io.vertx.core.json.JsonObject;
 
 @ApplicationScoped
 public class DataTypesService {
     @Inject
-    RestClient restClient;
+    Rest5Client restClient;
 
-    public DataTypes indexAndGet(DataTypes dataTypes) throws IOException {
+    public DataTypes indexAndGet(DataTypes dataTypes) throws IOException, ParseException {
         Request request = new Request(
                 "PUT",
                 "/foos/_doc/" + dataTypes.id);

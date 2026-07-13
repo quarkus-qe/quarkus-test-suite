@@ -5,7 +5,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 
 import java.util.concurrent.TimeUnit;
 
-import org.apache.http.HttpStatus;
+import org.apache.hc.core5.http.HttpStatus;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
