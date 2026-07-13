@@ -57,10 +57,6 @@
                                     <groupId>org.hibernate.search</groupId>
                                     <artifactId>hibernate-search-processor</artifactId>
                                 </path>
-                                <dependency>
-                                    <groupId>org.hibernate.search</groupId>
-                                    <artifactId>hibernate-search-backend-elasticsearch</artifactId>
-                                </dependency>
                             </annotationProcessorPaths>
                         </configuration>
                     </execution>
