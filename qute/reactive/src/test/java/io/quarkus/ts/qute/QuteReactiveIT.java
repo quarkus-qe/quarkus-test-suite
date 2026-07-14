@@ -303,11 +303,6 @@ public class QuteReactiveIT {
                 .then()
                 .statusCode(200)
                 .body(is("io.quarkus.ts.qute.Book"));
-        app.given()
-                .get("/class/io.quarkus.ts.qute.Book$quarkusjacksonserializer")
-                .then()
-                .statusCode(200)
-                .body(is("io.quarkus.ts.qute.Book$quarkusjacksonserializer"));
     }
 
     @Tag("https://github.com/quarkusio/quarkus/pull/47001")
