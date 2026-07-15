@@ -301,7 +301,7 @@
                                 <!-- Services used in test suite -->
                                 <nginx.image>docker.io/library/nginx:1-alpine</nginx.image>
                                 <amqbroker.image>registry.access.redhat.com/amq-broker-7/amq-broker-72-openshift:latest</amqbroker.image>
-                                <amqbroker.1.0x.image>quay.io/arkmq-org/arkmq-org-broker:1.0.32</amqbroker.1.0x.image>
+                                <amqbroker.1.0x.image>quay.io/arkmq-org/arkmq-org-broker:artemis.2.55.0</amqbroker.1.0x.image>
                                 <redpanda.image>redpandadata/redpanda:v25.3.9</redpanda.image>
                                 <postgresql.latest.image>${postgresql.latest.image}</postgresql.latest.image>
                                 <postgis.latest.image>${postgis.latest.image}</postgis.latest.image>
