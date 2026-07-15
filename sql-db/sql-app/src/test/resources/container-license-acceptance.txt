@@ -5,3 +5,4 @@ mcr.microsoft.com/mssql/server:2019-latest
 mcr.microsoft.com/mssql/rhel/server:2022-latest
 mcr.microsoft.com/mssql/server:2022-latest
 mcr.microsoft.com/azure-sql-edge:latest
+mcr.microsoft.com/mssql/server:2025-latest
