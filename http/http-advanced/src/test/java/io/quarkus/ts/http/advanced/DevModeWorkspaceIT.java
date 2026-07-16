@@ -14,6 +14,7 @@ import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.ElementHandle;
@@ -82,6 +83,8 @@ public class DevModeWorkspaceIT {
     }
 
     @Test
+    @DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true",
+            disabledReason = "Playwright times out waiting for code editor on AArch64")
     public void workspaceCanBeEdited() {
         app.given().when().get("/api/filter/any")
                 .then().statusCode(HttpStatus.SC_OK).body(containsString("ok"));
