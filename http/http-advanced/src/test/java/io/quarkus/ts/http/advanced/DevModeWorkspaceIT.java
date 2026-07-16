@@ -119,13 +119,6 @@ public class DevModeWorkspaceIT {
                             file + " wasn't edited:" + System.lineSeparator() + content);
                 }, usingTimeout(ofSeconds(5)));
 
-                // Sometimes the app returns the old results, so let's refresh the page
-                page.reload();
-                //check, that the changes are reflected in ui as well
-                textArea = page.waitForSelector("#code");
-                textArea.getAttribute("value");
-                Assertions.assertTrue(code.contains("@Path(\"/this\")"),
-                        "The code doesn't contain the expected value: " + code);
                 Awaitility.await()
                         .pollInterval(1, TimeUnit.SECONDS)
                         .atMost(30, TimeUnit.SECONDS).until(() -> {
@@ -134,6 +127,13 @@ public class DevModeWorkspaceIT {
                             return response.statusCode() == 200
                                     && app.getLogs().stream().anyMatch(line -> line.contains("Live reload total time"));
                         });
+                // Refresh after live reload completes to ensure the workspace UI is reloaded with updated source content.
+                page.reload();
+                // check that the changes are reflected in UI as well
+                textArea = page.waitForSelector("#code");
+                String currentEditorValue = textArea.getAttribute("value");
+                Assertions.assertTrue(currentEditorValue.contains("@Path(\"/this\")"),
+                        "The code doesn't contain the expected value: " + currentEditorValue);
                 // Check, that the changes were applied
                 app.given().when().get("/api/filter/this")
                         .then().statusCode(HttpStatus.SC_OK).body(containsString("ok"));
