@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.EnabledOnNative;
+import io.quarkus.test.services.Dependency;
 import io.quarkus.test.services.QuarkusApplication;
 
 @Tag("QUARKUS-7308")
@@ -15,7 +16,7 @@ import io.quarkus.test.services.QuarkusApplication;
 @QuarkusScenario
 public class OauthKafkaNativeFailIT {
 
-    @QuarkusApplication
+    @QuarkusApplication(dependencies = @Dependency(groupId = "org.bitbucket.b_c", artifactId = "jose4j"))
     static RestService app = new RestService()
             .withProperties("oauthbearer.properties")
             .setAutoStart(false);
@@ -29,6 +30,6 @@ public class OauthKafkaNativeFailIT {
         app.logs().assertDoesNotContain(
                 "Could not find a public no-argument constructor for org.apache.kafka.common.security.oauthbearer.DefaultJwtValidator");
         // Need to check if it failed with expected error
-        app.logs().assertContains("configuration encountered an error on configure(): Invalid value");
+        app.logs().assertContains("Connection refused");
     }
 }
