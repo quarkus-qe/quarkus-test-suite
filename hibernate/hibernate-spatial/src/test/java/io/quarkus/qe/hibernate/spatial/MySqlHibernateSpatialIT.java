@@ -12,7 +12,7 @@ public class MySqlHibernateSpatialIT extends AbstractHibernateSpatialIT {
 
     static final int MYSQL_PORT = 3306;
 
-    @Container(image = "${mysql.84.image}", port = MYSQL_PORT, expectedLog = "ready for connections.* port: " + MYSQL_PORT)
+    @Container(image = "${mysql.image}", port = MYSQL_PORT, expectedLog = "ready for connections.* port: " + MYSQL_PORT)
     static MySqlService database = new MySqlService();
 
     @QuarkusApplication(dependencies = @Dependency(artifactId = "quarkus-jdbc-mysql"))

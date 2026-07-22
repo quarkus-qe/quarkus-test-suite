@@ -40,7 +40,7 @@ public class MixedSourcesIT {
             .withDatabase(SQL_DATABASE)
             .withProperty("PGDATA", "/tmp/psql");
 
-    @Container(image = "${mysql.84.image}", port = MYSQL_PORT, expectedLog = "ready for connections.* port: " + MYSQL_PORT)
+    @Container(image = "${mysql.image}", port = MYSQL_PORT, expectedLog = "ready for connections.* port: " + MYSQL_PORT)
     static MySqlService mysql = new MySqlService()
             .withUser(SQL_USER)
             .withPassword(SQL_PASSWORD)

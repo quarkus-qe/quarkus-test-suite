@@ -11,7 +11,7 @@ import io.quarkus.test.services.QuarkusApplication;
 @QuarkusScenario
 public class MySqlDBHibernateOfflineStartupIT extends AbstractHibernateOfflineStartupIT {
 
-    @Container(image = "${mysql.84.image}", expectedLog = "ready for connections.* port: 3306", mounts = {
+    @Container(image = "${mysql.image}", expectedLog = "ready for connections.* port: 3306", mounts = {
             // Upstream MySQL is using `docker-entrypoint-initdb.d` to init DB
             // RH image repository MySQL image using `my.cnf` script
             // To ensure it will work for both images we need to mount it to both location
