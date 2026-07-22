@@ -31,7 +31,7 @@ public class MySqlDatabaseTestResource implements QuarkusTestResourceLifecycleMa
 
     @Override
     public Map<String, String> start() {
-        String image = System.getProperty("mysql.84.image");
+        String image = System.getProperty("mysql.image");
 
         // we used managed version of 'org.testcontainers:mysql' and version '1.19.7' failed in FIPS-enabled environment
         // over 'SA/ECB/OAEPWithSHA-1AndMGF1Padding' cipher as SunJCE provider was not available in FIPS
