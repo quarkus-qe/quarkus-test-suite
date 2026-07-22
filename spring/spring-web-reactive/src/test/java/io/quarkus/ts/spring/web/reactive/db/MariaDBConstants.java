@@ -5,5 +5,5 @@ public class MariaDBConstants {
     public static final String START_LOG = "Only MySQL server logs after this point";
     public static final String IMAGE_118 = "${mariadb.118.image}";
     public static final String START_LOG_11 = "socket: '.*sock'  port: " + PORT;
-    public static final String IMAGE_11 = "${mariadb.11.image}";
+    public static final String IMAGE_12 = "${mariadb.12.image}";
 }

@@ -52,7 +52,7 @@ public final class FixedPortResourceBuilder extends ContainerManagedResourceBuil
     private static final class FixedPortManagedResource extends GenericDockerContainerManagedResource {
 
         private static final PropertyLookup DB2_IMAGE_PROPERTY = new PropertyLookup("db2.image");
-        private static final PropertyLookup MARIADB_IMAGE_PROPERTY = new PropertyLookup("mariadb.11.image");
+        private static final PropertyLookup MARIADB_IMAGE_PROPERTY = new PropertyLookup("mariadb.12.image");
         private final FixedPortResourceBuilder model;
         private final Supplier<Mount[]> mounts;
 

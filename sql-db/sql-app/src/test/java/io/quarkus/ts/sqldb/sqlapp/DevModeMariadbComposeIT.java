@@ -14,11 +14,11 @@ public class DevModeMariadbComposeIT extends AbstractSqlDatabaseIT {
     @DevModeQuarkusApplication(properties = "mariadb_app.properties")
     static RestService app = new RestService()
             .withProperty("quarkus.compose.devservices.files", "src/main/resources/mysql-compose-devservices.yml")
-            .withProperty("quarkus.compose.devservices.env-variables.IMAGE", "${mariadb.11.image}");
+            .withProperty("quarkus.compose.devservices.env-variables.IMAGE", "${mariadb.12.image}");
 
     @Test
     public void composeDevServicesAreUsed() {
         app.logs().assertContains("Compose is running command");
-        app.logs().assertContains(System.getProperty("mariadb.11.image"));
+        app.logs().assertContains(System.getProperty("mariadb.12.image"));
     }
 }

@@ -313,7 +313,7 @@
                                 <elastic.9x.image>docker.io/library/elasticsearch:9.4.1</elastic.9x.image>
                                 <mysql.upstream.image>${mysql.upstream.image}</mysql.upstream.image>
                                 <mysql.image>${mysql.image}</mysql.image>
-                                <mariadb.11.image>docker.io/library/mariadb:11.8-ubi9</mariadb.11.image>
+                                <mariadb.12.image>docker.io/library/mariadb:12.3-ubi10</mariadb.12.image>
                                 <mssql.image>mcr.microsoft.com/mssql/rhel/server:2025-latest</mssql.image>
                                 <!-- Oracle image - we aim to use same version as Dev Services for Oracle so that we only download one image -->
                                 <oracle.image>docker.io/gvenzl/oracle-free:23-slim-faststart</oracle.image>
