@@ -11,7 +11,7 @@ import io.quarkus.test.services.QuarkusApplication;
 @QuarkusScenario
 public class MariaDBStorageEngineOnlineIT extends AbstractStorageEngineOnlineIT {
 
-    @Container(image = "${mariadb.11.image}", expectedLog = "socket: '.*sock'  port: 3306", mounts = {
+    @Container(image = "${mariadb.12.image}", expectedLog = "socket: '.*sock'  port: 3306", mounts = {
             @Mount(from = "mysql-init.sql", to = "/docker-entrypoint-initdb.d/init.sql")
     }, port = 3306, builder = FixedPortResourceBuilder.class)
     static final MariaDbService db = new MariaDbService();

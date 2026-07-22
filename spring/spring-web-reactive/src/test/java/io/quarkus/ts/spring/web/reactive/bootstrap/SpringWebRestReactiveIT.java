@@ -10,7 +10,7 @@ import io.quarkus.ts.spring.web.reactive.db.MariaDBConstants;
 @QuarkusScenario
 public class SpringWebRestReactiveIT extends AbstractSpringWebRestReactiveIT {
 
-    @Container(image = MariaDBConstants.IMAGE_11, port = MariaDBConstants.PORT, expectedLog = MariaDBConstants.START_LOG_11)
+    @Container(image = MariaDBConstants.IMAGE_12, port = MariaDBConstants.PORT, expectedLog = MariaDBConstants.START_LOG_11)
     static final MariaDbService database = new MariaDbService();
 
     @QuarkusApplication
