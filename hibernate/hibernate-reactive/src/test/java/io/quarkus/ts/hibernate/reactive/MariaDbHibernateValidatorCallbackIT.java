@@ -21,7 +21,7 @@ public class MariaDbHibernateValidatorCallbackIT extends AbstractHibernateValida
 
     static final int MARIADB_PORT = 3306;
 
-    @Container(image = "${mariadb.1011.image}", port = MARIADB_PORT, expectedLog = "Only MySQL server logs after this point")
+    @Container(image = "${mariadb.118.image}", port = MARIADB_PORT, expectedLog = "Only MySQL server logs after this point")
     static MariaDbService database = new MariaDbService();
 
     @QuarkusApplication

@@ -13,7 +13,7 @@ import io.quarkus.ts.spring.web.reactive.db.MariaDBConstants;
 @EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
 public class OpenShiftSpringWebQuteReactiveIT extends AbstractSpringWebQuteReactiveIT {
 
-    @Container(image = MariaDBConstants.IMAGE_1011, port = MariaDBConstants.PORT, expectedLog = MariaDBConstants.START_LOG)
+    @Container(image = MariaDBConstants.IMAGE_118, port = MariaDBConstants.PORT, expectedLog = MariaDBConstants.START_LOG)
     static final MariaDbService database = new MariaDbService();
 
     @QuarkusApplication

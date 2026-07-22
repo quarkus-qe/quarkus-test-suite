@@ -13,7 +13,7 @@ import io.quarkus.test.services.QuarkusApplication;
 @OpenShiftScenario
 public class OpenShiftCustomDatasourceProducerIT extends AbstractCustomDatasourceProducerIT {
 
-    @Container(image = "${mariadb.1011.image}", port = MARIADB_PORT, expectedLog = "Only MySQL server logs after this point")
+    @Container(image = "${mariadb.118.image}", port = MARIADB_PORT, expectedLog = "Only MySQL server logs after this point")
     static MariaDbService mariadb = new MariaDbService();
 
     @Container(image = "${postgresql.latest.image}", port = POSTGRESQL_PORT, expectedLog = "listening on IPv4 address")
