@@ -131,6 +131,15 @@ public class HttpMinimumReactiveIT {
 
     }
 
+    @Test
+    @Tag("QUARKUS-8420")
+    public void malformedRequest() {
+        givenSpec().header("Content-Type", "No-such-type")
+                .get("/api/hello").then().statusCode(HttpStatus.SC_UNSUPPORTED_MEDIA_TYPE);
+        givenSpec().header("Content-Type", "No-such-type")
+                .get("/api/hello/sub").then().statusCode(HttpStatus.SC_UNSUPPORTED_MEDIA_TYPE);
+    }
+
     protected RequestSpecification givenSpec() {
         return app.given();
     }
