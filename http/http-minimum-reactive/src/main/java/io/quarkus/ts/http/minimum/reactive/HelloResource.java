@@ -22,6 +22,7 @@ public class HelloResource {
     private static final String TEMPLATE = "Hello, %s!";
 
     @GET
+    @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Hello> get(@QueryParam("name") @DefaultValue("World") String name) {
         return Uni.createFrom().item(new Hello(String.format(TEMPLATE, name)));
@@ -70,5 +71,20 @@ public class HelloResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Data shortRecordReturnedDirectly() {
         return new Data("ok");
+    }
+
+    @GET
+    @Path("sub")
+    @Consumes(MediaType.TEXT_PLAIN)
+    public SubResource sub() {
+        return new SubResource();
+    }
+
+    private static class SubResource {
+        @GET
+        @Consumes(MediaType.TEXT_PLAIN)
+        public Uni<String> get() {
+            return Uni.createFrom().item("sub-answer");
+        }
     }
 }
