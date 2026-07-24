@@ -81,8 +81,8 @@ abstract public class AbstractDpopNonceProviderIT {
                 .header("WWW-Authenticate", containsString("dpop error=\"use_dpop_nonce\""));
     }
 
-    @Disabled("https://github.com/quarkusio/quarkus/pull/54855 is merged in main branch (for Quarkus 4.0), enable after it is backported to 3.x branch.")
     @Test
+    @Disabled("https://github.com/quarkusio/quarkus/pull/54855 is merged in main branch (for Quarkus 4.0), enable after it is backported to 3.x branch.")
     public void invalidNonceShouldReturnUseDpopNonceChallenge() throws Exception {
         KeyPair keyPair = generateKeyPair();
         String accessToken = getAccessToken(keyPair);
