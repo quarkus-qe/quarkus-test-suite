@@ -62,6 +62,7 @@
         <reruns>2</reruns>
         <oc.reruns>1</oc.reruns>
         <flaky-run-reporter.version>0.1.7</flaky-run-reporter.version>
+        <repository.update.policy>daily</repository.update.policy>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -170,6 +171,7 @@
             <url>https://central.sonatype.com/repository/maven-snapshots/</url>
             <snapshots>
                 <enabled>true</enabled>
+                <updatePolicy>${repository.update.policy}</updatePolicy>
             </snapshots>
             <releases>
                 <enabled>false</enabled>
@@ -182,6 +184,7 @@
             <url>https://central.sonatype.com/repository/maven-snapshots/</url>
             <snapshots>
                 <enabled>true</enabled>
+                <updatePolicy>${repository.update.policy}</updatePolicy>
             </snapshots>
             <releases>
                 <enabled>false</enabled>
@@ -439,6 +442,7 @@
             <properties>
                 <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
                 <quarkus.platform.version>3.999-SNAPSHOT</quarkus.platform.version>
+                <repository.update.policy>never</repository.update.policy>
             </properties>
         </profile>
         <profile>
