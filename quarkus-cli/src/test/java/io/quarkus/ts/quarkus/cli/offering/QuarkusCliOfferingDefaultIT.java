@@ -1,6 +1,7 @@
 package io.quarkus.ts.quarkus.cli.offering;
 
 import static io.quarkus.ts.quarkus.cli.offering.QuarkusCliOfferingUtils.QUARKUS_CONFIG;
+import static io.quarkus.ts.quarkus.cli.offering.QuarkusCliOfferingUtils.QUARKUS_REGISTRY_ID;
 import static io.quarkus.ts.quarkus.cli.offering.QuarkusCliOfferingUtils.QUARKUS_TEST_CONFIG;
 import static io.quarkus.ts.quarkus.cli.offering.QuarkusCliOfferingUtils.getExtensionLineFromListOutput;
 import static io.quarkus.ts.quarkus.cli.offering.QuarkusCliOfferingUtils.getQuarkusVersionWithoutNumberSuffix;
@@ -8,8 +9,8 @@ import static io.quarkus.ts.quarkus.cli.offering.QuarkusCliOfferingUtils.updateR
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -18,12 +19,12 @@ import jakarta.inject.Inject;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.opentest4j.AssertionFailedError;
 
 import io.quarkus.test.bootstrap.QuarkusCliClient;
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -99,13 +100,14 @@ public class QuarkusCliOfferingDefaultIT {
     }
 
     @Test
-    @Disabled("https://github.com/quarkusio/quarkus/issues/50480")
     public void listExtensionsWithEmptyOffering() throws IOException {
-        // Testing output when the unknow offering is set
+        // Testing output when the empty/unknown offering is set
         updateRegistryConfigFileWithOffering("");
-        QuarkusCliClient.Result result = cliClient.listExtensions("--support-scope",
-                "--config=" + QUARKUS_TEST_CONFIG.getAbsolutePath());
-        assertFalse(result.isSuccessful());
-        // TODO the output in this case is not clear, needs to be updated when issue is fixed
+        // Checking for AssertionFailedError as FW QuarkusCliClient#listExtension throw the failure if the command is not successful
+        var exception = assertThrows(AssertionFailedError.class, () -> cliClient.listExtensions("--support-scope",
+                "--config=" + QUARKUS_TEST_CONFIG.getAbsolutePath()));
+        assertThat("Offering is set but it's empty, the error should be shown", exception.getMessage(),
+                containsString("Unable to list extensions: Registry '" + QUARKUS_REGISTRY_ID
+                        + "' config option 'offering' must not be empty"));
     }
 }

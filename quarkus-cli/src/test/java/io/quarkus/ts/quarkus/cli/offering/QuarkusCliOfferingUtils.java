@@ -35,7 +35,7 @@ public class QuarkusCliOfferingUtils {
     public static final File QUARKUS_TEST_CONFIG = Paths.get("target", ".quarkus",
             "config.yaml").toFile();
 
-    private static final String QUARKUS_REGISTRY_ID = "testingregistry";
+    protected static final String QUARKUS_REGISTRY_ID = "testingregistry";
     private static final String LANGCHAIN4J_ARTIFACT_ID_NAME = "quarkus-langchain4j-bom";
 
     public static String getExtensionLineFromListOutput(QuarkusCliClient.Result result, String extensionArtifactName) {
