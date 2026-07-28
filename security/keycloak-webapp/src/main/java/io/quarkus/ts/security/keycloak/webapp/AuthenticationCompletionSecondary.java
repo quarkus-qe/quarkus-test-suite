@@ -5,13 +5,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import io.quarkus.arc.Unremovable;
-import io.quarkus.arc.profile.IfBuildProfile;
 import io.quarkus.oidc.AuthenticationCompletionAction;
 import io.smallrye.mutiny.Uni;
 
 @ApplicationScoped
 @Unremovable
-@IfBuildProfile("multi-action")
 public class AuthenticationCompletionSecondary implements AuthenticationCompletionAction {
 
     private final AtomicInteger callCount = new AtomicInteger();
