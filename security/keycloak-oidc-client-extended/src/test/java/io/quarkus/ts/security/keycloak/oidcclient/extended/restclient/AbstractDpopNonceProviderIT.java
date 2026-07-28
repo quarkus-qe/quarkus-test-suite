@@ -10,7 +10,6 @@ import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -82,7 +81,6 @@ abstract public class AbstractDpopNonceProviderIT {
     }
 
     @Test
-    @Disabled("https://github.com/quarkusio/quarkus/pull/54855 is merged in main branch (for Quarkus 4.0), enable after it is backported to 3.x branch.")
     public void invalidNonceShouldReturnUseDpopNonceChallenge() throws Exception {
         KeyPair keyPair = generateKeyPair();
         String accessToken = getAccessToken(keyPair);
