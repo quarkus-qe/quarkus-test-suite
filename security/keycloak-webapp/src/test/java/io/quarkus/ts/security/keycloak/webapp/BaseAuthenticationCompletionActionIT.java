@@ -21,7 +21,6 @@ import org.htmlunit.html.HtmlForm;
 import org.htmlunit.html.HtmlPage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -108,7 +107,6 @@ public abstract class BaseAuthenticationCompletionActionIT {
     }
 
     @Test
-    @Disabled("https://github.com/quarkusio/quarkus/issues/55158 - fix not yet backported to 3.x")
     public void verifyMultipleActionsExecuted() throws Exception {
         resetState();
         loginAs("test-user");
