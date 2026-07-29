@@ -2,15 +2,13 @@ package io.quarkus.ts.security.keycloak.oidcclient.extended.restclient;
 
 import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_BASE_PATH;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 
+import org.apache.http.HttpStatus;
 import org.htmlunit.FailingHttpStatusCodeException;
 import org.htmlunit.SilentCssErrorHandler;
 import org.htmlunit.WebClient;
-import org.htmlunit.html.HtmlForm;
-import org.htmlunit.html.HtmlPage;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +23,8 @@ import io.quarkus.test.services.QuarkusApplication;
 @QuarkusScenario
 public class RarNegativeIT {
 
-    static final String REALM = "rar";
+    private static final String REALM = "rar";
+    private static final String QUARKUS_AUTHORIZATION_CODE_FLOW_FAILURE_LOG = "Authorization code flow has failed, error code: invalid_request, error description: ";
 
     @KeycloakContainer(runKeycloakInProdMode = true, command = { "start", "--import-realm",
             "--hostname-strict=false", "--features=oid4vc-vci" })
@@ -38,47 +37,36 @@ public class RarNegativeIT {
 
     @Test
     void testWrongRarTypeAndLocationsProducesError() throws IOException {
+        // KC 26.7 throw error if the `type` is not supported.
+        // Do not test this with KC 26.6 or older as KC failed after the login not immediately
         try (WebClient webClient = createWebClient()) {
-            HtmlPage page = webClient.getPage(
-                    app.getURI(Protocol.HTTP).withPath("/rar-wrong/token-response/authorization-details").toString());
-
-            HtmlForm loginForm = page.getForms().get(0);
-            loginForm.getInputByName("username").setValueAttribute("alice");
-            loginForm.getInputByName("password").setValueAttribute("alice");
-
-            try {
-                loginForm.getButtonByName("login").click();
-            } catch (FailingHttpStatusCodeException e) {
-                assertEquals(401, e.getStatusCode());
-            }
-
+            webClient.getPage(
+                    app.getURI(Protocol.HTTP).withPath("/rar-wrong/token-response/authorization-details")
+                            .toString());
+        } catch (FailingHttpStatusCodeException e) {
+            assertEquals(HttpStatus.SC_UNAUTHORIZED, e.getStatusCode());
         }
+
+        String keycloakLog = "Unsupported type 'property_invalid_type' of authorization_details parameter supplied in the request";
+        keycloak.logs().assertContains(keycloakLog);
+        app.logs().assertContains(QUARKUS_AUTHORIZATION_CODE_FLOW_FAILURE_LOG + keycloakLog);
     }
 
     @Test
     void testWrongRedirectFilterRarTypeProducesError() throws IOException {
+        // KC 26.7 throw error if the `type` is not supported.
+        // Do not test this with KC 26.6 or older as KC failed after the login not immediately
         try (WebClient webClient = createWebClient()) {
-            HtmlPage page = webClient.getPage(
+            webClient.getPage(
                     app.getURI(Protocol.HTTP).withPath("/rar-redirect-wrong/token-response/authorization-details")
                             .toString());
-
-            String redirectUrl = page.getBaseURL().toString();
-            assertTrue(redirectUrl.contains("authorization_details"),
-                    "Expected authorization_details in redirect URL but was: " + redirectUrl);
-            assertTrue(redirectUrl.contains("invalid_type"),
-                    "Expected invalid_type from redirect filter in URL but was: " + redirectUrl);
-
-            HtmlForm loginForm = page.getForms().get(0);
-            loginForm.getInputByName("username").setValueAttribute("alice");
-            loginForm.getInputByName("password").setValueAttribute("alice");
-
-            try {
-                loginForm.getButtonByName("login").click();
-            } catch (FailingHttpStatusCodeException e) {
-                assertEquals(401, e.getStatusCode());
-            }
-
+        } catch (FailingHttpStatusCodeException e) {
+            assertEquals(HttpStatus.SC_UNAUTHORIZED, e.getStatusCode());
         }
+
+        String keycloakLog = "Unsupported type 'added_invalid_type' of authorization_details parameter supplied in the request";
+        keycloak.logs().assertContains(keycloakLog);
+        app.logs().assertContains(QUARKUS_AUTHORIZATION_CODE_FLOW_FAILURE_LOG + keycloakLog);
     }
 
     private static WebClient createWebClient() {

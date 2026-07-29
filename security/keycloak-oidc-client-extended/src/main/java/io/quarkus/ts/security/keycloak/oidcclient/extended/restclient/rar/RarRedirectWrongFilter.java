@@ -18,7 +18,7 @@ public class RarRedirectWrongFilter implements OidcRedirectFilter {
         JsonArray authorizationDetailsArray = new JsonArray();
 
         JsonObject obj = new JsonObject();
-        obj.put("type", "invalid_type");
+        obj.put("type", "added_invalid_type");
         obj.put("credential_configuration_id", "wrong_credential");
         authorizationDetailsArray.add(obj);
 

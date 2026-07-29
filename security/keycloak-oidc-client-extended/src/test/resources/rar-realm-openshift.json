@@ -25,11 +25,6 @@
       ],
       "realmRoles": [
         "user"
-      ],
-      "verifiableCredentials": [
-        {
-          "credentialScopeName": "oid4vc_natural_person_sd"
-        }
       ]
     }
   ],
