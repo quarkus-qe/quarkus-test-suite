@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 
 import org.htmlunit.Page;
 import org.htmlunit.SilentCssErrorHandler;
@@ -38,11 +40,15 @@ public abstract class AbstractRarIT {
             HtmlPage page = webClient.getPage(
                     app.getURI(Protocol.HTTP).withPath("/rar/token-response/authorization-details").toString());
 
-            String redirectUrl = page.getBaseURL().toString();
+            String redirectUrl = URLDecoder.decode(page.getBaseURL().toString(), StandardCharsets.UTF_8);
             assertTrue(redirectUrl.contains("authorization_details"),
                     "Expected authorization_details in redirect URL but was: " + redirectUrl);
-            assertTrue(redirectUrl.contains("openid_credential"),
+            assertTrue(redirectUrl.contains("\"type\":\"openid_credential\""),
                     "Expected openid_credential in redirect URL but was: " + redirectUrl);
+            assertTrue(redirectUrl.contains("\"credential_configuration_id\":\"oid4vc_natural_person_sd\""),
+                    "Expected oid4vc_natural_person_sd in redirect URL but was: " + redirectUrl);
+            assertTrue(redirectUrl.contains("\"locations\":[\"" + keycloak.getRealmUrl() + "\"]"),
+                    "Expected realm url location in redirect URL but was: " + redirectUrl);
 
             HtmlForm loginForm = page.getForms().get(0);
             loginForm.getInputByName("username").setValueAttribute("alice");
