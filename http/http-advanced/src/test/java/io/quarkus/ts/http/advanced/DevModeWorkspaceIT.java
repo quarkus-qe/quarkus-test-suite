@@ -128,8 +128,8 @@ public class DevModeWorkspaceIT {
                 // Refresh after live reload completes to ensure the workspace UI is reloaded with updated source content.
                 page.reload();
                 // check that the changes are reflected in UI as well
-                textArea = page.waitForSelector("#code");
-                String currentEditorValue = textArea.getAttribute("value");
+                ElementHandle newCode = page.waitForSelector("#code");
+                String currentEditorValue = newCode.getAttribute("value");
                 Assertions.assertTrue(currentEditorValue.contains("@Path(\"/this\")"),
                         "The code doesn't contain the expected value: " + currentEditorValue);
                 // Check, that the changes were applied
