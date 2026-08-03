@@ -189,13 +189,16 @@ public class UniFailureCacheIT {
                 .then()
                 .statusCode(200);
 
-        // cache should now contain "A" and "C". The key "B" has been evicted.
-        given()
-                .when().get(RESOURCE_REACTIVE_FAILURE_API_PATH + "/cache-keys/" + cacheName)
-                .then()
-                .statusCode(200)
-                .body("$", hasSize(2))
-                .body("$", containsInAnyOrder("A", "C"));
+        // Caffeine eviction is asynchronous, so wait for it to complete
+        Awaitility.await()
+                .atMost(5, TimeUnit.SECONDS)
+                .pollInterval(200, TimeUnit.MILLISECONDS)
+                .untilAsserted(() -> given()
+                        .when().get(RESOURCE_REACTIVE_FAILURE_API_PATH + "/cache-keys/" + cacheName)
+                        .then()
+                        .statusCode(200)
+                        .body("$", hasSize(2))
+                        .body("$", containsInAnyOrder("A", "C")));
     }
 
     @Test
