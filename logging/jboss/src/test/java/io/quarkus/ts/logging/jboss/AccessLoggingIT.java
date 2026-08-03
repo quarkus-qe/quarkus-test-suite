@@ -9,9 +9,11 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -55,8 +57,12 @@ public class AccessLoggingIT {
         sendRequests(3);
 
         assertTrue(Files.exists(accessLogPath()), "There should be an access log file.");
-        // check that one request actually match one line in a log file
-        assertEquals(3, Files.lines(accessLogPath()).count(), "There should be 3 lines in access log.");
+        // Access log flushing can be delayed on Windows, so wait for all entries
+        Awaitility.await()
+                .atMost(5, TimeUnit.SECONDS)
+                .pollInterval(200, TimeUnit.MILLISECONDS)
+                .untilAsserted(() -> assertEquals(3, Files.lines(accessLogPath()).count(),
+                        "There should be 3 lines in access log."));
 
         assertEquals(1, getLogFileNames().size(), "There should be just one log file");
     }
