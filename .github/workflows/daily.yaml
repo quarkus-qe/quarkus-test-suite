@@ -210,11 +210,14 @@ jobs:
         # For details see https://github.com/actions/virtual-environments/issues/785
         uses: al-cheb/configure-pagefile-action@v1.5
       - uses: ./.github/actions/cache-quarkus
+      - name: Install Maven settings
+        shell: bash
+        run: cp .github/mvn-settings.xml ~/.m2/settings.xml
       - name: Build in Native mode
         shell: bash
         run: |
           # Running only http/http-minimum as after some time, it gives disk full in Windows when running on Native.
-          mvn -B -nsu --no-transfer-progress -fae -s .github/mvn-settings.xml clean verify -Dall-modules -Dnative -Dquarkus.native.container-build=false -pl http/http-minimum
+          mvn -B -nsu --no-transfer-progress -fae clean verify -Dall-modules -Dnative -Dquarkus.native.container-build=false -pl http/http-minimum
       - uses: ./.github/actions/zip-and-archive
         name: Zip and archive artifacts
         if: failure()
