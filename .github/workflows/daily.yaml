@@ -93,6 +93,8 @@ jobs:
       - uses: ./.github/actions/cache-quarkus
       - uses: ./.github/actions/prepare-quarkus-cli
       - uses: ./.github/actions/use-docker-mirror
+      - name: Install Maven settings
+        run: cp .github/mvn-settings.xml ~/.m2/settings.xml
       - name: Test in JVM mode
         run: |
           mvn -fae -V -B -nsu --no-transfer-progress clean verify -P ${{ matrix.profiles }} -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli"
@@ -129,6 +131,8 @@ jobs:
       - uses: ./.github/actions/cache-quarkus
       - uses: ./.github/actions/prepare-quarkus-cli
       - uses: ./.github/actions/use-docker-mirror
+      - name: Install Maven settings
+        run: cp .github/mvn-settings.xml ~/.m2/settings.xml
       - name: Test in Native mode
         run: |
           mvn -fae -V -B -nsu --no-transfer-progress -P ${{ matrix.profiles }} clean verify -Dnative \
@@ -161,6 +165,9 @@ jobs:
           check-latest: true
       - uses: ./.github/actions/cache-quarkus
       - uses: ./.github/actions/prepare-quarkus-cli-win
+      - name: Install Maven settings
+        shell: bash
+        run: cp .github/mvn-settings.xml ~/.m2/settings.xml
       - name: Build in JVM mode
         shell: bash
         run: |
@@ -245,6 +252,8 @@ jobs:
           registry: registry.redhat.io
           username: ${{ secrets.RED_HAT_REGISTRY_USERNAME }}
           password: ${{ secrets.RED_HAT_REGISTRY_PASSWORD }}
+      - name: Install Maven settings
+        run: cp .github/mvn-settings.xml ~/.m2/settings.xml
       - name: Test in JVM mode
         run: |
           mvn -fae -V -B -nsu --no-transfer-progress clean verify -Daarch64 -P ${{ matrix.profiles }} -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli"
@@ -287,6 +296,8 @@ jobs:
           registry: registry.redhat.io
           username: ${{ secrets.RED_HAT_REGISTRY_USERNAME }}
           password: ${{ secrets.RED_HAT_REGISTRY_PASSWORD }}
+      - name: Install Maven settings
+        run: cp .github/mvn-settings.xml ~/.m2/settings.xml
       - name: Test in Native mode
         run: |
           mvn -fae -V -B -nsu --no-transfer-progress -P ${{ matrix.profiles }} clean verify -Daarch64 -Dnative \
