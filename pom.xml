@@ -308,7 +308,7 @@
                                 <mysql.upstream.image>${mysql.upstream.image}</mysql.upstream.image>
                                 <mysql.84.image>${mysql.84.image}</mysql.84.image>
                                 <mariadb.11.image>docker.io/library/mariadb:11.8-ubi9</mariadb.11.image>
-                                <mssql.image>mcr.microsoft.com/mssql/rhel/server:2022-latest</mssql.image>
+                                <mssql.image>mcr.microsoft.com/mssql/rhel/server:2022-CU26-rhel-8.7</mssql.image>
                                 <!-- Oracle image - we aim to use same version as Dev Services for Oracle so that we only download one image -->
                                 <oracle.image>docker.io/gvenzl/oracle-free:23-slim-faststart</oracle.image>
                                 <db2.image>icr.io/db2_community/db2:12.1.0.0</db2.image>
