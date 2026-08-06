@@ -575,6 +575,7 @@
                 <module>http/vertx</module>
                 <module>http/management</module>
                 <module>http/grpc</module>
+                <module>http/http-problem</module>
             </modules>
         </profile>
         <profile>
