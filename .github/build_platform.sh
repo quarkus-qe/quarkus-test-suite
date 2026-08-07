@@ -4,15 +4,17 @@ set -xeuo pipefail
 #QUARKUS_BUILD=999-SNAPSHOT
 #LANGCHAIN4J_BUILD=999-SNAPSHOT
 #MCP_BUILD=999-SNAPSHOT
+#HTTP_PROBLEM_BUILD=999-SNAPSHOT
 #PLATFORM_BUILD=999-core-main-SNAPSHOT
 
 # This output also allows us to fail early if any variable is unset
-echo "Building platform ${PLATFORM_BUILD} using Quarkus Core ${QUARKUS_BUILD}, Langchain4j ${LANGCHAIN4J_BUILD} and MCP server ${MCP_BUILD}"
+echo "Building platform ${PLATFORM_BUILD} using Quarkus Core ${QUARKUS_BUILD}, Langchain4j ${LANGCHAIN4J_BUILD}, MCP server ${MCP_BUILD} and HTTP Problem ${HTTP_PROBLEM_BUILD}"
 
 ./mvnw versions:set -DnewVersion=${PLATFORM_BUILD}
 ./mvnw versions:set-property -Dproperty=quarkus.version -DnewVersion=${QUARKUS_BUILD} -DgenerateBackupPoms=false
 ./mvnw versions:set-property -Dproperty=quarkus-langchain4j.version -DnewVersion=${LANGCHAIN4J_BUILD} -DgenerateBackupPoms=false
 ./mvnw versions:set-property -Dproperty=quarkus-mcp-server.version -DnewVersion=${MCP_BUILD} -DgenerateBackupPoms=false
+./mvnw versions:set-property -Dproperty=quarkus-http-problem.version -DnewVersion=${HTTP_PROBLEM_BUILD} -DgenerateBackupPoms=false
 
 if [ ! $(which xsltproc) ]; then
   echo "xsltproc is not installed!"
