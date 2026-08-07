@@ -48,6 +48,10 @@ jobs:
         run: |
           git clone https://github.com/quarkiverse/quarkus-mcp-server.git && cd quarkus-mcp-server
           ./mvnw -B --no-transfer-progress -s ${{ env.MVN_SETTINGS }} clean install -DskipTests -Dquarkus.version=${QUARKUS_BUILD} -Dmaven.repo.local=${{ env.LOCAL_REPO }}
+      - name: Build Quarkus HTTP Problem 999-SNAPSHOT
+        run: |
+          git clone https://github.com/quarkiverse/quarkus-http-problem.git && cd quarkus-http-problem
+          ./mvnw -B --no-transfer-progress -s ${{ env.MVN_SETTINGS }} clean install -DskipTests -Dquarkus.version=${QUARKUS_BUILD} -Dmaven.repo.local=${{ env.LOCAL_REPO }}
       - name: Build Quarkus Platform main with Quarkus core ${{ env.QUARKUS_BUILD }} (version 999-core-3.x-SNAPSHOT)
         run: |
           git clone https://github.com/quarkusio/quarkus-platform.git && cd quarkus-platform
@@ -61,7 +65,7 @@ jobs:
           EOF
           cp $GITHUB_WORKSPACE/.github/minimise_platform.xsl .
           chmod u+x $GITHUB_WORKSPACE/.github/build_platform.sh
-          PLATFORM_BUILD=999-core-3.x-SNAPSHOT MCP_BUILD=999-SNAPSHOT LANGCHAIN4J_BUILD=999-SNAPSHOT QUARKUS_BUILD=${QUARKUS_BUILD} $GITHUB_WORKSPACE/.github/build_platform.sh
+          PLATFORM_BUILD=999-core-3.x-SNAPSHOT MCP_BUILD=999-SNAPSHOT LANGCHAIN4J_BUILD=999-SNAPSHOT HTTP_PROBLEM_BUILD=999-SNAPSHOT QUARKUS_BUILD=${QUARKUS_BUILD} $GITHUB_WORKSPACE/.github/build_platform.sh
       - name: Cache Build Outputs
         uses: actions/cache/save@v6
         with:
