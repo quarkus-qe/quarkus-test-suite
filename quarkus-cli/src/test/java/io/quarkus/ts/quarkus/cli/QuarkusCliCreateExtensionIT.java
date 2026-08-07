@@ -2,8 +2,6 @@ package io.quarkus.ts.quarkus.cli;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Disabled;
-
 import io.quarkus.test.bootstrap.QuarkusCliClient;
 import io.quarkus.test.bootstrap.QuarkusCliDefaultService;
 import io.quarkus.test.bootstrap.QuarkusVersionAwareCliClient;
@@ -11,7 +9,6 @@ import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.TestQuarkusCli;
 import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 
-@Disabled("quarkusio/quarkus#53531 not backported to 3.27 - annotationProcessorPathsUseDepMgmt missing in deployment template")
 @QuarkusScenario
 @DisabledOnNative(reason = "Only for JVM verification")
 public class QuarkusCliCreateExtensionIT {
