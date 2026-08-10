@@ -60,10 +60,9 @@ jobs:
           EOF
 
           cp $GITHUB_WORKSPACE/.github/minimise_platform.xsl .
-          wget -O build_platform.sh "https://github.com/quarkus-qe/quarkus-test-suite/raw/refs/heads/main/.github/build_platform.sh"
-          chmod u+x build_platform.sh
+          chmod u+x $GITHUB_WORKSPACE/.github/build_platform.sh
 
-          PLATFORM_BUILD=${{ env.PLATFORM_BUILD }} MCP_BUILD=${{ env.MCP_BUILD }} LANGCHAIN4J_BUILD=${{ env.LANGCHAIN4J_BUILD }} QUARKUS_BUILD=${{ env.QUARKUS_BUILD }} ./build_platform.sh
+          PLATFORM_BUILD=${{ env.PLATFORM_BUILD }} MCP_BUILD=${{ env.MCP_BUILD }} LANGCHAIN4J_BUILD=${{ env.LANGCHAIN4J_BUILD }} QUARKUS_BUILD=${{ env.QUARKUS_BUILD }} $GITHUB_WORKSPACE/.github/build_platform.sh
       - name: Tar Maven Repo
         shell: bash
         run: tar -I 'pigz -9' -cf maven-repo.tgz -C ~ .m2/repository
