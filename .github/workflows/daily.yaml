@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: '0 23 * * *'
 env:
-  QUARKUS_BUILD: 3.999-SNAPSHOT
+  QUARKUS_BUILD: 3.39.999-SNAPSHOT
 jobs:
   build-quarkus:
     name: Build Quarkus
@@ -33,7 +33,7 @@ jobs:
           echo "MVN_SETTINGS=$GITHUB_WORKSPACE/.github/mvn-settings.xml" >> $GITHUB_ENV
       - name: Build Quarkus ${{ env.QUARKUS_BUILD }}
         run: |
-          git clone -b 3.x https://github.com/quarkusio/quarkus.git && cd quarkus
+          git clone -b 3.39 https://github.com/quarkusio/quarkus.git && cd quarkus
           ./mvnw -B --no-transfer-progress -s ${{ env.MVN_SETTINGS }} clean install -Dquickly -Dno-test-modules -Prelocations -Dmaven.repo.local=${{ env.LOCAL_REPO }}
       - name: Build Quarkus Langchain4j 999-SNAPSHOT
         run: |
@@ -52,7 +52,7 @@ jobs:
         run: |
           git clone https://github.com/quarkiverse/quarkus-http-problem.git && cd quarkus-http-problem
           ./mvnw -B --no-transfer-progress -s ${{ env.MVN_SETTINGS }} clean install -DskipTests -Dquarkus.version=${QUARKUS_BUILD} -Dmaven.repo.local=${{ env.LOCAL_REPO }}
-      - name: Build Quarkus Platform main with Quarkus core ${{ env.QUARKUS_BUILD }} (version 999-core-3.x-SNAPSHOT)
+      - name: Build Quarkus Platform main with Quarkus core ${{ env.QUARKUS_BUILD }} (version 999-core-3.39-SNAPSHOT)
         run: |
           git clone https://github.com/quarkusio/quarkus-platform.git && cd quarkus-platform
 
@@ -65,7 +65,7 @@ jobs:
           EOF
           cp $GITHUB_WORKSPACE/.github/minimise_platform.xsl .
           chmod u+x $GITHUB_WORKSPACE/.github/build_platform.sh
-          PLATFORM_BUILD=999-core-3.x-SNAPSHOT MCP_BUILD=999-SNAPSHOT LANGCHAIN4J_BUILD=999-SNAPSHOT HTTP_PROBLEM_BUILD=999-SNAPSHOT QUARKUS_BUILD=${QUARKUS_BUILD} $GITHUB_WORKSPACE/.github/build_platform.sh
+          PLATFORM_BUILD=999-core-3.39-SNAPSHOT MCP_BUILD=999-SNAPSHOT LANGCHAIN4J_BUILD=999-SNAPSHOT HTTP_PROBLEM_BUILD=999-SNAPSHOT QUARKUS_BUILD=${QUARKUS_BUILD} $GITHUB_WORKSPACE/.github/build_platform.sh
       - name: Cache Build Outputs
         uses: actions/cache/save@v6
         with:

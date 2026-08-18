@@ -7,8 +7,8 @@ import io.quarkus.test.services.quarkus.model.QuarkusProperties;
 
 public class AnalyticsUtils {
     private static final String QUARKUS_SNAPSHOT_SUFFIX = "-SNAPSHOT";
-    // occasionally, in daily runs we got extensions with versions like 3.999-20260723.132749-19
-    private static final String QUARKUS_EXTENSION_SNAPSHOT_VERSION_REGEX = "3\\.999-.*";
+    // occasionally, in daily runs we got extensions with versions like 3.39.999-20260723.132749-19
+    private static final String QUARKUS_EXTENSION_SNAPSHOT_VERSION_REGEX = "3\\.39\\.999-.*";
     // RHBQ artifacts may differ in the number suffix from a platform version.
     // E.g.: 3.8.0.redhat-00002 vs. 3.8.5.redhat-00003
     private static final String RHBQ_VERSION_REGEX_FORMAT = "%s\\.redhat-\\d{5}";
