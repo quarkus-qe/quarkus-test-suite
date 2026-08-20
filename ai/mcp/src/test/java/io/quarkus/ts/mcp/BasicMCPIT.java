@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -114,6 +115,7 @@ public abstract class BasicMCPIT {
     }
 
     @Test
+    @Disabled("https://github.com/quarkus-qe/quarkus-test-suite/issues/3130")
     public void roots() {
         Response before = client().given().get("/mcp/roots");
         Assertions.assertEquals(200, before.statusCode());
