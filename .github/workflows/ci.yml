@@ -1,12 +1,87 @@
 name: "PR"
 on:
   - pull_request
-
+env:
+  PLATFORM_BUILD: 3.39.999-core-3.39-SNAPSHOT
+  QUARKUS_BUILD: 3.39.999-SNAPSHOT
+  LANGCHAIN4J_BUILD: 1.12.999-SNAPSHOT
+  MCP_BUILD: 1.13.999-SNAPSHOT
+  HTTP_PROBLEM_BUILD: 999-SNAPSHOT
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
   
 jobs:
+  build-dependencies:
+    name: Build Dependencies
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [ 17 ]
+    steps:
+      - uses: actions/checkout@v7
+      - name: Reclaim Disk Space
+        run: .github/ci-prerequisites.sh
+      - name: Install required tools
+        run: sudo apt update && sudo apt install pigz
+      - name: Install JDK {{ matrix.java }}
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java }}
+          check-latest: true
+      - name: Install xsltproc
+        run: sudo apt install -qq -y xsltproc
+      - name: Initialize build environment properties
+        run: |
+          echo "MVN_SETTINGS=$GITHUB_WORKSPACE/.github/mvn-settings.xml" >> $GITHUB_ENV
+      - name: Build Quarkus
+        run: |
+          git clone -b 3.39 https://github.com/quarkusio/quarkus.git && cd quarkus
+          ./mvnw -B --no-transfer-progress -s ${{ env.MVN_SETTINGS }} clean install -Dquickly -Dno-test-modules -Prelocations
+      - name: Build Quarkus Langchain4j
+        run: |
+          git clone -b 1.12 https://github.com/quarkiverse/quarkus-langchain4j.git && cd quarkus-langchain4j
+          ./mvnw versions:set -DnewVersion=${{ env.LANGCHAIN4J_BUILD }} -DgenerateBackupPoms=false -B --no-transfer-progress -s ${{ env.MVN_SETTINGS }}
+          # integration tests depend on platform by default (see https://github.com/quarkiverse/quarkus-langchain4j/issues/2633)
+          ./mvnw versions:set-property -Dproperty=quarkus.platform.version -DnewVersion=${QUARKUS_BUILD} -DgenerateBackupPoms=false -B --no-transfer-progress -s ${{ env.MVN_SETTINGS }}
+          ./mvnw versions:set-property -Dproperty=quarkus.platform.group-id -DnewVersion=io.quarkus -DgenerateBackupPoms=false -B --no-transfer-progress -s ${{ env.MVN_SETTINGS }}
+          
+          ./mvnw -B --no-transfer-progress -s ${{ env.MVN_SETTINGS }} clean install -DskipTests -Dquarkus.version=${{ env.QUARKUS_BUILD }}
+      - name: Build Quarkus MCP Server
+        run: |
+          git clone -b 1.13.x https://github.com/quarkiverse/quarkus-mcp-server.git && cd quarkus-mcp-server
+          mvn versions:set -DnewVersion=${{ env.MCP_BUILD }} -DgenerateBackupPoms=false  -B --no-transfer-progress -s ${{ env.MVN_SETTINGS }}
+          ./mvnw -B --no-transfer-progress -s ${{ env.MVN_SETTINGS }} clean install -DskipTests -Dquarkus.version=${{ env.QUARKUS_BUILD }}
+      - name: Build Quarkus HTTP Problem 999-SNAPSHOT
+        run: |
+          git clone https://github.com/quarkiverse/quarkus-http-problem.git && cd quarkus-http-problem
+          ./mvnw -B --no-transfer-progress -s ${{ env.MVN_SETTINGS }} clean install -DskipTests -Dquarkus.version=${QUARKUS_BUILD}
+      - name: Build Quarkus Platform 3.39 with Quarkus core ${{ env.QUARKUS_BUILD }} (version ${{ env.PLATFORM_BUILD }})
+        run: |
+          # TODO update to 3.39/3.40 as it's available
+          git clone -b 3.38 https://github.com/quarkusio/quarkus-platform.git && cd quarkus-platform
+          
+          # add some common options
+          cat <<EOF >> .mvn/maven.config
+          --no-transfer-progress
+          -s
+          ${{ env.MVN_SETTINGS }}
+          EOF
+          
+          wget -O minimise_platform.xsl "https://github.com/quarkus-qe/quarkus-test-suite/raw/refs/heads/main/.github/minimise_platform.xsl"
+          chmod u+x $GITHUB_WORKSPACE/.github/build_platform.sh
+          
+          PLATFORM_BUILD=${{ env.PLATFORM_BUILD }} MCP_BUILD=${{ env.MCP_BUILD }} LANGCHAIN4J_BUILD=${{ env.LANGCHAIN4J_BUILD }} HTTP_PROBLEM_BUILD=${{ env.HTTP_PROBLEM_BUILD }} QUARKUS_BUILD=${{ env.QUARKUS_BUILD }} $GITHUB_WORKSPACE/.github/build_platform.sh
+      - name: Tar Maven Repo
+        shell: bash
+        run: tar -I 'pigz -9' -cf maven-repo.tgz -C ~ .m2/repository
+      - name: Persist Maven Repo
+        uses: actions/upload-artifact@v7
+        with:
+          name: maven-repo
+          path: maven-repo.tgz
+          retention-days: 1
   detect-test-suite-modules:
     name: Detect Modules in PR
     runs-on: ubuntu-latest
@@ -114,7 +189,7 @@ jobs:
   linux-validate-format:
     name: Validate format
     runs-on: ubuntu-latest
-    needs: prepare-jvm-native-latest-modules-mvn-param
+    needs: [ prepare-jvm-native-latest-modules-mvn-param, build-dependencies]
     strategy:
       matrix:
         java: [ 21 ]
@@ -126,9 +201,7 @@ jobs:
           distribution: 'temurin'
           java-version: ${{ matrix.java }}
           check-latest: true
-      - uses: ./.github/actions/cache-quarkus
-        with:
-          wait-before-restore: false
+      - uses: ./.github/actions/download-and-unzip-maven-repo
       - name: Build with Maven
         run: |
           mvn -V -B -nsu --no-transfer-progress -s .github/mvn-settings.xml verify -Dall-modules -Dvalidate-format -DskipTests -DskipITs -Dquarkus.container-image.build=false -Dquarkus.container-image.push=false
@@ -155,9 +228,7 @@ jobs:
           distribution: 'temurin'
           java-version: ${{ matrix.java }}
           check-latest: true
-      - uses: ./.github/actions/cache-quarkus
-        with:
-          wait-before-restore: false
+      - uses: ./.github/actions/download-and-unzip-maven-repo
       - uses: ./.github/actions/prepare-quarkus-cli
       - uses: ./.github/actions/use-docker-mirror
       - name: Install Maven settings
@@ -213,9 +284,7 @@ jobs:
           distribution: 'temurin'
           java-version: ${{ matrix.java }}
           check-latest: true
-      - uses: ./.github/actions/cache-quarkus
-        with:
-          wait-before-restore: false
+      - uses: ./.github/actions/download-and-unzip-maven-repo
       - uses: ./.github/actions/prepare-quarkus-cli
       - uses: ./.github/actions/use-docker-mirror
       - name: Install Maven settings
@@ -270,9 +339,7 @@ jobs:
           distribution: 'temurin'
           java-version: ${{ matrix.java }}
           check-latest: true
-      - uses: ./.github/actions/cache-quarkus
-        with:
-          wait-before-restore: false
+      - uses: ./.github/actions/download-and-unzip-maven-repo
       - uses: ./.github/actions/prepare-quarkus-cli-win
       - name: Install Maven settings
         shell: bash
