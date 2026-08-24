@@ -33,7 +33,7 @@
         <assertj.version>3.27.7</assertj.version>
         <htmlunit.version>5.4.0</htmlunit.version>
         <java.websocket.version>1.6.0</java.websocket.version>
-        <mcp-sdk.version>2.0.0</mcp-sdk.version>
+        <mcp-sdk.version>2.0.1</mcp-sdk.version>
         <!-- Faster build when using -DskipTests -->
         <quarkus.build.skip>${skipTests}</quarkus.build.skip>
         <!-- S2i configuration -->
