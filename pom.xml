@@ -611,6 +611,7 @@
                 <module>security/vertx-jwt</module>
                 <module>security/oidc-client-mutual-tls</module>
                 <module>security/webauthn</module>
+                <module>security/pqc</module>
             </modules>
         </profile>
         <profile>
