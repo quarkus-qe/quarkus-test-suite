@@ -24,7 +24,7 @@ import io.quarkus.test.services.QuarkusApplication;
 @QuarkusScenario
 public class JdkSslEngineTestsIT extends BaseVertX {
 
-    private static final String ERROR_LOG = "PQC enforcement policy %s requires X25519MLKEM768 but neither JDK nor OpenSSL support it";
+    private static final String ERROR_LOG = "PQC enforcement policy %s requires X25519MLKEM768 but the configured SSL engine does not support it";
     private static final String ERROR_LOG_STRICT = String.format(ERROR_LOG, "STRICT");
     private static final String ERROR_LOG_CLIENT_NEGOTIATED = String.format(ERROR_LOG, "CLIENT_NEGOTIATED");
 
