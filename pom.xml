@@ -9,7 +9,7 @@
     <properties>
         <maven.compiler.parameters>true</maven.compiler.parameters>
         <maven.compiler.release>17</maven.compiler.release>
-        <gitflow-incremental-builder.version>4.6.0</gitflow-incremental-builder.version>
+        <gitflow-incremental-builder.version>4.7.0</gitflow-incremental-builder.version>
         <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
