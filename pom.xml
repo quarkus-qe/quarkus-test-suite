@@ -504,6 +504,7 @@
                 <module>build-time-analytics</module>
                 <module>packaging/quarkus</module>
                 <module>packaging/jar</module>
+                <module>packaging/tree-shake</module>
             </modules>
         </profile>
         <profile>
