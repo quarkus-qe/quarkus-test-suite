@@ -1,6 +1,5 @@
 package io.quarkus.ts.mcp;
 
-import java.nio.file.Path;
 import java.util.List;
 
 import org.apache.http.HttpStatus;
@@ -10,16 +9,12 @@ import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 
 public abstract class BasicMCPIT {
-    public abstract RestService client();
+    public abstract RequestSpecification client();
 
-    protected static String getFileFolder(Class testClass) {
-        return Path.of("target")
-                .resolve(testClass.getSimpleName())
-                .resolve("server")
-                .toAbsolutePath().toString();
-    }
+    public abstract RestService app();
 
     @Test
     public void tools() {
@@ -44,11 +39,11 @@ public abstract class BasicMCPIT {
 
     @Test
     public void readFileResource() {
-        Response response = client().given().get("/mcp/resources/readFile");
+        Response response = client().get("/mcp/resources/readFile");
         Assertions.assertEquals(200, response.statusCode());
         Assertions.assertEquals("Hello, AI!", response.body().asString());
 
-        Response content = client().given().get("/mcp/resources/readFile/separate");
+        Response content = client().get("/mcp/resources/readFile/separate");
         Assertions.assertEquals(200, content.statusCode());
         Assertions.assertEquals("Hello from other resource!", content.body().asString());
     }
@@ -65,7 +60,7 @@ public abstract class BasicMCPIT {
         int attempts = 0;
         do {
             attempts++;
-            logs = client().getLogs();
+            logs = app().getLogs();
             logLines = logs.stream().filter(line -> line.contains("MCP logger")).toList();
             Thread.sleep(1000);
         } while (logLines.isEmpty() && attempts < 10);
