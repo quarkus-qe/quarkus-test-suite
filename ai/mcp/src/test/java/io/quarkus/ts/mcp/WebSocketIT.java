@@ -1,5 +1,7 @@
 package io.quarkus.ts.mcp;
 
+import static io.quarkus.ts.mcp.app.Utils.getFileFolder;
+
 import java.util.List;
 
 import org.apache.http.HttpStatus;
@@ -18,6 +20,7 @@ import io.quarkus.ts.mcp.app.FileServer;
 import io.quarkus.ts.mcp.app.MCPClient;
 import io.quarkus.ts.mcp.app.MyResources;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 
 @QuarkusScenario
 public class WebSocketIT extends BasicMCPIT {
@@ -43,7 +46,12 @@ public class WebSocketIT extends BasicMCPIT {
     }
 
     @Override
-    public RestService client() {
+    public RequestSpecification client() {
+        return client.given();
+    }
+
+    @Override
+    public RestService app() {
         return client;
     }
 
