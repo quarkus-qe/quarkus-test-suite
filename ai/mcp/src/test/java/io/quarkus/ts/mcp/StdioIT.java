@@ -1,5 +1,7 @@
 package io.quarkus.ts.mcp;
 
+import static io.quarkus.ts.mcp.app.Utils.getFileFolder;
+
 import io.quarkus.test.bootstrap.BaseService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -8,6 +10,7 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.mcp.app.FileServer;
 import io.quarkus.ts.mcp.app.MCPClient;
 import io.quarkus.ts.mcp.app.MyResources;
+import io.restassured.specification.RequestSpecification;
 
 @QuarkusScenario
 public class StdioIT extends BasicMCPIT {
@@ -39,7 +42,12 @@ public class StdioIT extends BasicMCPIT {
     }
 
     @Override
-    public RestService client() {
+    public RequestSpecification client() {
+        return client.given();
+    }
+
+    @Override
+    public RestService app() {
         return client;
     }
 }

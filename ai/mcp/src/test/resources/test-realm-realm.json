@@ -1,0 +1,161 @@
+{
+  "realm": "test-realm",
+  "enabled": true,
+  "sslRequired": "none",
+  "accessTokenLifespan": 5,
+  "roles": {
+    "realm": [
+      {
+        "name": "test-user-role"
+      },
+      {
+        "name": "test-admin-role"
+      }
+    ],
+    "client": {
+      "test-application-client": [
+        {
+          "name": "uma_protection",
+          "composite": false,
+          "clientRole": true
+        }
+      ]
+    }
+  },
+  "users": [
+    {
+      "username": "test-normal-user",
+      "email": "test-normal-user@localhost",
+      "firstName": "test-normal-user",
+      "lastName": "test-normal-user",
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test-normal-user"
+        }
+      ],
+      "clientRoles": {
+        "test-application-client": [
+          "uma_protection"
+        ]
+      },
+      "realmRoles": [
+        "test-user-role",
+        "uma_protection"
+      ]
+    },
+    {
+      "username": "test-admin-user",
+      "email": "test-admin-user@localhost",
+      "firstName": "test-admin-user",
+      "lastName": "test-admin-user",
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test-admin-user"
+        }
+      ],
+      "clientRoles": {
+        "test-application-client": [
+          "uma_protection"
+        ]
+      },
+      "realmRoles": [
+        "test-admin-role",
+        "test-user-role",
+        "uma_protection"
+      ]
+    }
+  ],
+  "clientScopes": [
+    {
+      "name": "openid",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true"
+      }
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "test-application-client",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "test-application-client-secret",
+      "protocolMappers": [
+        {
+          "id": "f17f8d5f-2327-4e0b-8001-48a7706be252",
+          "name": "realm roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute": "foo",
+            "access.token.claim": "true",
+            "claim.name": "realm_access.roles",
+            "jsonType.label": "String",
+            "multivalued": "true"
+          }
+        },
+        {
+          "id": "0e0f1e8d-60f9-4435-b753-136d70e56af8",
+          "name": "username",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "userinfo.token.claim": "true",
+            "user.attribute": "username",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "preferred_username",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.client.audience": "test-application-client",
+            "id.token.claim": "false",
+            "lightweight.claim": "false",
+            "access.token.claim": "true",
+            "introspection.token.claim": "true"
+          }
+        }
+      ],
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "uma_protection",
+        "email",
+        "openid"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "offline_access",
+        "uma_protection",
+        "microprofile-jwt"
+      ],
+      "authorizationSettings": {
+        "scopes": [
+          {
+            "id": "uma_authorization",
+            "name": "uma_authorization"
+          }
+        ]
+      }
+    }
+  ]
+}
