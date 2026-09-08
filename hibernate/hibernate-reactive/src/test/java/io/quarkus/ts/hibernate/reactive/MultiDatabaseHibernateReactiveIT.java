@@ -14,25 +14,6 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
-import io.quarkus.ts.hibernate.reactive.database.Author;
-import io.quarkus.ts.hibernate.reactive.database.AuthorIdGenerator;
-import io.quarkus.ts.hibernate.reactive.database.AuthorRepository;
-import io.quarkus.ts.hibernate.reactive.database.Book;
-import io.quarkus.ts.hibernate.reactive.database.BookCollectionLegacyValid;
-import io.quarkus.ts.hibernate.reactive.database.BookCollectionTypeUseValid;
-import io.quarkus.ts.hibernate.reactive.database.ClientDevice;
-import io.quarkus.ts.hibernate.reactive.database.ISBNConverter;
-import io.quarkus.ts.hibernate.reactive.database.LibraryAuthor;
-import io.quarkus.ts.hibernate.reactive.database.LibraryBook;
-import io.quarkus.ts.hibernate.reactive.database.PersonEntity;
-import io.quarkus.ts.hibernate.reactive.database.XmlValidatedCustomer;
-import io.quarkus.ts.hibernate.reactive.http.ApplicationExceptionMapper;
-import io.quarkus.ts.hibernate.reactive.http.BookDescription;
-import io.quarkus.ts.hibernate.reactive.http.GroundedEndpoint;
-import io.quarkus.ts.hibernate.reactive.http.OtherResource;
-import io.quarkus.ts.hibernate.reactive.http.PanacheEndpoint;
-import io.quarkus.ts.hibernate.reactive.http.SomeApi;
-import io.quarkus.ts.hibernate.reactive.http.ValidationResource;
 import io.quarkus.ts.hibernate.reactive.multidbSources.CarResource;
 import io.quarkus.ts.hibernate.reactive.multidbSources.FruitResource;
 import io.quarkus.ts.hibernate.reactive.multidbSources.secondDatabase.Fruit;
@@ -69,14 +50,8 @@ public class MultiDatabaseHibernateReactiveIT extends AbstractDatabaseHibernateR
             .withDatabase(SQL_DATABASE);
 
     @QuarkusApplication(properties = "multidb.properties", classes = { Fruit.class, FruitResource.class, Car.class,
-            CarResource.class,
-            // also include default classes
-            Author.class, AuthorIdGenerator.class, AuthorRepository.class, Book.class, ISBNConverter.class, PersonEntity.class,
-            ApplicationExceptionMapper.class, BookDescription.class, GroundedEndpoint.class, OtherResource.class,
-            PanacheEndpoint.class, SomeApi.class, ValidationResource.class, XmlValidatedCustomer.class,
-            ClientDevice.class, BookCollectionLegacyValid.class, BookCollectionTypeUseValid.class, LibraryAuthor.class,
-            LibraryBook.class
-    })
+            CarResource.class
+    }, includeAllClassesFromMain = true)
     static RestService app = new RestService()
             .withProperty("main.url", postgresql1::getReactiveUrl)
             .withProperty("fruits.url", postgresql2::getReactiveUrl)
