@@ -54,6 +54,7 @@ public class OpenShiftOIDCIT extends BasicMCPIT {
             }, classes = { MCPClient.class }, properties = "client.properties")
     static final RestService client = new RestService()
             .withProperty("quarkus.profile", "debug")
+            .withProperty("quarkus.langchain4j.mcp.filesystem.cache-tool-list", "false")
             .withProperty("quarkus.oidc.auth-server-url", keycloak::getRealmUrl)
             .withProperties(keycloak::getTlsProperties)
             .withProperty("quarkus.oidc.client-id", CLIENT_ID_DEFAULT)
