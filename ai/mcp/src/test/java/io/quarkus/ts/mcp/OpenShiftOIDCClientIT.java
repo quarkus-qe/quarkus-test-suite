@@ -110,7 +110,8 @@ public class OpenShiftOIDCClientIT extends BasicMCPIT {
                     .withProperty("quarkus.oidc-client.the-client.credentials.secret", CLIENT_SECRET_DEFAULT)
                     .withProperty("quarkus.oidc-client.the-client.grant.type", "password")
                     .withProperty("quarkus.langchain4j.mcp.filesystem.oidc-client-name", "the-client")
-                    .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "streamable-http");
+                    .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "streamable-http")
+                    .withProperty("quarkus.langchain4j.mcp.filesystem.cache-tool-list", "false");
         }
     }
 }
