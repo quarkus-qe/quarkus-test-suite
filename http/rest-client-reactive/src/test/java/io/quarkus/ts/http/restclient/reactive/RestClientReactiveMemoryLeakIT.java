@@ -41,13 +41,19 @@ public class RestClientReactiveMemoryLeakIT {
         assertEquals(200, response.statusCode());
         long count = Long.parseLong(response.getBody().asString());
         assertNotEquals(0, count);
+        long lastLogged = count;
         try {
-            while (count < (200_000)) { // as of 3.36.1, the job fails around 100 000, but let's have some margin for error
+            // as of 3.27.4 and 3.36.1, the job fails around 100 000, let's have some margin for error
+            while (count < 200_000) {
+                // the app increments the counter on its own, polling faster only exhausts ephemeral ports faster
+                Thread.sleep(100);
+
                 response = client.given().get("/client/events");
                 assertEquals(200, response.statusCode());
                 count = Long.parseLong(response.getBody().asString());
-                if (count % 1000 == 0) {
+                if (count - lastLogged >= 10_000) {
                     Log.info("Current count is " + count);
+                    lastLogged = count;
                 }
             }
         } catch (Exception ex) {
