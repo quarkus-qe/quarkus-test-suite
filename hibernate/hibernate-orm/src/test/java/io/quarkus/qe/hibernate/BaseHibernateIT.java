@@ -708,6 +708,42 @@ public abstract class BaseHibernateIT {
         app.logs().assertDoesNotContain("Failed to index io.quarkus.qe.hibernate.items");
     }
 
+    @Tag("QUARKUS-8368")
+    @Test
+    void testPaginationWithCollectionFetchJoin() {
+        app.given()
+                .queryParam("firstResult", 0)
+                .queryParam("maxResults", 2)
+                .get("/pagination/orders-with-items")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body(is("Alice:3,Bob:3"));
+
+        app.given()
+                .queryParam("firstResult", 2)
+                .queryParam("maxResults", 2)
+                .get("/pagination/orders-with-items")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body(is("Charlie:3"));
+    }
+
+    @Tag("QUARKUS-8368")
+    @Test
+    void testTemporalEntityCurrentAndHistoricalState() {
+        app.given()
+                .get("/temporal/current/1")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body(is("Updated Product"));
+
+        app.given()
+                .get("/temporal/historical/1")
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body(is("Original Product"));
+    }
+
     @Test
     void testHqlRegexpOperators() {
         int id1 = 7007;

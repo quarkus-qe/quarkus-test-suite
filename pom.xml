@@ -13,27 +13,27 @@
         <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <compiler-plugin.version>3.15.0</compiler-plugin.version>
-        <surefire-plugin.version>3.5.6</surefire-plugin.version>
-        <failsafe-plugin.version>3.5.6</failsafe-plugin.version>
+        <compiler-plugin.version>3.16.0</compiler-plugin.version>
+        <surefire-plugin.version>3.6.0</surefire-plugin.version>
+        <failsafe-plugin.version>3.6.0</failsafe-plugin.version>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
         <quarkus.platform.version>3.39.999-core-3.39-SNAPSHOT</quarkus.platform.version>
         <quarkus.ide.version>3.30.0</quarkus.ide.version>
         <quarkus.qe.framework.version>1.9.0.Beta4</quarkus.qe.framework.version>
-        <quarkus-qpid-jms.version>2.12.0</quarkus-qpid-jms.version>
+        <quarkus-qpid-jms.version>2.13.0</quarkus-qpid-jms.version>
         <confluent.kafka-avro-serializer.version>7.5.1</confluent.kafka-avro-serializer.version>
         <formatter-maven-plugin.version>2.29.0</formatter-maven-plugin.version>
         <impsort-maven-plugin.version>1.13.0</impsort-maven-plugin.version>
         <xml-format-maven-plugin.version>4.1.0</xml-format-maven-plugin.version>
         <checkstyle.version>12.1.2</checkstyle.version>
-        <jsoup.version>1.23.1</jsoup.version>
+        <jsoup.version>1.23.2</jsoup.version>
         <quarkiverse.config.version>2.5.0</quarkiverse.config.version>
         <quarkiverse.pact.version>1.6.0</quarkiverse.pact.version>
         <assertj.version>3.27.7</assertj.version>
-        <htmlunit.version>5.4.0</htmlunit.version>
+        <htmlunit.version>5.5.0</htmlunit.version>
         <java.websocket.version>1.6.0</java.websocket.version>
-        <mcp-sdk.version>2.0.0</mcp-sdk.version>
+        <mcp-sdk.version>2.0.1</mcp-sdk.version>
         <!-- Faster build when using -DskipTests -->
         <quarkus.build.skip>${skipTests}</quarkus.build.skip>
         <!-- S2i configuration -->
@@ -504,6 +504,7 @@
                 <module>build-time-analytics</module>
                 <module>packaging/quarkus</module>
                 <module>packaging/jar</module>
+                <module>packaging/tree-shake</module>
             </modules>
         </profile>
         <profile>
