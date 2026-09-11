@@ -8,6 +8,7 @@ import io.quarkus.ts.mcp.app.AdvancedServer;
 import io.quarkus.ts.mcp.app.FileServer;
 import io.quarkus.ts.mcp.app.MCPClient;
 import io.quarkus.ts.mcp.app.MyResources;
+import io.restassured.specification.RequestSpecification;
 
 @OpenShiftScenario
 public class OpenShiftWebSocketIT extends WebSocketIT {
@@ -31,7 +32,7 @@ public class OpenShiftWebSocketIT extends WebSocketIT {
                     () -> getUrl(server));
 
     @Override
-    public RestService client() {
-        return client;
+    public RequestSpecification client() {
+        return client.given();
     }
 }

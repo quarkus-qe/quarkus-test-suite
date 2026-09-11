@@ -1,5 +1,7 @@
 package io.quarkus.ts.mcp;
 
+import static io.quarkus.ts.mcp.app.Utils.getFileFolder;
+
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,7 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.mcp.app.FileServer;
 import io.quarkus.ts.mcp.app.MCPClient;
 import io.quarkus.ts.mcp.app.MyResources;
+import io.restassured.specification.RequestSpecification;
 
 @QuarkusScenario
 public class LocalStreamingHTTPIT extends BasicMCPIT {
@@ -58,7 +61,12 @@ public class LocalStreamingHTTPIT extends BasicMCPIT {
     }
 
     @Override
-    public RestService client() {
+    public RequestSpecification client() {
+        return client.given();
+    }
+
+    @Override
+    public RestService app() {
         return client;
     }
 
