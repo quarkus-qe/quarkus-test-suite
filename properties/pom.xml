@@ -44,7 +44,6 @@
         <dependency>
             <groupId>io.quarkus.qe</groupId>
             <artifactId>quarkus-test-cli</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
