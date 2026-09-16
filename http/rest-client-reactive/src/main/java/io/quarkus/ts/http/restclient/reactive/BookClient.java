@@ -6,6 +6,7 @@ import java.util.Set;
 
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.MatrixParam;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -16,6 +17,7 @@ import jakarta.ws.rs.core.MultivaluedMap;
 import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.jboss.resteasy.reactive.RestForm;
+import org.jboss.resteasy.reactive.RestMatrix;
 import org.jboss.resteasy.reactive.RestQuery;
 
 import io.quarkus.ts.http.restclient.reactive.json.Author;
@@ -137,4 +139,14 @@ public interface BookClient {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     Uni<String> getSequel(Book first);
+
+    @GET
+    @Path("/params")
+    @Produces(MediaType.APPLICATION_JSON)
+    Uni<Book> getParams(@MatrixParam("title") String title, @MatrixParam("author") String author);
+
+    @GET
+    @Path("/matrix")
+    @Produces(MediaType.APPLICATION_JSON)
+    Uni<Book> getMatrix(@RestMatrix String title, @RestMatrix String author);
 }

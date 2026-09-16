@@ -140,4 +140,16 @@ public class ReactiveClientBookResource {
     public Uni<String> getSequel(@QueryParam("title") String title, @QueryParam("author") String author) {
         return bookInterface.getSequel(new Book(title, author));
     }
+
+    @GET
+    @Path("/params")
+    public Uni<Book> getParametrised(@QueryParam("title") String title, @QueryParam("author") String author) {
+        return bookInterface.getParams(title, author);
+    }
+
+    @GET
+    @Path("/matrix")
+    public Uni<Book> getViaMatrix(@QueryParam("title") String title, @QueryParam("author") String author) {
+        return bookInterface.getMatrix(title, author);
+    }
 }
