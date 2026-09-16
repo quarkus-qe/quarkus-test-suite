@@ -370,6 +370,55 @@ public class ReactiveRestClientIT {
                 "There is an error in title field: " + clientResponse.body().asString());
     }
 
+    @Test
+    @Tag("https://github.com/quarkusio/quarkus/issues/55746")
+    public void matrixParameters() {
+        Response serverResponse = app.given()
+                .urlEncodingEnabled(false) //otherwise automatic encoding will also replace ';' and '='
+                .get("/books/params;author=Lewis%20Caroll;title=Alice%20in%20Wonderland");
+        assertEquals(200, serverResponse.statusCode());
+        JsonPath json = serverResponse.jsonPath();
+        assertEquals("Lewis Caroll", json.getString("author"),
+                "There is an error in author field: " + serverResponse.body().asString());
+        assertEquals("Alice in Wonderland", json.getString("title"),
+                "There is an error in title field: " + serverResponse.body().asString());
+
+        Response clientResponse = app.given()
+                .get("/client/book/params?author=Lewis Caroll&title=Alice in Wonderland");
+
+        assertEquals(200, clientResponse.statusCode());
+        JsonPath clientJson = clientResponse.jsonPath();
+        assertEquals("Lewis Caroll", clientJson.getString("author"),
+                "There is an error in author field: " + clientResponse.body().asString());
+        assertEquals("Alice in Wonderland", clientJson.getString("title"),
+                "There is an error in title field: " + clientResponse.body().asString());
+
+    }
+
+    @Test
+    @Tag("https://github.com/quarkusio/quarkus/issues/55746")
+    public void restMatrix() {
+        Response serverResponse = app.given()
+                .urlEncodingEnabled(false) //otherise automatic encoding will replace ';' and '='
+                .get("/books/matrix;author=Lewis%20Caroll;title=Alice%20in%20Wonderland");
+        assertEquals(200, serverResponse.statusCode());
+        JsonPath json = serverResponse.jsonPath();
+        assertEquals("Lewis Caroll", json.getString("author"),
+                "There is an error in author field: " + serverResponse.body().asString());
+        assertEquals("Alice in Wonderland", json.getString("title"),
+                "There is an error in title field: " + serverResponse.body().asString());
+
+        Response clientResponse = app.given()
+                .get("/client/book/matrix?author=Lewis Caroll&title=Alice in Wonderland");
+
+        assertEquals(200, clientResponse.statusCode());
+        JsonPath clientJson = clientResponse.jsonPath();
+        assertEquals("Lewis Caroll", clientJson.getString("author"),
+                "There is an error in author field: " + clientResponse.body().asString());
+        assertEquals("Alice in Wonderland", clientJson.getString("title"),
+                "There is an error in title field: " + clientResponse.body().asString());
+    }
+
     @AfterAll
     static void afterAll() {
         mockServer.stop();
