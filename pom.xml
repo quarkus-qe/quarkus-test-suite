@@ -766,6 +766,7 @@
                 <module>websockets/websocket-next-oidc</module>
             </modules>
         </profile>
+
         <profile>
             <id>native</id>
             <activation>
