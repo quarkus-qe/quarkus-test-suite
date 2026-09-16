@@ -14,6 +14,7 @@ import jakarta.enterprise.inject.spi.CDI;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.MatrixParam;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -26,6 +27,7 @@ import jakarta.ws.rs.ext.ContextResolver;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
+import org.jboss.resteasy.reactive.RestMatrix;
 import org.jboss.resteasy.reactive.RestQuery;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -216,6 +218,20 @@ public class PlainBookResource {
             jakarta.ws.rs.core.Response response = target.request(MediaType.APPLICATION_JSON).get();
             return response.readEntity(Book.class);
         }
+    }
+
+    @GET
+    @Path("/params")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Uni<Book> getParams(@MatrixParam("title") String title, @MatrixParam("author") String author) {
+        return Uni.createFrom().item(new Book(title, author));
+    }
+
+    @GET
+    @Path("/matrix")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Uni<Book> getFromMatrix(@RestMatrix String title, @RestMatrix String author) {
+        return Uni.createFrom().item(new Book(title, author));
     }
 
     private KeyStore trustStore() throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
