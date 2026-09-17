@@ -38,7 +38,8 @@ jobs:
       - name: Build Quarkus
         run: |
           git clone -b 3.40 https://github.com/quarkusio/quarkus.git && cd quarkus
-          ./mvnw -B --no-transfer-progress -s ${{ env.MVN_SETTINGS }} clean install -Dquickly -Dno-test-modules -Prelocations
+          # Disable scalpel is needed as the scalpel comparing the changes between HEAD and origin/3.40 and don't find any for Quarkus repo
+          ./mvnw -B --no-transfer-progress -s ${{ env.MVN_SETTINGS }} clean install -Dquickly -Dno-test-modules -Prelocations -Dscalpel.enabled=false
       - name: Build Quarkus Langchain4j
         run: |
           git clone -b 1.12 https://github.com/quarkiverse/quarkus-langchain4j.git && cd quarkus-langchain4j
