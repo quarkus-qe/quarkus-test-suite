@@ -10,7 +10,7 @@ Please select the relevant options.
 - [ ] Backport
 - [ ] New scenario (non-breaking change which adds functionality)
 - [ ] This change requires a documentation update
-- [ ] This change requires execution against OCP (use `run tests` phrase in comment)
+- [ ] This change requires execution against OCP (use `!quarkus-openshift-tests` phrase in comment)
 - [ ] This change requires execution with OCP on Aarch64 (use `run arm tests` phrase in comment)
 
 ### Checklist:
