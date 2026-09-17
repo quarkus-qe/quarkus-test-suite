@@ -233,7 +233,7 @@ public class QuarkusCliCreateJvmApplicationIT {
         // otherwise when the quarkus version is defined (3.27.0) or if it's snapshot of some quarkus stream (3.27.999-SNAPSHOT)
         // it will set the correct stream to use
         String version = Version.getVersion(); // We are interested in core version only
-        String quarkusStream = version.equals("3.39.999-SNAPSHOT") ? null
+        String quarkusStream = version.equals("3.40.999-SNAPSHOT") ? null
                 : version.replaceAll("^(\\d+\\.\\d+).*", "$1");
         // This can't use `--platform-bom` as it contain quarkiverse extension
         QuarkusCliRestService app = cliClient.createApplication("app",

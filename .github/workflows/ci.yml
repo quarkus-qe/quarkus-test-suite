@@ -2,8 +2,8 @@ name: "PR"
 on:
   - pull_request
 env:
-  PLATFORM_BUILD: 3.39.999-core-3.39-SNAPSHOT
-  QUARKUS_BUILD: 3.39.999-SNAPSHOT
+  PLATFORM_BUILD: 3.40.999-core-3.40-SNAPSHOT
+  QUARKUS_BUILD: 3.40.999-SNAPSHOT
   LANGCHAIN4J_BUILD: 1.12.999-SNAPSHOT
   MCP_BUILD: 1.13.999-SNAPSHOT
   HTTP_PROBLEM_BUILD: 999-SNAPSHOT
@@ -37,7 +37,7 @@ jobs:
           echo "MVN_SETTINGS=$GITHUB_WORKSPACE/.github/mvn-settings.xml" >> $GITHUB_ENV
       - name: Build Quarkus
         run: |
-          git clone -b 3.39 https://github.com/quarkusio/quarkus.git && cd quarkus
+          git clone -b 3.40 https://github.com/quarkusio/quarkus.git && cd quarkus
           ./mvnw -B --no-transfer-progress -s ${{ env.MVN_SETTINGS }} clean install -Dquickly -Dno-test-modules -Prelocations
       - name: Build Quarkus Langchain4j
         run: |
@@ -57,10 +57,9 @@ jobs:
         run: |
           git clone https://github.com/quarkiverse/quarkus-http-problem.git && cd quarkus-http-problem
           ./mvnw -B --no-transfer-progress -s ${{ env.MVN_SETTINGS }} clean install -DskipTests -Dquarkus.version=${QUARKUS_BUILD}
-      - name: Build Quarkus Platform 3.39 with Quarkus core ${{ env.QUARKUS_BUILD }} (version ${{ env.PLATFORM_BUILD }})
+      - name: Build Quarkus Platform 3.40 with Quarkus core ${{ env.QUARKUS_BUILD }} (version ${{ env.PLATFORM_BUILD }})
         run: |
-          # TODO update to 3.39/3.40 as it's available
-          git clone -b 3.38 https://github.com/quarkusio/quarkus-platform.git && cd quarkus-platform
+          git clone -b 3.40 https://github.com/quarkusio/quarkus-platform.git && cd quarkus-platform
           
           # add some common options
           cat <<EOF >> .mvn/maven.config

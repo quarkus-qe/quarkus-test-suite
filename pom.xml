@@ -18,7 +18,7 @@
         <failsafe-plugin.version>3.6.0</failsafe-plugin.version>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-        <quarkus.platform.version>3.39.999-core-3.39-SNAPSHOT</quarkus.platform.version>
+        <quarkus.platform.version>3.40.999-core-3.40-SNAPSHOT</quarkus.platform.version>
         <quarkus.ide.version>3.30.0</quarkus.ide.version>
         <quarkus.qe.framework.version>1.9.0.Beta4</quarkus.qe.framework.version>
         <quarkus-qpid-jms.version>2.13.0</quarkus-qpid-jms.version>
@@ -443,7 +443,7 @@
             <id>core-only</id>
             <properties>
                 <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-                <quarkus.platform.version>3.39.999-SNAPSHOT</quarkus.platform.version>
+                <quarkus.platform.version>3.40.999-SNAPSHOT</quarkus.platform.version>
                 <repository.update.policy>never</repository.update.policy>
             </properties>
         </profile>
