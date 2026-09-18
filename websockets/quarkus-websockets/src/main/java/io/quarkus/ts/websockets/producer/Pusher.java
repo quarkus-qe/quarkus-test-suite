@@ -32,6 +32,6 @@ public class Pusher {
         remote.sendText("One").get(2, TimeUnit.SECONDS);
         remote.sendText("Two").get(2, TimeUnit.SECONDS);
         remote.sendText("Three").get(2, TimeUnit.SECONDS);
-        remote.sendText("Four").get(2, TimeUnit.SECONDS);
+        remote.sendText("Four").get(5, TimeUnit.SECONDS);
     }
 }

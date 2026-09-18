@@ -18,6 +18,8 @@ class OpenShiftPackagingJarIT {
 
     @Test
     void packagingTest() throws IOException {
+        System.out.println("foo");
+
         app.given()
                 .get("/hello")
                 .then()

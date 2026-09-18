@@ -21,4 +21,6 @@ public class OpenShiftMySqlPanacheResourceIT extends AbstractPanacheResourceIT {
             .withProperty("quarkus.datasource.username", database.getUser())
             .withProperty("quarkus.datasource.password", database.getPassword())
             .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl);
+
+    // a dummy change
 }
