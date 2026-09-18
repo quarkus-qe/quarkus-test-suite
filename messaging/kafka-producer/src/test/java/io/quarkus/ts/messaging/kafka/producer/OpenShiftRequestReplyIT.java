@@ -4,4 +4,5 @@ import io.quarkus.test.scenarios.OpenShiftScenario;
 
 @OpenShiftScenario
 public class OpenShiftRequestReplyIT extends RequestReplyIT {
+    // a change
 }

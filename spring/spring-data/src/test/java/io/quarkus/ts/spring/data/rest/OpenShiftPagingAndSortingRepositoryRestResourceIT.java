@@ -5,3 +5,4 @@ import io.quarkus.test.scenarios.OpenShiftScenario;
 @OpenShiftScenario
 public class OpenShiftPagingAndSortingRepositoryRestResourceIT extends PagingAndSortingRepositoryRestResourceIT {
 }
+// a change
