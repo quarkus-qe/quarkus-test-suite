@@ -8,6 +8,7 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.mcp.app.FileServer;
 import io.quarkus.ts.mcp.app.MCPClient;
 import io.quarkus.ts.mcp.app.MyResources;
+import io.restassured.specification.RequestSpecification;
 
 @OpenShiftScenario
 public class OpenShiftHttpIT extends LocalStreamingHTTPIT {
@@ -31,7 +32,7 @@ public class OpenShiftHttpIT extends LocalStreamingHTTPIT {
                     () -> server.getURI(Protocol.HTTP).withPath("/mcp").toString());
 
     @Override
-    public RestService client() {
-        return client;
+    public RequestSpecification client() {
+        return client.given();
     }
 }

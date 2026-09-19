@@ -7,6 +7,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.MethodOrderer;
@@ -315,6 +319,165 @@ public abstract class AbstractDatabaseHibernateReactiveIT {
                 .delete("/library/unmanaged/new");
         assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, response.statusCode());
         assertThat(response.body().asString(), containsString("IllegalArgumentException"));
+    }
+
+    @Tag("QUARKUS-7821")
+    @Test
+    public void transactionalCommitsOnSuccess() {
+        getApp().given()
+                .contentType(ContentType.JSON)
+                .post("/transactional/book/4/TransactionalBook")
+                .then().statusCode(HttpStatus.SC_CREATED);
+
+        getApp().given()
+                .when().get("/library/books/author/Kahneman")
+                .then().statusCode(HttpStatus.SC_OK)
+                .body("$", hasItem("TransactionalBook"));
+    }
+
+    @Tag("QUARKUS-7821")
+    @Test
+    public void transactionalRollsBackOnFailure() {
+        getApp().given()
+                .contentType(ContentType.JSON)
+                .post("/transactional/book/fail/4/RollbackBook")
+                .then().statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+
+        String books = getApp().given()
+                .when().get("/library/books/author/Kahneman")
+                .then().statusCode(HttpStatus.SC_OK)
+                .extract().body().asString();
+        assertFalse(books.contains("RollbackBook"));
+    }
+
+    @Tag("QUARKUS-7821")
+    @Test
+    public void transactionalUniRunsOnEventLoop() {
+        String threadName = getApp().given()
+                .when().get("/transactional/thread")
+                .then().statusCode(HttpStatus.SC_OK)
+                .extract().body().asString();
+        assertThat(threadName, containsString("vert.x-eventloop"));
+    }
+
+    @Tag("QUARKUS-7821")
+    @Test
+    public void transactionalBlockingRunsOnWorkerThread() {
+        String threadName = getApp().given()
+                .when().get("/transactional/thread/blocking")
+                .then().statusCode(HttpStatus.SC_OK)
+                .extract().body().asString();
+        assertThat(threadName, containsString("executor-thread"));
+    }
+
+    @Tag("QUARKUS-7821")
+    @Test
+    public void transactionalRequiresNewThrowsUnsupportedOperationException() {
+        getApp().given()
+                .when().get("/transactional/txtype/requires-new")
+                .then().statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR)
+                .body(containsString("@Transactional on Reactive methods supports only Transactional.TxType.REQUIRED"));
+    }
+
+    @Tag("QUARKUS-7821")
+    @Test
+    public void transactionalMandatoryThrowsUnsupportedOperationException() {
+        getApp().given()
+                .when().get("/transactional/txtype/mandatory")
+                .then().statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR)
+                .body(containsString("@Transactional on Reactive methods supports only Transactional.TxType.REQUIRED"));
+    }
+
+    @Tag("QUARKUS-7821")
+    @Test
+    public void transactionalStatelessSessionPersists() {
+        getApp().given()
+                .contentType(ContentType.JSON)
+                .post("/transactional/stateless/4/StatelessBook")
+                .then().statusCode(HttpStatus.SC_CREATED);
+
+        getApp().given()
+                .when().get("/library/books/author/Kahneman")
+                .then().statusCode(HttpStatus.SC_OK)
+                .body("$", hasItem("StatelessBook"));
+    }
+
+    @Tag("QUARKUS-7821")
+    @Test
+    public void transactionalMultiReturnTypeFails() {
+        getApp().given()
+                .when().get("/transactional/multi")
+                .then().statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR)
+                .body(containsString("io.smallrye.mutiny.Multi"));
+    }
+
+    @Tag("QUARKUS-7821")
+    @Test
+    public void transactionalStatelessSessionCrud() {
+        getApp().given()
+                .contentType(ContentType.JSON)
+                .post("/transactional/stateless/4/StatelessCrudBook")
+                .then().statusCode(HttpStatus.SC_CREATED);
+
+        getApp().given()
+                .when().get("/transactional/stateless/StatelessCrudBook")
+                .then().statusCode(HttpStatus.SC_OK)
+                .body("title", Matchers.is("StatelessCrudBook"));
+
+        getApp().given()
+                .when().put("/transactional/stateless/StatelessCrudBook/StatelessCrudUpdated")
+                .then().statusCode(HttpStatus.SC_NO_CONTENT);
+
+        getApp().given()
+                .when().get("/transactional/stateless/StatelessCrudUpdated")
+                .then().statusCode(HttpStatus.SC_OK)
+                .body("title", Matchers.is("StatelessCrudUpdated"));
+
+        getApp().given()
+                .when().delete("/transactional/stateless/StatelessCrudUpdated")
+                .then().statusCode(HttpStatus.SC_NO_CONTENT);
+
+        getApp().given()
+                .when().get("/transactional/stateless/StatelessCrudUpdated")
+                .then().statusCode(HttpStatus.SC_NOT_FOUND);
+    }
+
+    @Tag("QUARKUS-7821")
+    @Test
+    public void transactionalConcurrentRequestsKeepIsolation() throws Exception {
+        int iterations = 5;
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        try {
+            for (int i = 0; i < iterations; i++) {
+                int iteration = i;
+                String barrier = "isolation-" + iteration;
+                Future<Integer> commitRequest = executor.submit(() -> getApp().given()
+                        .contentType(ContentType.JSON)
+                        .queryParam("barrier", barrier)
+                        .queryParam("rollback", false)
+                        .post("/transactional/book/isolated/4/ConcurrentCommit" + iteration)
+                        .then().extract().statusCode());
+                Future<Integer> rollbackRequest = executor.submit(() -> getApp().given()
+                        .contentType(ContentType.JSON)
+                        .queryParam("barrier", barrier)
+                        .queryParam("rollback", true)
+                        .post("/transactional/book/isolated/4/ConcurrentRollback" + iteration)
+                        .then().extract().statusCode());
+                assertEquals(HttpStatus.SC_CREATED, commitRequest.get());
+                assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, rollbackRequest.get());
+            }
+        } finally {
+            executor.shutdown();
+        }
+
+        String books = getApp().given()
+                .when().get("/library/books/author/Kahneman")
+                .then().statusCode(HttpStatus.SC_OK)
+                .extract().body().asString();
+        for (int i = 0; i < iterations; i++) {
+            assertTrue(books.contains("ConcurrentCommit" + i), "Book from committed transaction is missing: " + i);
+        }
+        assertFalse(books.contains("ConcurrentRollback"), "Books from rolled back transactions were persisted");
     }
 
     protected abstract RestService getApp();
