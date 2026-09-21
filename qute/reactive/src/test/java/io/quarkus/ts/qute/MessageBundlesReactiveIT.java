@@ -16,6 +16,8 @@ public class MessageBundlesReactiveIT {
 
     @Test
     void smoke() {
+        //dummy change
+
         Response response = app.given().get("message/en");
         assertEquals(200, response.statusCode());
         assertEquals("Hello, Dr. Livingstone!", response.body().asString());
