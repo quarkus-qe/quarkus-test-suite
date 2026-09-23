@@ -16,12 +16,14 @@ public class CertificateReloader {
     void setupCertificateReloadingTriggerRoute(@Observes Router router, Event<CertificateUpdatedEvent> certUpdatedEvent,
             TlsConfigurationRegistry registry, Vertx vertx) {
         router.route("/reload-mtls-certificates").handler(ctx -> {
-            TlsConfiguration config = registry.get(MTLS_CONFIG_NAME).orElseThrow();
+            // TLS configuration to reload, defaults to the mTLS one used by most of the tests
+            String configName = ctx.request().getParam("tls-configuration-name", MTLS_CONFIG_NAME);
+            TlsConfiguration config = registry.get(configName).orElseThrow();
             vertx
                     .executeBlocking(() -> {
                         boolean reloaded = config.reload();
                         if (reloaded) {
-                            certUpdatedEvent.fire(new CertificateUpdatedEvent(MTLS_CONFIG_NAME, config));
+                            certUpdatedEvent.fire(new CertificateUpdatedEvent(configName, config));
                         }
                         return reloaded;
                     })

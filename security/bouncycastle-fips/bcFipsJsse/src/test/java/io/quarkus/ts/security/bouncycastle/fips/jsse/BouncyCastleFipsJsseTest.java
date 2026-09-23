@@ -38,6 +38,7 @@ public class BouncyCastleFipsJsseTest {
     Vertx vertx;
 
     @Tag("QUARKUS-2749")
+    @Tag("QUARKUS-7865")
     @Test
     public void verifyBouncyCastleFipsAndJsseProviderAvailability() throws Exception {
         WebClient webClient = WebClient.create(new io.vertx.mutiny.core.Vertx(vertx), createWebClientOptions());
