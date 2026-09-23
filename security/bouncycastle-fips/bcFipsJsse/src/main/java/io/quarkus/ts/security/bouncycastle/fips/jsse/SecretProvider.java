@@ -18,6 +18,7 @@ public class SecretProvider implements CredentialsProvider {
         Map<String, String> creds = new HashMap<>();
         creds.put("key-store-password", "password");
         creds.put("trust-store-password", "password");
+        creds.put("alias-password", "password");
         return creds;
     }
 }
