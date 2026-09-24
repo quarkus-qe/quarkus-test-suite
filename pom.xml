@@ -577,6 +577,18 @@
                 <module>http/vertx</module>
                 <module>http/management</module>
                 <module>http/grpc</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>http-problem-modules</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>all-modules</name>
+                </property>
+            </activation>
+            <modules>
+                <module>env-info</module>
                 <module>http/http-problem</module>
             </modules>
         </profile>
