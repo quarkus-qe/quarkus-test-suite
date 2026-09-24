@@ -28,7 +28,7 @@ public class OpenShiftOIDCClientIT extends BasicMCPIT {
     static final String CLIENT_ID_DEFAULT = "test-application-client";
     static final String CLIENT_SECRET_DEFAULT = "test-application-client-secret";
 
-    @KeycloakContainer(runKeycloakInProdMode = true)
+    @KeycloakContainer(runKeycloakInProdMode = true, image = "${rhbk.image}")
     static KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
 
     @QuarkusApplication(boms = { @Dependency(artifactId = "quarkus-mcp-server-bom") }, dependencies = {

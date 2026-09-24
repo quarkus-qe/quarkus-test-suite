@@ -29,7 +29,7 @@ import io.restassured.specification.RequestSpecification;
 @OpenShiftScenario
 public class OpenShiftOIDCIT extends BasicMCPIT {
 
-    @KeycloakContainer(runKeycloakInProdMode = true)
+    @KeycloakContainer(runKeycloakInProdMode = true, image = "${rhbk.image}")
     static final KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
 
     @QuarkusApplication(boms = { @Dependency(artifactId = "quarkus-mcp-server-bom") }, dependencies = {
