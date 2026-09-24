@@ -2,6 +2,11 @@ name: test-project
 services:
   db:
     image: ${IMAGE}
+    healthcheck:
+      test: /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P Quarkus123 -C -Q "SELECT 1"
+      interval: 1s
+      timeout: 1s
+      retries: 30
     ports:
       - '1433'
     environment:
