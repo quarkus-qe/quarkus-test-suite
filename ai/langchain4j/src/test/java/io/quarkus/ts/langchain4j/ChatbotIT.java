@@ -4,6 +4,8 @@ import static io.quarkus.ts.langchain4j.auxiliary.CommonTools.DEFAULT_ARGS;
 import static io.quarkus.ts.langchain4j.auxiliary.CommonTools.SAMPLE_BRANCH;
 import static io.quarkus.ts.langchain4j.auxiliary.CommonTools.getKey;
 
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
+
 import io.quarkus.test.bootstrap.DefaultService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -11,6 +13,7 @@ import io.quarkus.test.services.Container;
 import io.quarkus.test.services.GitRepositoryQuarkusApplication;
 
 @QuarkusScenario
+@DisabledIfSystemProperty(named = "ts.ibm-z-p.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/3183")
 public class ChatbotIT extends AbstractChatbotIT {
 
     @Container(image = "${redis.image}", port = 6379, expectedLog = "Ready to accept connections")
