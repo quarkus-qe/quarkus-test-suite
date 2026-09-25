@@ -6,7 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "role") // import script expects lower case table name, identifiers are quoted, hence case-sensitive
+@Table(name = "\"role\"") // import script expects lower case table name, identifiers are quoted, hence case-sensitive
 public class Role {
 
     @Id
