@@ -10,19 +10,15 @@ import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.jboss.logging.Logger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.quarkus.runtime.StartupEvent;
 import io.quarkus.runtime.configuration.ConfigUtils;
 import io.quarkus.ts.vertx.sql.services.DbPoolService;
-import io.vertx.core.impl.logging.Logger;
-import io.vertx.core.impl.logging.LoggerFactory;
 import io.vertx.core.json.jackson.DatabindCodec;
-import io.vertx.mutiny.mssqlclient.MSSQLPool;
-import io.vertx.mutiny.mysqlclient.MySQLPool;
-import io.vertx.mutiny.oracleclient.OraclePool;
-import io.vertx.mutiny.pgclient.PgPool;
+import io.vertx.mutiny.sqlclient.Pool;
 
 /**
  * Application is used as a main class in order to setup some global configuration
@@ -30,7 +26,7 @@ import io.vertx.mutiny.pgclient.PgPool;
 @ApplicationScoped
 public class Application {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
+    private static final Logger LOGGER = Logger.getLogger(Application.class);
 
     @ConfigProperty(name = "app.selected.db")
     String selectedDB;
@@ -42,19 +38,19 @@ public class Application {
     String mysqlDbName;
 
     @Inject
-    PgPool postgresql;
+    Pool postgresql;
 
     @Inject
     @Named("mysql")
-    MySQLPool mysql;
+    Pool mysql;
 
     @Inject
     @Named("mssql")
-    MSSQLPool mssql;
+    Pool mssql;
 
     @Inject
     @Named("oracle")
-    OraclePool oracle;
+    Pool oracle;
 
     void onStart(@Observes StartupEvent ev) {
         LOGGER.info("The application is starting with profiles " + ConfigUtils.getProfiles());
