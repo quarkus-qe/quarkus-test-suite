@@ -28,7 +28,8 @@ public class GraphQLTelemetryIT {
 
     @QuarkusApplication
     static RestService app = new RestService()
-            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl);
+            .withProperty("quarkus.otel.exporter.otlp.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.traces.sampler.arg", "1.0d");
 
     @Test
     void verifyTelemetry() {

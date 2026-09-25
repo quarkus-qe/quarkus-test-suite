@@ -26,14 +26,9 @@ import io.quarkus.test.utils.AwaitilityUtils;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.vertx.core.Vertx;
-import io.vertx.core.buffer.Buffer;
+import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
-import io.vertx.core.net.SocketAddress;
-import io.vertx.grpc.client.GrpcClient;
-import io.vertx.grpc.common.GrpcStatus;
-import io.vertx.grpc.server.GrpcServer;
-import io.vertx.grpc.server.GrpcServerRequest;
 import io.vertx.junit5.VertxExtension;
 
 @Tag("QUARKUS-4550")
@@ -60,61 +55,53 @@ public class OpenTelemetryProxyIT {
             .withProperty("quarkus.otel.exporter.otlp.traces.proxy-options.password", PROXY_PASSWORD)
             .withProperty("quarkus.otel.exporter.otlp.traces.proxy-options.port", OpenTelemetryProxyIT::getProxyPortAsString)
             .withProperty("quarkus.otel.exporter.otlp.traces.proxy-options.host", "localhost")
-            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", "http://" + JAEGER_MISSING_COLLECTOR);
+            .withProperty("quarkus.otel.exporter.otlp.endpoint", "http://" + JAEGER_MISSING_COLLECTOR)
+            .withProperty("quarkus.otel.traces.sampler.arg", "1.0d");
 
     @Test
     public void testProxyWithPassword(Vertx vertx) throws IOException {
-        try (var ignored = createGrpcProxy(vertx)) {
+        try (var ignored = createHttpProxy(vertx)) {
             testTraces();
         }
     }
 
-    private static Closeable createGrpcProxy(Vertx vertx) {
-        GrpcServer grpcProxy = GrpcServer.server(vertx);
-        GrpcClient proxyClient = GrpcClient.client(vertx);
-
-        // create proxy server
-        // on request use gRPC client and pass the message to the Jaeger
-        grpcProxy.callHandler(reqFromQuarkus -> reqFromQuarkus.messageHandler(msgFromQuarkus -> proxyClient
-                .request(getJaegerSocketAddress())
-                .onSuccess(requestToJaeger -> {
-                    assertProxyUsernameAndPassword(reqFromQuarkus);
-                    requestToJaeger
-                            .methodName(reqFromQuarkus.methodName())
-                            .serviceName(reqFromQuarkus.serviceName())
-                            .end(msgFromQuarkus.payload());
-                    // send Jaeger response back to the Quarkus application
-                    requestToJaeger.response()
-                            .onSuccess(h -> h.messageHandler(msg -> reqFromQuarkus.response().endMessage(msg)))
-                            .onFailure(err -> reqFromQuarkus.response().status(GrpcStatus.ABORTED).end());
-                })));
+    private static Closeable createHttpProxy(Vertx vertx) {
+        HttpClient proxyClient = vertx.createHttpClient();
 
         HttpServer proxyHttpServer = vertx.createHttpServer(new HttpServerOptions().setPort(getProxyPort()));
-        Log.info("Starting new gRPC proxy on port %s for Jaeger collector %s", getProxyPort(), getJaegerSocketAddress());
-        proxyHttpServer
-                .requestHandler(httpServerRequest -> {
-                    assertEquals(JAEGER_MISSING_COLLECTOR, httpServerRequest.authority().host());
-                    grpcProxy.handle(httpServerRequest);
-                })
-                .listen();
+        Log.info("Starting HTTP proxy on port %s for Jaeger collector %s:%s",
+                getProxyPort(), getJaegerUri().getHost(), getJaegerUri().getPort());
 
-        return () -> proxyHttpServer
-                .close()
-                .eventually(proxyClient::close)
-                .toCompletionStage()
-                .toCompletableFuture()
-                .join();
+        proxyHttpServer.requestHandler(proxyReq -> {
+            assertEquals(JAEGER_MISSING_COLLECTOR, proxyReq.authority().host());
+            assertProxyUsernameAndPassword(proxyReq.getHeader(PROXY_AUTHORIZATION));
+
+            proxyReq.body().onSuccess(body -> proxyClient.request(proxyReq.method(),
+                    getJaegerUri().getPort(), getJaegerUri().getHost(), proxyReq.uri())
+                    .onSuccess(clientReq -> {
+                        proxyReq.headers().forEach(h -> clientReq.putHeader(h.getKey(), h.getValue()));
+                        clientReq.putHeader("Host", getJaegerUri().getHost() + ":" + getJaegerUri().getPort());
+                        clientReq.send(body).onSuccess(clientResp -> {
+                            proxyReq.response().setStatusCode(clientResp.statusCode());
+                            clientResp.headers().forEach(h -> proxyReq.response().putHeader(h.getKey(), h.getValue()));
+                            clientResp.body().onSuccess(respBody -> proxyReq.response().end(respBody));
+                        }).onFailure(err -> proxyReq.response().setStatusCode(502).end(err.getMessage()));
+                    }).onFailure(err -> proxyReq.response().setStatusCode(502).end(err.getMessage())));
+        });
+
+        proxyHttpServer.listen();
+
+        return () -> proxyHttpServer.close().toCompletionStage().toCompletableFuture().join();
     }
 
-    private static void assertProxyUsernameAndPassword(GrpcServerRequest<Buffer, Buffer> reqFromQuarkus) {
-        var proxyAuthZ = reqFromQuarkus.headers().get(PROXY_AUTHORIZATION);
+    private static void assertProxyUsernameAndPassword(String proxyAuthZ) {
         if (proxyAuthZ != null && proxyAuthZ.startsWith(BASIC_AUTH_PREFIX)) {
             var basicCredentials = new String(Base64.getDecoder().decode(proxyAuthZ.substring(BASIC_AUTH_PREFIX.length())));
             assertEquals(PROXY_USERNAME + ":" + PROXY_PASSWORD, basicCredentials);
             return;
         }
         Assertions.fail(
-                "OpenTelemetry OTLP exporter is not passing proxy authorization, found headers: " + reqFromQuarkus.headers());
+                "OpenTelemetry OTLP exporter is not passing proxy authorization, found header: " + proxyAuthZ);
     }
 
     private static void testTraces() {
@@ -158,9 +145,5 @@ public class OpenTelemetryProxyIT {
 
     private static String getProxyPortAsString() {
         return Integer.toString(getProxyPort());
-    }
-
-    private static SocketAddress getJaegerSocketAddress() {
-        return SocketAddress.inetSocketAddress(getJaegerUri().getPort(), getJaegerUri().getHost());
     }
 }

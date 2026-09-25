@@ -19,7 +19,8 @@ import tools.jackson.databind.ObjectMapper;
 public class AccessLogIT {
     @QuarkusApplication(classes = { HelloResource.class })
     static final RestService app = new RestService()
-            .withProperties("access-log.properties");
+            .withProperties("access-log.properties")
+            .withProperty("quarkus.otel.traces.sampler.arg", "1.0d");
 
     @Test
     @Tag("QUARKUS-6555")
