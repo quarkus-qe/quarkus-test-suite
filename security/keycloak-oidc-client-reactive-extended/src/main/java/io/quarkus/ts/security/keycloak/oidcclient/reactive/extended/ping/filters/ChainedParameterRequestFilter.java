@@ -9,6 +9,7 @@ import io.quarkus.arc.Unremovable;
 import io.quarkus.oidc.common.OidcEndpoint;
 import io.quarkus.oidc.common.OidcRequestContextProperties;
 import io.quarkus.oidc.common.OidcRequestFilter;
+import io.smallrye.mutiny.Uni;
 import io.vertx.mutiny.core.buffer.Buffer;
 
 @ApplicationScoped
@@ -19,7 +20,7 @@ public class ChainedParameterRequestFilter implements OidcRequestFilter {
     public static final List<String> interceptedMessageLogs = new CopyOnWriteArrayList<>();
 
     @Override
-    public void filter(OidcRequestContext requestContext) {
+    public Uni<Void> filter(OidcRequestFilterContext requestContext) {
 
         // Check if a previous filter in the chain already modified the request body
         // If so, we need to work with that modified version, not the original
@@ -34,5 +35,6 @@ public class ChainedParameterRequestFilter implements OidcRequestFilter {
             requestContext.requestBody(Buffer.buffer(newBody));
             interceptedMessageLogs.add("Second filter acted and added chained_param");
         }
+        return Uni.createFrom().voidItem();
     }
 }
