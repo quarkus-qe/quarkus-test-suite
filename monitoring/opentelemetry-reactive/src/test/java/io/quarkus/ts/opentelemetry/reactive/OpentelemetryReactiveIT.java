@@ -46,20 +46,20 @@ public class OpentelemetryReactiveIT {
             SchedulerService.class }, properties = "pong.properties")
     static final RestService pongservice = new RestService()
             .withProperty("quarkus.application.name", "pongservice")
-            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl);
+            .withProperty("quarkus.otel.exporter.otlp.endpoint", jaeger::getCollectorUrl);
 
     @QuarkusApplication(classes = { PingResource.class, PingPongService.class, AdminResource.class })
     static final RestService pingservice = new RestService()
             .withProperty("pongservice.url", () -> pongservice.getURI(HTTP).getRestAssuredStyleUri())
             .withProperty("pongservice.port", () -> Integer.toString(pongservice.getURI(HTTP).getPort()))
-            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.exporter.otlp.endpoint", jaeger::getCollectorUrl)
             // verify OTEL service name has priority over default Quarkus application name
             .withProperty("quarkus.otel.service.name", OTEL_PING_SERVICE_NAME);
 
     @QuarkusApplication(classes = { PartiallyTraceableResource.class, UntraceableResource.class })
     static final RestService tracingsuppressedservice = new RestService()
             .withProperty("quarkus.application.name", TRACING_SUPPRESSED_SERVICE_NAME)
-            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.exporter.otlp.endpoint", jaeger::getCollectorUrl)
             .withProperty("quarkus.otel.service.name", TRACING_SUPPRESSED_SERVICE_NAME)
             // we need to censor root as OpenShift readiness probe throws in a bunch of GET / traces into the mix and we don't want that in the test
             .withProperty("quarkus.otel.traces.suppress-application-uris", "/,partially-traceable-hello,untraceable-hello*");
