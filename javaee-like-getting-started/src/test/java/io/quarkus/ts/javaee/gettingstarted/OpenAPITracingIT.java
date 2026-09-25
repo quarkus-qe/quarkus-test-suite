@@ -35,13 +35,15 @@ public class OpenAPITracingIT {
     @QuarkusApplication(classes = GreetingResource.class)
     static final RestService tracedApp = new RestService()
             .withProperty("quarkus.application.name", "tracedApp")
-            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.exporter.otlp.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.traces.sampler.arg", "1.0d")
             .withProperty(SUPPRESS_NON_APPLICATION_URIS, "false");
 
     @QuarkusApplication(classes = GreetingResource.class)
     static final RestService untracedApp = new RestService()
             .withProperty("quarkus.application.name", "untracedApp")
-            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.exporter.otlp.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.traces.sampler.arg", "1.0d")
             .withProperty(SUPPRESS_NON_APPLICATION_URIS, "true");
 
     @Test

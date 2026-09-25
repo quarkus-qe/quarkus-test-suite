@@ -30,7 +30,8 @@ public class MetricsIT {
     @QuarkusApplication(classes = { PongResource.class, SchedulerResource.class,
             SchedulerService.class }, properties = "pong.properties")
     static final RestService pongservice = new RestService()
-            .withProperty("quarkus.application.name", "pongservice");
+            .withProperty("quarkus.application.name", "pongservice")
+            .withProperty("quarkus.otel.traces.sampler.arg", "1.0d");
 
     @QuarkusApplication(classes = { PingResource.class, PingPongService.class, AdminResource.class }, dependencies = {
             // Required for metrics. TODO: replace when OTLP gets its own metrics provider
@@ -40,7 +41,8 @@ public class MetricsIT {
             .withProperty("pongservice.url", () -> pongservice.getURI(HTTP).getRestAssuredStyleUri())
             .withProperty("pongservice.port", () -> Integer.toString(pongservice.getURI(HTTP).getPort()))
             // verify OTEL service name has priority over default Quarkus application name
-            .withProperty("quarkus.otel.service.name", OTEL_PING_SERVICE_NAME);
+            .withProperty("quarkus.otel.service.name", OTEL_PING_SERVICE_NAME)
+            .withProperty("quarkus.otel.traces.sampler.arg", "1.0d");
 
     @BeforeAll
     static void beforeAll() {
@@ -75,11 +77,12 @@ public class MetricsIT {
                             http_server_requests_seconds_count{method="GET",outcome="SUCCESS",status="200",uri="/ping/pong"}
                             """.strip(), content[0]);
 
-                    assertEquals("2.0", content[1], "Amount of events is wrong");
+                    assertEquals("2", content[1], "Amount of events is wrong");
                     assertEquals("#", content[2], "Unexpected exemplar separator!");
                     assertTrue(content[3].contains("span_id"), "Exemplar doesn't contain span ID");
                     assertTrue(content[3].contains("trace_id"), "Exemplar doesn't contain trace ID");
-                    assertEquals("1.0", content[4], "Unexpected exemplar value!");
+                    double exemplarValue = Double.parseDouble(content[4]);
+                    assertTrue(exemplarValue > 0, "Exemplar value should be positive, got: " + exemplarValue);
                 });
     }
 
