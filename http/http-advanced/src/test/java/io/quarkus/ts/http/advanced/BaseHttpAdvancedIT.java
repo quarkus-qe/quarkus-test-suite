@@ -220,7 +220,7 @@ public abstract class BaseHttpAdvancedIT {
     private WebClientOptions defaultVertxHttpClientOptions() {
         return new WebClientOptions().setProtocolVersion(HttpVersion.HTTP_2).setSsl(true).setVerifyHost(false)
                 .setUseAlpn(true)
-                .setTrustStoreOptions(new JksOptions().setPassword(PASSWORD).setPath(defaultTruststore()));
+                .setTrustOptions(new JksOptions().setPassword(PASSWORD).setPath(defaultTruststore()));
     }
 
     private String defaultTruststore() {
