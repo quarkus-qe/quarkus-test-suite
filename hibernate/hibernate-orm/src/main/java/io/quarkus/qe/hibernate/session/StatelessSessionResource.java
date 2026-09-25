@@ -3,6 +3,7 @@ package io.quarkus.qe.hibernate.session;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.persistence.Cache;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -13,6 +14,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
 
+import org.hibernate.LockMode;
 import org.hibernate.StatelessSession;
 import org.hibernate.jpa.AvailableHints;
 
@@ -53,18 +55,25 @@ public class StatelessSessionResource {
     @GET
     @Path("/get/{id}")
     public Response getDataById(@PathParam("id") int id) {
-        var entity = statelessSession.get(MyCachedEntity.class, new MyEntityId(id));
-        if (entity == null) {
+        try {
+            // TODO Quarkus 4: explicit LockMode.NONE workaround for Hibernate ORM 8 bug where
+            // StatelessSession.get(Class, Object) passes null LockMode to the 2nd level cache,
+            // causing NPE in CacheLoadHelper.loadFromSecondLevelCache()
+            // Fix: https://github.com/hibernate/hibernate-orm/pull/13701
+            var entity = statelessSession.get(MyCachedEntity.class, new MyEntityId(id), LockMode.NONE);
+            return Response.ok(entity.getData()).build();
+        } catch (EntityNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        return Response.ok(entity.getData()).build();
     }
 
     @Transactional
     @DELETE
     @Path("/delete/{id}")
     public void delete(@PathParam("id") int id) {
-        var entity = statelessSession.get(MyCachedEntity.class, new MyEntityId(id));
+        // TODO Quarkus 4: explicit LockMode.NONE workaround for Hibernate ORM 8 StatelessSession.get() NPE with 2nd level cache
+        // Fix: https://github.com/hibernate/hibernate-orm/pull/13701
+        var entity = statelessSession.get(MyCachedEntity.class, new MyEntityId(id), LockMode.NONE);
         statelessSession.delete(entity);
     }
 
