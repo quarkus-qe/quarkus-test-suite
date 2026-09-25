@@ -8,6 +8,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import io.quarkus.arc.Unremovable;
 import io.quarkus.oidc.common.OidcEndpoint;
 import io.quarkus.oidc.common.OidcResponseFilter;
+import io.smallrye.mutiny.Uni;
 import io.vertx.core.json.JsonObject;
 import io.vertx.mutiny.core.buffer.Buffer;
 
@@ -19,9 +20,9 @@ public class CustomTokenResponseBodyFilter implements OidcResponseFilter {
     public static final List<String> interceptedMessageLogs = new CopyOnWriteArrayList<>();
 
     @Override
-    public void filter(OidcResponseContext responseContext) {
+    public Uni<Void> filter(OidcResponseFilterContext responseContext) {
         if (responseContext.responseBody() == null) {
-            return;
+            return Uni.createFrom().voidItem();
         }
         interceptedMessageLogs.add("Response body intercepted");
         JsonObject body = responseContext.responseBody().toJsonObject();
@@ -36,5 +37,6 @@ public class CustomTokenResponseBodyFilter implements OidcResponseFilter {
                 interceptedMessageLogs.add("Scope corrected from '" + scope + "' to '" + modifiedScope + "'");
             }
         }
+        return Uni.createFrom().voidItem();
     }
 }
