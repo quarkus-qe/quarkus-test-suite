@@ -96,10 +96,8 @@ public class OpenTelemetryMetricsGrpcExportRecoveryIT {
         GrpcServer grpcServer = GrpcServer.server(vertx);
         HttpServer httpServer = vertx.createHttpServer(new HttpServerOptions().setPort(METRICS_COLLECTOR_PORT));
 
-        httpServer.requestHandler(grpcServer).listen(result -> {
-            if (result.succeeded()) {
-                Log.info("Mock OTLP Collector started on port %d", METRICS_COLLECTOR_PORT);
-            }
+        httpServer.requestHandler(grpcServer).listen().onSuccess(result -> {
+            Log.info("Mock OTLP Collector started on port %d", METRICS_COLLECTOR_PORT);
         });
 
         grpcServer.callHandler(request -> {
@@ -117,7 +115,7 @@ public class OpenTelemetryMetricsGrpcExportRecoveryIT {
 
         return () -> {
             CompletableFuture<Void> closeFuture = new CompletableFuture<>();
-            httpServer.close(ar -> closeFuture.complete(null));
+            httpServer.close().onComplete(ar -> closeFuture.complete(null));
             closeFuture.get(5, TimeUnit.SECONDS);
         };
     }
