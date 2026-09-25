@@ -1,21 +1,16 @@
 package io.quarkus.ts.http.grpc.customizers;
 
 import jakarta.enterprise.context.Dependent;
-import jakarta.inject.Inject;
 
 import io.quarkus.grpc.api.ServerBuilderCustomizer;
 import io.quarkus.grpc.runtime.config.GrpcServerConfiguration;
-import io.vertx.grpc.VertxServerBuilder;
+import io.vertx.grpc.server.GrpcServerOptions;
 
 @Dependent
-public class LegacyGrpcServerCustomizer2 implements ServerBuilderCustomizer<VertxServerBuilder> {
-
-    @Inject
-    GrpcServerCustomizerHelper helper;
+public class LegacyGrpcServerCustomizer2 implements ServerBuilderCustomizer {
 
     @Override
-    public void customize(GrpcServerConfiguration config, VertxServerBuilder builder) {
-        builder.intercept(new GrpcMetadataInterceptor(this.getClass(), helper));
+    public void customize(GrpcServerConfiguration config, GrpcServerOptions options) {
     }
 
     @Override
