@@ -34,11 +34,12 @@ public class OpenTelemetryManagementIT {
     static RestService pong = new RestService()
             .withProperty("quarkus.application.name", "pong")
             .withProperty("quarkus.management.enabled", "true")
-            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", () -> jaeger.getCollectorUrl(Protocol.HTTPS))
+            .withProperty("quarkus.otel.exporter.otlp.endpoint", () -> jaeger.getCollectorUrl(Protocol.HTTPS))
             .withProperty("quarkus.otel.exporter.otlp.traces.tls-configuration-name", "jaeger")
             .withProperty("quarkus.tls.jaeger.key-store.pem.0.cert", OpenTelemetryManagementIT::getTlsCertPath)
             .withProperty("quarkus.tls.jaeger.key-store.pem.0.key", OpenTelemetryManagementIT::getTlsKeyPath)
-            .withProperty("quarkus.tls.jaeger.trust-store.pem.certs", OpenTelemetryManagementIT::getTlsCaCertPath);
+            .withProperty("quarkus.tls.jaeger.trust-store.pem.certs", OpenTelemetryManagementIT::getTlsCaCertPath)
+            .withProperty("quarkus.otel.traces.sampler.arg", "1.0d");
 
     private static final String PONG_ENDPOINT = "/hello";
     private static final String MANAGEMENT_ENDPOINT = "/q/health/ready";

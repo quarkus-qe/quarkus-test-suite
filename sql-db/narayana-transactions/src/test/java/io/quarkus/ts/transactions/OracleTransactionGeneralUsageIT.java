@@ -27,7 +27,8 @@ public class OracleTransactionGeneralUsageIT extends TransactionCommons {
 
     @QuarkusApplication
     static RestService app = new RestService().withProperties("oracle.properties")
-            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.exporter.otlp.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.traces.sampler.arg", "1.0d")
             .withProperty("quarkus.datasource.username", database.getUser())
             .withProperty("quarkus.datasource.password", database.getPassword())
             // we only want the second XA datasource to use 'mydb2', everything else should use 'mydb'
@@ -47,7 +48,8 @@ public class OracleTransactionGeneralUsageIT extends TransactionCommons {
 
     @Override
     protected Operation[] getExpectedJdbcOperations() {
-        return new Operation[] { new Operation("SELECT mydb.dual"), new Operation("INSERT mydb.journal"),
+        // OTel JDBC instrumentation normalizes "SELECT 1 FROM dual" to just "SELECT mydb"
+        return new Operation[] { new Operation("SELECT mydb"), new Operation("INSERT mydb.journal"),
                 new Operation("UPDATE mydb.account") };
     }
 

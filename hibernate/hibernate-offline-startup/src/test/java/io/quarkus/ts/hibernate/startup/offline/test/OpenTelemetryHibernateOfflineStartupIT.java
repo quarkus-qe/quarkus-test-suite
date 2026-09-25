@@ -37,7 +37,8 @@ public class OpenTelemetryHibernateOfflineStartupIT extends AbstractHibernateOff
             .withProperty("quarkus.application.name", "app")
             .withProperty("quarkus.datasource.app_scope_credentials.jdbc.telemetry", "true")
             .withProperty("quarkus.datasource.req_scope_credentials.jdbc.telemetry", "true")
-            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.exporter.otlp.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.traces.sampler.arg", "1.0d")
             .withProperty("jdbc-url", "jdbc:postgresql://localhost:5432/mydb");
 
     @Order(Integer.MAX_VALUE) // run last so that JDBC traces produced by other test methods are ready
@@ -49,8 +50,8 @@ public class OpenTelemetryHibernateOfflineStartupIT extends AbstractHibernateOff
             assertThat(operationNames).contains("SELECT mydb.Article").contains("INSERT mydb.Article");
             var tagValues = response.jsonPath().getList("data.flatten().spans.flatten().tags.flatten().value");
             assertThat(tagValues)
-                    .contains("create schema req_scope_credentials")
-                    .contains("create schema app_scope_credentials");
+                    .contains("create schema if not exists req_scope_credentials")
+                    .contains("create schema if not exists app_scope_credentials");
         });
     }
 

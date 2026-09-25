@@ -43,7 +43,8 @@ public class UrlOverrideClientIT {
             .withProperty("quarkus.otel.enabled", "true")
             .withProperty("quarkus.otel.simple", "true")
             .withProperty("quarkus.application.name", MAIN_SERVICE_NAME)
-            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl);
+            .withProperty("quarkus.otel.exporter.otlp.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.traces.sampler.arg", "1.0d");
 
     @QuarkusApplication(properties = "urlOverride.properties")
     static RestService app2 = new RestService()

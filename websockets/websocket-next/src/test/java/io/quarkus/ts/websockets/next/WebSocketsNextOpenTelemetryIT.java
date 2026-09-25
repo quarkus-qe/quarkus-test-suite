@@ -38,7 +38,8 @@ public class WebSocketsNextOpenTelemetryIT {
 
     @QuarkusApplication(dependencies = @Dependency(artifactId = "quarkus-opentelemetry"))
     static final RestService app = new RestService()
-            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl);
+            .withProperty("quarkus.otel.exporter.otlp.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.traces.sampler.arg", "1.0d");
 
     protected RestService getServer() {
         return app;
