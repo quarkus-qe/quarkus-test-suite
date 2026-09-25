@@ -5,6 +5,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Typed;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
@@ -62,6 +63,7 @@ public class Application {
 
     @Singleton
     @Produces
+    @Typed(DbPoolService.class)
     @Named("sqlClient")
     synchronized DbPoolService pool() {
         return switch (selectedDB) {
