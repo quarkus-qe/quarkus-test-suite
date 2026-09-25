@@ -30,7 +30,7 @@ import io.smallrye.mutiny.Uni;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.mutiny.core.Vertx;
 import io.vertx.mutiny.ext.web.client.WebClient;
-import io.vertx.mutiny.pgclient.PgPool;
+import io.vertx.mutiny.sqlclient.Pool;
 import io.vertx.mutiny.sqlclient.RowSet;
 
 @EnabledWhenLinuxContainersAvailable
@@ -43,7 +43,7 @@ public class PostgresPoolTest {
     private static final int TIMEOUT_SEC = 60;
 
     @Inject
-    PgPool postgresql;
+    Pool postgresql;
 
     @Inject
     Vertx vertx;

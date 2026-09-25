@@ -11,7 +11,6 @@ import jakarta.ws.rs.ext.ParamConverterProvider;
 import jakarta.ws.rs.ext.Provider;
 
 import io.quarkus.reactive.datasource.ReactiveDataSource;
-import io.vertx.mutiny.mssqlclient.MSSQLPool;
 import io.vertx.mutiny.sqlclient.Pool;
 
 @Provider
@@ -19,7 +18,7 @@ public class ReactiveClientConverter implements ParamConverterProvider, ParamCon
 
     @Inject
     @Named("mssql")
-    Instance<MSSQLPool> mssql;
+    Instance<Pool> mssql;
 
     @Inject
     @ReactiveDataSource("mariadb")
