@@ -50,7 +50,8 @@ public abstract class AbstractVertxIT {
         assertTrue(metrics.containsKey("worker_pool_active"));
         assertTrue(metrics.containsKey("worker_pool_completed_total"));
         assertTrue(metrics.containsKey("worker_pool_queue_size"));
-        assertTrue(metrics.containsKey("worker_pool_rejected_total"));
+        // TODO Quarkus 4: worker_pool_rejected_total was removed in Vert.x 5 (PoolMetrics.rejected() no longer exists)
+        // assertTrue(metrics.containsKey("worker_pool_rejected_total"));
     }
 
     @Test

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -20,6 +21,7 @@ import io.vertx.core.http.RequestOptions;
 import io.vertx.mutiny.core.Vertx;
 import io.vertx.mutiny.core.http.HttpClientRequest;
 
+@Disabled("TODO Quarkus 4: PoolMetrics.rejected() was removed in Vert.x 5, so the worker_pool_rejected_total metric is no longer emitted")
 @DisabledOnNative // thread pool test is not relevant for a native mode
 @QuarkusScenario
 public class ThreadPoolIT {
