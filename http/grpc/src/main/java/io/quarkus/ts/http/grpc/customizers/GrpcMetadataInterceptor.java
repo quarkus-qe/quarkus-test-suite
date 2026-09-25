@@ -5,7 +5,7 @@ import io.grpc.ServerCall;
 import io.grpc.ServerCallHandler;
 import io.grpc.ServerInterceptor;
 
-final class GrpcMetadataInterceptor implements ServerInterceptor {
+abstract class GrpcMetadataInterceptor implements ServerInterceptor {
 
     private final String customizerName;
     private final GrpcServerCustomizerHelper helper;
