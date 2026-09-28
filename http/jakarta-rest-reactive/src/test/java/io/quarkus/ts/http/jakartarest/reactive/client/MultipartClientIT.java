@@ -20,6 +20,6 @@ public class MultipartClientIT {
                 .statusCode(200)
                 .body(containsStringIgnoringCase("Content-Disposition: form-data; name=\"pojoData\""),
                         containsStringIgnoringCase("Content-Type: application/json"),
-                        containsStringIgnoringCase("{\"foo\":\"test1\",\"bar\":1}"));
+                        containsStringIgnoringCase("{\"bar\":1,\"foo\":\"test1\"}"));
     }
 }

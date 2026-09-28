@@ -51,11 +51,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.annotations.DisabledOnNative;
@@ -69,6 +64,11 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.core.net.JksOptions;
 import io.vertx.ext.web.client.WebClientOptions;
 import io.vertx.mutiny.ext.web.client.HttpResponse;
+
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.dataformat.yaml.YAMLFactory;
 
 public abstract class BaseHttpAdvancedReactiveIT {
 
@@ -339,7 +339,7 @@ public abstract class BaseHttpAdvancedReactiveIT {
 
     @Test
     @Tag("QUARKUS-2004")
-    public void constraintsExist() throws JsonProcessingException {
+    public void constraintsExist() throws JacksonException {
         Response response = getApp().given().get("/q/openapi");
         Assertions.assertEquals(HttpStatus.SC_OK, response.statusCode());
 
@@ -483,7 +483,7 @@ public abstract class BaseHttpAdvancedReactiveIT {
     }
 
     @Test
-    void testOpenAPISchemasForParametersContainers() throws JsonProcessingException {
+    void testOpenAPISchemasForParametersContainers() throws JacksonException {
         Response response = getApp().given().get("/q/openapi");
         assertEquals(HttpStatus.SC_OK, response.statusCode());
 
@@ -582,7 +582,7 @@ public abstract class BaseHttpAdvancedReactiveIT {
     private WebClientOptions defaultVertxHttpClientOptions() {
         return new WebClientOptions().setProtocolVersion(HttpVersion.HTTP_2).setSsl(true).setVerifyHost(false)
                 .setUseAlpn(true)
-                .setTrustStoreOptions(new JksOptions().setPassword(PASSWORD).setPath(defaultTruststore()));
+                .setTrustOptions(new JksOptions().setPassword(PASSWORD).setPath(defaultTruststore()));
     }
 
     private String defaultTruststore() {

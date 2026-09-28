@@ -3,10 +3,13 @@ package io.quarkus.ts.http.advanced.reactive.nonjson;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public class CityListDTO {
 
     @XmlElement(name = "cityList")
@@ -23,7 +26,7 @@ public class CityListDTO {
         return cities;
     }
 
-    public void setCities(List<City> cities) {
+    public void setCityList(List<City> cities) {
         this.cities = cities;
     }
 
