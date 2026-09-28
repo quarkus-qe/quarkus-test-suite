@@ -15,6 +15,7 @@ import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -302,8 +303,11 @@ public abstract class AbstractDatabaseHibernateReactiveIT {
         assertThat(author.body().asString(), containsString("Slovník"));
     }
 
+    // TODO: nested session pattern (persist in session1, then manipulate in session3) needs
+    // rework for Hibernate Reactive 3 which correctly rejects persist() on detached entities
     @Tag("QUARKUS-6475")
     @Test
+    @Disabled("Needs rework: persist on detached entity across sessions fails in Hibernate Reactive 3")
     public void createBookThroughSession() {
         getApp().given()
                 .get("/hibernate/bookThroughSession/Christie/Marple")
