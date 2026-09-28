@@ -10,6 +10,7 @@ import jakarta.inject.Singleton;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 
+import io.quarkus.reactive.datasource.ReactiveDataSource;
 import io.quarkus.runtime.StartupEvent;
 import io.quarkus.runtime.configuration.ConfigUtils;
 import io.quarkus.ts.vertx.sql.services.DbPoolService;
@@ -36,15 +37,15 @@ public class Application {
     Pool postgresql;
 
     @Inject
-    @Named("mysql")
+    @ReactiveDataSource("mysql")
     Pool mysql;
 
     @Inject
-    @Named("mssql")
+    @ReactiveDataSource("mssql")
     Pool mssql;
 
     @Inject
-    @Named("oracle")
+    @ReactiveDataSource("oracle")
     Pool oracle;
 
     void onStart(@Observes StartupEvent ev) {
