@@ -1,7 +1,5 @@
 package io.quarkus.ts.vertx.sql;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Produces;
@@ -11,14 +9,11 @@ import jakarta.inject.Singleton;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.quarkus.runtime.StartupEvent;
 import io.quarkus.runtime.configuration.ConfigUtils;
 import io.quarkus.ts.vertx.sql.services.DbPoolService;
 import io.vertx.core.impl.logging.Logger;
 import io.vertx.core.impl.logging.LoggerFactory;
-import io.vertx.core.json.jackson.DatabindCodec;
 import io.vertx.mutiny.mssqlclient.MSSQLPool;
 import io.vertx.mutiny.mysqlclient.MySQLPool;
 import io.vertx.mutiny.oracleclient.OraclePool;
@@ -58,9 +53,6 @@ public class Application {
 
     void onStart(@Observes StartupEvent ev) {
         LOGGER.info("The application is starting with profiles " + ConfigUtils.getProfiles());
-
-        ObjectMapper mapper = DatabindCodec.mapper();
-        mapper.setSerializationInclusion(Include.NON_NULL);
     }
 
     @Singleton

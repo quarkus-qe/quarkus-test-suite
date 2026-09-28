@@ -21,11 +21,11 @@ import org.cyclonedx.model.Component;
 import org.cyclonedx.parsers.JsonParser;
 import org.junit.jupiter.api.Assumptions;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.quarkus.deployment.util.ContainerRuntimeUtil;
 import io.quarkus.test.services.quarkus.model.QuarkusProperties;
+
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 public class CycloneDxUtils {
 

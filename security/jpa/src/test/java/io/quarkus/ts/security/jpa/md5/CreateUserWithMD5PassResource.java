@@ -13,9 +13,9 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Response;
 import jakarta.xml.bind.DatatypeConverter;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 @Path("/create/user")
 @ApplicationScoped
@@ -24,7 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class CreateUserWithMD5PassResource {
     @POST
     @Transactional
-    public Response create(String jsonString) throws JsonProcessingException, NoSuchAlgorithmException {
+    public Response create(String jsonString) throws JacksonException, NoSuchAlgorithmException {
 
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(jsonString);

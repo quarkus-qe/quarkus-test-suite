@@ -11,7 +11,6 @@ import java.nio.file.Paths;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.yaml.snakeyaml.Yaml;
 
 import io.quarkus.test.bootstrap.MySqlService;
 import io.quarkus.test.bootstrap.RestService;
@@ -20,6 +19,9 @@ import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.sqldb.panacheflyway.init.yaml.CustomYaml;
+
+import tools.jackson.databind.MappingIterator;
+import tools.jackson.dataformat.yaml.YAMLMapper;
 
 @OpenShiftScenario(deployment = OpenShiftDeploymentStrategy.UsingOpenShiftExtension)
 public class OpenShiftDefaultInitContainerIT {
@@ -53,9 +55,10 @@ public class OpenShiftDefaultInitContainerIT {
     @Test
     void yaml() {
         try (InputStream content = Files.newInputStream(openShiftYaml)) {
-            Iterable<Object> objects = new Yaml().loadAll(content);
+            MappingIterator<Object> objects = new YAMLMapper().readerFor(Object.class).readValues(content);
             String image = null;
-            for (Object object : objects) {
+            while (objects.hasNext()) {
+                Object object = objects.next();
                 CustomYaml source = new CustomYaml(object);
                 if ("Deployment".equals(source.getValue("kind"))) {
                     image = source.get("spec")
