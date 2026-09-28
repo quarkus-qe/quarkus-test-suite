@@ -1,6 +1,6 @@
 package io.quarkus.ts.leak.scenarious;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 
 /**
  * Scenario that triggers Jackson TypeFactory usage during
