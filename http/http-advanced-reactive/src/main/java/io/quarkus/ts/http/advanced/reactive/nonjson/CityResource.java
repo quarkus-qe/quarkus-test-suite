@@ -7,8 +7,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
@@ -24,12 +22,11 @@ import org.apache.commons.io.IOUtils;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.reactive.PartType;
 import org.jboss.resteasy.reactive.RestForm;
-import org.yaml.snakeyaml.Yaml;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 
 import io.quarkus.logging.Log;
+
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.dataformat.yaml.YAMLMapper;
 
 @Path("/city")
 public class CityResource {
@@ -121,14 +118,7 @@ public class CityResource {
         }
 
         try (InputStream inputStream = Files.newInputStream(path)) {
-            Yaml yamlParser = new Yaml();
-            Map<String, List<Map<String, String>>> yamlMap = yamlParser.load(inputStream);
-
-            List<City> cities = yamlMap.get("cityList").stream()
-                    .map(cityMap -> new City(cityMap.get("name"), cityMap.get("country")))
-                    .collect(Collectors.toList());
-
-            return new CityListDTO(cities);
+            return objectMapper.readValue(inputStream, CityListDTO.class);
         } catch (IOException e) {
             LOG.error("Error reading YAML file: {}", yamlFilePath, e);
             throw e;

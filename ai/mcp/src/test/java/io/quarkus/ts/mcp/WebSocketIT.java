@@ -8,8 +8,6 @@ import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -21,6 +19,8 @@ import io.quarkus.ts.mcp.app.MCPClient;
 import io.quarkus.ts.mcp.app.MyResources;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+
+import tools.jackson.databind.JsonNode;
 
 @QuarkusScenario
 public class WebSocketIT extends BasicMCPIT {

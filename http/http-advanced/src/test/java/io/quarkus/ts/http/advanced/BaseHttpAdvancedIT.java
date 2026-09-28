@@ -22,11 +22,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
@@ -38,6 +33,11 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.core.net.JksOptions;
 import io.vertx.ext.web.client.WebClientOptions;
 import io.vertx.mutiny.ext.web.client.HttpResponse;
+
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.dataformat.yaml.YAMLFactory;
 
 public abstract class BaseHttpAdvancedIT {
 
@@ -150,7 +150,7 @@ public abstract class BaseHttpAdvancedIT {
 
     @Test
     @Tag("QUARKUS-2004")
-    public void constraintsExist() throws JsonProcessingException {
+    public void constraintsExist() throws JacksonException {
         io.restassured.response.Response response = getApp().given().get("/q/openapi");
         assertEquals(HttpStatus.SC_OK, response.statusCode());
 

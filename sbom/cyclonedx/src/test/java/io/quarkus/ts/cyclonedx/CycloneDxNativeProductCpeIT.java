@@ -8,13 +8,13 @@ import static io.quarkus.ts.cyclonedx.CycloneDxUtils.getSbomRootNodeFromNativeIm
 import org.cyclonedx.model.Bom;
 import org.junit.jupiter.api.Test;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.EnabledOnNative;
 import io.quarkus.test.scenarios.annotations.EnabledOnQuarkusVersion;
 import io.quarkus.test.services.QuarkusApplication;
+
+import tools.jackson.databind.JsonNode;
 
 @QuarkusScenario
 @EnabledOnNative

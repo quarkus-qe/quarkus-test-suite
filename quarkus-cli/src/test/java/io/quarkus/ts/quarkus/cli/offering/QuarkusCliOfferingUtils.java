@@ -21,11 +21,13 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.jboss.logging.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
 
 import io.quarkus.test.bootstrap.QuarkusCliClient;
 import io.quarkus.test.services.quarkus.model.QuarkusProperties;
+
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.dataformat.yaml.YAMLMapper;
+import tools.jackson.dataformat.yaml.YAMLWriteFeature;
 
 public class QuarkusCliOfferingUtils {
 
@@ -100,24 +102,21 @@ public class QuarkusCliOfferingUtils {
         }
     }
 
-    private record ParsedYaml(Yaml yaml, Map<String, Object> data) {
+    private record ParsedYaml(ObjectMapper yamlMapper, Map<String, Object> data) {
         static @NotNull ParsedYaml parseYaml(File file) throws IOException {
-            DumperOptions options = new DumperOptions();
-            options.setIndent(2);
-            options.setPrettyFlow(true);
-            options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-
-            Yaml yaml = new Yaml(options);
+            ObjectMapper yamlMapper = YAMLMapper.builder()
+                    .disable(YAMLWriteFeature.WRITE_DOC_START_MARKER)
+                    .build();
 
             Map<String, Object> data;
             try (InputStream inputStream = new FileInputStream(file)) {
-                data = yaml.load(inputStream);
+                data = yamlMapper.readValue(inputStream, Map.class);
             }
-            return new ParsedYaml(yaml, data);
+            return new ParsedYaml(yamlMapper, data);
         }
 
-        void writeTo(Writer writer) {
-            yaml.dump(data, writer);
+        void writeTo(Writer writer) throws IOException {
+            yamlMapper.writeValue(writer, data);
         }
 
         /**

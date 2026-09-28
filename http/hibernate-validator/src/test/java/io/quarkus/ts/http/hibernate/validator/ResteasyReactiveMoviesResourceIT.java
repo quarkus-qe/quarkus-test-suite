@@ -9,11 +9,6 @@ import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Dependency;
@@ -21,6 +16,11 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.http.hibernate.validator.sources.MoviesResource;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.dataformat.yaml.YAMLFactory;
 
 @QuarkusScenario
 class ResteasyReactiveMoviesResourceIT {
@@ -32,7 +32,7 @@ class ResteasyReactiveMoviesResourceIT {
     static final RestService app = new RestService();
 
     @Test
-    void testValidationConstraintsOnOpenAPISchemas() throws JsonProcessingException, InterruptedException {
+    void testValidationConstraintsOnOpenAPISchemas() throws JacksonException, InterruptedException {
         Response response = given().get("/q/openapi");
         assertEquals(HttpStatus.SC_OK, response.statusCode());
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
