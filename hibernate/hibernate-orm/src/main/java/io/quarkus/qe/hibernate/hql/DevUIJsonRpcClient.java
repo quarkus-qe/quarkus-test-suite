@@ -7,21 +7,19 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.WebSocket;
 import io.vertx.core.http.WebSocketConnectOptions;
+
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.JavaType;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 // This class is copied from a Quarkus project with minor modifications
 // https://github.com/quarkusio/quarkus/blob/main/extensions/devui/test-spi/src/main/java/io/quarkus/devui/tests/DevUIJsonRPCTest.java
@@ -89,13 +87,7 @@ public class DevUIJsonRpcClient {
     }
 
     protected JsonNode toJsonNode(String json) {
-        try {
-            JsonFactory factory = mapper.getFactory();
-            JsonParser parser = factory.createParser(json);
-            return mapper.readTree(parser);
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        }
+        return mapper.readTree(json);
     }
 
     private <T> T getJsonRPCResponse(TypeReference typeReference, int id) throws InterruptedException, IOException {
@@ -144,11 +136,11 @@ public class DevUIJsonRpcClient {
         return getJsonRPCResponse(classType, id, loopCount + 1);
     }
 
-    private JsonNode objectResultFromJsonRPC(int id) throws InterruptedException, JsonProcessingException {
+    private JsonNode objectResultFromJsonRPC(int id) throws InterruptedException, JacksonException {
         return objectResultFromJsonRPC(id, 0);
     }
 
-    private JsonNode objectResultFromJsonRPC(int id, int loopCount) throws InterruptedException, JsonProcessingException {
+    private JsonNode objectResultFromJsonRPC(int id, int loopCount) throws InterruptedException, JacksonException {
         if (RESPONSES.containsKey(id)) {
             WebSocketResponse response = RESPONSES.remove(id);
             if (response != null) {
@@ -159,7 +151,7 @@ public class DevUIJsonRpcClient {
                         return result.get("object");
                     }
                     return json;
-                } catch (JsonProcessingException e) {
+                } catch (JacksonException e) {
                     // Return plain string as a JSON node
                     ObjectNode fallback = mapper.createObjectNode();
                     fallback.put("message", response.message());
