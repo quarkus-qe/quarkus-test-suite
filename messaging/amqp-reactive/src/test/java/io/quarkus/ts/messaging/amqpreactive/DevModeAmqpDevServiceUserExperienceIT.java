@@ -21,6 +21,8 @@ public class DevModeAmqpDevServiceUserExperienceIT {
     private static final String AMQP_VERSION = getImageVersion("amqbroker.1.0x.image");
     private static final String AMQP_IMAGE = getImageName("amqbroker.1.0x.image");
 
+    //change
+
     /**
      * AMQP must be started using DEV services when running in DEV mode
      */

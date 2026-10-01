@@ -25,6 +25,8 @@ public class GraphQLClientIT {
 
     @Test
     public void testClientCalledFromVirtualThread() {
+
+        //change
         app
                 .given()
                 .contentType("application/json")
