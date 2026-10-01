@@ -10,6 +10,7 @@ import org.jboss.logging.Logger;
 import io.quarkus.arc.Unremovable;
 import io.quarkus.oidc.common.OidcEndpoint;
 import io.quarkus.oidc.common.OidcResponseFilter;
+import io.smallrye.mutiny.Uni;
 import io.vertx.core.json.JsonObject;
 import io.vertx.mutiny.core.buffer.Buffer;
 
@@ -22,7 +23,7 @@ public class ClientRegistrationResponseFilter implements OidcResponseFilter {
     public static final List<String> interceptedMessageLogs = new CopyOnWriteArrayList<>();
 
     @Override
-    public void filter(OidcResponseContext responseContext) {
+    public Uni<Void> filter(OidcResponseFilterContext responseContext) {
         LOG.info("ClientRegistrationResponseFilter invoked");
         interceptedMessageLogs.add("ClientRegistrationResponseFilter invoked");
 
@@ -43,5 +44,6 @@ public class ClientRegistrationResponseFilter implements OidcResponseFilter {
                 interceptedMessageLogs.add("Error processing response: " + e.getMessage());
             }
         }
+        return Uni.createFrom().voidItem();
     }
 }
