@@ -1,0 +1,58 @@
+type: pipeline_definition
+product: Quarkus
+name: CI - Quarkus OpenShift Aarch64 tests
+description: "Quarkus OpenShift Aarch64 tests for PR."
+triggers:
+  - type: github
+    description: "Run the openshift tests."
+    keyword: "!quarkus-openshift-aarch-tests"
+    triggerName: "quarkus-ci-openshift-aarch-tests"
+    triggerRank: 50
+    groups: [ "QUARKUS_QE" ]
+    propertyDefinitions:
+      - name: QUARKUS_VERSION
+        defaultValue: ""
+        description: "Quarkus version to run tests with"
+      - name: EXTRA_MAVEN_ARGS
+        description: "Extra maven arguments"
+      - name: GH_PR_NUMBER
+        defaultValue: "${github_pr_number}"
+        description: "PR number"
+      - name: TEST_SUITE_BRANCH
+        defaultValue: "${github_pr_branch}"
+        description: "Git branch to execute tests in."
+      - name: TEST_SUITE_URL
+        defaultValue: "git@github.com:${github_pr_user}/${github_pr_repo}.git"
+        description: "GitHub URL of testsuite to use for scripts execution"
+      - name: JENKINS_JOBS_BRANCH
+        description: "Branch of Jenkins jobs to use for scripts execution"
+      - name: JENKINS_JOBS_URL
+        description: "GitHub URL of Jenkins jobs to use for scripts execution"
+steps:
+  - stepName: install-ocp-stable-aarch64
+    workType: Jenkins
+    projectName: infra-install-openshift-cluster-aws-aarch64
+    properties:
+      jenkinsServiceName: "quarkus-qe-jenkins"
+  - stepName: run-ocp-aarch64-tests
+    workType: Jenkins
+    projectName: quarkus-3.40-openshift-ts-github-ci-parent-aarch64
+    dependsOn:
+      - stepName: install-ocp-stable-aarch64
+        awaitOutputProperties: true
+    properties:
+      jenkinsServiceName: "quarkus-qe-jenkins"
+      IS_AARCH_JOB: true
+      OCP_URL: "${install-ocp-stable-aarch64:OCP_URL}"
+  - stepName: uninstall-ocp-stable-aarch64
+    workType: Jenkins
+    projectName: infra-uninstall-openshift-cluster-aws-aarch64
+    dependsOn:
+      - stepName: install-ocp-stable-aarch64
+        awaitOutputProperties: true
+      - stepName: run-ocp-aarch64-tests
+        allowFailures: true
+    properties:
+      jenkinsServiceName: "quarkus-qe-jenkins"
+      CLUSTER_NAME: "${install-ocp-stable-aarch64:CLUSTER_NAME}"
+      INFRA_ID: "${install-ocp-stable-aarch64:INFRA_ID}"
