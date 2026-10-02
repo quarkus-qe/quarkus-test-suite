@@ -505,6 +505,7 @@
                 <module>packaging/quarkus</module>
                 <module>packaging/jar</module>
                 <module>packaging/tree-shake</module>
+                <module>sbom/cyclonedx</module>
             </modules>
         </profile>
         <profile>
