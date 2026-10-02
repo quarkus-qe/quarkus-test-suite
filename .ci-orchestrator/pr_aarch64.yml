@@ -1,6 +1,6 @@
 type: pipeline_definition
 product: Quarkus
-name: CI - Quarkus OpenShift Aarch64 tests
+name: CI 3.40 - Quarkus OpenShift Aarch64 tests
 description: "Quarkus OpenShift Aarch64 tests for PR."
 triggers:
   - type: github
