@@ -1,5 +1,5 @@
 insert into account (id, email) values (1, 'foo@bar.com');
-insert into role (id, name) values  (1, 'admin');
+insert into "role" (id, name) values  (1, 'admin');
 insert into account_in_role (accountid, roleid) values (1, 1);
 insert into customer (id, version, account_id, created_on, licenses) values (1,  1, 1, now(), '{"MIT", "GPL"}');
 -- Table Item is created with customerId due to quote identifier strategy while unquoted Postgres

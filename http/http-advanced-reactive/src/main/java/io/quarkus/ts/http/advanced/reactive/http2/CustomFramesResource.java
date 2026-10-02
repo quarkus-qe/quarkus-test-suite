@@ -12,8 +12,8 @@ public class CustomFramesResource {
 
     void init(@Observes Router router) {
         router.get("/ping").handler(rc -> {
-            rc.request().connection().ping(Buffer.buffer(PING_DATA), event -> {
-                rc.response().end(event.result());
+            rc.request().connection().ping(Buffer.buffer(PING_DATA)).onSuccess(result -> {
+                rc.response().end(result);
             });
         });
     }

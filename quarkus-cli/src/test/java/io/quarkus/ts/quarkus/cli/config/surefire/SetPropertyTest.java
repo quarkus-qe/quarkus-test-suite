@@ -26,28 +26,28 @@ public class SetPropertyTest {
 
     @Test
     void createPropertyCommand_NoSecret_ApplicationPropertiesDoesNotExist() {
-        assertEquals(CREATE_1.propertyValue, config.getRawValue(CREATE_1.propertyName));
+        assertEquals(CREATE_1.propertyValue, config.getValue(CREATE_1.propertyName, String.class));
     }
 
     @Test
     void createPropertyCommand_NoSecret_ApplicationPropertiesExists() {
-        assertEquals(CREATE_2.propertyValue, config.getRawValue(CREATE_2.propertyName));
+        assertEquals(CREATE_2.propertyValue, config.getValue(CREATE_2.propertyName, String.class));
     }
 
     @Test
     @DisabledIfSystemProperty(named = "gh-action-disable-on-win", matches = "true", disabledReason = "Some windows don't have all language pack/locales so it causing it fail")
     void createPropertyCommand_EncryptValue_UseExistingEncryptionKey() {
-        assertEquals(CREATE_3.propertyValue, config.getRawValue(CREATE_3.propertyName));
+        assertEquals(CREATE_3.propertyValue, config.getValue(CREATE_3.propertyName, String.class));
     }
 
     @Test
     void updatePropertyCommand_ReplaceOriginalValueWithNewValue_EncryptNewValue() {
-        assertEquals(UPDATE_1.propertyValue, config.getRawValue(UPDATE_1.propertyName));
+        assertEquals(UPDATE_1.propertyValue, config.getValue(UPDATE_1.propertyName, String.class));
     }
 
     @Test
     void updatePropertyCommand_EncryptOriginalValue() {
-        assertEquals(UPDATE_2.propertyValue, config.getRawValue(UPDATE_2.propertyName));
+        assertEquals(UPDATE_2.propertyValue, config.getValue(UPDATE_2.propertyName, String.class));
     }
 
     public enum Properties {

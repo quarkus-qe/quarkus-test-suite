@@ -46,16 +46,18 @@ public class OpenTelemetryIT {
             PongResource.class }, properties = "pong.properties")
     static final RestService pongservice = new RestService()
             .withProperty("quarkus.application.name", "pongservice")
-            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl);
+            .withProperty("quarkus.otel.exporter.otlp.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.traces.sampler.arg", "1.0d");
 
     @QuarkusApplication(classes = { PingResource.class, PingPongService.class })
     static final RestService pingservice = new RestService()
             .withProperty("quarkus.application.name", "pingservice")
             .withProperty("pongservice.url", () -> pongservice.getURI(HTTP).getRestAssuredStyleUri())
             .withProperty("pongservice.port", () -> Integer.toString(pongservice.getURI(HTTP).getPort()))
-            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.exporter.otlp.endpoint", jaeger::getCollectorUrl)
             // test exporter OTLP proxy is disabled by default
-            .withProperty("quarkus.otel.exporter.otlp.traces.proxy-options.host", "Host that must be ignored!");
+            .withProperty("quarkus.otel.exporter.otlp.traces.proxy-options.host", "Host that must be ignored!")
+            .withProperty("quarkus.otel.traces.sampler.arg", "1.0d");
 
     @Order(1)
     @Test
