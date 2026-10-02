@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.quarkus.ts.qe</groupId>
+        <artifactId>parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../..</relativePath>
+    </parent>
+    <packaging>jar</packaging>
+    <artifactId>packaging-semeru-scc</artifactId>
+    <name>Quarkus QE TS: Packaging: Semeru SCC</name>
+    <properties>
+        <!-- Scenario 3 (SemeruSccIntegrationTestPhaseIT): the module's own application is built with the
+             integration-tests AOT phase, so the SCC is trained while Failsafe runs, not at build time.
+             These are Maven project properties on purpose: they configure this module's Quarkus build only,
+             and are not inherited by the standalone projects the QE framework generates for @QuarkusApplication. -->
+        <quarkus.package.jar.aot.enabled>true</quarkus.package.jar.aot.enabled>
+        <quarkus.package.jar.aot.phase>integration-tests</quarkus.package.jar.aot.phase>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-rest</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-rest-jackson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-hibernate-orm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-jdbc-h2</artifactId>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>${quarkus.platform.group-id}</groupId>
+                <artifactId>quarkus-maven-plugin</artifactId>
+                <version>${quarkus.platform.version}</version>
+                <extensions>true</extensions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <!-- JarLauncherProvider decides whether to add the -Xshareclasses recording argument by reading
+                         quarkus.package.jar.aot.enabled from the *test* JVM config, so the Maven project property
+                         above is not enough - it has to be visible to Failsafe as well. -->
+                    <systemPropertyVariables>
+                        <quarkus.package.jar.aot.enabled>true</quarkus.package.jar.aot.enabled>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
