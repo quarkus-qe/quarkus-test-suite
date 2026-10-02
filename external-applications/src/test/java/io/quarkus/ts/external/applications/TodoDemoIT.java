@@ -31,7 +31,7 @@ public class TodoDemoIT {
             .withProperty("quarkus.datasource.password", database.getPassword())
             .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl);
 
-    @GitRepositoryQuarkusApplication(repo = TODO_REPO, artifact = "todo-backend-1.0-SNAPSHOT.jar", mavenArgs = "-Dquarkus.package.jar.type=uber-jar -Dquarkus.package.add-runner-suffix=false"
+    @GitRepositoryQuarkusApplication(repo = TODO_REPO, artifact = "todo-backend-1.0-SNAPSHOT.jar", mavenArgs = "-Dquarkus.package.jar.type=uber-jar -Dquarkus.package.jar.add-runner-suffix=false"
             + DEFAULT_OPTIONS)
     static final RestService replaced = new RestService()
             .withProperty("quarkus.datasource.username", database.getUser())
