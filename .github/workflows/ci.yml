@@ -191,6 +191,65 @@ jobs:
           os: 'linux'
           profiles: '${{ matrix.module-mvn-args }}'
           mode: 'jvm'
+  linux-build-jvm-semeru:
+    name: Linux JVM Semeru
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    needs: [linux-validate-format, prepare-jvm-native-latest-modules-mvn-param]
+    strategy:
+      fail-fast: false
+      matrix:
+        java: [ 25 ]
+        module-mvn-args: ${{ fromJSON(needs.prepare-jvm-native-latest-modules-mvn-param.outputs.JVM_MODULES_MAVEN_PARAM) }}
+    outputs:
+      has-flaky-tests: ${{steps.flaky-test-detector.outputs.has-flaky-tests}}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Reclaim Disk Space
+        run: .github/ci-prerequisites.sh
+      - name: Install JDK ${{ matrix.java }} Semeru
+        uses: actions/setup-java@v6
+        with:
+          distribution: 'semeru'
+          java-version: ${{ matrix.java }}
+          check-latest: true
+      - uses: ./.github/actions/cache-quarkus
+        with:
+          wait-before-restore: false
+      - uses: ./.github/actions/use-docker-mirror
+      - name: Install Maven settings
+        run: cp .github/mvn-settings.xml ~/.m2/settings.xml
+      - name: Build with Maven
+        run: |
+          mvn -fae -V -B -nsu --no-transfer-progress clean verify ${{ matrix.module-mvn-args }} -am
+      - name: Detect flaky tests
+        id: flaky-test-detector
+        if: ${{ hashFiles('**/flaky-run-report.json') != '' }}
+        run: echo "has-flaky-tests=true" >> "$GITHUB_OUTPUT"
+      - name: Rename flaky test run report to avoid file name conflicts
+        id: rename-flaky-test-run-report
+        if: ${{ hashFiles('**/flaky-run-report.json') != '' }}
+        shell: bash
+        run: |
+          STRIPED_PROFILES=$(echo "${{ matrix.module-mvn-args }}" | sed 's/[^a-zA-Z0-9]//g')
+          REPORT_NAME="flaky-run-report-linux-jvm-semeru-${{ matrix.java }}-${STRIPED_PROFILES}"
+          echo "report-name=${REPORT_NAME}" >> "$GITHUB_OUTPUT"
+          mv target/flaky-run-report.json target/"${REPORT_NAME}".json
+      - name: Archive flaky run report
+        id: archive-flaky-run-report
+        if: ${{ steps.rename-flaky-test-run-report.outputs.report-name != '' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ steps.rename-flaky-test-run-report.outputs.report-name }}
+          path: target/${{ steps.rename-flaky-test-run-report.outputs.report-name }}.json
+      - uses: ./.github/actions/zip-and-archive
+        name: Zip and archive artifacts
+        if: failure()
+        with:
+          java: '${{ matrix.java }}'
+          os: 'linux-semeru'
+          profiles: '${{ matrix.module-mvn-args }}'
+          mode: 'jvm'
   linux-build-native-latest:
     name: Linux Native
     runs-on: ubuntu-latest
@@ -311,15 +370,19 @@ jobs:
   detect-flaky-tests:
     name: Detect flaky tests
     runs-on: ubuntu-latest
-    needs: [linux-build-jvm-latest, linux-build-native-latest, windows-build-jvm-latest]
+    needs: [linux-build-jvm-latest, linux-build-jvm-semeru, linux-build-native-latest, windows-build-jvm-latest]
     steps:
       - name: Create file with information about job with flaky test
-        if: needs.linux-build-jvm-latest.outputs.has-flaky-tests == 'true' || needs.linux-build-native-latest.outputs.has-flaky-tests == 'true' || needs.windows-build-jvm-latest.outputs.has-flaky-tests == 'true'
+        if: needs.linux-build-jvm-latest.outputs.has-flaky-tests == 'true' || needs.linux-build-jvm-semeru.outputs.has-flaky-tests == 'true' || needs.linux-build-native-latest.outputs.has-flaky-tests == 'true' || needs.windows-build-jvm-latest.outputs.has-flaky-tests == 'true'
         run: |
           job_name=""
           if $IS_LINUX_JVM
           then
           job_name+=", 'Linux JVM'"
+          fi
+          if $IS_LINUX_JVM_SEMERU
+          then
+          job_name+=", 'Linux JVM Semeru'"
           fi
           if $IS_LINUX_NATIVE
           then
@@ -332,6 +395,7 @@ jobs:
           echo "${job_name:2}" > jobs-with-flaky-tests
         env:
           IS_LINUX_JVM: ${{ needs.linux-build-jvm-latest.outputs.has-flaky-tests == 'true' }}
+          IS_LINUX_JVM_SEMERU: ${{ needs.linux-build-jvm-semeru.outputs.has-flaky-tests == 'true' }}
           IS_LINUX_NATIVE: ${{ needs.linux-build-native-latest.outputs.has-flaky-tests == 'true' }}
           IS_WINDOWS_JVM: ${{ needs.windows-build-jvm-latest.outputs.has-flaky-tests == 'true' }}
       - name: Archive 'jobs-with-flaky-tests' artifact
