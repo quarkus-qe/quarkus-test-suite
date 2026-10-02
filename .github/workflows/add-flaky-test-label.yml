@@ -25,6 +25,11 @@ jobs:
           gh run download $WORKFLOW_ID -n flaky-run-report-linux-jvm-latest || true
           gh run download $WORKFLOW_ID -n flaky-run-report-linux-native-latest || true
           gh run download $WORKFLOW_ID -n flaky-run-report-windows-jvm-latest || true
+          # The Semeru job is sharded per module group, so each shard uploads its own artifact.
+          # 'gh run download' nests every matched artifact in its own directory, flatten them
+          # as the reporter only looks for 'flaky-run-report*' files in the working directory.x
+          gh run download $WORKFLOW_ID -p 'flaky-run-report-linux-jvm-semeru-*' -D semeru-flaky-reports || true
+          find semeru-flaky-reports -name 'flaky-run-report*.json' -exec mv -f '{}' . \; || true
       - name: 'Add "triage/flaky-test" label'
         if: ${{ hashFiles('**/pr-number') != '' }}
         run: |
