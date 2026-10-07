@@ -10,6 +10,7 @@ import org.jboss.logging.Logger;
 import io.quarkus.arc.Unremovable;
 import io.quarkus.oidc.common.OidcEndpoint;
 import io.quarkus.oidc.common.OidcResponseFilter;
+import io.smallrye.mutiny.Uni;
 import io.vertx.core.json.JsonObject;
 
 @ApplicationScoped
@@ -20,7 +21,7 @@ public class UserinfoResponseFilter implements OidcResponseFilter {
     public static final List<String> interceptedMessageLogs = new CopyOnWriteArrayList<>();
 
     @Override
-    public void filter(OidcResponseContext responseContext) {
+    public Uni<Void> filter(OidcResponseFilterContext responseContext) {
         LOG.info("UserinfoResponseFilter invoked!");
         interceptedMessageLogs.add("UserinfoResponseFilter invoked!");
         if (responseContext.responseBody() != null) {
@@ -28,7 +29,7 @@ public class UserinfoResponseFilter implements OidcResponseFilter {
             if (contentType == null || !contentType.startsWith("application/json")) {
                 LOG.warn("Userinfo response is not JSON - skipping checks");
                 interceptedMessageLogs.add("Userinfo response is not JSON - skipping checks");
-                return;
+                return Uni.createFrom().voidItem();
             }
 
             JsonObject body = responseContext.responseBody().toJsonObject();
@@ -50,5 +51,6 @@ public class UserinfoResponseFilter implements OidcResponseFilter {
                 interceptedMessageLogs.add("'preferred_username' claim not found in userinfo");
             }
         }
+        return Uni.createFrom().voidItem();
     }
 }
