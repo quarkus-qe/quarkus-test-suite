@@ -580,12 +580,11 @@
             </modules>
         </profile>
         <profile>
+            <!-- TODO move this back to http-modules
+                The http problem is currently not part of platform when generated and it's not updated to Quarkus 4-->
             <id>http-problem-modules</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
-                <property>
-                    <name>all-modules</name>
-                </property>
+                <activeByDefault>false</activeByDefault>
             </activation>
             <modules>
                 <module>env-info</module>
