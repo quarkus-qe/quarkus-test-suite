@@ -160,6 +160,7 @@ jobs:
           wait-before-restore: false
       - uses: ./.github/actions/prepare-quarkus-cli
       - uses: ./.github/actions/use-docker-mirror
+      - uses: ./.github/actions/set-up-maven
       - name: Install Maven settings
         run: cp .github/mvn-settings.xml ~/.m2/settings.xml
       - name: Build with Maven
@@ -218,6 +219,7 @@ jobs:
           wait-before-restore: false
       - uses: ./.github/actions/prepare-quarkus-cli
       - uses: ./.github/actions/use-docker-mirror
+      - uses: ./.github/actions/set-up-maven
       - name: Install Maven settings
         run: cp .github/mvn-settings.xml ~/.m2/settings.xml
       - name: Build with Maven
