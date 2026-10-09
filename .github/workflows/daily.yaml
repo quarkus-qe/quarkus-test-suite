@@ -110,6 +110,42 @@ jobs:
           os: 'linux'
           profiles: '${{ matrix.profiles }}'
           mode: 'jvm'
+  linux-build-jvm-semeru:
+    name: Linux JVM Semeru
+    runs-on: ubuntu-latest
+    needs: build-quarkus
+    strategy:
+      fail-fast: false
+      matrix:
+        java: [ 25 ]
+        profiles: [ "root-modules", "http-modules,security-modules,spring-modules", "hibernate-modules",
+                   "sql-db-modules", "root-modules -pl build/podman/,build/docker -Dtest-ubi8-compatibility",
+                   "messaging-modules,websockets-modules,monitoring-modules,cache-modules,test-tooling-modules,nosql-db-modules,ai-modules"]
+    steps:
+      - uses: actions/checkout@v7
+      - name: Reclaim Disk Space
+        run: .github/ci-prerequisites.sh
+      - name: Install JDK ${{ matrix.java }} Semeru
+        uses: actions/setup-java@v6
+        with:
+          distribution: 'semeru'
+          java-version: ${{ matrix.java }}
+          check-latest: true
+      - uses: ./.github/actions/cache-quarkus
+      - uses: ./.github/actions/use-docker-mirror
+      - name: Install Maven settings
+        run: cp .github/mvn-settings.xml ~/.m2/settings.xml
+      - name: Test in JVM mode
+        run: |
+          mvn -fae -V -B -nsu --no-transfer-progress clean verify -P ${{ matrix.profiles }}
+      - uses: ./.github/actions/zip-and-archive
+        name: Zip and archive artifacts
+        if: failure()
+        with:
+          java: '${{ matrix.java }}'
+          os: 'linux-semeru'
+          profiles: '${{ matrix.profiles }}'
+          mode: 'jvm'
   linux-build-native-latest:
     name: Linux Native
     runs-on: ubuntu-latest
