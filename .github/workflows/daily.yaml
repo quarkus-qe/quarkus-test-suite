@@ -54,7 +54,7 @@ jobs:
           ./mvnw -B --no-transfer-progress -s ${{ env.MVN_SETTINGS }} clean install -DskipTests -Dquarkus.version=${QUARKUS_BUILD} -Dmaven.repo.local=${{ env.LOCAL_REPO }}
       - name: Build Quarkus Platform main with Quarkus core ${{ env.QUARKUS_BUILD }} (version 999-core-3.39-SNAPSHOT)
         run: |
-          git clone https://github.com/quarkusio/quarkus-platform.git && cd quarkus-platform
+          git clone -b 3.40 https://github.com/quarkusio/quarkus-platform.git && cd quarkus-platform
 
           # add some common options
           cat <<EOF >> .mvn/maven.config
