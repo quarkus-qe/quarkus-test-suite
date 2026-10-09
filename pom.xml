@@ -466,8 +466,10 @@
             </activation>
             <modules>
                 <module>env-info</module>
+                <!-- The AI extension are not yet migrated to Quarkus 4 so they are disabled temporarily
                 <module>ai/langchain4j</module>
                 <module>ai/mcp</module>
+                -->
             </modules>
         </profile>
         <profile>
