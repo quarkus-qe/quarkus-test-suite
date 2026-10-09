@@ -45,6 +45,7 @@ steps:
       IS_AARCH_JOB: true
       OCP_URL: "${install-ocp-stable-aarch64:OCP_URL}"
   - stepName: uninstall-ocp-stable-aarch64
+    runIfPipelineCancelled: true
     workType: Jenkins
     projectName: infra-uninstall-openshift-cluster-aws-aarch64
     dependsOn:
