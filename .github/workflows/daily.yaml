@@ -97,6 +97,7 @@ jobs:
       - uses: ./.github/actions/cache-quarkus
       - uses: ./.github/actions/prepare-quarkus-cli
       - uses: ./.github/actions/use-docker-mirror
+      - uses: ./.github/actions/set-up-maven
       - name: Install Maven settings
         run: cp .github/mvn-settings.xml ~/.m2/settings.xml
       - name: Test in JVM mode
@@ -135,6 +136,7 @@ jobs:
       - uses: ./.github/actions/cache-quarkus
       - uses: ./.github/actions/prepare-quarkus-cli
       - uses: ./.github/actions/use-docker-mirror
+      - uses: ./.github/actions/set-up-maven
       - name: Install Maven settings
         run: cp .github/mvn-settings.xml ~/.m2/settings.xml
       - name: Test in Native mode
