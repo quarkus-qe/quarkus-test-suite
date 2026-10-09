@@ -21,6 +21,8 @@ public class HttpMinimumIT {
 
     @Test
     public void httpServer() {
+        // dummy change
+
         givenSpec().get("/api/hello").then().statusCode(HttpStatus.SC_OK).body("content", is("Hello, World!"));
     }
 
