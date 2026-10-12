@@ -28,7 +28,7 @@ import io.restassured.specification.RequestSpecification;
 import io.vertx.core.json.JsonObject;
 
 @QuarkusScenario
-public class StatelessStreamingHTTPIT extends StatelessMCPIT {
+public class StatelessStreamingHTTPIT extends StatelessAdvancedMCPIT {
     @QuarkusApplication(boms = { @Dependency(artifactId = "quarkus-mcp-server-bom") }, dependencies = {
             @Dependency(artifactId = "quarkus-rest"),
             @Dependency(groupId = "io.quarkiverse.mcp", artifactId = "quarkus-mcp-server-http")
@@ -227,4 +227,16 @@ public class StatelessStreamingHTTPIT extends StatelessMCPIT {
         Assertions.assertNull(error.getValue("id"));
         assertError(error, code, message);
     }
+
+    @Override
+    protected List<String> serverLogs(McpAssured.McpTestClient<?, ?> protocol) {
+        return serverApp().getLogs();
+    }
+
+    @Override
+    protected SubscriptionObserver subscribe(McpAssured.McpTestClient<?, ?> protocol, JsonObject request) {
+        return SubscriptionObserver.openHttp(URI.create(serverApp().getURI(Protocol.HTTP).withPath("/mcp").toString()),
+                request);
+    }
+
 }
