@@ -38,4 +38,15 @@ public class OpenShiftWebSocketIT extends WebSocketIT {
     public RequestSpecification client() {
         return client.given();
     }
+
+    @Override
+    public RestService app() {
+        return client;
+    }
+
+    @Override
+    protected RestService serverApp() {
+        return server;
+    }
+
 }
