@@ -49,18 +49,22 @@ public class LocalStreamingHTTPIT extends StatefulMCPIT {
             .withProperty("quarkus.langchain4j.mcp.filesystem.url",
                     () -> server.getURI(Protocol.HTTP).withPath("/mcp").toString());
     private static final int NUMBER_OF_TOOLS = 4; // tools, declared or created in FileServer class
-    private final McpSyncClient thirdPartyClient;
 
-    public LocalStreamingHTTPIT() {
+    protected RestService serverApp() {
+        return server;
+    }
+
+    // Java SDK coverage stays on MCP 2025-11-25: SDK 2.0.1 does not support 2026-07-28.
+    // Extend these independent checks once a released SDK supports the newer protocol.
+    private McpSyncClient sdkClient() {
         McpClientTransport transport = HttpClientStreamableHttpTransport
-                .builder(server.getURI(Protocol.HTTP).toString())
+                .builder(serverApp().getURI(Protocol.HTTP).toString())
                 .endpoint("/mcp")
                 .supportedProtocolVersions(List.of("2025-11-25"))
                 .build();
-        this.thirdPartyClient = McpClient.sync(transport)
+        return McpClient.sync(transport)
                 .requestTimeout(Duration.ofSeconds(10))
-                .capabilities(McpSchema.ClientCapabilities.builder()
-                        .build())
+                .capabilities(McpSchema.ClientCapabilities.builder().build())
                 .build();
     }
 
@@ -76,31 +80,36 @@ public class LocalStreamingHTTPIT extends StatefulMCPIT {
 
     @Test
     public void toolList() {
-        Assertions.assertEquals("2025-11-25", thirdPartyClient.initialize().protocolVersion());
+        try (McpSyncClient thirdPartyClient = sdkClient()) {
+            Assertions.assertEquals("2025-11-25", thirdPartyClient.initialize().protocolVersion());
 
-        McpSchema.ListToolsResult toolsResult = thirdPartyClient.listTools();
-        List<McpSchema.Tool> tools = new ArrayList<>(toolsResult.tools());
+            McpSchema.ListToolsResult toolsResult = thirdPartyClient.listTools();
+            List<McpSchema.Tool> tools = new ArrayList<>(toolsResult.tools());
 
-        String cursor = toolsResult.nextCursor();
-        while (cursor != null) {
-            toolsResult = thirdPartyClient.listTools(cursor);
-            tools.addAll(toolsResult.tools());
-            cursor = toolsResult.nextCursor();
+            String cursor = toolsResult.nextCursor();
+            while (cursor != null) {
+                toolsResult = thirdPartyClient.listTools(cursor);
+                tools.addAll(toolsResult.tools());
+                cursor = toolsResult.nextCursor();
+            }
+
+            Assertions.assertEquals(NUMBER_OF_TOOLS, tools.size());
         }
-
-        Assertions.assertEquals(NUMBER_OF_TOOLS, tools.size());
     }
 
     @Test
     public void toolCall() {
-        Assertions.assertEquals("2025-11-25", thirdPartyClient.initialize().protocolVersion());
-        McpSchema.CallToolResult result = thirdPartyClient.callTool(
-                new McpSchema.CallToolRequest("filereader",
-                        Map.of("file", "robot-readable.txt")));
-        Assertions.assertEquals(1, result.content().size());
-        McpSchema.Content actual = result.content().get(0);
-        Assertions.assertEquals("text", actual.type());
-        McpSchema.TextContent text = (McpSchema.TextContent) actual;
-        Assertions.assertEquals("Hello, AI!", text.text());
+        try (McpSyncClient thirdPartyClient = sdkClient()) {
+            Assertions.assertEquals("2025-11-25", thirdPartyClient.initialize().protocolVersion());
+            McpSchema.CallToolResult result = thirdPartyClient.callTool(
+                    new McpSchema.CallToolRequest("filereader",
+                            Map.of("file", "robot-readable.txt")));
+            Assertions.assertFalse(Boolean.TRUE.equals(result.isError()));
+            Assertions.assertEquals(1, result.content().size());
+            McpSchema.Content actual = result.content().get(0);
+            Assertions.assertEquals("text", actual.type());
+            McpSchema.TextContent text = (McpSchema.TextContent) actual;
+            Assertions.assertEquals("Hello, AI!", text.text());
+        }
     }
 }
