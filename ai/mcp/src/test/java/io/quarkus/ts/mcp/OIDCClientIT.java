@@ -6,6 +6,7 @@ import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_FILE;
 import static io.quarkus.ts.mcp.app.Utils.getFileFolder;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.KeycloakService;
@@ -22,7 +23,7 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
 @QuarkusScenario
-public class OIDCClientIT extends BasicMCPIT {
+public class OIDCClientIT extends StatefulMCPIT {
 
     static final String NORMAL_USER = "test-normal-user";
     static final String ADMIN_USER = "test-admin-user";
@@ -74,12 +75,20 @@ public class OIDCClientIT extends BasicMCPIT {
             .withProperty("quarkus.langchain4j.mcp.filesystem.url",
                     () -> server.getURI(Protocol.HTTP).withPath("/mcp").toString());
 
+    @Override
+    @Test
+    @Disabled("OIDC auth provider calls blocking await on the roots callback event loop (MCP 2025-11-25)")
+    public void roots() {
+        super.roots();
+    }
+
     @Test
     public void userRejected() {
         Response response = userClient.given()
                 .body("robot-readable.txt").post("/mcp/tools/readFile");
         Assertions.assertEquals(500, response.statusCode());
         userClient.logs().assertContains("Unexpected status code: 403");
+        ProtocolAssertions.assertProposed(userClient, "2025-11-25", 1);
     }
 
     @Test
@@ -110,6 +119,11 @@ public class OIDCClientIT extends BasicMCPIT {
                     .withProperty("quarkus.oidc-client.the-client.credentials.secret", CLIENT_SECRET_DEFAULT)
                     .withProperty("quarkus.oidc-client.the-client.grant.type", "password")
                     .withProperty("quarkus.langchain4j.mcp.filesystem.oidc-client-name", "the-client")
+                    // Match the existing HTTP workaround for quarkus-langchain4j issue 2159.
+                    .withProperty("quarkus.langchain4j.mcp.filesystem.cache-tool-list", "false")
+                    .withProperty("quarkus.langchain4j.mcp.filesystem.protocol-version", "2025-11-25")
+                    .withProperty("quarkus.langchain4j.mcp.filesystem.log-responses", "true")
+                    .withProperty("quarkus.langchain4j.mcp.filesystem.log-requests", "true")
                     .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "streamable-http");
         }
     }
