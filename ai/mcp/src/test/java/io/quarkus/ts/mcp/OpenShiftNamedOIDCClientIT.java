@@ -78,10 +78,16 @@ public class OpenShiftNamedOIDCClientIT {
             .withProperty("quarkus.oidc-client.provider2.grant-options.password.username", ADMIN_USER)
             .withProperty("quarkus.oidc-client.provider2.grant-options.password.password", ADMIN_USER)
             .withProperty("quarkus.langchain4j.mcp.filesystem.oidc-client-name", "provider1")
+            .withProperty("quarkus.langchain4j.mcp.filesystem.protocol-version", "2025-11-25")
+            .withProperty("quarkus.langchain4j.mcp.filesystem.log-responses", "true")
+            .withProperty("quarkus.langchain4j.mcp.filesystem.log-requests", "true")
             .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "streamable-http")
             .withProperty("quarkus.langchain4j.mcp.filesystem.url",
                     () -> server1.getURI(Protocol.HTTP).withPath("/mcp").toString())
             .withProperty("quarkus.langchain4j.mcp.minimal.oidc-client-name", "provider2")
+            .withProperty("quarkus.langchain4j.mcp.minimal.protocol-version", "2025-11-25")
+            .withProperty("quarkus.langchain4j.mcp.minimal.log-responses", "true")
+            .withProperty("quarkus.langchain4j.mcp.minimal.log-requests", "true")
             .withProperty("quarkus.langchain4j.mcp.minimal.transport-type", "streamable-http")
             .withProperty("quarkus.langchain4j.mcp.minimal.url",
                     () -> server2.getURI(Protocol.HTTP).withPath("/mcp").toString());
@@ -104,10 +110,16 @@ public class OpenShiftNamedOIDCClientIT {
             .withProperty("quarkus.oidc-client.provider2.grant-options.password.username", NORMAL_USER)
             .withProperty("quarkus.oidc-client.provider2.grant-options.password.password", NORMAL_USER)
             .withProperty("quarkus.langchain4j.mcp.filesystem.oidc-client-name", "provider1")
+            .withProperty("quarkus.langchain4j.mcp.filesystem.protocol-version", "2025-11-25")
+            .withProperty("quarkus.langchain4j.mcp.filesystem.log-responses", "true")
+            .withProperty("quarkus.langchain4j.mcp.filesystem.log-requests", "true")
             .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "streamable-http")
             .withProperty("quarkus.langchain4j.mcp.filesystem.url",
                     () -> server1.getURI(Protocol.HTTP).withPath("/mcp").toString())
             .withProperty("quarkus.langchain4j.mcp.minimal.oidc-client-name", "provider2")
+            .withProperty("quarkus.langchain4j.mcp.minimal.protocol-version", "2025-11-25")
+            .withProperty("quarkus.langchain4j.mcp.minimal.log-responses", "true")
+            .withProperty("quarkus.langchain4j.mcp.minimal.log-requests", "true")
             .withProperty("quarkus.langchain4j.mcp.minimal.transport-type", "streamable-http")
             .withProperty("quarkus.langchain4j.mcp.minimal.url",
                     () -> server2.getURI(Protocol.HTTP).withPath("/mcp").toString());
@@ -121,6 +133,7 @@ public class OpenShiftNamedOIDCClientIT {
         Response minimal = adminClient.given().when().body("robot-readable.txt").post("/mcp-minimal/tools/readFile");
         Assertions.assertEquals(200, minimal.statusCode(), "Response is " + minimal.body().asString());
         Assertions.assertEquals("Hello, AI!", minimal.body().asString());
+        ProtocolAssertions.assertNegotiated(adminClient, "2025-11-25", 2);
     }
 
     @Test
@@ -128,6 +141,7 @@ public class OpenShiftNamedOIDCClientIT {
         Response response = userClient.given().body("robot-readable.txt").post("/mcp/tools/readFile");
         Assertions.assertEquals(500, response.statusCode());
         userClient.logs().assertContains("Unexpected status code: 403");
+        ProtocolAssertions.assertProposed(userClient, "2025-11-25", 1);
     }
 
     @Test
@@ -136,6 +150,7 @@ public class OpenShiftNamedOIDCClientIT {
         Response minimal = userClient.given().when().body("robot-readable.txt").post("/mcp-minimal/tools/readFile");
         Assertions.assertEquals(200, minimal.statusCode(), "Response is " + minimal.body().asString());
         Assertions.assertEquals("Hello, AI!", minimal.body().asString());
+        ProtocolAssertions.assertNegotiated(userClient, "2025-11-25", 1);
     }
 
     static class ClientService {

@@ -97,7 +97,12 @@ class Session {
         waitForAnswers();
         String content = answers.get(answers.size() - 1);
         try {
-            return mapper.readTree(content);
+            JsonNode response = mapper.readTree(content);
+            if (response.path("result").has("protocolVersion")) {
+                org.junit.jupiter.api.Assertions.assertEquals("2025-11-25",
+                        response.path("result").path("protocolVersion").asText());
+            }
+            return response;
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Error, while parsing the following json: '%s'".formatted(content), e);
         }

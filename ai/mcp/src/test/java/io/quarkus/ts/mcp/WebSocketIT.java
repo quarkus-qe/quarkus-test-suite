@@ -23,7 +23,7 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
 @QuarkusScenario
-public class WebSocketIT extends BasicMCPIT {
+public class WebSocketIT extends StatefulMCPIT {
     @QuarkusApplication(boms = { @Dependency(artifactId = "quarkus-mcp-server-bom") }, dependencies = {
             @Dependency(groupId = "io.quarkiverse.mcp", artifactId = "quarkus-mcp-server-websocket")
     }, classes = { FileServer.class, MyResources.class, AdvancedServer.class })
@@ -36,6 +36,9 @@ public class WebSocketIT extends BasicMCPIT {
                     @Dependency(groupId = "io.quarkiverse.langchain4j", artifactId = "quarkus-langchain4j-mcp"),
             }, classes = { MCPClient.class })
     static final RestService client = new RestService()
+            .withProperty("quarkus.langchain4j.mcp.filesystem.protocol-version", "2025-11-25")
+            .withProperty("quarkus.langchain4j.mcp.filesystem.log-responses", "true")
+            .withProperty("quarkus.langchain4j.mcp.filesystem.log-requests", "true")
             .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "websocket")
             .withProperty("quarkus.langchain4j.mcp.filesystem.url",
                     () -> getUrl(server));
