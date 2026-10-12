@@ -24,7 +24,7 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
 @QuarkusScenario
-public class OIDCIT extends BasicMCPIT {
+public class OIDCIT extends StatefulMCPIT {
 
     static final String NORMAL_USER = "test-normal-user";
     static final String ADMIN_USER = "test-admin-user";
@@ -58,6 +58,11 @@ public class OIDCIT extends BasicMCPIT {
             .withProperty("quarkus.oidc.auth-server-url", () -> keycloak.getRealmUrl())
             .withProperty("quarkus.oidc.client-id", CLIENT_ID_DEFAULT)
             .withProperty("quarkus.oidc.credentials.secret", CLIENT_SECRET_DEFAULT)
+            // Match the existing HTTP workaround for quarkus-langchain4j issue 2159.
+            .withProperty("quarkus.langchain4j.mcp.filesystem.cache-tool-list", "false")
+            .withProperty("quarkus.langchain4j.mcp.filesystem.protocol-version", "2025-11-25")
+            .withProperty("quarkus.langchain4j.mcp.filesystem.log-responses", "true")
+            .withProperty("quarkus.langchain4j.mcp.filesystem.log-requests", "true")
             .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "streamable-http")
             .withProperty("quarkus.langchain4j.mcp.filesystem.url",
                     () -> server.getURI(Protocol.HTTP).withPath("/mcp").toString());

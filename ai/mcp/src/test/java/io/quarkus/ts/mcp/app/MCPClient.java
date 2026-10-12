@@ -195,7 +195,7 @@ public class MCPClient {
     @POST
     @Path("/roots")
     public void addRoot() {
-        filesystemClient.setRoots(List.of(new McpRoot("first", "example.com")));
+        filesystemClient.setRoots(List.of(new McpRoot("first", "file:///workspace")));
     }
 
 }

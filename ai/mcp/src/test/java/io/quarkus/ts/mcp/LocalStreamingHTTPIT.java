@@ -26,7 +26,7 @@ import io.quarkus.ts.mcp.app.MyResources;
 import io.restassured.specification.RequestSpecification;
 
 @QuarkusScenario
-public class LocalStreamingHTTPIT extends BasicMCPIT {
+public class LocalStreamingHTTPIT extends StatefulMCPIT {
     @QuarkusApplication(boms = { @Dependency(artifactId = "quarkus-mcp-server-bom") }, dependencies = {
             @Dependency(artifactId = "quarkus-rest"),
             @Dependency(groupId = "io.quarkiverse.mcp", artifactId = "quarkus-mcp-server-http")
@@ -40,6 +40,9 @@ public class LocalStreamingHTTPIT extends BasicMCPIT {
                     @Dependency(groupId = "io.quarkiverse.langchain4j", artifactId = "quarkus-langchain4j-mcp"),
             }, classes = { MCPClient.class })
     static final RestService client = new RestService()
+            .withProperty("quarkus.langchain4j.mcp.filesystem.protocol-version", "2025-11-25")
+            .withProperty("quarkus.langchain4j.mcp.filesystem.log-responses", "true")
+            .withProperty("quarkus.langchain4j.mcp.filesystem.log-requests", "true")
             .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "streamable-http")
             // todo remove the line below when https://github.com/quarkiverse/quarkus-langchain4j/issues/2159 is fixed
             .withProperty("quarkus.langchain4j.mcp.filesystem.cache-tool-list", "false")
@@ -52,6 +55,7 @@ public class LocalStreamingHTTPIT extends BasicMCPIT {
         McpClientTransport transport = HttpClientStreamableHttpTransport
                 .builder(server.getURI(Protocol.HTTP).toString())
                 .endpoint("/mcp")
+                .supportedProtocolVersions(List.of("2025-11-25"))
                 .build();
         this.thirdPartyClient = McpClient.sync(transport)
                 .requestTimeout(Duration.ofSeconds(10))
@@ -72,7 +76,7 @@ public class LocalStreamingHTTPIT extends BasicMCPIT {
 
     @Test
     public void toolList() {
-        thirdPartyClient.initialize();
+        Assertions.assertEquals("2025-11-25", thirdPartyClient.initialize().protocolVersion());
 
         McpSchema.ListToolsResult toolsResult = thirdPartyClient.listTools();
         List<McpSchema.Tool> tools = new ArrayList<>(toolsResult.tools());
@@ -89,7 +93,7 @@ public class LocalStreamingHTTPIT extends BasicMCPIT {
 
     @Test
     public void toolCall() {
-        thirdPartyClient.initialize();
+        Assertions.assertEquals("2025-11-25", thirdPartyClient.initialize().protocolVersion());
         McpSchema.CallToolResult result = thirdPartyClient.callTool(
                 new McpSchema.CallToolRequest("filereader",
                         Map.of("file", "robot-readable.txt")));
