@@ -27,7 +27,7 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
 @OpenShiftScenario
-public class OpenShiftOIDCIT extends BasicMCPIT {
+public class OpenShiftOIDCIT extends StatefulMCPIT {
 
     @KeycloakContainer(runKeycloakInProdMode = true, image = "${rhbk.image}")
     static final KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
@@ -59,6 +59,9 @@ public class OpenShiftOIDCIT extends BasicMCPIT {
             .withProperties(keycloak::getTlsProperties)
             .withProperty("quarkus.oidc.client-id", CLIENT_ID_DEFAULT)
             .withProperty("quarkus.oidc.credentials.secret", CLIENT_SECRET_DEFAULT)
+            .withProperty("quarkus.langchain4j.mcp.filesystem.protocol-version", "2025-11-25")
+            .withProperty("quarkus.langchain4j.mcp.filesystem.log-responses", "true")
+            .withProperty("quarkus.langchain4j.mcp.filesystem.log-requests", "true")
             .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "streamable-http")
             .withProperty("quarkus.langchain4j.mcp.filesystem.url",
                     () -> server.getURI(Protocol.HTTP).withPath("/mcp").toString());

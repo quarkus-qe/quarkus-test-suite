@@ -13,7 +13,7 @@ import io.quarkus.ts.mcp.app.MyResources;
 import io.restassured.specification.RequestSpecification;
 
 @QuarkusScenario
-public class StdioIT extends BasicMCPIT {
+public class StdioIT extends StatefulMCPIT {
 
     @QuarkusApplication(boms = { @Dependency(artifactId = "quarkus-mcp-server-bom") }, dependencies = {
             @Dependency(groupId = "io.quarkiverse.mcp", artifactId = "quarkus-mcp-server-stdio")
@@ -28,6 +28,10 @@ public class StdioIT extends BasicMCPIT {
                     @Dependency(groupId = "io.quarkiverse.langchain4j", artifactId = "quarkus-langchain4j-mcp"),
             }, classes = { MCPClient.class })
     static final RestService client = new RestService()
+            .withProperty("quarkus.log.category.\"MCP\".level", "DEBUG")
+            .withProperty("quarkus.langchain4j.mcp.filesystem.protocol-version", "2025-11-25")
+            .withProperty("quarkus.langchain4j.mcp.filesystem.log-responses", "true")
+            .withProperty("quarkus.langchain4j.mcp.filesystem.log-requests", "true")
             .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "stdio")
             .withProperty("quarkus.langchain4j.mcp.filesystem.command",
                     () -> "java,-Dworking.folder=" + makeSafeForWindows(getFileFolder(StdioIT.class))
