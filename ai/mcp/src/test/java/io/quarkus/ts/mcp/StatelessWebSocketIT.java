@@ -3,6 +3,7 @@ package io.quarkus.ts.mcp;
 import static io.quarkus.ts.mcp.app.Utils.getFileFolder;
 
 import java.net.URI;
+import java.util.List;
 
 import io.quarkiverse.mcp.server.McpProtocolVersion;
 import io.quarkiverse.mcp.server.test.McpAssured;
@@ -18,7 +19,7 @@ import io.quarkus.ts.mcp.app.MyResources;
 import io.restassured.specification.RequestSpecification;
 
 @QuarkusScenario
-public class StatelessWebSocketIT extends StatelessMCPIT {
+public class StatelessWebSocketIT extends StatelessAdvancedMCPIT {
     @QuarkusApplication(boms = { @Dependency(artifactId = "quarkus-mcp-server-bom") }, dependencies = {
             @Dependency(groupId = "io.quarkiverse.mcp", artifactId = "quarkus-mcp-server-websocket")
     }, classes = { FileServer.class, MyResources.class, AdvancedServer.class })
@@ -63,4 +64,10 @@ public class StatelessWebSocketIT extends StatelessMCPIT {
     public RestService app() {
         return client;
     }
+
+    @Override
+    protected List<String> serverLogs(McpAssured.McpTestClient<?, ?> protocol) {
+        return serverApp().getLogs();
+    }
+
 }

@@ -2,6 +2,8 @@ package io.quarkus.ts.mcp;
 
 import static io.quarkus.ts.mcp.app.Utils.getFileFolder;
 
+import java.util.List;
+
 import io.quarkiverse.mcp.server.McpProtocolVersion;
 import io.quarkiverse.mcp.server.test.McpAssured;
 import io.quarkus.test.bootstrap.BaseService;
@@ -16,7 +18,7 @@ import io.quarkus.ts.mcp.app.MyResources;
 import io.restassured.specification.RequestSpecification;
 
 @QuarkusScenario
-public class StatelessStdioIT extends StatelessMCPIT {
+public class StatelessStdioIT extends StatelessAdvancedMCPIT {
 
     @QuarkusApplication(boms = { @Dependency(artifactId = "quarkus-mcp-server-bom") }, dependencies = {
             @Dependency(groupId = "io.quarkiverse.mcp", artifactId = "quarkus-mcp-server-stdio")
@@ -66,4 +68,10 @@ public class StatelessStdioIT extends StatelessMCPIT {
                 .setProtocolVersion(McpProtocolVersion.from(REVISION)).setClientCapabilities(CLIENT_CAPABILITIES)
                 .build().connect();
     }
+
+    @Override
+    protected List<String> serverLogs(McpAssured.McpTestClient<?, ?> protocol) {
+        return ((McpAssured.McpStdioTestClient) protocol).stderrLines();
+    }
+
 }
