@@ -140,7 +140,9 @@ public class HttpVersionClientResource {
         response.bufferEntity();
         String responseText = response.readEntity(String.class);
         if (httpVersion.equals(HttpVersion.HTTP_2.name()) && responseText.contains(HttpVersion.HTTP_2.name())) {
-            return response;
+            // Build a new Response: returning the REST client Response directly
+            // is no longer allowed as it carries connection-specific headers
+            return Response.ok(responseText).build();
         }
 
         return Response.ok(WRONG_HTTP_VERSION + httpVersion).build();
@@ -157,7 +159,9 @@ public class HttpVersionClientResource {
             String httpVersion = ((ClientResponseImpl) r).getHttpVersion();
             String responseText = r.readEntity(String.class);
             if (httpVersion.equals(HttpVersion.HTTP_2.name()) && responseText.contains(HttpVersion.HTTP_2.name())) {
-                return response;
+                // Build a new Response: returning the REST client Response directly
+                // is no longer allowed as it carries connection-specific headers
+                return Uni.createFrom().item(Response.ok(responseText).build());
             }
             return Uni.createFrom().item(Response.ok(WRONG_HTTP_VERSION + httpVersion).build());
         });
