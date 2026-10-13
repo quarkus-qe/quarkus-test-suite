@@ -29,7 +29,11 @@ public class ProxyResource {
     @Path("/banned")
     @Produces(MediaType.TEXT_PLAIN)
     public Uni<Response> getBanned() {
-        return client.getText();
+        // Build a new Response: returning the REST client Response directly
+        // is no longer allowed as it carries connection-specific headers
+        return client.getText().onItem().transform(r -> {
+            return Response.status(r.getStatus()).entity(r.readEntity(String.class)).build();
+        });
     }
 
     @GET
