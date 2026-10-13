@@ -25,7 +25,8 @@ public class TLSAmqpReactiveIT {
     private static final Duration ASSERT_TIMEOUT = Duration.ofSeconds(60);
     private static final Duration READINESS_TIMEOUT = Duration.ofSeconds(30);
     private static final Duration POLL_INTERVAL = Duration.ofSeconds(1);
-    private static final String EXCEPTION_TO_AVOID = "UnsupportedOperationException";
+    // Be specific to avoid false positives from Netty's "sun.misc.Unsafe unavailable" log
+    private static final String EXCEPTION_TO_AVOID = "TlsConfigUtils";
 
     @AmqContainer(image = "${amqbroker.image}", protocol = AmqProtocol.AMQP)
     static AmqService amq = new AmqService();
