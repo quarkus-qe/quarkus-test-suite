@@ -18,7 +18,7 @@ import io.quarkus.ts.security.pqc.annotations.DisabledOnSsl35AndLower;
 @QuarkusScenario
 public class OpenSslEngineTestsIT extends AbstractBaseEngineTestsIT {
 
-    private static final String ERROR_LOG = "PQC enforcement policy %s requires X25519MLKEM768 but the configured SSL engine does not support it";
+    private static final String ERROR_LOG = "PQC enforcement policy %s requires PQ compliant named groups but the configured SSL engine does not support it";
 
     @QuarkusApplication(ssl = true, certificates = @Certificate(configureKeystore = true, configureTruststore = true))
     static final RestService app = new RestService()

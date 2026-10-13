@@ -16,7 +16,7 @@ import io.quarkus.test.bootstrap.RestService;
 
 public abstract class AbstractBaseEngineTestsIT extends BaseVertX {
 
-    private static final String ERROR_LOG = "PQC enforcement policy %s requires X25519MLKEM768 but neither JDK nor OpenSSL support it";
+    private static final String ERROR_LOG = "PQC enforcement policy %s requires PQ compliant named groups but neither JDK nor OpenSSL support it";
 
     @LookupService
     static RestService app;
