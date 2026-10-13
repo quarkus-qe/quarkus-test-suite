@@ -61,8 +61,8 @@ public class QuarkusCliCreateJvmApplicationIT {
     static final String REST_JACKSON_EXTENSION = "quarkus-rest-jackson";
     static final String DOCKER_FOLDER = "/src/main/docker";
     static final String JDK_21 = "21";
-    static final String JDK_17 = "17";
-    static final String JDK_18 = "18";
+    static final String JDK_25 = "25";
+    static final String JDK_22 = "22";
     static final String DOCKERFILE_JVM = "Dockerfile.jvm";
 
     @Inject
@@ -106,19 +106,19 @@ public class QuarkusCliCreateJvmApplicationIT {
 
     @Tag("QUARKUS-1472")
     @TestQuarkusCli
-    public void shouldCreateAnApplicationForcingJavaVersion17(QuarkusVersionAwareCliClient cliClient) {
-        CreateApplicationRequest args = cliClient.getDefaultCreateApplicationRequest().withExtraArgs("--java=" + JDK_17);
+    public void shouldCreateAnApplicationForcingJavaVersion25(QuarkusVersionAwareCliClient cliClient) {
+        CreateApplicationRequest args = cliClient.getDefaultCreateApplicationRequest().withExtraArgs("--java=" + JDK_25);
         QuarkusCliRestService app = cliClient.createApplication("app", args);
-        assertExpectedJavaVersion(app.getFileFromApplication("pom.xml"), JDK_17);
-        assertDockerJavaVersion(app.getFileFromApplication(DOCKER_FOLDER, DOCKERFILE_JVM), JDK_17);
+        assertExpectedJavaVersion(app.getFileFromApplication("pom.xml"), JDK_25);
+        assertDockerJavaVersion(app.getFileFromApplication(DOCKER_FOLDER, DOCKERFILE_JVM), JDK_25);
     }
 
     @Test
-    public void quarkusCreatedWithJava18ShouldUseJava17() {
-        CreateApplicationRequest args = defaults().withExtraArgs("--java=" + JDK_18);
+    public void quarkusCreatedWithJava22ShouldUseJava21() {
+        CreateApplicationRequest args = defaults().withExtraArgs("--java=" + JDK_22);
         QuarkusCliRestService app = cliClient.createApplication("app", args);
-        assertExpectedJavaVersion(app.getFileFromApplication("pom.xml"), JDK_17);
-        assertDockerJavaVersion(app.getFileFromApplication(DOCKER_FOLDER, DOCKERFILE_JVM), JDK_17);
+        assertExpectedJavaVersion(app.getFileFromApplication("pom.xml"), JDK_21);
+        assertDockerJavaVersion(app.getFileFromApplication(DOCKER_FOLDER, DOCKERFILE_JVM), JDK_21);
     }
 
     @Tag("QUARKUS-1071")
