@@ -128,12 +128,12 @@ public abstract class AbstractMicrometerOpenTelemetryBridgeIT {
         app.given().get("/micrometer/counted-failures").then().statusCode(200).body(is("hello from counted method"));
 
         AwaitilityUtils.untilAsserted(() -> {
-            double sum = queryPrometheusAndWaitForMetrics("my_timed_method_milliseconds_sum").extract().jsonPath()
+            double sum = queryPrometheusAndWaitForMetrics("my_timed_method_seconds_sum").extract().jsonPath()
                     .getDouble("data.result.value.flatten().get(1)");
-            Assertions.assertTrue(sum >= 1300, "The 'my_timed_method_milliseconds_sum' metric should "
-                    + "record at least 1300 milliseconds as the method was executed for 1300 milliseconds, but was "
+            Assertions.assertTrue(sum >= 1.3, "The 'my_timed_method_seconds_sum' metric should "
+                    + "record at least 1.3 seconds as the method was executed for 1.3 seconds, but was "
                     + sum);
-            queryPrometheusAndWaitForMetrics("my_timed_method_milliseconds_count").body("data.result.value.flatten()",
+            queryPrometheusAndWaitForMetrics("my_timed_method_seconds_count").body("data.result.value.flatten()",
                     hasItems("1"));
         });
         AwaitilityUtils.untilAsserted(() -> queryPrometheusAndWaitForMetrics("counted_total")
@@ -150,9 +150,9 @@ public abstract class AbstractMicrometerOpenTelemetryBridgeIT {
         // Prometheus format: http_server_requests_seconds_count, http_server_requests_seconds_sum,
         // http_server_requests_seconds_max
         // Bridge format: http.server.requests, http.server.requests.max
-        assertBodyContains(body, "http_server_requests_milliseconds_count");
-        assertBodyContains(body, "http_server_requests_milliseconds_sum");
-        assertBodyContains(body, "http_server_requests_max_milliseconds");
+        assertBodyContains(body, "http_server_requests_seconds_count");
+        assertBodyContains(body, "http_server_requests_seconds_sum");
+        assertBodyContains(body, "http_server_requests_max_seconds");
         // Micrometer: http.server.bytes.read
         // Prometheus format: http_server_bytes_read_count, http_server_bytes_read_sum, http_server_bytes_read_max
         // Bridge format: http.server.bytes.read, http.server.bytes.read.max
@@ -162,7 +162,7 @@ public abstract class AbstractMicrometerOpenTelemetryBridgeIT {
         // http_server_connections_seconds_max
         // Bridge format: http.server.connections.active, http.server.connections.duration
         assertBodyContains(body, "http_server_connections_active");
-        assertBodyContains(body, "http_server_connections_duration_milliseconds");
+        assertBodyContains(body, "http_server_connections_duration_seconds");
         // Micrometer: jvm.threads.live
         // Prometheus format: jvm_threads_live_threads
         // Bridge format: jvm.threads.live
@@ -216,7 +216,7 @@ public abstract class AbstractMicrometerOpenTelemetryBridgeIT {
                 .get("/micrometer/song")
                 .then()
                 .statusCode(HttpStatus.SC_OK);
-        AwaitilityUtils.untilAsserted(() -> queryPrometheusAndWaitForMetrics("http_server_requests_milliseconds_count")
+        AwaitilityUtils.untilAsserted(() -> queryPrometheusAndWaitForMetrics("http_server_requests_seconds_count")
                 .body(
                         "data.result.metric.find { it.uri == '/micrometer/song' && it.status == '200' }.service_name",
                         is("app"))
@@ -228,7 +228,7 @@ public abstract class AbstractMicrometerOpenTelemetryBridgeIT {
                 .get("/micrometer/song")
                 .then()
                 .statusCode(HttpStatus.SC_BAD_REQUEST);
-        AwaitilityUtils.untilAsserted(() -> queryPrometheusAndWaitForMetrics("http_server_requests_milliseconds_count").body(
+        AwaitilityUtils.untilAsserted(() -> queryPrometheusAndWaitForMetrics("http_server_requests_seconds_count").body(
                 "data.result.metric.find { it.uri == '/micrometer/song' && it.status == '400' }.service_name", is("app")));
     }
 
