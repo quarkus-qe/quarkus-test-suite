@@ -12,9 +12,9 @@ echo "Building platform ${PLATFORM_BUILD} using Quarkus Core ${QUARKUS_BUILD}, L
 
 ./mvnw versions:set -DnewVersion=${PLATFORM_BUILD}
 ./mvnw versions:set-property -Dproperty=quarkus.version -DnewVersion=${QUARKUS_BUILD} -DgenerateBackupPoms=false
-./mvnw versions:set-property -Dproperty=quarkus-langchain4j.version -DnewVersion=${LANGCHAIN4J_BUILD} -DgenerateBackupPoms=false
-./mvnw versions:set-property -Dproperty=quarkus-mcp-server.version -DnewVersion=${MCP_BUILD} -DgenerateBackupPoms=false
-./mvnw versions:set-property -Dproperty=quarkus-http-problem.version -DnewVersion=${HTTP_PROBLEM_BUILD} -DgenerateBackupPoms=false
+#./mvnw versions:set-property -Dproperty=quarkus-langchain4j.version -DnewVersion=${LANGCHAIN4J_BUILD} -DgenerateBackupPoms=false
+#./mvnw versions:set-property -Dproperty=quarkus-mcp-server.version -DnewVersion=${MCP_BUILD} -DgenerateBackupPoms=false
+#./mvnw versions:set-property -Dproperty=quarkus-http-problem.version -DnewVersion=${HTTP_PROBLEM_BUILD} -DgenerateBackupPoms=false
 
 if [ ! $(which xsltproc) ]; then
   echo "xsltproc is not installed!"

@@ -39,7 +39,7 @@ public class FailureHandler {
 
     @Route(path = "*", type = Route.HandlerType.FAILURE, produces = "application/json")
     public void exceptions(ConstraintViolationException e, HttpServerResponse res) {
-        res.setStatusCode(400).end(handler -> e.getConstraintViolations().stream()
+        res.setStatusCode(400).end(e.getConstraintViolations().stream()
                 .map(err -> String.format("%s: %s", err.getPropertyPath().toString(), err.getMessage()))
                 .collect(Collectors.joining("\n")));
     }

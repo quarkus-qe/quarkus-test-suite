@@ -3,6 +3,7 @@ package io.quarkus.ts.external.applications;
 import static org.hamcrest.Matchers.is;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.PostgresqlService;
@@ -13,6 +14,7 @@ import io.quarkus.test.services.Container;
 import io.quarkus.test.services.GitRepositoryQuarkusApplication;
 import io.restassured.http.ContentType;
 
+@Disabled("Not yet moved to Quarkus 4")
 @DisabledOnNative(reason = "This scenario is using uber-jar, so it's incompatible with Native")
 @QuarkusScenario
 public class TodoDemoIT {

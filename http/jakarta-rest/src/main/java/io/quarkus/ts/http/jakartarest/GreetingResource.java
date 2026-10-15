@@ -15,10 +15,10 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 @Path("/hello")
 public class GreetingResource {
@@ -91,8 +91,10 @@ public class GreetingResource {
 
             do {
                 g.writeStartObject();
-                g.writeNumberField("index", ix++);
-                g.writeStringField("extra", "none#" + ix);
+                g.writeName("index");
+                g.writeNumber(ix++);
+                g.writeName("extra");
+                g.writeString("none#" + ix);
                 g.writeEndObject();
             } while (out.size() < expSize);
 

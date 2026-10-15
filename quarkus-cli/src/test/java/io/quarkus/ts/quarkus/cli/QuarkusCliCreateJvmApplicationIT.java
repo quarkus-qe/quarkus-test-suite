@@ -61,8 +61,8 @@ public class QuarkusCliCreateJvmApplicationIT {
     static final String REST_JACKSON_EXTENSION = "quarkus-rest-jackson";
     static final String DOCKER_FOLDER = "/src/main/docker";
     static final String JDK_21 = "21";
-    static final String JDK_17 = "17";
-    static final String JDK_18 = "18";
+    static final String JDK_25 = "25";
+    static final String JDK_22 = "22";
     static final String DOCKERFILE_JVM = "Dockerfile.jvm";
 
     @Inject
@@ -106,19 +106,19 @@ public class QuarkusCliCreateJvmApplicationIT {
 
     @Tag("QUARKUS-1472")
     @TestQuarkusCli
-    public void shouldCreateAnApplicationForcingJavaVersion17(QuarkusVersionAwareCliClient cliClient) {
-        CreateApplicationRequest args = cliClient.getDefaultCreateApplicationRequest().withExtraArgs("--java=" + JDK_17);
+    public void shouldCreateAnApplicationForcingJavaVersion25(QuarkusVersionAwareCliClient cliClient) {
+        CreateApplicationRequest args = cliClient.getDefaultCreateApplicationRequest().withExtraArgs("--java=" + JDK_25);
         QuarkusCliRestService app = cliClient.createApplication("app", args);
-        assertExpectedJavaVersion(app.getFileFromApplication("pom.xml"), JDK_17);
-        assertDockerJavaVersion(app.getFileFromApplication(DOCKER_FOLDER, DOCKERFILE_JVM), JDK_17);
+        assertExpectedJavaVersion(app.getFileFromApplication("pom.xml"), JDK_25);
+        assertDockerJavaVersion(app.getFileFromApplication(DOCKER_FOLDER, DOCKERFILE_JVM), JDK_25);
     }
 
     @Test
-    public void quarkusCreatedWithJava18ShouldUseJava17() {
-        CreateApplicationRequest args = defaults().withExtraArgs("--java=" + JDK_18);
+    public void quarkusCreatedWithJava22ShouldUseJava21() {
+        CreateApplicationRequest args = defaults().withExtraArgs("--java=" + JDK_22);
         QuarkusCliRestService app = cliClient.createApplication("app", args);
-        assertExpectedJavaVersion(app.getFileFromApplication("pom.xml"), JDK_17);
-        assertDockerJavaVersion(app.getFileFromApplication(DOCKER_FOLDER, DOCKERFILE_JVM), JDK_17);
+        assertExpectedJavaVersion(app.getFileFromApplication("pom.xml"), JDK_21);
+        assertDockerJavaVersion(app.getFileFromApplication(DOCKER_FOLDER, DOCKERFILE_JVM), JDK_21);
     }
 
     @Tag("QUARKUS-1071")
@@ -156,11 +156,11 @@ public class QuarkusCliCreateJvmApplicationIT {
 
     private static void useQuarkusSnapshotFromSonatypeIfNeeded(QuarkusCliRestService app, String quarkusVersion) {
         // must match only the 'main' branch snapshot, not 999-SNAPSHOT in other branches as they are not published
-        boolean is999Snapshot = "3.39.999-SNAPSHOT".equals(quarkusVersion);
+        boolean is999Snapshot = "999-SNAPSHOT".equals(quarkusVersion);
         var localRepository = System.getProperty("localRepository");
         if (is999Snapshot && localRepository != null) {
             if (!doesQuarkusSnapshotExistInLocalRepo(localRepository)) { // not adding external repository when not needed
-                Log.info("Configuring Sonatype Maven Snapshots repository to make Quarkus 3.39.999-SNAPSHOT available");
+                Log.info("Configuring Sonatype Maven Snapshots repository to make Quarkus 999-SNAPSHOT available");
                 configureGradleSnapshotRepository(app, "build.gradle"); // Maven repository
                 configureGradleSnapshotRepository(app, "settings.gradle"); // plugin Maven repository
             }
@@ -174,8 +174,8 @@ public class QuarkusCliCreateJvmApplicationIT {
                 .resolve("io")
                 .resolve("quarkus")
                 .resolve("io.quarkus.gradle.plugin")
-                .resolve("3.39.999-SNAPSHOT")
-                .resolve("io.quarkus.gradle.plugin-3.39.999-SNAPSHOT.jar"));
+                .resolve("999-SNAPSHOT")
+                .resolve("io.quarkus.gradle.plugin-999-SNAPSHOT.jar"));
     }
 
     private void runGradleDaemon(QuarkusCliRestService app) {
@@ -260,7 +260,7 @@ public class QuarkusCliCreateJvmApplicationIT {
         // otherwise when the quarkus version is defined (3.27.0) or if it's snapshot of some quarkus stream (3.27.999-SNAPSHOT)
         // it will set the correct stream to use
         String version = Version.getVersion(); // We are interested in core version only
-        String quarkusStream = version.equals("3.39.999-SNAPSHOT") ? null
+        String quarkusStream = version.equals("999-SNAPSHOT") ? null
                 : version.replaceAll("^(\\d+\\.\\d+).*", "$1");
         // This can't use `--platform-bom` as it contain quarkiverse extension
         QuarkusCliRestService app = cliClient.createApplication("app",

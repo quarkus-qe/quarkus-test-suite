@@ -25,7 +25,7 @@ public class OpenTelemetryTracerInitIT {
 
     @QuarkusApplication(classes = { TracerInitResource.class, TracerInitBean.class })
     static final RestService app = new RestService()
-            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.exporter.otlp.endpoint", jaeger::getCollectorUrl)
             .withProperty("quarkus.otel.sdk.disabled", "true")
             .setAutoStart(false);
 

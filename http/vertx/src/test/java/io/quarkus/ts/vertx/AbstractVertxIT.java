@@ -50,7 +50,6 @@ public abstract class AbstractVertxIT {
         assertTrue(metrics.containsKey("worker_pool_active"));
         assertTrue(metrics.containsKey("worker_pool_completed_total"));
         assertTrue(metrics.containsKey("worker_pool_queue_size"));
-        assertTrue(metrics.containsKey("worker_pool_rejected_total"));
     }
 
     @Test

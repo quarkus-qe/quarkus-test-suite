@@ -26,7 +26,8 @@ public class OpenTelemetryGrpcIT {
     @QuarkusApplication()
     static RestService app = new RestService()
             .withProperty("quarkus.application.name", "pingpong")
-            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl);
+            .withProperty("quarkus.otel.exporter.otlp.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.traces.sampler.arg", "1.0d");
 
     private static final String PING_ENDPOINT = "/grpc-ping";
     private static final String PONG_ENDPOINT = "/grpc-pong";
