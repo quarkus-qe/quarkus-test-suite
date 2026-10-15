@@ -3,6 +3,7 @@ package io.quarkus.ts.security.oidcclient.mtls;
 import static io.quarkus.ts.security.oidcclient.mtls.service.MutualTlsKeycloakService.newKeycloakInstance;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.KeycloakService;
@@ -14,7 +15,16 @@ import io.quarkus.test.services.QuarkusApplication;
 /**
  * If keystore/truststore file type does not match declared one, communication between OIDC server
  * and client should fail.
+ * <p>
+ * Disabled in Quarkus 4: the old {@code quarkus.oidc.tls.store-file-extension} property was
+ * migrated to the centralized TLS registry ({@code quarkus.tls.<name>.*}), which maps a declared
+ * "incorrect-type" to the {@code p12} sub-key ({@code quarkus.tls.oidc-client.key-store.p12.path}).
+ * However, the Vert.x TLS infrastructure now auto-detects the actual keystore format from the file
+ * content, ignoring the declared sub-key. A JKS file declared under {@code p12} loads successfully,
+ * so the OIDC call succeeds (200) instead of the expected 500. The concept of "wrong file type
+ * causes failure" no longer applies with format auto-detection.
  */
+@Disabled("TODO Quarkus 4: TLS registry auto-detects keystore format from file content, making wrong type declaration a no-op")
 @QuarkusScenario
 public class IncorrectKsFileTypeOidcMtlsIT extends BaseOidcMtlsIT {
 
