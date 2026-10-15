@@ -24,11 +24,10 @@ public class ReactiveRestClientProxyIT {
 
     @QuarkusApplication(properties = "proxy.properties")
     static RestService proxyApp = new RestService()
-            .withProperty("quarkus.rest-client.\"io.quarkus.ts.http.restclient.reactive.proxy.ProxyClient\".proxy-user", USER)
-            .withProperty("quarkus.rest-client.\"io.quarkus.ts.http.restclient.reactive.proxy.ProxyClient\".proxy-password",
-                    PASSWORD)
-            .withProperty("quarkus.rest-client.\"io.quarkus.ts.http.restclient.reactive.proxy.ProxyClient\".proxy-address",
-                    () -> proxy.getURI().withScheme(null).toString());
+            .withProperty("quarkus.proxy.nginx.host", () -> proxy.getURI().getHost())
+            .withProperty("quarkus.proxy.nginx.port", () -> String.valueOf(proxy.getURI().getPort()))
+            .withProperty("quarkus.proxy.nginx.username", USER)
+            .withProperty("quarkus.proxy.nginx.password", PASSWORD);
 
     @Test
     void sendRequestThroughProxy() {
