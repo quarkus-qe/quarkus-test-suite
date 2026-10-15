@@ -23,7 +23,13 @@ import io.quarkus.test.services.GitRepositoryQuarkusApplication;
 @QuarkusScenario
 public class AoTQuickstartIT {
     public static final String QUICKSTART_DIRECTORY = "getting-started-reactive";
-    public static final String AOT_PROPERTIES = "-Dquarkus.package.jar.appcds.enabled=true -Dquarkus.package.jar.appcds.use-aot=true";
+    // TODO Quarkus 4: the test framework runs 'mvn package' but AOT cache generation happens
+    // during 'mvn verify' by default. We use phase=build and type=AOT as workarounds.
+    // type=AOT is needed because the quickstart targets Java 21 source level and the auto
+    // detection selects AppCDS instead of AOT for pre-25 targets.
+    // The framework should be updated to support 'mvn verify' and these overrides removed.
+    public static final String AOT_PROPERTIES = "-Dquarkus.package.jar.aot.enabled=true"
+            + " -Dquarkus.package.jar.aot.phase=build -Dquarkus.package.jar.aot.type=AOT";
 
     @GitRepositoryQuarkusApplication(repo = "https://github.com/quarkusio/quarkus-quickstarts.git", contextDir = QUICKSTART_DIRECTORY, branch = "development", mavenArgs = AOT_PROPERTIES
             + " -Dquarkus.platform.group-id=${QUARKUS_PLATFORM_GROUP-ID} -Dquarkus.platform.version=${QUARKUS_PLATFORM_VERSION}")
