@@ -1,0 +1,17 @@
+name: "Upload cache of daily build"
+on:
+  workflow_dispatch:
+  schedule:
+    - # should be done monthly, before our podman and docker jobs in Jenkins
+    - cron: '0 2 2 * *'
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/cache-quarkus
+      - name: Save cache as artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: repo
+          path: ~/.m2/repository/
