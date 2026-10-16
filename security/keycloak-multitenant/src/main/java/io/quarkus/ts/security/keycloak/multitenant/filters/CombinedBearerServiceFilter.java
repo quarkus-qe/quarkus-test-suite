@@ -7,6 +7,7 @@ import io.quarkus.oidc.TenantFeature;
 import io.quarkus.oidc.common.OidcEndpoint;
 import io.quarkus.oidc.common.OidcRequestFilter;
 import io.quarkus.oidc.runtime.OidcUtils;
+import io.smallrye.mutiny.Uni;
 
 @BearerTokenAuthentication
 @TenantFeature("service-tenant")
@@ -17,11 +18,12 @@ public class CombinedBearerServiceFilter implements OidcRequestFilter {
     private volatile String capturedTenantId = null;
 
     @Override
-    public void filter(OidcRequestContext requestContext) {
+    public Uni<Void> filter(OidcRequestFilterContext requestContext) {
         this.called = true;
         this.capturedTenantId = requestContext.contextProperties()
                 .getString(OidcUtils.TENANT_ID_ATTRIBUTE);
         requestContext.request().putHeader("X-Combined-Filter", "executed");
+        return Uni.createFrom().voidItem();
     }
 
     public boolean isCalled() {

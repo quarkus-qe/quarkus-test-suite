@@ -8,6 +8,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import io.quarkus.arc.Unremovable;
 import io.quarkus.oidc.common.OidcEndpoint;
 import io.quarkus.oidc.common.OidcResponseFilter;
+import io.smallrye.mutiny.Uni;
 
 @ApplicationScoped
 @Unremovable
@@ -17,7 +18,8 @@ public class KeycloakUserInfoFilter implements OidcResponseFilter {
     public static final List<String> interceptedMessageLogs = new CopyOnWriteArrayList<>();
 
     @Override
-    public void filter(OidcResponseContext responseContext) {
+    public Uni<Void> filter(OidcResponseFilterContext responseContext) {
         interceptedMessageLogs.add("UserInfo response intercepted by Keycloak-specific filter");
+        return Uni.createFrom().voidItem();
     }
 }
