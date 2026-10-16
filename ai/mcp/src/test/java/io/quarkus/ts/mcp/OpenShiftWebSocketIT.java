@@ -27,6 +27,9 @@ public class OpenShiftWebSocketIT extends WebSocketIT {
                     @Dependency(groupId = "io.quarkiverse.langchain4j", artifactId = "quarkus-langchain4j-mcp"),
             }, classes = { MCPClient.class })
     static final RestService client = new RestService()
+            .withProperty("quarkus.langchain4j.mcp.filesystem.protocol-version", "2025-11-25")
+            .withProperty("quarkus.langchain4j.mcp.filesystem.log-responses", "true")
+            .withProperty("quarkus.langchain4j.mcp.filesystem.log-requests", "true")
             .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "websocket")
             .withProperty("quarkus.langchain4j.mcp.filesystem.url",
                     () -> getUrl(server));
@@ -35,4 +38,15 @@ public class OpenShiftWebSocketIT extends WebSocketIT {
     public RequestSpecification client() {
         return client.given();
     }
+
+    @Override
+    public RestService app() {
+        return client;
+    }
+
+    @Override
+    protected RestService serverApp() {
+        return server;
+    }
+
 }

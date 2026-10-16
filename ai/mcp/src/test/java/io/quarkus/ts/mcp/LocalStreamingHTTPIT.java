@@ -26,7 +26,7 @@ import io.quarkus.ts.mcp.app.MyResources;
 import io.restassured.specification.RequestSpecification;
 
 @QuarkusScenario
-public class LocalStreamingHTTPIT extends BasicMCPIT {
+public class LocalStreamingHTTPIT extends StatefulMCPIT {
     @QuarkusApplication(boms = { @Dependency(artifactId = "quarkus-mcp-server-bom") }, dependencies = {
             @Dependency(artifactId = "quarkus-rest"),
             @Dependency(groupId = "io.quarkiverse.mcp", artifactId = "quarkus-mcp-server-http")
@@ -40,23 +40,31 @@ public class LocalStreamingHTTPIT extends BasicMCPIT {
                     @Dependency(groupId = "io.quarkiverse.langchain4j", artifactId = "quarkus-langchain4j-mcp"),
             }, classes = { MCPClient.class })
     static final RestService client = new RestService()
+            .withProperty("quarkus.langchain4j.mcp.filesystem.protocol-version", "2025-11-25")
+            .withProperty("quarkus.langchain4j.mcp.filesystem.log-responses", "true")
+            .withProperty("quarkus.langchain4j.mcp.filesystem.log-requests", "true")
             .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "streamable-http")
             // todo remove the line below when https://github.com/quarkiverse/quarkus-langchain4j/issues/2159 is fixed
             .withProperty("quarkus.langchain4j.mcp.filesystem.cache-tool-list", "false")
             .withProperty("quarkus.langchain4j.mcp.filesystem.url",
                     () -> server.getURI(Protocol.HTTP).withPath("/mcp").toString());
     private static final int NUMBER_OF_TOOLS = 4; // tools, declared or created in FileServer class
-    private final McpSyncClient thirdPartyClient;
 
-    public LocalStreamingHTTPIT() {
+    protected RestService serverApp() {
+        return server;
+    }
+
+    // Java SDK coverage stays on MCP 2025-11-25: SDK 2.0.1 does not support 2026-07-28.
+    // Extend these independent checks once a released SDK supports the newer protocol.
+    private McpSyncClient sdkClient() {
         McpClientTransport transport = HttpClientStreamableHttpTransport
-                .builder(server.getURI(Protocol.HTTP).toString())
+                .builder(serverApp().getURI(Protocol.HTTP).toString())
                 .endpoint("/mcp")
+                .supportedProtocolVersions(List.of("2025-11-25"))
                 .build();
-        this.thirdPartyClient = McpClient.sync(transport)
+        return McpClient.sync(transport)
                 .requestTimeout(Duration.ofSeconds(10))
-                .capabilities(McpSchema.ClientCapabilities.builder()
-                        .build())
+                .capabilities(McpSchema.ClientCapabilities.builder().build())
                 .build();
     }
 
@@ -72,31 +80,36 @@ public class LocalStreamingHTTPIT extends BasicMCPIT {
 
     @Test
     public void toolList() {
-        thirdPartyClient.initialize();
+        try (McpSyncClient thirdPartyClient = sdkClient()) {
+            Assertions.assertEquals("2025-11-25", thirdPartyClient.initialize().protocolVersion());
 
-        McpSchema.ListToolsResult toolsResult = thirdPartyClient.listTools();
-        List<McpSchema.Tool> tools = new ArrayList<>(toolsResult.tools());
+            McpSchema.ListToolsResult toolsResult = thirdPartyClient.listTools();
+            List<McpSchema.Tool> tools = new ArrayList<>(toolsResult.tools());
 
-        String cursor = toolsResult.nextCursor();
-        while (cursor != null) {
-            toolsResult = thirdPartyClient.listTools(cursor);
-            tools.addAll(toolsResult.tools());
-            cursor = toolsResult.nextCursor();
+            String cursor = toolsResult.nextCursor();
+            while (cursor != null) {
+                toolsResult = thirdPartyClient.listTools(cursor);
+                tools.addAll(toolsResult.tools());
+                cursor = toolsResult.nextCursor();
+            }
+
+            Assertions.assertEquals(NUMBER_OF_TOOLS, tools.size());
         }
-
-        Assertions.assertEquals(NUMBER_OF_TOOLS, tools.size());
     }
 
     @Test
     public void toolCall() {
-        thirdPartyClient.initialize();
-        McpSchema.CallToolResult result = thirdPartyClient.callTool(
-                new McpSchema.CallToolRequest("filereader",
-                        Map.of("file", "robot-readable.txt")));
-        Assertions.assertEquals(1, result.content().size());
-        McpSchema.Content actual = result.content().get(0);
-        Assertions.assertEquals("text", actual.type());
-        McpSchema.TextContent text = (McpSchema.TextContent) actual;
-        Assertions.assertEquals("Hello, AI!", text.text());
+        try (McpSyncClient thirdPartyClient = sdkClient()) {
+            Assertions.assertEquals("2025-11-25", thirdPartyClient.initialize().protocolVersion());
+            McpSchema.CallToolResult result = thirdPartyClient.callTool(
+                    new McpSchema.CallToolRequest("filereader",
+                            Map.of("file", "robot-readable.txt")));
+            Assertions.assertFalse(Boolean.TRUE.equals(result.isError()));
+            Assertions.assertEquals(1, result.content().size());
+            McpSchema.Content actual = result.content().get(0);
+            Assertions.assertEquals("text", actual.type());
+            McpSchema.TextContent text = (McpSchema.TextContent) actual;
+            Assertions.assertEquals("Hello, AI!", text.text());
+        }
     }
 }
