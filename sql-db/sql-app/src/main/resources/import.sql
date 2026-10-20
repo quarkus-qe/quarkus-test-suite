@@ -5,3 +5,5 @@ INSERT INTO book (id, title, author) VALUES (nextval('SEQ_Book'), 'Ender''s Game
 INSERT INTO book (id, title, author) VALUES (nextval('SEQ_Book'), 'Hyperion', 'Dan Simmons');
 INSERT INTO book (id, title, author) VALUES (nextval('SEQ_Book'), 'Anathem', 'Neal Stephenson');
 INSERT INTO book (id, title, author) VALUES (nextval('SEQ_Book'), 'Perdido Street Station', 'China Miéville');
+INSERT INTO fruit (id, name, description) VALUES (nextval('Fruit_SEQ'), 'Apple', 'Winter fruit');
+INSERT INTO fruit (id, name, description) VALUES (nextval('Fruit_SEQ'), 'Pineapple', 'Tropical fruit');
