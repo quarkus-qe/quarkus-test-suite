@@ -39,7 +39,8 @@ public class MysqlTransactionGeneralUsageIT extends TransactionCommons {
             .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl)
             .withProperty("quarkus.datasource.username", database.getUser())
             .withProperty("quarkus.datasource.password", database.getPassword())
-            .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl);
+            .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl)
+            .withProperty("quarkus.datasource.validation-query-timeout.jdbc.url", () -> configureValidationQueryDs(database));
 
     @Override
     protected RestService getApp() {
@@ -49,5 +50,10 @@ public class MysqlTransactionGeneralUsageIT extends TransactionCommons {
     @Override
     protected TransactionExecutor getTransactionExecutorUsedForRecovery() {
         return TransactionExecutor.INJECTED_TRANSACTION_MANAGER;
+    }
+
+    @Override
+    protected boolean delayFirstProxyMessage() {
+        return true;
     }
 }
