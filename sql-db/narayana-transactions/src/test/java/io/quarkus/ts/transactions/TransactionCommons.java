@@ -21,13 +21,17 @@ import java.util.stream.Collectors;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.Timeout;
 
+import io.quarkus.test.bootstrap.DatabaseService;
 import io.quarkus.test.bootstrap.JaegerService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.services.JaegerContainer;
@@ -53,9 +57,24 @@ public abstract class TransactionCommons {
 
     static final String ACCOUNT_NUMBER_EDUARDO = "ES8521006742088984966899";
     static final int ASSERT_SERVICE_TIMEOUT_MINUTES = 1;
+    protected static volatile SQLProxy sqlProxy = null;
 
     @JaegerContainer(expectedLog = "\"Health Check state change\",\"status\":\"ready\"")
     static final JaegerService jaeger = new JaegerService();
+
+    protected static String configureValidationQueryDs(DatabaseService<?> database) {
+        return configureValidationQueryDs(database, database.getJdbcUrl());
+    }
+
+    protected static String configureValidationQueryDs(DatabaseService<?> database, String jdbcUrl) {
+        String host = database.getURI().getHost();
+        int port = database.getURI().getPort();
+
+        int proxyPort = port + 1000;
+        sqlProxy = SQLProxy.start(host, port, proxyPort);
+        String proxyJdbcUrl = jdbcUrl.replace("" + port, "" + proxyPort);
+        return proxyJdbcUrl;
+    }
 
     protected abstract RestService getApp();
 
@@ -183,6 +202,41 @@ public abstract class TransactionCommons {
     }
 
     @Order(5)
+    @Tag("QUARKUS-5881")
+    @Test
+    // in case that timeout on DB is not enforced correctly, test can hang indefinitely. Use JUnit timeout to prevent that
+    @Timeout(value = 2, unit = TimeUnit.MINUTES)
+    public void testConnectionQueryTimeout() {
+        // This test has no meaning if sqlProxy is not used
+        Assumptions.assumeTrue(sqlProxy != null);
+
+        // First verify normal operation works
+        getApp().given()
+                .get("/connection/validation-query")
+                .then().statusCode(HttpStatus.SC_OK)
+                .body(Matchers.is("6"));
+
+        try {
+            sqlProxy.setValidationQueryDelay(20000);
+            if (delayFirstProxyMessage()) {
+                sqlProxy.delayFirst(true);
+            }
+
+            // This should now timeout with SocketTimeoutException after 5 seconds
+            getApp().given()
+                    .get("/connection/validation-query")
+                    .then().statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR)
+                    .onFailMessage("If the validation query times out correctly, app should return 500");
+
+            // If the validation query times out correctly, app show throw this exception
+            getApp().logs().assertContains("Caused by: java.net.SocketTimeoutException: Read timed out");
+        } finally {
+            // disable delay after test is done
+            sqlProxy.setValidationQueryDelay(0);
+        }
+    }
+
+    @Order(6)
     @Tag("QUARKUS-2492")
     @Test
     public void smokeTestNarayanaProgrammaticTransactionTrace() {
@@ -191,7 +245,7 @@ public abstract class TransactionCommons {
         verifyRequestTraces(operationName);
     }
 
-    @Order(6)
+    @Order(7)
     @Test
     public void verifyJdbcTraces() {
         var serviceTraces = retrieveServiceTraces(NARAYANA_SERVICE_NAME);
@@ -239,7 +293,7 @@ public abstract class TransactionCommons {
                 new Operation("UPDATE mydb.account") };
     }
 
-    @Order(7)
+    @Order(8)
     @Tag("QUARKUS-2492")
     @Test
     public void smokeTestMetricsNarayanaProgrammaticTransaction() {
@@ -267,7 +321,7 @@ public abstract class TransactionCommons {
         Assertions.assertEquals(beforeRollback, afterRollback, "Gauge should not be increased on a rollback transaction");
     }
 
-    @Order(8)
+    @Order(9)
     @Tag("QUARKUS-2739")
     @Test
     public void testTransactionRecovery() {
@@ -275,7 +329,7 @@ public abstract class TransactionCommons {
         testTransactionRecoveryInternal();
     }
 
-    @Order(9)
+    @Order(10)
     @Test
     @Tag("QUARKUS-5950")
     public void testChangesAreNotCommitedAfterTimeoutPost() {
@@ -293,7 +347,7 @@ public abstract class TransactionCommons {
         response.then().statusCode(HttpStatus.SC_NO_CONTENT);
     }
 
-    @Order(10)
+    @Order(11)
     @Test
     @Tag("QUARKUS-5950")
     public void testChangesAreNotCommitedAfterTimeoutDelete() {
@@ -308,7 +362,7 @@ public abstract class TransactionCommons {
                 .body(containsString(ACCOUNT_NUMBER_EDUARDO));
     }
 
-    @Order(11)
+    @Order(12)
     @Test
     @Tag("QUARKUS-5950")
     public void testChangesAreNotCommitedAfterTimeoutPatch() {
@@ -509,4 +563,15 @@ public abstract class TransactionCommons {
         return actual -> actual > expected;
     }
 
+    @AfterAll
+    public static void cleanup() {
+        if (sqlProxy != null) {
+            sqlProxy.shutdown();
+            sqlProxy = null;
+        }
+    }
+
+    protected boolean delayFirstProxyMessage() {
+        return false;
+    }
 }

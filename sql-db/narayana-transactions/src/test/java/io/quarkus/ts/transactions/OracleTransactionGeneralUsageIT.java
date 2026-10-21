@@ -31,7 +31,9 @@ public class OracleTransactionGeneralUsageIT extends TransactionCommons {
             .withProperty("quarkus.datasource.username", database.getUser())
             .withProperty("quarkus.datasource.password", database.getPassword())
             // we only want the second XA datasource to use 'mydb2', everything else should use 'mydb'
-            .withProperty("quarkus.datasource.jdbc.url", () -> database.getJdbcUrl(DATABASE));
+            .withProperty("quarkus.datasource.jdbc.url", () -> database.getJdbcUrl(DATABASE))
+            .withProperty("quarkus.datasource.validation-query-timeout.jdbc.url",
+                    () -> configureValidationQueryDs(database, database.getJdbcUrl(DATABASE)));
 
     @Override
     protected RestService getApp() {
