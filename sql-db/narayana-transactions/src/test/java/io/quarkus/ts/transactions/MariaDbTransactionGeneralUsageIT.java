@@ -23,7 +23,8 @@ public class MariaDbTransactionGeneralUsageIT extends TransactionCommons {
             .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl)
             .withProperty("quarkus.datasource.username", database.getUser())
             .withProperty("quarkus.datasource.password", database.getPassword())
-            .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl);
+            .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl)
+            .withProperty("quarkus.datasource.validation-query-timeout.jdbc.url", () -> configureValidationQueryDs(database));
 
     @Override
     protected RestService getApp() {
