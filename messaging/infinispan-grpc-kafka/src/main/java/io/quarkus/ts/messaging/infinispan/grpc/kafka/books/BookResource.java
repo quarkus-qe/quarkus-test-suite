@@ -18,7 +18,7 @@ import io.quarkus.infinispan.client.Remote;
 public class BookResource {
 
     @Inject
-    @Remote(BookCacheInitializer.CACHE_NAME)
+    @Remote("booksCache")
     RemoteCache<String, Book> cache;
 
     @GET
