@@ -20,6 +20,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import io.quarkus.test.bootstrap.RestService;
+import io.quarkus.test.utils.AwaitilityUtils;
+import io.quarkus.ts.hibernate.reactive.database.CachedDocument;
+import io.quarkus.ts.hibernate.reactive.http.CachedDocumentResource.RegionStats;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
@@ -478,6 +481,48 @@ public abstract class AbstractDatabaseHibernateReactiveIT {
             assertTrue(books.contains("ConcurrentCommit" + i), "Book from committed transaction is missing: " + i);
         }
         assertFalse(books.contains("ConcurrentRollback"), "Books from rolled back transactions were persisted");
+    }
+
+    @Tag("QUARKUS-8779")
+    @Test
+    public void weightBasedEvictionBoundsRegionForHibernateReactive() {
+        int entries = 10;
+        int payloadSize = 300; // 10 * 300 = 3000 total weight, above the maximum-weight=1000 bound
+        long maximumWeight = 1000;
+
+        RegionStats initial = regionStats();
+        assertEquals(maximumWeight, initial.maximumWeight());
+        assertTrue(initial.hasWeigher());
+
+        for (int i = 0; i < entries; i++) {
+            persistCachedDocument(payloadSize);
+        }
+
+        AwaitilityUtils.untilAsserted(() -> {
+            RegionStats stats = regionStats();
+            assertTrue(stats.estimatedSize() > 0, "the weight-based region is empty, entries were never cached");
+            assertTrue(stats.estimatedSize() <= maximumWeight / payloadSize,
+                    "expected at most " + maximumWeight / payloadSize + " entries of weight " + payloadSize
+                            + " to fit in the region, but " + stats.estimatedSize() + " are cached");
+            assertEquals(stats.estimatedSize() * payloadSize, stats.weightedSize(),
+                    "each cached entry should weigh exactly its payload size");
+        });
+    }
+
+    private long persistCachedDocument(int size) {
+        return Long.parseLong(getApp().given()
+                .queryParam("size", size)
+                .post("/cached-document")
+                .then().statusCode(HttpStatus.SC_OK)
+                .extract().asString());
+    }
+
+    private RegionStats regionStats() {
+        return getApp().given()
+                .pathParam("region", CachedDocument.class.getName())
+                .get("/cached-document/region/{region}")
+                .then().statusCode(HttpStatus.SC_OK)
+                .extract().as(RegionStats.class);
     }
 
     protected abstract RestService getApp();

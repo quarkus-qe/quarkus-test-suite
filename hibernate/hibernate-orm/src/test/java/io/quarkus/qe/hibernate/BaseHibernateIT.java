@@ -6,8 +6,11 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -25,8 +28,14 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.qe.hibernate.data.TestDataEntity;
 import io.quarkus.qe.hibernate.flush.FlushEventListener;
 import io.quarkus.qe.hibernate.interceptor.SessionEventInterceptor;
+import io.quarkus.qe.hibernate.items.CountedCacheEntity;
+import io.quarkus.qe.hibernate.items.DefaultCountedCacheEntity;
+import io.quarkus.qe.hibernate.items.IdleWeightedCacheEntity;
+import io.quarkus.qe.hibernate.items.WeightedCacheEntity;
+import io.quarkus.qe.hibernate.items.WeightedCacheResource.RegionStats;
 import io.quarkus.test.bootstrap.LookupService;
 import io.quarkus.test.bootstrap.RestService;
+import io.quarkus.test.utils.AwaitilityUtils;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 
@@ -276,6 +285,116 @@ public abstract class BaseHibernateIT {
                 .get("/stateless-session/get/{id}")
                 .then()
                 .statusCode(HttpStatus.SC_NOT_FOUND);
+    }
+
+    /**
+     * The default for quarkus.hibernate-orm.cache."<region_name>".memory.object-count as documented in
+     * <a href="https://quarkus.io/guides/hibernate-orm/#tuning-of-cache-regions">Quarkus Hibernate ORM - Tuning of Cache
+     * Regions</a>
+     */
+    private static final long DEFAULT_MEMORY_OBJECT_COUNT = 10000;
+
+    /**
+     * Weight-based eviction (QUARKUS-8779): the region is configured with
+     * {@code memory.maximum-weight=1000} and a weigher deriving weight from the cached
+     * {@code data} column. Combined weight of the persisted entries in the region should not exceed the bound;
+     * if it does, some entries must be evicted. The same workload against a region left on the default
+     * {@code object-count} must keep every entry, so the eviction can only be explained by the weight bound.
+     */
+    @Tag("QUARKUS-8779") // Scenario 1
+    @Test
+    void testWeightBasedEvictionBoundsRegion() {
+        int entries = 10;
+        // the weigher weighs each entry by its 'data' length: 10 * 300 = 3000 total weight, well above the bound
+        int entryWeight = 300;
+        int maximumWeight = 1000;
+
+        RegionStats weighted = regionStats(WeightedCacheEntity.class);
+        assertEquals(maximumWeight, weighted.maximumWeight());
+        assertTrue(weighted.hasWeigher());
+        RegionStats defaultCounted = regionStats(DefaultCountedCacheEntity.class);
+        assertNull(defaultCounted.maximumWeight());
+        assertEquals(DEFAULT_MEMORY_OBJECT_COUNT, defaultCounted.maximumSize());
+
+        for (int i = 0; i < entries; i++) {
+            persistCachedEntity("weighted", entryWeight);
+            persistCachedEntity("default-counted", entryWeight);
+        }
+
+        AwaitilityUtils.untilAsserted(() -> {
+            RegionStats stats = regionStats(WeightedCacheEntity.class);
+            assertTrue(stats.estimatedSize() > 0, "the weight-based region is empty, entries were never cached");
+            assertTrue(stats.estimatedSize() <= maximumWeight / entryWeight,
+                    "expected at most " + maximumWeight / entryWeight + " entries of weight " + entryWeight
+                            + " to fit in the region, but " + stats.estimatedSize() + " are cached");
+            assertEquals(stats.estimatedSize() * entryWeight, stats.weightedSize(),
+                    "each cached entry should weigh exactly its data length");
+        });
+
+        // the same workload does not trigger count-based eviction at the default object-count
+        assertEquals(entries, regionStats(DefaultCountedCacheEntity.class).estimatedSize(),
+                "the count-based control region should keep every entry");
+    }
+
+    /**
+     * Mixed regions and expiration (QUARKUS-8779): a count-based region
+     * ({@code object-count=5}) and weight-based regions ({@code maximum-weight=1000}) coexist
+     * in the same persistence unit and evict independently by their own policy; idle expiration
+     * ({@code expiration.max-idle=10s}) on a weight-based region still applies on top of the
+     * weight bound, evicting an entry whose weight is nowhere near the configured maximum.
+     */
+    @Tag("QUARKUS-8779") // Scenario 3
+    @Test
+    void testMixedCountAndWeightRegionsWithExpiration() throws InterruptedException {
+        int countedEntries = 10;
+        int objectCount = 5;
+
+        RegionStats idleWeighted = regionStats(IdleWeightedCacheEntity.class);
+        assertEquals(1000, idleWeighted.maximumWeight());
+        assertTrue(idleWeighted.hasWeigher());
+        RegionStats counted = regionStats(CountedCacheEntity.class);
+        assertEquals(objectCount, counted.maximumSize());
+        assertFalse(counted.hasWeigher());
+
+        for (int i = 0; i < countedEntries; i++) {
+            persistCachedEntity("counted", 10);
+        }
+        AwaitilityUtils.untilAsserted(() -> assertEquals(objectCount,
+                regionStats(CountedCacheEntity.class).estimatedSize(),
+                "count-based region should be bounded at exactly its object-count"));
+
+        // a small entry in the idle weight-based region, nowhere near the maximum-weight=1000 bound
+        long weightedId = persistCachedEntity("idle-weighted", 50);
+        assertTrue(isCached("idle-weighted", weightedId));
+        // Use sleep, because if we pool, it would count as an entity access and idle timer would never expire
+        Thread.sleep(Duration.ofSeconds(11).toMillis());
+        assertFalse(isCached("idle-weighted", weightedId));
+    }
+
+    private static long persistCachedEntity(String entity, int size) {
+        return Long.parseLong(app.given()
+                .pathParam("entity", entity)
+                .queryParam("size", size)
+                .post("/weighted-cache/{entity}")
+                .then().statusCode(HttpStatus.SC_OK)
+                .extract().asString());
+    }
+
+    private static boolean isCached(String entity, long id) {
+        return Boolean.parseBoolean(app.given()
+                .pathParam("entity", entity)
+                .pathParam("id", id)
+                .get("/weighted-cache/{entity}/{id}/cached")
+                .then().statusCode(HttpStatus.SC_OK)
+                .extract().asString());
+    }
+
+    private static RegionStats regionStats(Class<?> entity) {
+        return app.given()
+                .pathParam("region", entity.getName())
+                .get("/weighted-cache/region/{region}")
+                .then().statusCode(HttpStatus.SC_OK)
+                .extract().as(RegionStats.class);
     }
 
     @Test
