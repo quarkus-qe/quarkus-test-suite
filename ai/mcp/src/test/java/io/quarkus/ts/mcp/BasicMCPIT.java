@@ -49,6 +49,7 @@ public abstract class BasicMCPIT {
     }
 
     @Test
+    @Disabled("Mostly caused by https://github.com/quarkiverse/quarkus-mcp-server/pull/1080")
     public void readTemplatedResource() throws InterruptedException {
         Response response = client().given().get("/mcp/resources/readFile/robot-readable.txt");
         Assertions.assertEquals(200, response.statusCode());
