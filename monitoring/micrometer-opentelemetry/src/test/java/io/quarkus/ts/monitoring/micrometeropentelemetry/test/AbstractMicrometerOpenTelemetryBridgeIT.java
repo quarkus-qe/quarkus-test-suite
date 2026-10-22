@@ -127,17 +127,15 @@ public abstract class AbstractMicrometerOpenTelemetryBridgeIT {
         app.given().queryParam("fail", true).get("/micrometer/counted-failures").then().statusCode(500);
         app.given().get("/micrometer/counted-failures").then().statusCode(200).body(is("hello from counted method"));
 
-        AwaitilityUtils.untilAsserted(() -> {
-            double sum = queryPrometheusAndWaitForMetrics("my_timed_method_seconds_sum").extract().jsonPath()
-                    .getDouble("data.result.value.flatten().get(1)");
-            Assertions.assertTrue(sum >= 1.3, "The 'my_timed_method_seconds_sum' metric should "
-                    + "record at least 1.3 seconds as the method was executed for 1.3 seconds, but was "
-                    + sum);
-            queryPrometheusAndWaitForMetrics("my_timed_method_seconds_count").body("data.result.value.flatten()",
-                    hasItems("1"));
-        });
-        AwaitilityUtils.untilAsserted(() -> queryPrometheusAndWaitForMetrics("counted_total")
-                .body("data.result.value.flatten()", hasItems("1")));
+        double sum = queryPrometheusAndWaitForMetrics("my_timed_method_seconds_sum").extract().jsonPath()
+                .getDouble("data.result.value.flatten().get(1)");
+        Assertions.assertTrue(sum >= 1.3, "The 'my_timed_method_seconds_sum' metric should "
+                + "record at least 1.3 seconds as the method was executed for 1.3 seconds, but was "
+                + sum);
+        queryPrometheusAndWaitForMetrics("my_timed_method_seconds_count").body("data.result.value.flatten()",
+                hasItems("1"));
+        queryPrometheusAndWaitForMetrics("counted_total")
+                .body("data.result.value.flatten()", hasItems("1"));
 
         // basically this only checks that these metrics are there as declared
         var body = queryPrometheusAndWaitForMetrics("{__name__=~\".+\"}").extract().body().asPrettyString();
@@ -192,12 +190,9 @@ public abstract class AbstractMicrometerOpenTelemetryBridgeIT {
                 .post("/micrometer/echo-bytes")
                 .then().statusCode(200)
                 .body(Matchers.notNullValue());
-        AwaitilityUtils.untilAsserted(() -> queryPrometheusAndWaitForMetrics("http_server_bytes_read_sum")
-                .body("data.result.value.flatten()", hasItems(String.valueOf(payload.length))));
-        // one call to the "echo-bytes", but this can change if order of methods changed or additions as it is
-        // a global metric
-        AwaitilityUtils.untilAsserted(() -> queryPrometheusAndWaitForMetrics("http_server_bytes_read_count")
-                .body("data.result.value.flatten()", hasItems("1")));
+        // In Quarkus 4, http_server_bytes_read is a gauge (max only), not a distribution summary.
+        // The _sum and _count variants no longer exist — verify the max gauge was recorded.
+        queryPrometheusAndWaitForMetrics("http_server_bytes_read_max");
     }
 
     @Test
