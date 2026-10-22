@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.util.List;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -18,6 +19,7 @@ import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 
 @Tag("QUARKUS-2788")
+@Disabled("https://redhat.atlassian.net/browse/QUARKUS-9648")
 @QuarkusScenario
 public class OpenAPIIT extends AbstractDbIT {
     @Test
