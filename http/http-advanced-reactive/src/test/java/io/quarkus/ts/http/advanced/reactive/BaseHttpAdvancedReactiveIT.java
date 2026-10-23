@@ -314,7 +314,8 @@ public abstract class BaseHttpAdvancedReactiveIT {
     @DisplayName("Jakarta REST Response Content type test")
     @Test
     public void responseContentType() {
-        testResponseContentType(APPLICATION_JSON, APPLICATION_JSON + UTF_8_CHARSET);
+        // JSON no longer includes charset=UTF-8 per RFC 8259 (see Quarkus PR #56715)
+        testResponseContentType(APPLICATION_JSON, APPLICATION_JSON);
         testResponseContentType(APPLICATION_XML, APPLICATION_XML + UTF_8_CHARSET);
         testResponseContentType(APPLICATION_YAML, APPLICATION_YAML + UTF_8_CHARSET);
         testResponseContentType(TEXT_HTML, TEXT_HTML + UTF_8_CHARSET);
