@@ -2,9 +2,7 @@ package io.quarkus.ts.mcp;
 
 import java.util.List;
 
-import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -15,6 +13,12 @@ public abstract class BasicMCPIT {
     public abstract RequestSpecification client();
 
     public abstract RestService app();
+
+    @Test
+    public void protocolRevision() {
+        client().get("/mcp/tools").then().statusCode(200);
+        ProtocolAssertions.assertNegotiated(app(), "2025-11-25", 1);
+    }
 
     @Test
     public void tools() {
@@ -110,18 +114,4 @@ public abstract class BasicMCPIT {
         Assertions.assertEquals("This tool will create a new tool named 'hammer'", usage.body().asString());
     }
 
-    @Test
-    @Disabled("https://github.com/quarkus-qe/quarkus-test-suite/issues/3130")
-    public void roots() {
-        Response before = client().given().get("/mcp/roots");
-        Assertions.assertEquals(200, before.statusCode());
-        Assertions.assertEquals("No roots found", before.body().asString());
-
-        Response change = client().given().post("/mcp/roots");
-        Assertions.assertEquals(HttpStatus.SC_NO_CONTENT, change.statusCode());
-
-        Response after = client().given().get("/mcp/roots");
-        Assertions.assertEquals(200, after.statusCode());
-        Assertions.assertEquals("first (example.com)", after.body().asString());
-    }
 }
