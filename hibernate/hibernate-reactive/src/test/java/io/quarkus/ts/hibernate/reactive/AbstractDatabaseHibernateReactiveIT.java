@@ -57,6 +57,10 @@ public abstract class AbstractDatabaseHibernateReactiveIT {
                 .statusCode(HttpStatus.SC_NOT_FOUND);
     }
 
+    // TODO Quarkus 4: Hibernate Reactive StatelessSession.insert() fails with @GenericGenerator(type = ...)
+    // because GenericGeneratorGeneration wrapper is not unwrapped for ReactiveIdentifierGenerator check.
+    // Fix: https://github.com/hibernate/hibernate-reactive/pull/4322
+    @Disabled("TODO Quarkus 4: Hibernate Reactive GenericGeneratorGeneration unwrapping - https://github.com/hibernate/hibernate-reactive/pull/4322")
     @Test
     @Order(4)
     public void createAuthorWithoutPanache() {
