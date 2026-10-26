@@ -9,13 +9,17 @@ import io.quarkus.ts.mcp.app.AdvancedServer;
 import io.quarkus.ts.mcp.app.FileServer;
 import io.quarkus.ts.mcp.app.MCPClient;
 import io.quarkus.ts.mcp.app.MyResources;
+import io.quarkus.ts.mcp.app.ProtocolObservationsResource;
+import io.quarkus.ts.mcp.app.ProtocolObserver;
 import io.restassured.specification.RequestSpecification;
 
 @OpenShiftScenario
 public class OpenShiftStatelessHttpIT extends StatelessStreamingHTTPIT {
     @QuarkusApplication(boms = { @Dependency(artifactId = "quarkus-mcp-server-bom") }, dependencies = {
+            @Dependency(artifactId = "quarkus-rest"),
             @Dependency(groupId = "io.quarkiverse.mcp", artifactId = "quarkus-mcp-server-http")
-    }, classes = { FileServer.class, MyResources.class, AdvancedServer.class })
+    }, classes = { FileServer.class, ProtocolObserver.class, ProtocolObservationsResource.class, MyResources.class,
+            AdvancedServer.class })
     static final RestService server = new RestService()
             .withProperty("_ignored", "resource_with_destination::/deployments|robot-readable.txt")
             .withProperty("working.folder", "/deployments");
@@ -27,8 +31,6 @@ public class OpenShiftStatelessHttpIT extends StatelessStreamingHTTPIT {
             }, classes = { MCPClient.class })
     static final RestService client = new RestService()
             .withProperty("quarkus.langchain4j.mcp.filesystem.protocol-version", "2026-07-28")
-            .withProperty("quarkus.langchain4j.mcp.filesystem.log-responses", "true")
-            .withProperty("quarkus.langchain4j.mcp.filesystem.log-requests", "true")
             .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "streamable-http")
             // todo remove the line below when https://github.com/quarkiverse/quarkus-langchain4j/issues/2159 is fixed
             .withProperty("quarkus.langchain4j.mcp.filesystem.cache-tool-list", "false")
@@ -41,8 +43,6 @@ public class OpenShiftStatelessHttpIT extends StatelessStreamingHTTPIT {
                     @Dependency(groupId = "io.quarkiverse.langchain4j", artifactId = "quarkus-langchain4j-mcp"),
             }, classes = { MCPClient.class })
     static final RestService automaticClient = new RestService()
-            .withProperty("quarkus.langchain4j.mcp.filesystem.log-responses", "true")
-            .withProperty("quarkus.langchain4j.mcp.filesystem.log-requests", "true")
             .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "streamable-http")
             // todo remove the line below when https://github.com/quarkiverse/quarkus-langchain4j/issues/2159 is fixed
             .withProperty("quarkus.langchain4j.mcp.filesystem.cache-tool-list", "false")

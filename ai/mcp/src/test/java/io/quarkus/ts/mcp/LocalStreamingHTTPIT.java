@@ -23,14 +23,17 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.mcp.app.FileServer;
 import io.quarkus.ts.mcp.app.MCPClient;
 import io.quarkus.ts.mcp.app.MyResources;
+import io.quarkus.ts.mcp.app.ProtocolObservationsResource;
+import io.quarkus.ts.mcp.app.ProtocolObserver;
 import io.restassured.specification.RequestSpecification;
+import io.vertx.core.json.JsonObject;
 
 @QuarkusScenario
 public class LocalStreamingHTTPIT extends StatefulMCPIT {
     @QuarkusApplication(boms = { @Dependency(artifactId = "quarkus-mcp-server-bom") }, dependencies = {
             @Dependency(artifactId = "quarkus-rest"),
             @Dependency(groupId = "io.quarkiverse.mcp", artifactId = "quarkus-mcp-server-http")
-    }, classes = { FileServer.class, MyResources.class })
+    }, classes = { FileServer.class, ProtocolObserver.class, ProtocolObservationsResource.class, MyResources.class })
     static final RestService server = new RestService()
             .withProperty("working.folder", () -> getFileFolder(LocalStreamingHTTPIT.class));
 
@@ -41,8 +44,6 @@ public class LocalStreamingHTTPIT extends StatefulMCPIT {
             }, classes = { MCPClient.class })
     static final RestService client = new RestService()
             .withProperty("quarkus.langchain4j.mcp.filesystem.protocol-version", "2025-11-25")
-            .withProperty("quarkus.langchain4j.mcp.filesystem.log-responses", "true")
-            .withProperty("quarkus.langchain4j.mcp.filesystem.log-requests", "true")
             .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "streamable-http")
             // todo remove the line below when https://github.com/quarkiverse/quarkus-langchain4j/issues/2159 is fixed
             .withProperty("quarkus.langchain4j.mcp.filesystem.cache-tool-list", "false")
@@ -112,4 +113,10 @@ public class LocalStreamingHTTPIT extends StatefulMCPIT {
             Assertions.assertEquals("Hello, AI!", text.text());
         }
     }
+
+    @Override
+    protected List<JsonObject> protocolObservations() {
+        return ProtocolAssertions.observations(serverApp());
+    }
+
 }
