@@ -17,6 +17,8 @@ import io.quarkiverse.mcp.server.PromptArg;
 import io.quarkiverse.mcp.server.PromptMessage;
 import io.quarkiverse.mcp.server.Sampling;
 import io.quarkiverse.mcp.server.SamplingMessage;
+import io.quarkiverse.mcp.server.SamplingRequest;
+import io.quarkiverse.mcp.server.SamplingResponse;
 import io.quarkiverse.mcp.server.TextContent;
 import io.quarkiverse.mcp.server.Tool;
 import io.quarkus.runtime.Startup;
@@ -31,7 +33,7 @@ public class AdvancedServer {
             return Uni.createFrom().item("Sampling not supported");
         }
 
-        var request = sampling.requestBuilder()
+        SamplingRequest request = sampling.requestBuilder()
                 .setMaxTokens(100)
                 .addMessage(SamplingMessage.withUserRole("An African or European swallow?"))
                 .build();
@@ -44,7 +46,7 @@ public class AdvancedServer {
                 throw new McpException("Unexpected MRTR request state",
                         JsonRpcErrorCodes.INVALID_PARAMS);
             }
-            var response = sampling.inputResponses().getSamplingResponse("answer");
+            SamplingResponse response = sampling.inputResponses().getSamplingResponse("answer");
             return Uni.createFrom().item("The answer to \"%s\" is \"%s\""
                     .formatted(question, response.content().asText().text()));
         }

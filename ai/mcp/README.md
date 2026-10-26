@@ -4,7 +4,8 @@ Tests MCP server features using Streamable HTTP, stdio and WebSocket. HTTP and
 stdio are standard MCP transports; WebSocket is a Quarkus extension.
 
 The existing scenarios use `2025-11-25`. The `Stateless*IT` scenarios use
-`2026-07-28`. Tests check the revision in client traffic or initialization results.
+`2026-07-28`. Tests check actual protocol use through server observations or client initialization
+results; stdio forwards compact observations through stderr.
 
 - LangChain4j clients test tools, resources, prompts and dynamic tool changes.
 - McpAssured tests the server directly, including pagination, icons, notifications,

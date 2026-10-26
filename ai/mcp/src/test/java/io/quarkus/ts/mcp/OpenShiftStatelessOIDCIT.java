@@ -35,22 +35,6 @@ import io.vertx.core.json.JsonObject;
 @OpenShiftScenario
 public class OpenShiftStatelessOIDCIT extends BasicMCPIT {
 
-    @Override
-    @Test
-    public void protocolRevision() {
-        client().get("/mcp/tools").then().statusCode(200);
-        ProtocolAssertions.assertStateless(this::protocolObservations, "2026-07-28");
-    }
-
-    @Override
-    @Test
-    public void readTemplatedResource() {
-        client().get("/mcp/resources/readFile/robot-readable.txt").then().statusCode(200)
-                .body(Matchers.equalTo("Hello, AI!"));
-        ProtocolAssertions.assertStateless(this::protocolObservations, "2026-07-28");
-        // Logging opt-in and delivery are verified per request by the direct transport suite.
-    }
-
     @KeycloakContainer(runKeycloakInProdMode = true, image = "${rhbk.image}")
     static final KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
 
@@ -86,6 +70,22 @@ public class OpenShiftStatelessOIDCIT extends BasicMCPIT {
                     () -> server.getURI(Protocol.HTTP).withPath("/mcp").toString());
 
     private AuthzClient authzClient;
+
+    @Override
+    @Test
+    public void protocolRevision() {
+        client().get("/mcp/tools").then().statusCode(200);
+        ProtocolAssertions.assertStateless(this::protocolObservations, "2026-07-28");
+    }
+
+    @Override
+    @Test
+    public void readTemplatedResource() {
+        client().get("/mcp/resources/readFile/robot-readable.txt").then().statusCode(200)
+                .body(Matchers.equalTo("Hello, AI!"));
+        ProtocolAssertions.assertStateless(this::protocolObservations, "2026-07-28");
+        // Logging opt-in and delivery are verified per request by the direct transport suite.
+    }
 
     @BeforeEach
     public void setup() {

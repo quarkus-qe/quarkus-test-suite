@@ -91,6 +91,7 @@ public class FileServer {
                     };
                 })
                 .register();
+        // Rendering this prompt returns instructions without executing the described operation.
         this.promptManager.newPrompt("meta")
                 .setDescription("Does operations on other tools")
                 .addArgument("operation", "what should it do", true, "create")

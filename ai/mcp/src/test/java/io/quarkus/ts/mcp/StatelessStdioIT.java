@@ -67,7 +67,8 @@ public class StatelessStdioIT extends StatelessAdvancedMCPIT {
         return McpAssured.newStdioClient()
                 .setCommand("java", "-Dworking.folder=" + getFileFolder(StatelessStdioIT.class), "-jar", getJarPath(server))
                 .setWorkingDirectory(server.getServiceFolder().toAbsolutePath())
-                .setProtocolVersion(McpProtocolVersion.from(REVISION)).setClientCapabilities(CLIENT_CAPABILITIES)
+                .setProtocolVersion(McpProtocolVersion.from(STATELESS_PROTOCOL_VERSION))
+                .setClientCapabilities(CLIENT_CAPABILITIES)
                 .build().connect();
     }
 

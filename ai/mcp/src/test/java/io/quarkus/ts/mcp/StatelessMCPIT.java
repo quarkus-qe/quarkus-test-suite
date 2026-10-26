@@ -23,7 +23,7 @@ import io.vertx.core.json.JsonObject;
  * operations directly with McpAssured across HTTP, WebSocket and stdio.
  */
 public abstract class StatelessMCPIT extends BasicMCPIT {
-    static final String REVISION = "2026-07-28";
+    static final String STATELESS_PROTOCOL_VERSION = "2026-07-28";
 
     static final List<String> ADVERTISED_REVISIONS = List.of("2026-07-28", "2025-11-25", "2025-06-18", "2025-03-26",
             "2024-11-05");
@@ -38,7 +38,7 @@ public abstract class StatelessMCPIT extends BasicMCPIT {
     @Test
     public void protocolRevision() {
         client().get("/mcp/tools").then().statusCode(200);
-        ProtocolAssertions.assertStateless(this::protocolObservations, REVISION);
+        ProtocolAssertions.assertStateless(this::protocolObservations, STATELESS_PROTOCOL_VERSION);
     }
 
     @Override
@@ -46,7 +46,7 @@ public abstract class StatelessMCPIT extends BasicMCPIT {
     public void readTemplatedResource() {
         client().get("/mcp/resources/readFile/robot-readable.txt").then().statusCode(200)
                 .body(Matchers.equalTo("Hello, AI!"));
-        ProtocolAssertions.assertStateless(this::protocolObservations, REVISION);
+        ProtocolAssertions.assertStateless(this::protocolObservations, STATELESS_PROTOCOL_VERSION);
         // Logging opt-in and delivery are verified per request by the direct transport suite.
     }
 
