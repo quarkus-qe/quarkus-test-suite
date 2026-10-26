@@ -21,6 +21,7 @@ import io.vertx.core.json.JsonObject;
  * requests, filtered subscriptions, request-scoped progress and logging checks.
  */
 public abstract class StatelessAdvancedMCPIT extends StatelessMCPIT {
+    // Wildcards keep these hooks shared across McpAssured clients with different transport self types.
     protected abstract List<String> serverLogs(McpTestClient<?, ?> protocol);
 
     protected SubscriptionObserver subscribe(McpTestClient<?, ?> protocol, JsonObject request) {
@@ -28,9 +29,9 @@ public abstract class StatelessAdvancedMCPIT extends StatelessMCPIT {
     }
 
     private static void assertSubscriptionNotification(SubscriptionObserver observer, JsonObject notification, String method) {
-        Assertions.assertEquals(method, notification.getString("method"), notification::encode);
+        Assertions.assertEquals(method, notification.getString("method"), "Unexpected notification method");
         Assertions.assertEquals(observer.id(), notification.getJsonObject("params").getJsonObject("_meta")
-                .getValue("io.modelcontextprotocol/subscriptionId"), "Wrong subscription ID: " + notification.encode());
+                .getValue("io.modelcontextprotocol/subscriptionId"), "Unexpected notification subscription ID");
     }
 
     @Test
@@ -47,7 +48,7 @@ public abstract class StatelessAdvancedMCPIT extends StatelessMCPIT {
             // Each stream starts with an acknowledgement; subsequent counts include that first notification.
             JsonObject selectedAck = selected.await(1);
             // Check the common notification envelope here; other checks focus on event kind and routing.
-            Assertions.assertEquals("2.0", selectedAck.getString("jsonrpc"), selectedAck::encode);
+            Assertions.assertEquals("2.0", selectedAck.getString("jsonrpc"), "Unexpected notification JSON-RPC version");
             Assertions.assertFalse(selectedAck.containsKey("id"), selectedAck::encode);
             assertSubscriptionNotification(selected, selectedAck, "notifications/subscriptions/acknowledged");
             Assertions.assertEquals(selectedFilters, selectedAck.getJsonObject("params").getJsonObject("notifications"));
@@ -70,6 +71,7 @@ public abstract class StatelessAdvancedMCPIT extends StatelessMCPIT {
 
             changeFeature(protocol, "tool", "subscription-greeter", "create");
             try {
+                // Selected: acknowledgement + resource update + tool creation.
                 assertSubscriptionNotification(selected, selected.await(3), "notifications/tools/list_changed");
                 List<String> names = toolPages(protocol).stream().flatMap(page -> page.getJsonArray("tools").stream())
                         .map(tool -> ((JsonObject) tool).getString("name")).toList();
@@ -77,6 +79,7 @@ public abstract class StatelessAdvancedMCPIT extends StatelessMCPIT {
             } finally {
                 changeFeature(protocol, "tool", "subscription-greeter", "delete");
             }
+            // Tool deletion is the selected stream's fourth notification.
             assertSubscriptionNotification(selected, selected.await(4), "notifications/tools/list_changed");
             List<String> toolNames = toolPages(protocol).stream().flatMap(page -> page.getJsonArray("tools").stream())
                     .map(tool -> ((JsonObject) tool).getString("name")).toList();
@@ -84,6 +87,7 @@ public abstract class StatelessAdvancedMCPIT extends StatelessMCPIT {
 
             changeFeature(protocol, "prompt", "subscription-prompt", "create");
             try {
+                // Prompt creation is selected's fifth notification and filtered's second, after its acknowledgement.
                 assertSubscriptionNotification(selected, selected.await(5), "notifications/prompts/list_changed");
                 assertSubscriptionNotification(filtered, filtered.await(2), "notifications/prompts/list_changed");
                 JsonObject response = exchange(protocol, message(protocol, "prompts/list", new JsonObject()));
@@ -93,6 +97,7 @@ public abstract class StatelessAdvancedMCPIT extends StatelessMCPIT {
             } finally {
                 changeFeature(protocol, "prompt", "subscription-prompt", "delete");
             }
+            // Prompt deletion adds one notification to each stream: selected six, filtered three.
             assertSubscriptionNotification(selected, selected.await(6), "notifications/prompts/list_changed");
             assertSubscriptionNotification(filtered, filtered.await(3), "notifications/prompts/list_changed");
             JsonObject response = exchange(protocol, message(protocol, "prompts/list", new JsonObject()));
@@ -126,7 +131,8 @@ public abstract class StatelessAdvancedMCPIT extends StatelessMCPIT {
     }
 
     @Test
-    public void samplingMrtr() {
+    public void samplingMultiRoundTrip() {
+        // Multi-round-trip requests return the required client input, then resume with its response and request state.
         String question = "What is the airspeed velocity of unladen swallow?";
         try (McpTestClient<?, ?> protocol = protocolClient()) {
             JsonObject params = call("sampled", new JsonObject().put("question", question));
@@ -160,7 +166,8 @@ public abstract class StatelessAdvancedMCPIT extends StatelessMCPIT {
     }
 
     @Test
-    public void formElicitationMrtr() {
+    public void formElicitationMultiRoundTrip() {
+        // The client supplies form input in a retry instead of answering an elicitation callback.
         try (McpTestClient<?, ?> protocol = protocolClient()) {
             JsonObject firstResponse = exchange(protocol,
                     message(protocol, "tools/call", call("elicitation", new JsonObject())));

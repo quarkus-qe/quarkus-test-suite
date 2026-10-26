@@ -82,7 +82,7 @@ public class StatelessStreamingHTTPIT extends StatelessAdvancedMCPIT {
     protected McpTestClient<?, ?> protocolClient() {
         return McpAssured.newStreamableClient()
                 .setBaseUri(URI.create(serverApp().getURI(Protocol.HTTP).toString()))
-                .setProtocolVersion(McpProtocolVersion.from(REVISION))
+                .setProtocolVersion(McpProtocolVersion.from(STATELESS_PROTOCOL_VERSION))
                 .setClientCapabilities(CLIENT_CAPABILITIES)
                 .build().connect();
     }
@@ -92,7 +92,7 @@ public class StatelessStreamingHTTPIT extends StatelessAdvancedMCPIT {
         // The unpinned LangChain4j client must select the newer revision and complete a file read.
         automaticApp().given().body("robot-readable.txt").post("/mcp/tools/readFile").then().statusCode(200)
                 .body(Matchers.equalTo("Hello, AI!"));
-        ProtocolAssertions.assertStateless(() -> ProtocolAssertions.observations(serverApp()), REVISION);
+        ProtocolAssertions.assertStateless(() -> ProtocolAssertions.observations(serverApp()), STATELESS_PROTOCOL_VERSION);
     }
 
     @Test
@@ -104,7 +104,7 @@ public class StatelessStreamingHTTPIT extends StatelessAdvancedMCPIT {
                     .setProtocolVersion(McpProtocolVersion.from(revision)).build().connect()) {
                 try {
                     // Newer discovery creates no session; older initialization negotiates a revision and session.
-                    if (REVISION.equals(revision)) {
+                    if (STATELESS_PROTOCOL_VERSION.equals(revision)) {
                         Assertions.assertNull(protocol.initResult().protocolVersion());
                         Assertions.assertNull(protocol.mcpSessionId());
                     } else {
@@ -116,7 +116,7 @@ public class StatelessStreamingHTTPIT extends StatelessAdvancedMCPIT {
                         Assertions.assertEquals("Hello, AI!", response.firstContent().asText().text());
                     }).thenAssertResults();
                 } finally {
-                    if (!REVISION.equals(revision)) {
+                    if (!STATELESS_PROTOCOL_VERSION.equals(revision)) {
                         // Terminate each older session and verify that the server no longer accepts it.
                         String sessionId = protocol.mcpSessionId();
                         protocol.terminateSession();
@@ -131,7 +131,8 @@ public class StatelessStreamingHTTPIT extends StatelessAdvancedMCPIT {
     @Test
     public void discoveryWithoutSession() {
         JsonObject discover = rawMessage("server/discover", new JsonObject());
-        Response response = rawPost(discover, Map.of("MCP-Protocol-Version", REVISION, "Mcp-Method", "server/discover"));
+        Response response = rawPost(discover,
+                Map.of("MCP-Protocol-Version", STATELESS_PROTOCOL_VERSION, "Mcp-Method", "server/discover"));
         response.then().statusCode(200);
         Assertions.assertNull(response.header("Mcp-Session-Id"));
         Assertions.assertNotNull(new JsonObject(response.asString()).getJsonObject("result"), response::asString);
@@ -140,14 +141,15 @@ public class StatelessStreamingHTTPIT extends StatelessAdvancedMCPIT {
     @Test
     public void formerSessionLifecycle() {
         // Newer HTTP has neither the older GET stream nor DELETE session lifecycle.
-        serverApp().given().header("MCP-Protocol-Version", REVISION).get("/mcp").then().statusCode(405);
-        serverApp().given().header("MCP-Protocol-Version", REVISION).delete("/mcp").then().statusCode(405);
+        serverApp().given().header("MCP-Protocol-Version", STATELESS_PROTOCOL_VERSION).get("/mcp").then().statusCode(405);
+        serverApp().given().header("MCP-Protocol-Version", STATELESS_PROTOCOL_VERSION).delete("/mcp").then().statusCode(405);
     }
 
     @Test
     public void requiredHttpHeaders() {
         JsonObject request = rawMessage("tools/call", call("filereader", new JsonObject().put("file", "robot-readable.txt")));
-        Map<String, String> headers = Map.of("MCP-Protocol-Version", REVISION, "Mcp-Method", "tools/call", "Mcp-Name",
+        Map<String, String> headers = Map.of("MCP-Protocol-Version", STATELESS_PROTOCOL_VERSION, "Mcp-Method", "tools/call",
+                "Mcp-Name",
                 "filereader");
         Map<String, String> missingRevision = new HashMap<>(headers);
         missingRevision.remove("MCP-Protocol-Version");
@@ -181,7 +183,8 @@ public class StatelessStreamingHTTPIT extends StatelessAdvancedMCPIT {
         for (String key : List.of("io.modelcontextprotocol/protocolVersion", "io.modelcontextprotocol/clientCapabilities")) {
             JsonObject missing = rawMessage("server/discover", new JsonObject());
             missing.getJsonObject("params").getJsonObject("_meta").remove(key);
-            Response response = rawPost(missing, Map.of("MCP-Protocol-Version", REVISION, "Mcp-Method", "server/discover"));
+            Response response = rawPost(missing,
+                    Map.of("MCP-Protocol-Version", STATELESS_PROTOCOL_VERSION, "Mcp-Method", "server/discover"));
             response.then().statusCode(400);
             JsonObject error = new JsonObject(response.asString());
             Assertions.assertEquals(missing.getValue("id"), error.getValue("id"));
@@ -191,8 +194,9 @@ public class StatelessStreamingHTTPIT extends StatelessAdvancedMCPIT {
 
     @Test
     public void removedInitialize() {
-        JsonObject removed = rawMessage("initialize", new JsonObject().put("protocolVersion", REVISION));
-        Response response = rawPost(removed, Map.of("MCP-Protocol-Version", REVISION, "Mcp-Method", "initialize"));
+        JsonObject removed = rawMessage("initialize", new JsonObject().put("protocolVersion", STATELESS_PROTOCOL_VERSION));
+        Response response = rawPost(removed,
+                Map.of("MCP-Protocol-Version", STATELESS_PROTOCOL_VERSION, "Mcp-Method", "initialize"));
         // TODO: Intentionally not checking returned status code - should be 404 but is 200
         // See https://github.com/quarkiverse/quarkus-mcp-server/issues/1081
         assertError(new JsonObject(response.asString()), -32601, "initialize");
