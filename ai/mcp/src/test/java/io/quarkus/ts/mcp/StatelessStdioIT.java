@@ -35,9 +35,9 @@ public class StatelessStdioIT extends StatelessAdvancedMCPIT {
                     @Dependency(groupId = "io.quarkiverse.langchain4j", artifactId = "quarkus-langchain4j-mcp"),
             }, classes = { MCPClient.class })
     static final RestService client = new RestService()
+            .withProperties("mcp-2026-client.properties")
             .withProperty("quarkus.log.category.\"dev.langchain4j.mcp.client.transport.stdio.ProcessStderrHandler\".level",
                     "DEBUG")
-            .withProperty("quarkus.langchain4j.mcp.filesystem.protocol-version", "2026-07-28")
             .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "stdio")
             .withProperty("quarkus.langchain4j.mcp.filesystem.command",
                     () -> "java,-Dqe.mcp.protocol-observer.stderr=true,-Dworking.folder="

@@ -47,10 +47,7 @@ public class StatelessStreamingHTTPIT extends StatelessAdvancedMCPIT {
                     @Dependency(groupId = "io.quarkiverse.langchain4j", artifactId = "quarkus-langchain4j-mcp"),
             }, classes = { MCPClient.class })
     static final RestService client = new RestService()
-            .withProperty("quarkus.langchain4j.mcp.filesystem.protocol-version", "2026-07-28")
-            .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "streamable-http")
-            // todo remove the line below when https://github.com/quarkiverse/quarkus-langchain4j/issues/2159 is fixed
-            .withProperty("quarkus.langchain4j.mcp.filesystem.cache-tool-list", "false")
+            .withProperties("mcp-2026-client.properties", "http-client.properties")
             .withProperty("quarkus.langchain4j.mcp.filesystem.url",
                     () -> server.getURI(Protocol.HTTP).withPath("/mcp").toString());
     @QuarkusApplication(boms = {
@@ -59,9 +56,7 @@ public class StatelessStreamingHTTPIT extends StatelessAdvancedMCPIT {
                     @Dependency(groupId = "io.quarkiverse.langchain4j", artifactId = "quarkus-langchain4j-mcp"),
             }, classes = { MCPClient.class })
     static final RestService automaticClient = new RestService()
-            .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "streamable-http")
-            // todo remove the line below when https://github.com/quarkiverse/quarkus-langchain4j/issues/2159 is fixed
-            .withProperty("quarkus.langchain4j.mcp.filesystem.cache-tool-list", "false")
+            .withProperties("http-client.properties")
             .withProperty("quarkus.langchain4j.mcp.filesystem.url",
                     () -> server.getURI(Protocol.HTTP).withPath("/mcp").toString());
 

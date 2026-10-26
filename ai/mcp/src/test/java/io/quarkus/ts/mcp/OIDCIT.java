@@ -60,14 +60,11 @@ public class OIDCIT extends StatefulMCPIT {
                     @Dependency(groupId = "io.quarkiverse.langchain4j", artifactId = "quarkus-langchain4j-oidc-mcp-auth-provider")
             }, classes = { MCPClient.class }, properties = "client.properties")
     static final RestService client = new RestService()
+            .withProperties("mcp-2025-client.properties", "http-client.properties")
             .withProperties(keycloak::getTlsProperties)
             .withProperty("quarkus.oidc.auth-server-url", () -> keycloak.getRealmUrl())
             .withProperty("quarkus.oidc.client-id", CLIENT_ID_DEFAULT)
             .withProperty("quarkus.oidc.credentials.secret", CLIENT_SECRET_DEFAULT)
-            // Match the existing HTTP workaround for quarkus-langchain4j issue 2159.
-            .withProperty("quarkus.langchain4j.mcp.filesystem.cache-tool-list", "false")
-            .withProperty("quarkus.langchain4j.mcp.filesystem.protocol-version", "2025-11-25")
-            .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "streamable-http")
             .withProperty("quarkus.langchain4j.mcp.filesystem.url",
                     () -> server.getURI(Protocol.HTTP).withPath("/mcp").toString());
     private AuthzClient authzClient;

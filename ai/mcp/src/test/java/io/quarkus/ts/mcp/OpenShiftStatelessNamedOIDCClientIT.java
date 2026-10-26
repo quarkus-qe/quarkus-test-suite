@@ -29,10 +29,10 @@ public class OpenShiftStatelessNamedOIDCClientIT {
     static final String CLIENT_ID_DEFAULT = "test-application-client";
     static final String CLIENT_SECRET_DEFAULT = "test-application-client-secret";
 
-    @KeycloakContainer(runKeycloakInProdMode = true)
+    @KeycloakContainer(runKeycloakInProdMode = true, image = "${rhbk.image}")
     static KeycloakService keycloak1 = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
 
-    @KeycloakContainer(runKeycloakInProdMode = true)
+    @KeycloakContainer(runKeycloakInProdMode = true, image = "${rhbk.image}")
     static KeycloakService keycloak2 = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
 
     @QuarkusApplication(boms = { @Dependency(artifactId = "quarkus-mcp-server-bom") }, dependencies = {
@@ -70,7 +70,8 @@ public class OpenShiftStatelessNamedOIDCClientIT {
                     @Dependency(groupId = "io.quarkiverse.langchain4j", artifactId = "quarkus-langchain4j-mcp"),
                     @Dependency(groupId = "io.quarkiverse.langchain4j", artifactId = "quarkus-langchain4j-oidc-client-mcp-auth-provider")
             }, classes = { MCPClient.class, MinimalEndpoint.class }, properties = "client.properties")
-    static final RestService adminClient = new ClientService(new RestService())
+    static final RestService adminClient = new ClientService(new RestService()
+            .withProperties("mcp-2026-named-client.properties", "http-client.properties"))
             .withClient("provider1")
             .withClient("provider2")
             .get()
@@ -82,13 +83,9 @@ public class OpenShiftStatelessNamedOIDCClientIT {
             .withProperty("quarkus.oidc-client.provider2.grant-options.password.username", ADMIN_USER)
             .withProperty("quarkus.oidc-client.provider2.grant-options.password.password", ADMIN_USER)
             .withProperty("quarkus.langchain4j.mcp.filesystem.oidc-client-name", "provider1")
-            .withProperty("quarkus.langchain4j.mcp.filesystem.cache-tool-list", "false")
-            .withProperty("quarkus.langchain4j.mcp.filesystem.protocol-version", "2026-07-28")
-            .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "streamable-http")
             .withProperty("quarkus.langchain4j.mcp.filesystem.url",
                     () -> server1.getURI(Protocol.HTTP).withPath("/mcp").toString())
             .withProperty("quarkus.langchain4j.mcp.minimal.oidc-client-name", "provider2")
-            .withProperty("quarkus.langchain4j.mcp.minimal.protocol-version", "2026-07-28")
             .withProperty("quarkus.langchain4j.mcp.minimal.transport-type", "streamable-http")
             .withProperty("quarkus.langchain4j.mcp.minimal.url",
                     () -> server2.getURI(Protocol.HTTP).withPath("/mcp").toString());
@@ -99,7 +96,8 @@ public class OpenShiftStatelessNamedOIDCClientIT {
                     @Dependency(groupId = "io.quarkiverse.langchain4j", artifactId = "quarkus-langchain4j-mcp"),
                     @Dependency(groupId = "io.quarkiverse.langchain4j", artifactId = "quarkus-langchain4j-oidc-client-mcp-auth-provider")
             }, classes = { MCPClient.class, MinimalEndpoint.class }, properties = "client.properties")
-    static final RestService userClient = new ClientService(new RestService())
+    static final RestService userClient = new ClientService(new RestService()
+            .withProperties("mcp-2026-named-client.properties", "http-client.properties"))
             .withClient("provider1")
             .withClient("provider2")
             .get()
@@ -111,13 +109,9 @@ public class OpenShiftStatelessNamedOIDCClientIT {
             .withProperty("quarkus.oidc-client.provider2.grant-options.password.username", NORMAL_USER)
             .withProperty("quarkus.oidc-client.provider2.grant-options.password.password", NORMAL_USER)
             .withProperty("quarkus.langchain4j.mcp.filesystem.oidc-client-name", "provider1")
-            .withProperty("quarkus.langchain4j.mcp.filesystem.cache-tool-list", "false")
-            .withProperty("quarkus.langchain4j.mcp.filesystem.protocol-version", "2026-07-28")
-            .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "streamable-http")
             .withProperty("quarkus.langchain4j.mcp.filesystem.url",
                     () -> server1.getURI(Protocol.HTTP).withPath("/mcp").toString())
             .withProperty("quarkus.langchain4j.mcp.minimal.oidc-client-name", "provider2")
-            .withProperty("quarkus.langchain4j.mcp.minimal.protocol-version", "2026-07-28")
             .withProperty("quarkus.langchain4j.mcp.minimal.transport-type", "streamable-http")
             .withProperty("quarkus.langchain4j.mcp.minimal.url",
                     () -> server2.getURI(Protocol.HTTP).withPath("/mcp").toString());
