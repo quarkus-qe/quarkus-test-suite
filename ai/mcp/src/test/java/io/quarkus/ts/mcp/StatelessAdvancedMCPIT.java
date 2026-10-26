@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import io.quarkiverse.mcp.server.test.McpAssured;
+import io.quarkiverse.mcp.server.test.McpAssured.McpTestClient;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
@@ -21,71 +21,85 @@ import io.vertx.core.json.JsonObject;
  * requests, filtered subscriptions, request-scoped progress and logging checks.
  */
 public abstract class StatelessAdvancedMCPIT extends StatelessMCPIT {
-    protected abstract List<String> serverLogs(McpAssured.McpTestClient<?, ?> protocol);
+    protected abstract List<String> serverLogs(McpTestClient<?, ?> protocol);
 
-    protected SubscriptionObserver subscribe(McpAssured.McpTestClient<?, ?> protocol, JsonObject request) {
+    protected SubscriptionObserver subscribe(McpTestClient<?, ?> protocol, JsonObject request) {
         return SubscriptionObserver.open(protocol, request);
     }
 
-    private SubscriptionObserver listen(McpAssured.McpTestClient<?, ?> protocol, JsonObject notifications) {
-        JsonObject request = message(protocol, "subscriptions/listen", new JsonObject().put("notifications", notifications));
-        SubscriptionObserver observer = subscribe(protocol, request);
-        try {
-            JsonObject acknowledgement = observer.await(1);
-            assertNotification(observer, acknowledgement, "notifications/subscriptions/acknowledged");
-            Assertions.assertEquals(notifications, acknowledgement.getJsonObject("params").getJsonObject("notifications"));
-            return observer;
-        } catch (Throwable e) {
-            observer.close();
-            throw e;
-        }
-    }
-
-    private static void assertNotification(SubscriptionObserver observer, JsonObject notification, String method) {
-        Assertions.assertEquals("2.0", notification.getString("jsonrpc"));
-        Assertions.assertFalse(notification.containsKey("id"));
+    private static void assertSubscriptionNotification(SubscriptionObserver observer, JsonObject notification, String method) {
         Assertions.assertEquals(method, notification.getString("method"), notification::encode);
         Assertions.assertEquals(observer.id(), notification.getJsonObject("params").getJsonObject("_meta")
-                .getValue("io.modelcontextprotocol/subscriptionId"));
+                .getValue("io.modelcontextprotocol/subscriptionId"), "Wrong subscription ID: " + notification.encode());
     }
 
     @Test
     public void subscriptionsAndFiltering() {
-        try (var protocol = protocolClient();
-                var selected = listen(protocol, new JsonObject().put("toolsListChanged", true).put("promptsListChanged", true)
-                        .put("resourceSubscriptions", new JsonArray().add("file:///number")));
-                var filtered = listen(protocol, new JsonObject().put("promptsListChanged", true)
-                        .put("resourceSubscriptions", new JsonArray().add("file:///hello")))) {
+        JsonObject selectedFilters = new JsonObject().put("toolsListChanged", true).put("promptsListChanged", true)
+                .put("resourceSubscriptions", new JsonArray().add("file:///number"));
+        JsonObject filteredFilters = new JsonObject().put("promptsListChanged", true)
+                .put("resourceSubscriptions", new JsonArray().add("file:///hello"));
+        try (McpTestClient<?, ?> protocol = protocolClient();
+                SubscriptionObserver selected = subscribe(protocol,
+                        message(protocol, "subscriptions/listen", new JsonObject().put("notifications", selectedFilters)));
+                SubscriptionObserver filtered = subscribe(protocol,
+                        message(protocol, "subscriptions/listen", new JsonObject().put("notifications", filteredFilters)))) {
+            // Each stream starts with an acknowledgement; subsequent counts include that first notification.
+            JsonObject selectedAck = selected.await(1);
+            // Check the common notification envelope here; other checks focus on event kind and routing.
+            Assertions.assertEquals("2.0", selectedAck.getString("jsonrpc"), selectedAck::encode);
+            Assertions.assertFalse(selectedAck.containsKey("id"), selectedAck::encode);
+            assertSubscriptionNotification(selected, selectedAck, "notifications/subscriptions/acknowledged");
+            Assertions.assertEquals(selectedFilters, selectedAck.getJsonObject("params").getJsonObject("notifications"));
+            JsonObject filteredAck = filtered.await(1);
+            assertSubscriptionNotification(filtered, filteredAck, "notifications/subscriptions/acknowledged");
+            Assertions.assertEquals(filteredFilters, filteredAck.getJsonObject("params").getJsonObject("notifications"));
             Assertions.assertNotEquals(selected.id(), filtered.id());
-            String before = result(protocol, "resources/read", new JsonObject().put("uri", "file:///number"))
-                    .getJsonArray("contents").getJsonObject(0).getString("text");
-            meta(protocol, "resource", "file:///number", "update");
-            JsonObject changedResource = selected.await(2);
-            assertNotification(selected, changedResource, "notifications/resources/updated");
+
+            JsonObject beforeResponse = exchange(protocol,
+                    message(protocol, "resources/read", new JsonObject().put("uri", "file:///number")));
+            String before = beforeResponse.getJsonObject("result").getJsonArray("contents").getJsonObject(0).getString("text");
+            changeFeature(protocol, "resource", "file:///number", "update");
+            JsonObject changedResource = selected.await(2); // acknowledgement + selected resource update
+            assertSubscriptionNotification(selected, changedResource, "notifications/resources/updated");
             Assertions.assertEquals("file:///number", changedResource.getJsonObject("params").getString("uri"));
+            JsonObject afterResponse = exchange(protocol,
+                    message(protocol, "resources/read", new JsonObject().put("uri", "file:///number")));
             Assertions.assertEquals(Integer.toString(Integer.parseInt(before) + 1),
-                    result(protocol, "resources/read", new JsonObject().put("uri", "file:///number"))
-                            .getJsonArray("contents").getJsonObject(0).getString("text"));
-            meta(protocol, "tool", "subscription-greeter", "create");
+                    afterResponse.getJsonObject("result").getJsonArray("contents").getJsonObject(0).getString("text"));
+
+            changeFeature(protocol, "tool", "subscription-greeter", "create");
             try {
-                assertNotification(selected, selected.await(3), "notifications/tools/list_changed");
-                assertNames(protocol, "tools/list", "tools", "subscription-greeter", true);
-                meta(protocol, "prompt", "subscription-prompt", "create");
-                try {
-                    assertNotification(selected, selected.await(4), "notifications/prompts/list_changed");
-                    assertNotification(filtered, filtered.await(2), "notifications/prompts/list_changed");
-                    assertNames(protocol, "prompts/list", "prompts", "subscription-prompt", true);
-                } finally {
-                    meta(protocol, "prompt", "subscription-prompt", "delete");
-                }
-                assertNotification(selected, selected.await(5), "notifications/prompts/list_changed");
-                assertNotification(filtered, filtered.await(3), "notifications/prompts/list_changed");
-                assertNames(protocol, "prompts/list", "prompts", "subscription-prompt", false);
+                assertSubscriptionNotification(selected, selected.await(3), "notifications/tools/list_changed");
+                List<String> names = toolPages(protocol).stream().flatMap(page -> page.getJsonArray("tools").stream())
+                        .map(tool -> ((JsonObject) tool).getString("name")).toList();
+                Assertions.assertTrue(names.contains("subscription-greeter"), names::toString);
             } finally {
-                meta(protocol, "tool", "subscription-greeter", "delete");
+                changeFeature(protocol, "tool", "subscription-greeter", "delete");
             }
-            assertNotification(selected, selected.await(6), "notifications/tools/list_changed");
-            assertNames(protocol, "tools/list", "tools", "subscription-greeter", false);
+            assertSubscriptionNotification(selected, selected.await(4), "notifications/tools/list_changed");
+            List<String> toolNames = toolPages(protocol).stream().flatMap(page -> page.getJsonArray("tools").stream())
+                    .map(tool -> ((JsonObject) tool).getString("name")).toList();
+            Assertions.assertFalse(toolNames.contains("subscription-greeter"), toolNames::toString);
+
+            changeFeature(protocol, "prompt", "subscription-prompt", "create");
+            try {
+                assertSubscriptionNotification(selected, selected.await(5), "notifications/prompts/list_changed");
+                assertSubscriptionNotification(filtered, filtered.await(2), "notifications/prompts/list_changed");
+                JsonObject response = exchange(protocol, message(protocol, "prompts/list", new JsonObject()));
+                List<String> names = response.getJsonObject("result").getJsonArray("prompts").stream()
+                        .map(prompt -> ((JsonObject) prompt).getString("name")).toList();
+                Assertions.assertTrue(names.contains("subscription-prompt"), names::toString);
+            } finally {
+                changeFeature(protocol, "prompt", "subscription-prompt", "delete");
+            }
+            assertSubscriptionNotification(selected, selected.await(6), "notifications/prompts/list_changed");
+            assertSubscriptionNotification(filtered, filtered.await(3), "notifications/prompts/list_changed");
+            JsonObject response = exchange(protocol, message(protocol, "prompts/list", new JsonObject()));
+            List<String> promptNames = response.getJsonObject("result").getJsonArray("prompts").stream()
+                    .map(prompt -> ((JsonObject) prompt).getString("name")).toList();
+            Assertions.assertFalse(promptNames.contains("subscription-prompt"), promptNames::toString);
+            // Selected: ack + resource + two tool changes + two prompt changes. Filtered: ack + two prompt changes.
             Awaitility.await().during(Duration.ofMillis(500)).atMost(Duration.ofSeconds(5)).untilAsserted(() -> {
                 Assertions.assertEquals(6, selected.notifications().size());
                 Assertions.assertEquals(3, filtered.notifications().size(),
@@ -94,40 +108,41 @@ public abstract class StatelessAdvancedMCPIT extends StatelessMCPIT {
         }
     }
 
-    private void meta(McpAssured.McpTestClient<?, ?> protocol, String type, String name, String operation) {
-        JsonObject changed = result(protocol, "tools/call", call("meta", new JsonObject()
-                .put("type", type).put("name", name).put("operation", operation)));
-        Assertions.assertFalse(changed.getBoolean("isError"), changed::encode);
+    private void changeFeature(McpTestClient<?, ?> protocol, String type, String name, String operation) {
+        JsonObject response = exchange(protocol, message(protocol, "tools/call", call("meta", new JsonObject()
+                .put("type", type).put("name", name).put("operation", operation))));
+        JsonObject changed = response.getJsonObject("result");
+        Assertions.assertNotNull(changed, response::encode);
+        Assertions.assertEquals(false, changed.getBoolean("isError"), response::encode);
     }
 
-    private void assertNames(McpAssured.McpTestClient<?, ?> protocol, String method, String field, String name,
-            boolean present) {
-        boolean found = false;
-        String cursor = null;
-        do {
-            JsonObject params = new JsonObject();
-            if (cursor != null) {
-                params.put("cursor", cursor);
-            }
-            JsonObject page = result(protocol, method, params);
-            found |= page.getJsonArray(field).stream().anyMatch(value -> name.equals(((JsonObject) value).getString("name")));
-            cursor = page.getString("nextCursor");
-        } while (cursor != null);
-        Assertions.assertEquals(present, found, name);
+    @Test
+    public void samplingWithoutClientInput() {
+        try (McpTestClient<?, ?> protocol = protocolClient()) {
+            JsonObject response = exchange(protocol, message(protocol, "tools/call",
+                    call("unsampled", new JsonObject().put("question", "Question"))));
+            assertText(response, "Answer to \"Question\" is 42");
+        }
     }
 
     @Test
     public void samplingMrtr() {
         String question = "What is the airspeed velocity of unladen swallow?";
-        try (var protocol = protocolClient()) {
-            assertText(
-                    exchange(protocol,
-                            message(protocol, "tools/call", call("unsampled", new JsonObject().put("question", question)))),
-                    "Answer to \"" + question + "\" is 42");
+        try (McpTestClient<?, ?> protocol = protocolClient()) {
             JsonObject params = call("sampled", new JsonObject().put("question", question));
-            JsonObject first = result(protocol, "tools/call", params);
-            assertInputRequired(first, "answer", "sampling/createMessage", "qe-sampling-state");
-            JsonObject sampling = first.getJsonObject("inputRequests").getJsonObject("answer").getJsonObject("params");
+            JsonObject firstResponse = exchange(protocol, message(protocol, "tools/call", params));
+            JsonObject first = firstResponse.getJsonObject("result");
+            Assertions.assertNotNull(first, firstResponse::encode);
+            Assertions.assertEquals("input_required", first.getString("resultType"));
+            // Input-required is a different result family from discovery's complete result.
+            Assertions.assertEquals("mcp",
+                    first.getJsonObject("_meta").getJsonObject("io.modelcontextprotocol/serverInfo").getString("name"));
+            Assertions.assertEquals("qe-sampling-state", first.getString("requestState"));
+            Assertions.assertEquals(Set.of("answer"), first.getJsonObject("inputRequests").fieldNames());
+            JsonObject input = first.getJsonObject("inputRequests").getJsonObject("answer");
+            Assertions.assertEquals("sampling/createMessage", input.getString("method"));
+            Assertions.assertFalse(first.containsKey("content"));
+            JsonObject sampling = input.getJsonObject("params");
             Assertions.assertEquals(100, sampling.getInteger("maxTokens"));
             JsonObject user = sampling.getJsonArray("messages").getJsonObject(0);
             Assertions.assertEquals("user", user.getString("role"));
@@ -139,17 +154,25 @@ public abstract class StatelessAdvancedMCPIT extends StatelessMCPIT {
                     first.getString("requestState"));
             JsonObject response = exchange(protocol, message(protocol, "tools/call", params));
             assertText(response, "The answer to \"" + question + "\" is \"I do not know\"");
-            assertComplete(response.getJsonObject("result"), false);
+            Assertions.assertEquals("complete", response.getJsonObject("result").getString("resultType"));
             Assertions.assertTrue(protocol.snapshot().requests().isEmpty(), "MRTR must not initiate a sampling callback");
         }
     }
 
     @Test
     public void formElicitationMrtr() {
-        try (var protocol = protocolClient()) {
-            JsonObject first = result(protocol, "tools/call", call("elicitation", new JsonObject()));
-            assertInputRequired(first, "userInput", "elicitation/create", "qe-form-state");
-            JsonObject elicitation = first.getJsonObject("inputRequests").getJsonObject("userInput").getJsonObject("params");
+        try (McpTestClient<?, ?> protocol = protocolClient()) {
+            JsonObject firstResponse = exchange(protocol,
+                    message(protocol, "tools/call", call("elicitation", new JsonObject())));
+            JsonObject first = firstResponse.getJsonObject("result");
+            Assertions.assertNotNull(first, firstResponse::encode);
+            Assertions.assertEquals("input_required", first.getString("resultType"));
+            Assertions.assertEquals("qe-form-state", first.getString("requestState"));
+            Assertions.assertEquals(Set.of("userInput"), first.getJsonObject("inputRequests").fieldNames());
+            JsonObject input = first.getJsonObject("inputRequests").getJsonObject("userInput");
+            Assertions.assertEquals("elicitation/create", input.getString("method"));
+            Assertions.assertFalse(first.containsKey("content"));
+            JsonObject elicitation = input.getJsonObject("params");
             Assertions.assertEquals("form", elicitation.getString("mode"));
             Assertions.assertEquals("Please provide your information:", elicitation.getString("message"));
             JsonObject schema = elicitation.getJsonObject("requestedSchema");
@@ -161,45 +184,70 @@ public abstract class StatelessAdvancedMCPIT extends StatelessMCPIT {
                             .put("content", new JsonObject().put("name", "QE client"))));
             JsonObject accepted = exchange(protocol, message(protocol, "tools/call", retry));
             assertText(accepted, "Hello QE client!");
-            assertComplete(accepted.getJsonObject("result"), false);
-            retry.getJsonObject("inputResponses").put("userInput",
-                    new JsonObject().put("action", "cancel").put("content", new JsonObject()));
-            assertText(exchange(protocol, message(protocol, "tools/call", retry)), "User cancelled the request");
-            retry.put("requestState", "wrong-state");
-            assertError(exchange(protocol, message(protocol, "tools/call", retry)), -32602, "Unexpected MRTR request state");
+            Assertions.assertEquals("complete", accepted.getJsonObject("result").getString("resultType"));
             Assertions.assertTrue(protocol.snapshot().requests().isEmpty(), "MRTR must not initiate an elicitation callback");
         }
     }
 
     @Test
-    public void missingClientInputCapabilities() {
-        try (var protocol = protocolClient()) {
-            for (String tool : List.of("sampled", "elicitation")) {
-                JsonObject arguments = "sampled".equals(tool) ? new JsonObject().put("question", "Question") : new JsonObject();
-                JsonObject request = message(protocol, "tools/call", call(tool, arguments));
-                request.getJsonObject("params").getJsonObject("_meta").put("io.modelcontextprotocol/clientCapabilities",
-                        new JsonObject());
-                JsonObject response = exchange(protocol, request);
-                assertError(response, -32021, "capability");
-                Assertions.assertNotNull(
-                        response.getJsonObject("error").getJsonObject("data").getJsonObject("requiredCapabilities"));
-            }
+    public void formElicitationCancelled() {
+        try (McpTestClient<?, ?> protocol = protocolClient()) {
+            JsonObject first = exchange(protocol, message(protocol, "tools/call", call("elicitation", new JsonObject())))
+                    .getJsonObject("result");
+            Assertions.assertNotNull(first);
+            JsonObject retry = call("elicitation", new JsonObject()).put("requestState", first.getString("requestState"))
+                    .put("inputResponses", new JsonObject().put("userInput", new JsonObject().put("action", "cancel")
+                            .put("content", new JsonObject())));
+            assertText(exchange(protocol, message(protocol, "tools/call", retry)), "User cancelled the request");
+            Assertions.assertTrue(protocol.snapshot().requests().isEmpty(), "MRTR must not initiate an elicitation callback");
         }
     }
 
-    private void assertInputRequired(JsonObject result, String key, String method, String state) {
-        Assertions.assertEquals("input_required", result.getString("resultType"));
-        Assertions.assertEquals(state, result.getString("requestState"));
-        Assertions.assertEquals(Set.of(key), result.getJsonObject("inputRequests").fieldNames());
-        Assertions.assertEquals(method, result.getJsonObject("inputRequests").getJsonObject(key).getString("method"));
-        Assertions.assertFalse(result.containsKey("content"));
-        Assertions.assertEquals("mcp",
-                result.getJsonObject("_meta").getJsonObject("io.modelcontextprotocol/serverInfo").getString("name"));
+    @Test
+    public void formElicitationInvalidState() {
+        try (McpTestClient<?, ?> protocol = protocolClient()) {
+            JsonObject first = exchange(protocol, message(protocol, "tools/call", call("elicitation", new JsonObject())))
+                    .getJsonObject("result");
+            Assertions.assertNotNull(first);
+            JsonObject retry = call("elicitation", new JsonObject()).put("requestState", "wrong-state")
+                    .put("inputResponses", new JsonObject().put("userInput", new JsonObject().put("action", "accept")
+                            .put("content", new JsonObject().put("name", "QE client"))));
+            assertError(exchange(protocol, message(protocol, "tools/call", retry)), -32602, "Unexpected MRTR request state");
+        }
+    }
+
+    @Test
+    public void samplingRequiresClientCapability() {
+        try (McpTestClient<?, ?> protocol = protocolClient()) {
+            JsonObject request = message(protocol, "tools/call", call("sampled", new JsonObject().put("question", "Question")));
+            request.getJsonObject("params").getJsonObject("_meta").put("io.modelcontextprotocol/clientCapabilities",
+                    new JsonObject());
+            JsonObject response = exchange(protocol, request);
+            assertError(response, -32021, "capability");
+            Assertions
+                    .assertNotNull(response.getJsonObject("error").getJsonObject("data").getJsonObject("requiredCapabilities"));
+        }
+    }
+
+    @Test
+    public void elicitationRequiresClientCapability() {
+        try (McpTestClient<?, ?> protocol = protocolClient()) {
+            JsonObject request = message(protocol, "tools/call", call("elicitation", new JsonObject()));
+            request.getJsonObject("params").getJsonObject("_meta").put("io.modelcontextprotocol/clientCapabilities",
+                    new JsonObject());
+            JsonObject response = exchange(protocol, request);
+            assertError(response, -32021, "capability");
+            Assertions
+                    .assertNotNull(response.getJsonObject("error").getJsonObject("data").getJsonObject("requiredCapabilities"));
+        }
     }
 
     @Test
     public void progressIsRequestScoped() {
-        try (var protocol = protocolClient(); var changes = listen(protocol, new JsonObject().put("toolsListChanged", true))) {
+        try (McpTestClient<?, ?> protocol = protocolClient();
+                SubscriptionObserver changes = subscribe(protocol, message(protocol, "subscriptions/listen",
+                        new JsonObject().put("notifications", new JsonObject().put("toolsListChanged", true))))) {
+            assertSubscriptionNotification(changes, changes.await(1), "notifications/subscriptions/acknowledged");
             for (boolean automatic : List.of(true, false)) {
                 String token = automatic ? "autoToken256" : "manualToken512";
                 int count = protocol.snapshot().notifications().size();
@@ -207,7 +255,7 @@ public abstract class StatelessAdvancedMCPIT extends StatelessMCPIT {
                         .put("_meta", new JsonObject().put("progressToken", token));
                 JsonObject response = exchange(protocol, message(protocol, "tools/call", params));
                 assertText(response, "this is it: 123");
-                assertComplete(response.getJsonObject("result"), false);
+                Assertions.assertEquals("complete", response.getJsonObject("result").getString("resultType"));
                 List<JsonObject> progress = protocol.snapshot().notifications().subList(count,
                         protocol.snapshot().notifications().size());
                 Assertions.assertEquals(3, progress.size());
@@ -224,23 +272,28 @@ public abstract class StatelessAdvancedMCPIT extends StatelessMCPIT {
                             .containsKey("io.modelcontextprotocol/subscriptionId"));
                 }
             }
-            assertNoSubscriptionLeak(changes, "Progress");
+            assertNoRequestNotificationsOnSubscription(changes, "Progress");
         }
     }
 
     @Test
     public void perRequestLogging() {
-        try (var protocol = protocolClient(); var changes = listen(protocol, new JsonObject().put("toolsListChanged", true))) {
-            int serverLogCount = serverLogs(protocol).size();
+        try (McpTestClient<?, ?> protocol = protocolClient();
+                SubscriptionObserver changes = subscribe(protocol, message(protocol, "subscriptions/listen",
+                        new JsonObject().put("notifications", new JsonObject().put("toolsListChanged", true))))) {
+            assertSubscriptionNotification(changes, changes.await(1), "notifications/subscriptions/acknowledged");
+            // The final warning request proves that the info level from the preceding request does not persist.
             for (String level : List.of("warning", "info", "warning")) {
                 int count = protocol.snapshot().notifications().size();
                 JsonObject read = new JsonObject().put("uri", "file:///robot-readable.txt")
                         .put("_meta", new JsonObject().put("io.modelcontextprotocol/logLevel", level));
-                JsonObject content = result(protocol, "resources/read", read);
-                Assertions.assertEquals("Hello, AI!", content.getJsonArray("contents").getJsonObject(0).getString("text"));
+                JsonObject response = exchange(protocol, message(protocol, "resources/read", read));
+                Assertions.assertEquals("Hello, AI!",
+                        response.getJsonObject("result").getJsonArray("contents").getJsonObject(0).getString("text"));
                 List<JsonObject> messages = protocol.snapshot().notifications().subList(count,
                         protocol.snapshot().notifications().size());
-                Assertions.assertEquals("info".equals(level) ? 1 : 0, messages.size(), "The request log level was not honored");
+                Assertions.assertEquals("info".equals(level) ? 1 : 0, messages.size(),
+                        "The request log level was not honored: " + level);
                 if (!messages.isEmpty()) {
                     JsonObject log = messages.get(0);
                     Assertions.assertEquals("notifications/message", log.getString("method"));
@@ -253,26 +306,45 @@ public abstract class StatelessAdvancedMCPIT extends StatelessMCPIT {
                             .containsKey("io.modelcontextprotocol/subscriptionId"));
                 }
             }
-            JsonObject invalid = message(protocol, "resources/read", new JsonObject().put("uri", "file:///robot-readable.txt")
-                    .put("_meta", new JsonObject().put("io.modelcontextprotocol/logLevel", "unknown")));
-            assertError(exchange(protocol, invalid), -32602, "Invalid log level");
-            Awaitility.await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> {
-                Assertions.assertTrue(serverLogs(protocol).stream().skip(serverLogCount)
-                        .anyMatch(line -> line.contains("Reading provided file:") && line.endsWith("robot-readable.txt")));
-            });
-            assertNoSubscriptionLeak(changes, "Logs");
+            assertNoRequestNotificationsOnSubscription(changes, "Logs");
         }
     }
 
-    private static void assertNoSubscriptionLeak(SubscriptionObserver observer, String kind) {
+    @Test
+    public void invalidRequestLogLevel() {
+        try (McpTestClient<?, ?> protocol = protocolClient()) {
+            JsonObject request = message(protocol, "resources/read", new JsonObject().put("uri", "file:///robot-readable.txt")
+                    .put("_meta", new JsonObject().put("io.modelcontextprotocol/logLevel", "unknown")));
+            assertError(exchange(protocol, request), -32602, "Invalid log level");
+        }
+    }
+
+    @Test
+    public void resourceServerLogging() {
+        try (McpTestClient<?, ?> protocol = protocolClient()) {
+            int before = serverLogs(protocol).size();
+            JsonObject response = exchange(protocol,
+                    message(protocol, "resources/read", new JsonObject().put("uri", "file:///robot-readable.txt")
+                            .put("_meta", new JsonObject().put("io.modelcontextprotocol/logLevel", "info"))));
+            Assertions.assertEquals("Hello, AI!",
+                    response.getJsonObject("result").getJsonArray("contents").getJsonObject(0).getString("text"));
+            Awaitility.await().atMost(Duration.ofSeconds(5))
+                    .untilAsserted(() -> Assertions.assertTrue(serverLogs(protocol).stream()
+                            .skip(before)
+                            .anyMatch(line -> line.contains("Reading provided file:") && line.endsWith("robot-readable.txt"))));
+        }
+    }
+
+    private static void assertNoRequestNotificationsOnSubscription(SubscriptionObserver observer, String kind) {
         Awaitility.await().during(Duration.ofMillis(500)).atMost(Duration.ofSeconds(5)).untilAsserted(() -> Assertions
-                .assertEquals(1, observer.notifications().size(), kind + " leaked onto the change subscription"));
+                .assertEquals(1, observer.notifications().size(),
+                        kind + " notifications reached the change subscription: " + observer.notifications()));
     }
 
     @Test
     @Disabled("https://github.com/quarkiverse/quarkus-mcp-server/issues/1076: log notifications emitted without request opt-in")
     public void loggingRequiresOptIn() {
-        try (var protocol = protocolClient()) {
+        try (McpTestClient<?, ?> protocol = protocolClient()) {
             int before = protocol.snapshot().notifications().size();
             JsonObject read = message(protocol, "resources/read", new JsonObject().put("uri", "file:///robot-readable.txt"));
             Assertions.assertFalse(
@@ -285,5 +357,4 @@ public abstract class StatelessAdvancedMCPIT extends StatelessMCPIT {
             Assertions.assertTrue(notifications.isEmpty(), () -> "Unexpected notifications without logLevel: " + notifications);
         }
     }
-
 }

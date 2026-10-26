@@ -88,12 +88,13 @@ public class LocalStreamingHTTPIT extends StatefulMCPIT {
             List<McpSchema.Tool> tools = new ArrayList<>(toolsResult.tools());
 
             String cursor = toolsResult.nextCursor();
-            while (cursor != null) {
+            for (int page = 1; cursor != null && page < NUMBER_OF_TOOLS; page++) {
                 toolsResult = thirdPartyClient.listTools(cursor);
                 tools.addAll(toolsResult.tools());
                 cursor = toolsResult.nextCursor();
             }
 
+            Assertions.assertNull(cursor, "Fixture tool listing did not terminate");
             Assertions.assertEquals(NUMBER_OF_TOOLS, tools.size());
         }
     }
