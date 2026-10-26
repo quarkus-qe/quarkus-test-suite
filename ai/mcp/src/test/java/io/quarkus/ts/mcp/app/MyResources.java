@@ -20,6 +20,7 @@ public class MyResources {
                 .newResource("file:///separate")
                 .setUri("file:///separate")
                 .setDescription("File from a separate class")
+                // The newer-protocol tests assert these non-default TTL and scope values.
                 .setCacheControl(new CacheControl(5000, CacheScope.PRIVATE))
                 .setHandler(
                         args -> new ResourceResponse(TextResourceContents.create(

@@ -30,22 +30,6 @@ import io.vertx.core.json.JsonObject;
 @QuarkusScenario
 public class StatelessOIDCClientIT extends BasicMCPIT {
 
-    @Override
-    @Test
-    public void protocolRevision() {
-        client().get("/mcp/tools").then().statusCode(200);
-        ProtocolAssertions.assertStateless(this::protocolObservations, "2026-07-28");
-    }
-
-    @Override
-    @Test
-    public void readTemplatedResource() {
-        client().get("/mcp/resources/readFile/robot-readable.txt").then().statusCode(200)
-                .body(Matchers.equalTo("Hello, AI!"));
-        ProtocolAssertions.assertStateless(this::protocolObservations, "2026-07-28");
-        // Logging opt-in and delivery are verified per request by the direct transport suite.
-    }
-
     static final String NORMAL_USER = "test-normal-user";
     static final String ADMIN_USER = "test-admin-user";
     static final String CLIENT_ID_DEFAULT = "test-application-client";
@@ -96,6 +80,22 @@ public class StatelessOIDCClientIT extends BasicMCPIT {
             .withProperty("quarkus.oidc-client.the-client.grant-options.password.password", NORMAL_USER)
             .withProperty("quarkus.langchain4j.mcp.filesystem.url",
                     () -> server.getURI(Protocol.HTTP).withPath("/mcp").toString());
+
+    @Override
+    @Test
+    public void protocolRevision() {
+        client().get("/mcp/tools").then().statusCode(200);
+        ProtocolAssertions.assertStateless(this::protocolObservations, "2026-07-28");
+    }
+
+    @Override
+    @Test
+    public void readTemplatedResource() {
+        client().get("/mcp/resources/readFile/robot-readable.txt").then().statusCode(200)
+                .body(Matchers.equalTo("Hello, AI!"));
+        ProtocolAssertions.assertStateless(this::protocolObservations, "2026-07-28");
+        // Logging opt-in and delivery are verified per request by the direct transport suite.
+    }
 
     @Test
     public void userRejected() {

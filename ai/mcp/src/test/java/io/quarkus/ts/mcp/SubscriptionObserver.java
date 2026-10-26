@@ -89,7 +89,7 @@ final class HttpSubscriptionObserver implements SubscriptionObserver {
                     .timeout(Duration.ofSeconds(10))
                     .header("Content-Type", "application/json")
                     .header("Accept", "application/json,text/event-stream")
-                    .header("MCP-Protocol-Version", StatelessMCPIT.REVISION)
+                    .header("MCP-Protocol-Version", StatelessMCPIT.STATELESS_PROTOCOL_VERSION)
                     .header("Mcp-Method", "subscriptions/listen")
                     .POST(HttpRequest.BodyPublishers.ofString(request.encode())).build(),
                     HttpResponse.BodyHandlers.ofInputStream());
@@ -109,7 +109,7 @@ final class HttpSubscriptionObserver implements SubscriptionObserver {
             throw new IllegalStateException("Could not open HTTP subscription", e);
         }
         reader.submit(() -> {
-            try (var lines = new BufferedReader(new InputStreamReader(body, StandardCharsets.UTF_8))) {
+            try (BufferedReader lines = new BufferedReader(new InputStreamReader(body, StandardCharsets.UTF_8))) {
                 String line;
                 while ((line = lines.readLine()) != null) {
                     if (line.startsWith("data:")) {
