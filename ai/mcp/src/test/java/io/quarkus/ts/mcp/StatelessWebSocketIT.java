@@ -37,7 +37,7 @@ public class StatelessWebSocketIT extends StatelessAdvancedMCPIT {
                     @Dependency(groupId = "io.quarkiverse.langchain4j", artifactId = "quarkus-langchain4j-mcp"),
             }, classes = { MCPClient.class })
     static final RestService client = new RestService()
-            .withProperty("quarkus.langchain4j.mcp.filesystem.protocol-version", "2026-07-28")
+            .withProperties("mcp-2026-client.properties")
             .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "websocket")
             .withProperty("quarkus.langchain4j.mcp.filesystem.url",
                     () -> getUrl(server));
