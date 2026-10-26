@@ -100,9 +100,13 @@ public class DevModeWorkspaceIT {
                         "The code doesn't contain the expected value: " + code);
 
                 //Edit the file and save the changes
-                code = code.replace("@Path(\"/any\")", "@Path(\"/this\")");
+                String expectedCode = code.replace("@Path(\"/any\")", "@Path(\"/this\")");
                 ElementHandle editor = textArea.waitForSelector(".cm-content");
-                editor.fill(code);
+                // Replace the CodeMirror document through keyboard events so the new source is not appended.
+                editor.click();
+                editor.press("ControlOrMeta+A");
+                editor.press("Backspace");
+                page.keyboard().insertText(expectedCode);
                 ElementHandle save = page.waitForSelector(".mainMenuBarButtons > vaadin-button:nth-child(1)");
                 save.click();
 
@@ -111,8 +115,8 @@ public class DevModeWorkspaceIT {
                             .resolve(Path.of("src", "main", "java", "io", "quarkus", "ts", "http", "advanced",
                                     "PathSpecificHeadersResource.java"));
                     String content = FileUtils.loadFile(file.toFile());
-                    Assertions.assertTrue(content.contains("@Path(\"/this\")"),
-                            file + " wasn't edited:" + System.lineSeparator() + content);
+                    Assertions.assertEquals(expectedCode.replace("\r\n", "\n"), content.replace("\r\n", "\n"),
+                            file + " does not contain the expected edited source");
                 }, usingTimeout(ofSeconds(5)));
 
                 Awaitility.await()
