@@ -15,14 +15,16 @@ import io.quarkus.ts.mcp.app.AdvancedServer;
 import io.quarkus.ts.mcp.app.FileServer;
 import io.quarkus.ts.mcp.app.MCPClient;
 import io.quarkus.ts.mcp.app.MyResources;
+import io.quarkus.ts.mcp.app.ProtocolObserver;
 import io.restassured.specification.RequestSpecification;
+import io.vertx.core.json.JsonObject;
 
 @QuarkusScenario
 public class StatelessStdioIT extends StatelessAdvancedMCPIT {
 
     @QuarkusApplication(boms = { @Dependency(artifactId = "quarkus-mcp-server-bom") }, dependencies = {
             @Dependency(groupId = "io.quarkiverse.mcp", artifactId = "quarkus-mcp-server-stdio")
-    }, classes = { FileServer.class, MyResources.class, AdvancedServer.class })
+    }, classes = { FileServer.class, ProtocolObserver.class, MyResources.class, AdvancedServer.class })
     static final NeverRunningService server = new NeverRunningService()
             .withProperty("quarkus.profile", "debug")
             .setAutoStart(false);
@@ -33,13 +35,13 @@ public class StatelessStdioIT extends StatelessAdvancedMCPIT {
                     @Dependency(groupId = "io.quarkiverse.langchain4j", artifactId = "quarkus-langchain4j-mcp"),
             }, classes = { MCPClient.class })
     static final RestService client = new RestService()
-            .withProperty("quarkus.log.category.\"MCP\".level", "DEBUG")
+            .withProperty("quarkus.log.category.\"dev.langchain4j.mcp.client.transport.stdio.ProcessStderrHandler\".level",
+                    "DEBUG")
             .withProperty("quarkus.langchain4j.mcp.filesystem.protocol-version", "2026-07-28")
-            .withProperty("quarkus.langchain4j.mcp.filesystem.log-responses", "true")
-            .withProperty("quarkus.langchain4j.mcp.filesystem.log-requests", "true")
             .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "stdio")
             .withProperty("quarkus.langchain4j.mcp.filesystem.command",
-                    () -> "java,-Dworking.folder=" + makeSafeForWindows(getFileFolder(StatelessStdioIT.class))
+                    () -> "java,-Dqe.mcp.protocol-observer.stderr=true,-Dworking.folder="
+                            + makeSafeForWindows(getFileFolder(StatelessStdioIT.class))
                             + ",-jar," + makeSafeForWindows(getJarPath(server)));
 
     static String getJarPath(BaseService app) {
@@ -72,6 +74,11 @@ public class StatelessStdioIT extends StatelessAdvancedMCPIT {
     @Override
     protected List<String> serverLogs(McpAssured.McpTestClient<?, ?> protocol) {
         return ((McpAssured.McpStdioTestClient) protocol).stderrLines();
+    }
+
+    @Override
+    protected List<JsonObject> protocolObservations() {
+        return ProtocolAssertions.stderrObservations(app());
     }
 
 }

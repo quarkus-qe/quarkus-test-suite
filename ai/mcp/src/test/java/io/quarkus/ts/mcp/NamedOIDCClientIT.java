@@ -18,6 +18,8 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.mcp.app.FileServer;
 import io.quarkus.ts.mcp.app.MCPClient;
 import io.quarkus.ts.mcp.app.MinimalEndpoint;
+import io.quarkus.ts.mcp.app.ProtocolObservationsResource;
+import io.quarkus.ts.mcp.app.ProtocolObserver;
 import io.restassured.response.Response;
 
 @QuarkusScenario
@@ -38,7 +40,8 @@ public class NamedOIDCClientIT {
             @Dependency(artifactId = "quarkus-rest"),
             @Dependency(groupId = "io.quarkiverse.mcp", artifactId = "quarkus-mcp-server-http"),
             @Dependency(groupId = "io.quarkiverse.mcp", artifactId = "quarkus-mcp-server-oidc")
-    }, classes = { FileServer.class }, properties = "server.properties")
+    }, classes = { FileServer.class, ProtocolObserver.class,
+            ProtocolObservationsResource.class }, properties = "server.properties")
     static final RestService server1 = new RestService()
             .withProperties(keycloak1::getTlsProperties)
             .withProperty("quarkus.oidc.token.audience", CLIENT_ID_DEFAULT)
@@ -50,7 +53,8 @@ public class NamedOIDCClientIT {
             @Dependency(artifactId = "quarkus-rest"),
             @Dependency(groupId = "io.quarkiverse.mcp", artifactId = "quarkus-mcp-server-http"),
             @Dependency(groupId = "io.quarkiverse.mcp", artifactId = "quarkus-mcp-server-oidc")
-    }, classes = { FileServer.class }, properties = "server.properties")
+    }, classes = { FileServer.class, ProtocolObserver.class,
+            ProtocolObservationsResource.class }, properties = "server.properties")
     static final RestService server2 = new RestService()
             .withProperties(keycloak2::getTlsProperties)
             .withProperty("quarkus.oidc.token.audience", CLIENT_ID_DEFAULT)
@@ -78,15 +82,11 @@ public class NamedOIDCClientIT {
             .withProperty("quarkus.oidc-client.provider2.grant-options.password.password", ADMIN_USER)
             .withProperty("quarkus.langchain4j.mcp.filesystem.oidc-client-name", "provider1")
             .withProperty("quarkus.langchain4j.mcp.filesystem.protocol-version", "2025-11-25")
-            .withProperty("quarkus.langchain4j.mcp.filesystem.log-responses", "true")
-            .withProperty("quarkus.langchain4j.mcp.filesystem.log-requests", "true")
             .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "streamable-http")
             .withProperty("quarkus.langchain4j.mcp.filesystem.url",
                     () -> server1.getURI(Protocol.HTTP).withPath("/mcp").toString())
             .withProperty("quarkus.langchain4j.mcp.minimal.oidc-client-name", "provider2")
             .withProperty("quarkus.langchain4j.mcp.minimal.protocol-version", "2025-11-25")
-            .withProperty("quarkus.langchain4j.mcp.minimal.log-responses", "true")
-            .withProperty("quarkus.langchain4j.mcp.minimal.log-requests", "true")
             .withProperty("quarkus.langchain4j.mcp.minimal.transport-type", "streamable-http")
             .withProperty("quarkus.langchain4j.mcp.minimal.url",
                     () -> server2.getURI(Protocol.HTTP).withPath("/mcp").toString());
@@ -110,15 +110,11 @@ public class NamedOIDCClientIT {
             .withProperty("quarkus.oidc-client.provider2.grant-options.password.password", NORMAL_USER)
             .withProperty("quarkus.langchain4j.mcp.filesystem.oidc-client-name", "provider1")
             .withProperty("quarkus.langchain4j.mcp.filesystem.protocol-version", "2025-11-25")
-            .withProperty("quarkus.langchain4j.mcp.filesystem.log-responses", "true")
-            .withProperty("quarkus.langchain4j.mcp.filesystem.log-requests", "true")
             .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "streamable-http")
             .withProperty("quarkus.langchain4j.mcp.filesystem.url",
                     () -> server1.getURI(Protocol.HTTP).withPath("/mcp").toString())
             .withProperty("quarkus.langchain4j.mcp.minimal.oidc-client-name", "provider2")
             .withProperty("quarkus.langchain4j.mcp.minimal.protocol-version", "2025-11-25")
-            .withProperty("quarkus.langchain4j.mcp.minimal.log-responses", "true")
-            .withProperty("quarkus.langchain4j.mcp.minimal.log-requests", "true")
             .withProperty("quarkus.langchain4j.mcp.minimal.transport-type", "streamable-http")
             .withProperty("quarkus.langchain4j.mcp.minimal.url",
                     () -> server2.getURI(Protocol.HTTP).withPath("/mcp").toString());
@@ -132,7 +128,8 @@ public class NamedOIDCClientIT {
         Response minimal = adminClient.given().when().body("robot-readable.txt").post("/mcp-minimal/tools/readFile");
         Assertions.assertEquals(200, minimal.statusCode(), "Response is " + minimal.body().asString());
         Assertions.assertEquals("Hello, AI!", minimal.body().asString());
-        ProtocolAssertions.assertNegotiated(adminClient, "2025-11-25", 2);
+        ProtocolAssertions.assertNegotiated(() -> ProtocolAssertions.observations(server1), "2025-11-25");
+        ProtocolAssertions.assertNegotiated(() -> ProtocolAssertions.observations(server2), "2025-11-25");
     }
 
     @Test
@@ -140,7 +137,6 @@ public class NamedOIDCClientIT {
         Response response = userClient.given().body("robot-readable.txt").post("/mcp/tools/readFile");
         Assertions.assertEquals(500, response.statusCode());
         userClient.logs().assertContains("Unexpected status code: 403");
-        ProtocolAssertions.assertProposed(userClient, "2025-11-25", 1);
     }
 
     @Test
@@ -149,7 +145,7 @@ public class NamedOIDCClientIT {
         Response minimal = userClient.given().when().body("robot-readable.txt").post("/mcp-minimal/tools/readFile");
         Assertions.assertEquals(200, minimal.statusCode(), "Response is " + minimal.body().asString());
         Assertions.assertEquals("Hello, AI!", minimal.body().asString());
-        ProtocolAssertions.assertNegotiated(userClient, "2025-11-25", 1);
+        ProtocolAssertions.assertNegotiated(() -> ProtocolAssertions.observations(server2), "2025-11-25");
     }
 
     static class ClientService {
