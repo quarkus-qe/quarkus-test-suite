@@ -54,7 +54,7 @@ public class StatelessWebSocketIT extends StatelessAdvancedMCPIT {
     protected McpAssured.McpTestClient<?, ?> protocolClient() {
         return McpAssured.newWebSocketClient()
                 .setBaseUri(URI.create(serverApp().getURI(Protocol.HTTP).toString()))
-                .setEndpointPath("/mcp/ws").setProtocolVersion(McpProtocolVersion.from(REVISION))
+                .setEndpointPath("/mcp/ws").setProtocolVersion(McpProtocolVersion.from(STATELESS_PROTOCOL_VERSION))
                 .setClientCapabilities(CLIENT_CAPABILITIES).build().connect();
     }
 
