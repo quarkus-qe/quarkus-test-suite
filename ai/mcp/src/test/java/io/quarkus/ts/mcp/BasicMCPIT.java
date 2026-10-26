@@ -93,12 +93,14 @@ public abstract class BasicMCPIT {
         Assertions.assertEquals(200, create.statusCode());
         String changedTools = "[filereader, rootchecker, wait, meta, greeter]";
 
-        Response after = client().given().get("/mcp/tools");
-        Assertions.assertEquals(200, after.statusCode());
-        Assertions.assertEquals(changedTools, after.body().asString());
-
-        Response delete = client().given().delete("/mcp/meta/greeter");
-        Assertions.assertEquals(200, delete.statusCode());
+        try {
+            Response after = client().given().get("/mcp/tools");
+            Assertions.assertEquals(200, after.statusCode());
+            Assertions.assertEquals(changedTools, after.body().asString());
+        } finally {
+            Response delete = client().given().delete("/mcp/meta/greeter");
+            Assertions.assertEquals(200, delete.statusCode());
+        }
 
         Response last = client().given().get("/mcp/tools");
         Assertions.assertEquals(200, last.statusCode());
@@ -111,6 +113,10 @@ public abstract class BasicMCPIT {
         Assertions.assertEquals(200, list.statusCode());
         Assertions.assertTrue(list.body().asString().contains("meta"));
 
+    }
+
+    @Test
+    public void promptUsage() {
         Response usage = client().given().get("/mcp/prompt");
         Assertions.assertEquals(200, usage.statusCode());
         Assertions.assertEquals("This tool will create a new tool named 'hammer'", usage.body().asString());

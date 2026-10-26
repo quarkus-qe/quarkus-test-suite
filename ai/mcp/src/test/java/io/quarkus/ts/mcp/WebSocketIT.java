@@ -6,6 +6,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
@@ -15,6 +16,8 @@ import org.junit.jupiter.api.Test;
 import io.quarkiverse.mcp.server.ClientCapability;
 import io.quarkiverse.mcp.server.McpProtocolVersion;
 import io.quarkiverse.mcp.server.test.McpAssured;
+import io.quarkiverse.mcp.server.test.McpAssured.McpTestClient;
+import io.quarkiverse.mcp.server.test.McpAssured.McpWebSocketTestClient;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -78,14 +81,16 @@ public class WebSocketIT extends StatefulMCPIT {
         Response create = client().given().post("/mcp/meta/greeter");
         Assertions.assertEquals(200, create.statusCode());
 
-        Response after = client().given().get("/mcp/tools");
-        Assertions.assertEquals(200, after.statusCode());
-        List<String> changedTools = after.body().jsonPath().getList(".");
-        Assertions.assertEquals(NUMBER_OF_TOOLS + 1, changedTools.size());
-        Assertions.assertTrue(changedTools.contains("greeter"));
-
-        Response delete = client().given().delete("/mcp/meta/greeter");
-        Assertions.assertEquals(200, delete.statusCode());
+        try {
+            Response after = client().given().get("/mcp/tools");
+            Assertions.assertEquals(200, after.statusCode());
+            List<String> changedTools = after.body().jsonPath().getList(".");
+            Assertions.assertEquals(NUMBER_OF_TOOLS + 1, changedTools.size());
+            Assertions.assertTrue(changedTools.contains("greeter"));
+        } finally {
+            Response delete = client().given().delete("/mcp/meta/greeter");
+            Assertions.assertEquals(200, delete.statusCode());
+        }
 
         Response last = client().given().get("/mcp/tools");
         Assertions.assertEquals(200, last.statusCode());
@@ -98,50 +103,80 @@ public class WebSocketIT extends StatefulMCPIT {
         return server;
     }
 
-    protected McpAssured.McpWebSocketTestClient protocolClient() {
+    protected McpWebSocketTestClient protocolClient() {
         return McpAssured.newWebSocketClient()
                 .setBaseUri(URI.create(serverApp().getURI(Protocol.HTTP).toString()))
                 .setEndpointPath("/mcp/ws")
                 .setProtocolVersion(McpProtocolVersion.V_2025_11_25)
                 .setClientCapabilities(new ClientCapability("sampling", Map.of("tools", Map.of())),
                         new ClientCapability("elicitation", Map.of("form", Map.of())))
-                .build().connect(init -> {
-                    Assertions.assertEquals("2025-11-25", init.protocolVersion());
-                    Assertions.assertEquals("mcp", init.serverName());
-                });
+                .build().connect();
+    }
+
+    @Test
+    void initializationAndResponseEnvelope() {
+        try (McpWebSocketTestClient protocol = protocolClient()) {
+            Assertions.assertEquals("2025-11-25", protocol.initResult().protocolVersion());
+            Assertions.assertEquals("mcp", protocol.initResult().serverName());
+            Assertions.assertTrue(protocol.initResult().capabilities().stream()
+                    .anyMatch(capability -> "logging".equals(capability.name())));
+            JsonObject request = protocol.newRequest("tools/list").put("params", new JsonObject());
+            protocol.sendAndForget(request);
+            JsonObject response = protocol.waitForResponse(request);
+            Assertions.assertEquals("2.0", response.getString("jsonrpc"));
+            Assertions.assertEquals(request.getValue("id"), response.getValue("id"));
+            Assertions.assertNull(response.getJsonObject("error"), response::encode);
+            Assertions.assertNotNull(response.getJsonObject("result"), response::encode);
+        }
+    }
+
+    @Test
+    void toolsPagination() {
+        try (McpWebSocketTestClient protocol = protocolClient()) {
+            List<JsonObject> pages = toolPages(protocol);
+            Assertions.assertEquals(List.of(2, 2, 2, 1),
+                    pages.stream().map(page -> page.getJsonArray("tools").size()).toList());
+            Assertions.assertEquals(NUMBER_OF_TOOLS, pages.stream().mapToInt(page -> page.getJsonArray("tools").size()).sum());
+        }
     }
 
     @Test
     void iconCheck() {
-        try (var protocol = protocolClient()) {
-            List<JsonObject> tools = new ArrayList<>();
-            String cursor = null;
-            do {
-                JsonObject params = new JsonObject();
-                if (cursor != null) {
-                    params.put("cursor", cursor);
-                }
-                JsonObject result = request(protocol, "tools/list", params).getJsonObject("result");
-                Assertions.assertTrue(result.getJsonArray("tools").size() <= 2);
-                if (tools.isEmpty()) {
-                    Assertions.assertEquals(2, result.getJsonArray("tools").size());
-                    Assertions.assertNotNull(result.getString("nextCursor"));
-                }
-                result.getJsonArray("tools").forEach(tool -> tools.add((JsonObject) tool));
-                cursor = result.getString("nextCursor");
-            } while (cursor != null);
-            Assertions.assertEquals(NUMBER_OF_TOOLS, tools.size());
-            JsonObject rootchecker = tools.stream().filter(tool -> "rootchecker".equals(tool.getString("name")))
+        try (McpWebSocketTestClient protocol = protocolClient()) {
+            JsonObject rootchecker = toolPages(protocol).stream().flatMap(page -> page.getJsonArray("tools").stream())
+                    .map(JsonObject.class::cast).filter(tool -> "rootchecker".equals(tool.getString("name")))
                     .findFirst().orElseThrow();
             Assertions.assertEquals("image/svg", rootchecker.getJsonArray("icons").getJsonObject(0).getString("mimeType"));
         }
     }
 
+    private List<JsonObject> toolPages(McpWebSocketTestClient protocol) {
+        List<JsonObject> pages = new ArrayList<>();
+        JsonObject params = new JsonObject();
+        // Seven fixture tools, page size two: four pages suffice; a bad cursor cannot loop forever.
+        for (int page = 0; page < 4; page++) {
+            JsonObject response = request(protocol, "tools/list", params);
+            JsonObject result = response.getJsonObject("result");
+            Assertions.assertNotNull(result, response::encode);
+            pages.add(result);
+            String cursor = result.getString("nextCursor");
+            if (cursor == null) {
+                return pages;
+            }
+            params.put("cursor", cursor);
+        }
+        throw new AssertionError("Fixture tools/list did not terminate within four pages");
+    }
+
     @Test
-    void resourceNotifications() {
+    void resourceList() {
         client().get("/mcp/resources/").then().statusCode(200)
                 .body(Matchers.equalTo("[file:///hello, file:///number, file:///separate]"));
-        try (var protocol = protocolClient()) {
+    }
+
+    @Test
+    void resourceNotifications() {
+        try (McpWebSocketTestClient protocol = protocolClient()) {
             client().get("/mcp/resources/readFile/number").then().statusCode(200).body(Matchers.equalTo("1"));
             JsonObject subscribed = request(protocol, "resources/subscribe", new JsonObject().put("uri", "file:///number"));
             Assertions.assertTrue(subscribed.getJsonObject("result").isEmpty());
@@ -153,41 +188,57 @@ public class WebSocketIT extends StatefulMCPIT {
                 Assertions.assertEquals("file:///number", notification.getJsonObject("params").getString("uri"));
                 client().get("/mcp/resources/readFile/number").then().statusCode(200).body(Matchers.equalTo("2"));
             } finally {
-                request(protocol, "resources/unsubscribe", new JsonObject().put("uri", "file:///number"));
+                JsonObject unsubscribed = request(protocol, "resources/unsubscribe",
+                        new JsonObject().put("uri", "file:///number"));
+                Assertions.assertNotNull(unsubscribed.getJsonObject("result"), unsubscribed::encode);
+                Assertions.assertTrue(unsubscribed.getJsonObject("result").isEmpty(), unsubscribed::encode);
             }
         }
     }
 
     @Test
     void promptNotifications() {
-        try (var protocol = protocolClient()) {
-            assertPrompts(protocol, List.of("foodOrder", "meta"));
+        try (McpWebSocketTestClient protocol = protocolClient()) {
+            JsonObject before = request(protocol, "prompts/list", new JsonObject());
+            Assertions.assertNotNull(before.getJsonObject("result"), before::encode);
+            Assertions.assertEquals(List.of("foodOrder", "meta"),
+                    before.getJsonObject("result").getJsonArray("prompts").stream()
+                            .map(prompt -> ((JsonObject) prompt).getString("name")).toList());
             int count = protocol.snapshot().notifications().size();
             client().post("/mcp/meta/prompt/about-greeter").then().statusCode(200);
             try {
                 Assertions.assertEquals("notifications/prompts/list_changed",
                         protocol.waitForNotifications(count + 1).notifications().get(count).getString("method"));
-                assertPrompts(protocol, List.of("foodOrder", "meta", "about-greeter"));
+                JsonObject created = request(protocol, "prompts/list", new JsonObject());
+                Assertions.assertNotNull(created.getJsonObject("result"), created::encode);
+                Assertions.assertEquals(List.of("foodOrder", "meta", "about-greeter"),
+                        created.getJsonObject("result").getJsonArray("prompts").stream()
+                                .map(prompt -> ((JsonObject) prompt).getString("name")).toList());
             } finally {
                 client().delete("/mcp/meta/prompt/about-greeter").then().statusCode(200);
             }
             Assertions.assertEquals("notifications/prompts/list_changed",
                     protocol.waitForNotifications(count + 2).notifications().get(count + 1).getString("method"));
-            assertPrompts(protocol, List.of("foodOrder", "meta"));
+            JsonObject deleted = request(protocol, "prompts/list", new JsonObject());
+            Assertions.assertNotNull(deleted.getJsonObject("result"), deleted::encode);
+            Assertions.assertEquals(List.of("foodOrder", "meta"),
+                    deleted.getJsonObject("result").getJsonArray("prompts").stream()
+                            .map(prompt -> ((JsonObject) prompt).getString("name")).toList());
         }
     }
 
-    private void assertPrompts(McpAssured.McpWebSocketTestClient protocol, List<String> names) {
-        var prompts = request(protocol, "prompts/list", new JsonObject()).getJsonObject("result").getJsonArray("prompts");
-        Assertions.assertEquals(names, prompts.stream().map(p -> ((JsonObject) p).getString("name")).toList());
+    @Test
+    void samplingWithoutClientInput() {
+        try (McpWebSocketTestClient protocol = protocolClient()) {
+            assertText(request(protocol, "tools/call", call("unsampled", new JsonObject().put("question", "Question"))),
+                    "Answer to \"Question\" is 42");
+        }
     }
 
     @Test
     void sampling() {
         String question = "What is the airspeed velocity of unladen swallow?";
-        try (var protocol = protocolClient()) {
-            assertText(request(protocol, "tools/call", call("unsampled", new JsonObject().put("question", question))),
-                    "Answer to \"" + question + "\" is 42");
+        try (McpWebSocketTestClient protocol = protocolClient()) {
             JsonObject operation = protocol.newRequest("tools/call").put("params",
                     call("sampled", new JsonObject().put("question", question)));
             int count = protocol.snapshot().requests().size();
@@ -206,7 +257,7 @@ public class WebSocketIT extends StatefulMCPIT {
 
     @Test
     void elicitation() {
-        try (var protocol = protocolClient()) {
+        try (McpWebSocketTestClient protocol = protocolClient()) {
             JsonObject operation = protocol.newRequest("tools/call").put("params", call("elicitation", new JsonObject()));
             int count = protocol.snapshot().requests().size();
             protocol.sendAndForget(operation);
@@ -224,8 +275,8 @@ public class WebSocketIT extends StatefulMCPIT {
 
     @Test
     void completion() {
-        try (var protocol = protocolClient()) {
-            for (var entry : Map.of("", List.of("broccoli", "pizza", "salad", "pie"),
+        try (McpWebSocketTestClient protocol = protocolClient()) {
+            for (Entry<String, List<String>> entry : Map.of("", List.of("broccoli", "pizza", "salad", "pie"),
                     "pi", List.of("pizza", "pie"), "piz", List.of("pizza")).entrySet()) {
                 JsonObject params = new JsonObject()
                         .put("ref", new JsonObject().put("type", "ref/prompt").put("name", "foodOrder"))
@@ -248,7 +299,7 @@ public class WebSocketIT extends StatefulMCPIT {
     }
 
     private void progress(boolean automatic, String token, String prefix) {
-        try (var protocol = protocolClient()) {
+        try (McpWebSocketTestClient protocol = protocolClient()) {
             int count = protocol.snapshot().notifications().size();
             JsonObject response = request(protocol, "tools/call",
                     call("wait", new JsonObject().put("input", "this is it").put("autoLog", automatic))
@@ -270,9 +321,7 @@ public class WebSocketIT extends StatefulMCPIT {
 
     @Test
     public void logging() throws InterruptedException {
-        try (var protocol = protocolClient()) {
-            Assertions.assertTrue(
-                    protocol.initResult().capabilities().stream().anyMatch(capability -> "logging".equals(capability.name())));
+        try (McpWebSocketTestClient protocol = protocolClient()) {
             int count = protocol.snapshot().notifications().size();
             JsonObject response = request(protocol, "resources/read", new JsonObject().put("uri", "file:///another-file.txt"));
             Assertions.assertEquals("There is some content there, too!",
@@ -298,14 +347,10 @@ public class WebSocketIT extends StatefulMCPIT {
         }
     }
 
-    static JsonObject request(McpAssured.McpTestClient<?, ?> protocol, String method, JsonObject params) {
+    static JsonObject request(McpTestClient<?, ?> protocol, String method, JsonObject params) {
         JsonObject request = protocol.newRequest(method).put("params", params);
         protocol.sendAndForget(request);
-        JsonObject response = protocol.waitForResponse(request);
-        Assertions.assertEquals("2.0", response.getString("jsonrpc"));
-        Assertions.assertEquals(request.getValue("id"), response.getValue("id"));
-        Assertions.assertNull(response.getJsonObject("error"), response::encode);
-        return response;
+        return protocol.waitForResponse(request);
     }
 
     static JsonObject call(String name, JsonObject arguments) {
@@ -314,7 +359,8 @@ public class WebSocketIT extends StatefulMCPIT {
 
     static void assertText(JsonObject response, String text) {
         JsonObject result = response.getJsonObject("result");
-        Assertions.assertFalse(result.getBoolean("isError"));
+        Assertions.assertNotNull(result, response::encode);
+        Assertions.assertEquals(false, result.getBoolean("isError"), response::encode);
         Assertions.assertEquals(1, result.getJsonArray("content").size());
         Assertions.assertEquals("text", result.getJsonArray("content").getJsonObject(0).getString("type"));
         Assertions.assertEquals(text, result.getJsonArray("content").getJsonObject(0).getString("text"));
