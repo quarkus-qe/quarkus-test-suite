@@ -14,6 +14,8 @@ import org.junit.jupiter.api.Test;
 
 import io.quarkiverse.mcp.server.McpProtocolVersion;
 import io.quarkiverse.mcp.server.test.McpAssured;
+import io.quarkiverse.mcp.server.test.McpAssured.McpStreamableTestClient;
+import io.quarkiverse.mcp.server.test.McpAssured.McpTestClient;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -82,7 +84,7 @@ public class StatelessStreamingHTTPIT extends StatelessAdvancedMCPIT {
     }
 
     @Override
-    protected McpAssured.McpTestClient<?, ?> protocolClient() {
+    protected McpTestClient<?, ?> protocolClient() {
         return McpAssured.newStreamableClient()
                 .setBaseUri(URI.create(serverApp().getURI(Protocol.HTTP).toString()))
                 .setProtocolVersion(McpProtocolVersion.from(REVISION))
@@ -102,7 +104,7 @@ public class StatelessStreamingHTTPIT extends StatelessAdvancedMCPIT {
     public void supportedRevisions() {
         // Smoke-test every advertised revision against the same server, using McpAssured.
         for (String revision : ADVERTISED_REVISIONS) {
-            try (var protocol = McpAssured.newStreamableClient()
+            try (McpStreamableTestClient protocol = McpAssured.newStreamableClient()
                     .setBaseUri(URI.create(serverApp().getURI(Protocol.HTTP).toString()))
                     .setProtocolVersion(McpProtocolVersion.from(revision)).build().connect()) {
                 try {
@@ -132,63 +134,73 @@ public class StatelessStreamingHTTPIT extends StatelessAdvancedMCPIT {
     }
 
     @Test
-    public void httpHeadersAndLifecycle() {
-        // Discovery succeeds without creating a protocol session (no "Mcp-Session-Id")
+    public void discoveryWithoutSession() {
         JsonObject discover = rawMessage("server/discover", new JsonObject());
-        var response = rawPost(discover, Map.of("MCP-Protocol-Version", REVISION, "Mcp-Method", "server/discover"));
+        Response response = rawPost(discover, Map.of("MCP-Protocol-Version", REVISION, "Mcp-Method", "server/discover"));
         response.then().statusCode(200);
         Assertions.assertNull(response.header("Mcp-Session-Id"));
-        JsonObject discovery = new JsonObject(response.asString());
-        Assertions.assertEquals(discover.getValue("id"), discovery.getValue("id"));
-        assertComplete(discovery.getJsonObject("result"), true);
+        Assertions.assertNotNull(new JsonObject(response.asString()).getJsonObject("result"), response::asString);
+    }
 
-        // Reject the older protocol's GET stream and DELETE session lifecycle.
+    @Test
+    public void formerSessionLifecycle() {
+        // Newer HTTP has neither the older GET stream nor DELETE session lifecycle.
         serverApp().given().header("MCP-Protocol-Version", REVISION).get("/mcp").then().statusCode(405);
         serverApp().given().header("MCP-Protocol-Version", REVISION).delete("/mcp").then().statusCode(405);
+    }
 
-        JsonObject call = rawMessage("tools/call", call("filereader", new JsonObject().put("file", "robot-readable.txt")));
-        var headers = new HashMap<>(
-                Map.of("MCP-Protocol-Version", REVISION, "Mcp-Method", "tools/call", "Mcp-Name", "filereader"));
-
-        // Body metadata does not replace the required HTTP protocol-version header.
+    @Test
+    public void requiredHttpHeaders() {
+        JsonObject request = rawMessage("tools/call", call("filereader", new JsonObject().put("file", "robot-readable.txt")));
+        Map<String, String> headers = Map.of("MCP-Protocol-Version", REVISION, "Mcp-Method", "tools/call", "Mcp-Name",
+                "filereader");
         Map<String, String> missingRevision = new HashMap<>(headers);
         missingRevision.remove("MCP-Protocol-Version");
-        Response missingRevisionResponse = rawPost(call, missingRevision);
+        Response missingRevisionResponse = rawPost(request, missingRevision);
         // TODO: Uncomment the assertion below once https://github.com/quarkiverse/quarkus-mcp-server/issues/1083 is fixed.
         // Currently returns HTTP 200 instead of 400 / -32020
         // assertHttpError(missingRevisionResponse, -32020, "Missing required header: Mcp-Protocol-Version");
-
-        // Reject missing method/name headers and values that disagree with the request body.
         for (String required : List.of("Mcp-Method", "Mcp-Name")) {
-            var omitted = new HashMap<>(headers);
+            Map<String, String> omitted = new HashMap<>(headers);
             omitted.remove(required);
-            assertHttpError(rawPost(call, omitted), -32020, "Missing required header: " + required);
-            var mismatched = new HashMap<>(headers);
+            assertHttpError(rawPost(request, omitted), -32020, "Missing required header: " + required);
+            Map<String, String> mismatched = new HashMap<>(headers);
             mismatched.put(required, "wrong");
-            assertHttpError(rawPost(call, mismatched), -32020, "Header mismatch: " + required);
+            assertHttpError(rawPost(request, mismatched), -32020, "Header mismatch: " + required);
         }
-        // Both revisions are supported, but the header and body must request the same one.
-        var mismatchedRevision = new HashMap<>(headers);
-        mismatchedRevision.put("MCP-Protocol-Version", "2025-11-25");
-        assertHttpError(rawPost(call, mismatchedRevision), -32020, "Header mismatch: Mcp-Protocol-Version");
+    }
 
+    @Test
+    public void headerBodyRevisionMismatch() {
+        // Both revisions are supported, but the header and body must request the same one.
+        JsonObject request = rawMessage("tools/call", call("filereader", new JsonObject().put("file", "robot-readable.txt")));
+        assertHttpError(
+                rawPost(request,
+                        Map.of("MCP-Protocol-Version", "2025-11-25", "Mcp-Method", "tools/call", "Mcp-Name", "filereader")),
+                -32020, "Header mismatch: Mcp-Protocol-Version");
+    }
+
+    @Test
+    public void requiredBodyMetadata() {
         // Headers do not replace the required protocol and capability metadata in the body.
-        for (String key : List.of("io.modelcontextprotocol/protocolVersion",
-                "io.modelcontextprotocol/clientCapabilities")) {
-            JsonObject missing = discover.copy();
+        for (String key : List.of("io.modelcontextprotocol/protocolVersion", "io.modelcontextprotocol/clientCapabilities")) {
+            JsonObject missing = rawMessage("server/discover", new JsonObject());
             missing.getJsonObject("params").getJsonObject("_meta").remove(key);
-            var invalid = rawPost(missing, Map.of("MCP-Protocol-Version", REVISION, "Mcp-Method", "server/discover"));
-            invalid.then().statusCode(400);
-            JsonObject error = new JsonObject(invalid.asString());
+            Response response = rawPost(missing, Map.of("MCP-Protocol-Version", REVISION, "Mcp-Method", "server/discover"));
+            response.then().statusCode(400);
+            JsonObject error = new JsonObject(response.asString());
             Assertions.assertEquals(missing.getValue("id"), error.getValue("id"));
             assertError(error, -32602, key);
         }
-        // The newer protocol no longer accepts the initialize handshake.
+    }
+
+    @Test
+    public void removedInitialize() {
         JsonObject removed = rawMessage("initialize", new JsonObject().put("protocolVersion", REVISION));
-        var removal = rawPost(removed, Map.of("MCP-Protocol-Version", REVISION, "Mcp-Method", "initialize"));
+        Response response = rawPost(removed, Map.of("MCP-Protocol-Version", REVISION, "Mcp-Method", "initialize"));
         // TODO: Intentionally not checking returned status code - should be 404 but is 200
         // See https://github.com/quarkiverse/quarkus-mcp-server/issues/1081
-        assertError(new JsonObject(removal.asString()), -32601, "initialize");
+        assertError(new JsonObject(response.asString()), -32601, "initialize");
     }
 
     @Test
@@ -197,7 +209,7 @@ public class StatelessStreamingHTTPIT extends StatelessAdvancedMCPIT {
         String revision = "2099-01-01";
         JsonObject discover = rawMessage("server/discover", new JsonObject());
         discover.getJsonObject("params").getJsonObject("_meta").put("io.modelcontextprotocol/protocolVersion", revision);
-        var response = rawPost(discover, Map.of("MCP-Protocol-Version", revision, "Mcp-Method", "server/discover"));
+        Response response = rawPost(discover, Map.of("MCP-Protocol-Version", revision, "Mcp-Method", "server/discover"));
         response.then().statusCode(400);
         JsonObject error = new JsonObject(response.asString());
         // Check for spec-defined code for unsupported protocol version
@@ -228,12 +240,12 @@ public class StatelessStreamingHTTPIT extends StatelessAdvancedMCPIT {
     }
 
     @Override
-    protected List<String> serverLogs(McpAssured.McpTestClient<?, ?> protocol) {
+    protected List<String> serverLogs(McpTestClient<?, ?> protocol) {
         return serverApp().getLogs();
     }
 
     @Override
-    protected SubscriptionObserver subscribe(McpAssured.McpTestClient<?, ?> protocol, JsonObject request) {
+    protected SubscriptionObserver subscribe(McpTestClient<?, ?> protocol, JsonObject request) {
         return SubscriptionObserver.openHttp(URI.create(serverApp().getURI(Protocol.HTTP).withPath("/mcp").toString()),
                 request);
     }

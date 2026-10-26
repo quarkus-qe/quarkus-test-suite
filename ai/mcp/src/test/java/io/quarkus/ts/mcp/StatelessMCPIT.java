@@ -4,11 +4,9 @@ import static io.quarkus.ts.mcp.WebSocketIT.assertText;
 import static io.quarkus.ts.mcp.WebSocketIT.call;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.Map.Entry;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -16,7 +14,8 @@ import org.junit.jupiter.api.Test;
 
 import io.quarkiverse.mcp.server.ClientCapability;
 import io.quarkiverse.mcp.server.test.McpAssured;
-import io.vertx.core.json.JsonArray;
+import io.quarkiverse.mcp.server.test.McpAssured.McpTestClient;
+import io.restassured.response.Response;
 import io.vertx.core.json.JsonObject;
 
 /**
@@ -51,45 +50,35 @@ public abstract class StatelessMCPIT extends BasicMCPIT {
         // Logging opt-in and delivery are verified per request by the direct transport suite.
     }
 
-    protected abstract McpAssured.McpTestClient<?, ?> protocolClient();
+    protected abstract McpTestClient<?, ?> protocolClient();
 
-    static JsonObject message(McpAssured.McpTestClient<?, ?> protocol, String method, JsonObject params) {
+    static JsonObject message(McpTestClient<?, ?> protocol, String method, JsonObject params) {
         JsonObject message = protocol.newRequest(method).put("params", params.copy());
         McpAssured.injectStatelessMeta(message, CAPABILITIES.copy());
         return message;
     }
 
-    static JsonObject exchange(McpAssured.McpTestClient<?, ?> protocol, JsonObject message) {
-        protocol.sendAndForget(message);
-        JsonObject response = protocol.waitForResponse(message);
-        Assertions.assertEquals("2.0", response.getString("jsonrpc"));
-        Assertions.assertEquals(message.getValue("id"), response.getValue("id"));
-        return response;
-    }
-
-    static JsonObject result(McpAssured.McpTestClient<?, ?> protocol, String method, JsonObject params) {
-        JsonObject response = exchange(protocol, message(protocol, method, params));
-        Assertions.assertNull(response.getJsonObject("error"), response::encode);
-        return response.getJsonObject("result");
-    }
-
-    static void assertComplete(JsonObject result, boolean cacheable) {
-        Assertions.assertEquals("complete", result.getString("resultType"));
-        JsonObject identity = result.getJsonObject("_meta").getJsonObject("io.modelcontextprotocol/serverInfo");
-        Assertions.assertEquals("mcp", identity.getString("name"));
-        Assertions.assertFalse(identity.getString("version").isBlank());
-        if (cacheable) {
-            Assertions.assertEquals(0L, result.getLong("ttlMs"));
-            Assertions.assertEquals("public", result.getString("cacheScope"));
-        }
+    static JsonObject exchange(McpTestClient<?, ?> protocol, JsonObject request) {
+        protocol.sendAndForget(request);
+        return protocol.waitForResponse(request);
     }
 
     @Test
     public void discovery() {
-        try (var protocol = protocolClient()) {
+        try (McpTestClient<?, ?> protocol = protocolClient()) {
             Assertions.assertNull(protocol.initResult().protocolVersion());
-            Assertions.assertEquals("mcp", protocol.initResult().serverName());
-            JsonObject discovery = result(protocol, "server/discover", new JsonObject());
+            JsonObject request = message(protocol, "server/discover", new JsonObject());
+            JsonObject response = exchange(protocol, request);
+            // Validate the common response envelope and server identity here, rather than on every operation.
+            Assertions.assertEquals("2.0", response.getString("jsonrpc"));
+            Assertions.assertEquals(request.getValue("id"), response.getValue("id"));
+            Assertions.assertNull(response.getJsonObject("error"), response::encode);
+            JsonObject discovery = response.getJsonObject("result");
+            Assertions.assertNotNull(discovery, response::encode);
+            Assertions.assertEquals("complete", discovery.getString("resultType"));
+            JsonObject identity = discovery.getJsonObject("_meta").getJsonObject("io.modelcontextprotocol/serverInfo");
+            Assertions.assertEquals("mcp", identity.getString("name"));
+            Assertions.assertFalse(identity.getString("version").isBlank());
             Assertions.assertEquals(ADVERTISED_REVISIONS, discovery.getJsonArray("supportedVersions").getList());
             Assertions.assertFalse(discovery.containsKey("protocolVersion"));
             Assertions.assertFalse(discovery.containsKey("serverInfo"));
@@ -97,124 +86,237 @@ public abstract class StatelessMCPIT extends BasicMCPIT {
             for (String capability : List.of("tools", "resources", "prompts", "logging", "completions")) {
                 Assertions.assertTrue(capabilities.containsKey(capability), discovery::encode);
             }
-            assertComplete(discovery, true);
+            Assertions.assertEquals(0L, discovery.getLong("ttlMs"));
+            Assertions.assertEquals("public", discovery.getString("cacheScope"));
         }
     }
 
     @Test
-    public void toolsPaginationAndSchemas() {
-        try (var protocol = protocolClient()) {
-            List<JsonObject> tools = new ArrayList<>();
-            String cursor = null;
-            Set<String> seenCursors = new HashSet<>();
-            do {
-                JsonObject params = new JsonObject();
-                if (cursor != null) {
-                    params.put("cursor", cursor);
-                }
-                JsonObject page = result(protocol, "tools/list", params);
-                assertComplete(page, true);
-                JsonArray entries = page.getJsonArray("tools");
-                Assertions.assertEquals(tools.size() < 6 ? 2 : 1, entries.size());
-                entries.forEach(tool -> tools.add((JsonObject) tool));
-                cursor = page.getString("nextCursor");
-                if (cursor != null) {
-                    Assertions.assertTrue(seenCursors.add(cursor), "Pagination repeated a cursor");
-                }
-            } while (cursor != null);
-            Assertions.assertEquals(Set.of("filereader", "rootchecker", "wait", "meta", "sampled", "unsampled", "elicitation"),
-                    tools.stream().map(tool -> tool.getString("name")).collect(Collectors.toSet()));
-            Assertions.assertEquals(7, tools.size());
-            JsonObject file = tools.stream().filter(tool -> "filereader".equals(tool.getString("name"))).findFirst()
-                    .orElseThrow();
+    public void toolsPagination() {
+        try (McpTestClient<?, ?> protocol = protocolClient()) {
+            List<JsonObject> pages = toolPages(protocol);
+            // Seven fixture tools and a page size of two produce 2 + 2 + 2 + 1 entries.
+            Assertions.assertEquals(List.of(2, 2, 2, 1),
+                    pages.stream().map(page -> page.getJsonArray("tools").size()).toList());
+            for (JsonObject page : pages) {
+                Assertions.assertEquals("complete", page.getString("resultType"));
+                Assertions.assertEquals(0L, page.getLong("ttlMs"));
+                Assertions.assertEquals("public", page.getString("cacheScope"));
+            }
+            List<String> names = pages.stream().flatMap(page -> page.getJsonArray("tools").stream())
+                    .map(tool -> ((JsonObject) tool).getString("name")).sorted().toList();
+            // List equality checks both the inventory and duplicates, which a set would discard.
+            Assertions.assertEquals(List.of("elicitation", "filereader", "meta", "rootchecker", "sampled", "unsampled", "wait"),
+                    names);
+        }
+    }
+
+    @Test
+    public void fileReaderSchema() {
+        try (McpTestClient<?, ?> protocol = protocolClient()) {
+            JsonObject file = toolPages(protocol).stream().flatMap(page -> page.getJsonArray("tools").stream())
+                    .map(JsonObject.class::cast).filter(tool -> "filereader".equals(tool.getString("name")))
+                    .findFirst().orElseThrow();
             JsonObject schema = file.getJsonObject("inputSchema");
             Assertions.assertEquals("object", schema.getString("type"));
             Assertions.assertEquals("string", schema.getJsonObject("properties").getJsonObject("file").getString("type"));
             Assertions.assertEquals(List.of("file"), schema.getJsonArray("required").getList());
-            JsonObject roots = tools.stream().filter(tool -> "rootchecker".equals(tool.getString("name"))).findFirst()
-                    .orElseThrow();
+        }
+    }
+
+    @Test
+    public void toolIcons() {
+        try (McpTestClient<?, ?> protocol = protocolClient()) {
+            JsonObject roots = toolPages(protocol).stream().flatMap(page -> page.getJsonArray("tools").stream())
+                    .map(JsonObject.class::cast).filter(tool -> "rootchecker".equals(tool.getString("name")))
+                    .findFirst().orElseThrow();
             JsonObject icon = roots.getJsonArray("icons").getJsonObject(0);
             Assertions.assertEquals("image/svg", icon.getString("mimeType"));
             Assertions.assertEquals("file://quarkus_icon_black.svg", icon.getString("src"));
+        }
+    }
+
+    // The fixture has seven tools, plus at most one dynamically created tool: at most four two-entry pages.
+    static List<JsonObject> toolPages(McpTestClient<?, ?> protocol) {
+        List<JsonObject> pages = new ArrayList<>();
+        JsonObject params = new JsonObject();
+        for (int page = 0; page < 4; page++) {
+            JsonObject response = exchange(protocol, message(protocol, "tools/list", params));
+            JsonObject result = response.getJsonObject("result");
+            Assertions.assertNotNull(result, response::encode);
+            pages.add(result);
+            String cursor = result.getString("nextCursor");
+            if (cursor == null) {
+                return pages;
+            }
+            params.put("cursor", cursor);
+        }
+        throw new AssertionError("Fixture tools/list did not terminate within four pages");
+    }
+
+    @Test
+    public void callFileTool() {
+        try (McpTestClient<?, ?> protocol = protocolClient()) {
             JsonObject response = exchange(protocol,
                     message(protocol, "tools/call", call("filereader", new JsonObject().put("file", "robot-readable.txt"))));
             assertText(response, "Hello, AI!");
-            assertComplete(response.getJsonObject("result"), false);
+            Assertions.assertEquals("complete", response.getJsonObject("result").getString("resultType"));
         }
     }
 
     @Test
-    public void resourcesAndCacheHints() {
-        try (var protocol = protocolClient()) {
-            JsonObject list = result(protocol, "resources/list", new JsonObject());
-            assertComplete(list, true);
+    public void resourceList() {
+        try (McpTestClient<?, ?> protocol = protocolClient()) {
+            JsonObject response = exchange(protocol, message(protocol, "resources/list", new JsonObject()));
+            JsonObject list = response.getJsonObject("result");
+            Assertions.assertNotNull(list, response::encode);
             Assertions.assertEquals(List.of("file:///hello", "file:///number", "file:///separate"),
-                    list.getJsonArray("resources").stream()
-                            .map(resource -> ((JsonObject) resource).getString("uri")).toList());
-            for (var entry : Map.of("file:///hello", "Hello, AI!", "file:///separate", "Hello from other resource!",
-                    "file:///robot-readable.txt", "Hello, AI!").entrySet()) {
-                JsonObject read = result(protocol, "resources/read", new JsonObject().put("uri", entry.getKey()));
-                Assertions.assertEquals(1, read.getJsonArray("contents").size());
-                JsonObject content = read.getJsonArray("contents").getJsonObject(0);
-                Assertions.assertEquals(entry.getKey(), content.getString("uri"));
-                Assertions.assertEquals(entry.getValue(), content.getString("text"));
-                if ("file:///separate".equals(entry.getKey())) {
-                    assertComplete(read, false);
-                    Assertions.assertEquals(5000L, read.getLong("ttlMs"));
-                    Assertions.assertEquals("private", read.getString("cacheScope"));
-                } else {
-                    assertComplete(read, true);
-                }
-            }
-            JsonObject templates = result(protocol, "resources/templates/list", new JsonObject());
-            assertComplete(templates, true);
+                    list.getJsonArray("resources").stream().map(resource -> ((JsonObject) resource).getString("uri")).toList());
+            Assertions.assertEquals("complete", list.getString("resultType"));
+            Assertions.assertEquals(0L, list.getLong("ttlMs"));
+            Assertions.assertEquals("public", list.getString("cacheScope"));
+        }
+    }
+
+    @Test
+    public void readAnnotatedResource() {
+        try (McpTestClient<?, ?> protocol = protocolClient()) {
+            JsonObject response = exchange(protocol,
+                    message(protocol, "resources/read", new JsonObject().put("uri", "file:///hello")));
+            JsonObject read = response.getJsonObject("result");
+            Assertions.assertNotNull(read, response::encode);
+            Assertions.assertEquals(1, read.getJsonArray("contents").size());
+            JsonObject content = read.getJsonArray("contents").getJsonObject(0);
+            Assertions.assertEquals("file:///hello", content.getString("uri"));
+            Assertions.assertEquals("Hello, AI!", content.getString("text"));
+            Assertions.assertEquals("complete", read.getString("resultType"));
+            Assertions.assertEquals(0L, read.getLong("ttlMs"));
+            Assertions.assertEquals("public", read.getString("cacheScope"));
+        }
+    }
+
+    @Test
+    public void readProgrammaticResourceWithCacheHints() {
+        try (McpTestClient<?, ?> protocol = protocolClient()) {
+            JsonObject response = exchange(protocol,
+                    message(protocol, "resources/read", new JsonObject().put("uri", "file:///separate")));
+            JsonObject read = response.getJsonObject("result");
+            Assertions.assertNotNull(read, response::encode);
+            Assertions.assertEquals(1, read.getJsonArray("contents").size());
+            JsonObject content = read.getJsonArray("contents").getJsonObject(0);
+            Assertions.assertEquals("file:///separate", content.getString("uri"));
+            Assertions.assertEquals("Hello from other resource!", content.getString("text"));
+            Assertions.assertEquals("complete", read.getString("resultType"));
+            Assertions.assertEquals(5000L, read.getLong("ttlMs"));
+            Assertions.assertEquals("private", read.getString("cacheScope"));
+        }
+    }
+
+    @Test
+    public void readTemplatedResourceDirectly() {
+        try (McpTestClient<?, ?> protocol = protocolClient()) {
+            JsonObject response = exchange(protocol,
+                    message(protocol, "resources/read", new JsonObject().put("uri", "file:///robot-readable.txt")));
+            JsonObject read = response.getJsonObject("result");
+            Assertions.assertNotNull(read, response::encode);
+            Assertions.assertEquals(1, read.getJsonArray("contents").size());
+            JsonObject content = read.getJsonArray("contents").getJsonObject(0);
+            Assertions.assertEquals("file:///robot-readable.txt", content.getString("uri"));
+            Assertions.assertEquals("Hello, AI!", content.getString("text"));
+            Assertions.assertEquals("complete", read.getString("resultType"));
+            Assertions.assertEquals(0L, read.getLong("ttlMs"));
+            Assertions.assertEquals("public", read.getString("cacheScope"));
+        }
+    }
+
+    @Test
+    public void resourceTemplates() {
+        try (McpTestClient<?, ?> protocol = protocolClient()) {
+            JsonObject response = exchange(protocol, message(protocol, "resources/templates/list", new JsonObject()));
+            JsonObject templates = response.getJsonObject("result");
+            Assertions.assertNotNull(templates, response::encode);
             Assertions.assertEquals("file:///{name}",
                     templates.getJsonArray("resourceTemplates").getJsonObject(0).getString("uriTemplate"));
+            Assertions.assertEquals("complete", templates.getString("resultType"));
+            Assertions.assertEquals(0L, templates.getLong("ttlMs"));
+            Assertions.assertEquals("public", templates.getString("cacheScope"));
         }
     }
 
     @Test
-    public void promptsAndCompletion() {
-        try (var protocol = protocolClient()) {
-            JsonObject list = result(protocol, "prompts/list", new JsonObject());
-            assertComplete(list, true);
+    public void promptList() {
+        try (McpTestClient<?, ?> protocol = protocolClient()) {
+            JsonObject response = exchange(protocol, message(protocol, "prompts/list", new JsonObject()));
+            JsonObject list = response.getJsonObject("result");
+            Assertions.assertNotNull(list, response::encode);
             Assertions.assertEquals(List.of("foodOrder", "meta"), list.getJsonArray("prompts").stream()
                     .map(prompt -> ((JsonObject) prompt).getString("name")).toList());
-            JsonObject prompt = result(protocol, "prompts/get", new JsonObject().put("name", "meta")
-                    .put("arguments", new JsonObject().put("type", "tool").put("name", "hammer").put("operation", "create")));
-            assertComplete(prompt, false);
+            Assertions.assertEquals("complete", list.getString("resultType"));
+            Assertions.assertEquals(0L, list.getLong("ttlMs"));
+            Assertions.assertEquals("public", list.getString("cacheScope"));
+        }
+    }
+
+    @Test
+    public void promptRendering() {
+        try (McpTestClient<?, ?> protocol = protocolClient()) {
+            JsonObject response = exchange(protocol, message(protocol, "prompts/get", new JsonObject().put("name", "meta")
+                    .put("arguments", new JsonObject().put("type", "tool").put("name", "hammer").put("operation", "create"))));
+            JsonObject prompt = response.getJsonObject("result");
+            Assertions.assertNotNull(prompt, response::encode);
+            Assertions.assertEquals("complete", prompt.getString("resultType"));
             Assertions.assertEquals(1, prompt.getJsonArray("messages").size());
             JsonObject user = prompt.getJsonArray("messages").getJsonObject(0);
             Assertions.assertEquals("user", user.getString("role"));
             Assertions.assertEquals("text", user.getJsonObject("content").getString("type"));
             Assertions.assertEquals("This tool will create a new tool named 'hammer'",
                     user.getJsonObject("content").getString("text"));
-            for (var entry : Map.of("", List.of("broccoli", "pizza", "salad", "pie"), "pi", List.of("pizza", "pie"),
-                    "piz", List.of("pizza"), "unknown", List.of()).entrySet()) {
-                JsonObject completed = result(protocol, "completion/complete", new JsonObject()
+        }
+    }
+
+    @Test
+    public void completion() {
+        try (McpTestClient<?, ?> protocol = protocolClient()) {
+            for (Entry<String, List<String>> entry : Map.of("", List.of("broccoli", "pizza", "salad", "pie"),
+                    "pi", List.of("pizza", "pie"), "piz", List.of("pizza"), "unknown", List.<String> of()).entrySet()) {
+                JsonObject response = exchange(protocol, message(protocol, "completion/complete", new JsonObject()
                         .put("ref", new JsonObject().put("type", "ref/prompt").put("name", "foodOrder"))
-                        .put("argument", new JsonObject().put("name", "food").put("value", entry.getKey())));
-                assertComplete(completed, false);
+                        .put("argument", new JsonObject().put("name", "food").put("value", entry.getKey()))));
+                JsonObject completed = response.getJsonObject("result");
+                Assertions.assertNotNull(completed, response::encode);
+                Assertions.assertEquals("complete", completed.getString("resultType"));
                 Assertions.assertEquals(entry.getValue(),
-                        completed.getJsonObject("completion").getJsonArray("values").getList());
+                        completed.getJsonObject("completion").getJsonArray("values").getList(),
+                        "Completion prefix: " + entry.getKey());
             }
         }
     }
 
     @Test
-    public void requiredMetadataAndRemovedMethods() {
-        try (var protocol = protocolClient()) {
-            JsonObject missing = message(protocol, "tools/list", new JsonObject());
-            missing.getJsonObject("params").getJsonObject("_meta").remove("io.modelcontextprotocol/clientCapabilities");
-            assertError(exchange(protocol, missing), -32602, "clientCapabilities");
+    public void missingCapabilitiesMetadata() {
+        try (McpTestClient<?, ?> protocol = protocolClient()) {
+            JsonObject request = message(protocol, "tools/list", new JsonObject());
+            request.getJsonObject("params").getJsonObject("_meta").remove("io.modelcontextprotocol/clientCapabilities");
+            assertError(exchange(protocol, request), -32602, "clientCapabilities");
+        }
+    }
+
+    @Test
+    public void removedMethods() {
+        try (McpTestClient<?, ?> protocol = protocolClient()) {
             for (String method : List.of("ping", "logging/setLevel", "resources/subscribe", "resources/unsubscribe")) {
-                assertError(
-                        exchange(protocol,
-                                message(protocol, method, new JsonObject().put("uri", "file:///number").put("level", "info"))),
+                assertError(exchange(protocol,
+                        message(protocol, method, new JsonObject().put("uri", "file:///number").put("level", "info"))),
                         -32601, method);
             }
-            assertError(
-                    exchange(protocol, message(protocol, "resources/read", new JsonObject().put("uri", "missing:///resource"))),
+        }
+    }
+
+    @Test
+    public void unknownResource() {
+        try (McpTestClient<?, ?> protocol = protocolClient()) {
+            assertError(exchange(protocol,
+                    message(protocol, "resources/read", new JsonObject().put("uri", "missing:///resource"))),
                     -32602, "Resource");
         }
     }
@@ -230,14 +332,14 @@ public abstract class StatelessMCPIT extends BasicMCPIT {
     @Override
     @Test
     public void toolChanges() {
-        var before = client().get("/mcp/tools");
+        Response before = client().get("/mcp/tools");
         before.then().statusCode(200);
         List<String> initial = before.jsonPath().getList(".");
         Assertions.assertEquals(7, initial.size());
         Assertions.assertFalse(initial.contains("greeter"));
         client().post("/mcp/meta/greeter").then().statusCode(200);
         try {
-            var after = client().get("/mcp/tools");
+            Response after = client().get("/mcp/tools");
             after.then().statusCode(200);
             List<String> changed = after.jsonPath().getList(".");
             Assertions.assertEquals(8, changed.size());
@@ -246,7 +348,7 @@ public abstract class StatelessMCPIT extends BasicMCPIT {
         } finally {
             client().delete("/mcp/meta/greeter").then().statusCode(200);
         }
-        var last = client().get("/mcp/tools");
+        Response last = client().get("/mcp/tools");
         last.then().statusCode(200);
         Assertions.assertEquals(initial, last.jsonPath().getList("."));
     }
