@@ -23,6 +23,8 @@ import io.quarkus.ts.mcp.app.AdvancedServer;
 import io.quarkus.ts.mcp.app.FileServer;
 import io.quarkus.ts.mcp.app.MCPClient;
 import io.quarkus.ts.mcp.app.MyResources;
+import io.quarkus.ts.mcp.app.ProtocolObservationsResource;
+import io.quarkus.ts.mcp.app.ProtocolObserver;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.vertx.core.json.JsonObject;
@@ -32,7 +34,8 @@ public class StatelessStreamingHTTPIT extends StatelessAdvancedMCPIT {
     @QuarkusApplication(boms = { @Dependency(artifactId = "quarkus-mcp-server-bom") }, dependencies = {
             @Dependency(artifactId = "quarkus-rest"),
             @Dependency(groupId = "io.quarkiverse.mcp", artifactId = "quarkus-mcp-server-http")
-    }, classes = { FileServer.class, MyResources.class, AdvancedServer.class })
+    }, classes = { FileServer.class, ProtocolObserver.class, ProtocolObservationsResource.class, MyResources.class,
+            AdvancedServer.class })
     static final RestService server = new RestService()
             .withProperty("working.folder", () -> getFileFolder(StatelessStreamingHTTPIT.class));
 
@@ -43,8 +46,6 @@ public class StatelessStreamingHTTPIT extends StatelessAdvancedMCPIT {
             }, classes = { MCPClient.class })
     static final RestService client = new RestService()
             .withProperty("quarkus.langchain4j.mcp.filesystem.protocol-version", "2026-07-28")
-            .withProperty("quarkus.langchain4j.mcp.filesystem.log-responses", "true")
-            .withProperty("quarkus.langchain4j.mcp.filesystem.log-requests", "true")
             .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "streamable-http")
             // todo remove the line below when https://github.com/quarkiverse/quarkus-langchain4j/issues/2159 is fixed
             .withProperty("quarkus.langchain4j.mcp.filesystem.cache-tool-list", "false")
@@ -56,8 +57,6 @@ public class StatelessStreamingHTTPIT extends StatelessAdvancedMCPIT {
                     @Dependency(groupId = "io.quarkiverse.langchain4j", artifactId = "quarkus-langchain4j-mcp"),
             }, classes = { MCPClient.class })
     static final RestService automaticClient = new RestService()
-            .withProperty("quarkus.langchain4j.mcp.filesystem.log-responses", "true")
-            .withProperty("quarkus.langchain4j.mcp.filesystem.log-requests", "true")
             .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "streamable-http")
             // todo remove the line below when https://github.com/quarkiverse/quarkus-langchain4j/issues/2159 is fixed
             .withProperty("quarkus.langchain4j.mcp.filesystem.cache-tool-list", "false")
@@ -96,7 +95,7 @@ public class StatelessStreamingHTTPIT extends StatelessAdvancedMCPIT {
         // The unpinned LangChain4j client must select the newer revision and complete a file read.
         automaticApp().given().body("robot-readable.txt").post("/mcp/tools/readFile").then().statusCode(200)
                 .body(Matchers.equalTo("Hello, AI!"));
-        ProtocolAssertions.assertStateless(automaticApp(), REVISION);
+        ProtocolAssertions.assertStateless(() -> ProtocolAssertions.observations(serverApp()), REVISION);
     }
 
     @Test
@@ -237,6 +236,11 @@ public class StatelessStreamingHTTPIT extends StatelessAdvancedMCPIT {
     protected SubscriptionObserver subscribe(McpAssured.McpTestClient<?, ?> protocol, JsonObject request) {
         return SubscriptionObserver.openHttp(URI.create(serverApp().getURI(Protocol.HTTP).withPath("/mcp").toString()),
                 request);
+    }
+
+    @Override
+    protected List<JsonObject> protocolObservations() {
+        return ProtocolAssertions.observations(serverApp());
     }
 
 }

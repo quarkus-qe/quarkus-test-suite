@@ -39,7 +39,7 @@ public abstract class StatelessMCPIT extends BasicMCPIT {
     @Test
     public void protocolRevision() {
         client().get("/mcp/tools").then().statusCode(200);
-        ProtocolAssertions.assertStateless(app(), REVISION);
+        ProtocolAssertions.assertStateless(this::protocolObservations, REVISION);
     }
 
     @Override
@@ -47,7 +47,7 @@ public abstract class StatelessMCPIT extends BasicMCPIT {
     public void readTemplatedResource() {
         client().get("/mcp/resources/readFile/robot-readable.txt").then().statusCode(200)
                 .body(Matchers.equalTo("Hello, AI!"));
-        ProtocolAssertions.assertStateless(app(), REVISION);
+        ProtocolAssertions.assertStateless(this::protocolObservations, REVISION);
         // Logging opt-in and delivery are verified per request by the direct transport suite.
     }
 

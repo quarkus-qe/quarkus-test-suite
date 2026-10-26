@@ -16,13 +16,18 @@ import io.quarkus.ts.mcp.app.AdvancedServer;
 import io.quarkus.ts.mcp.app.FileServer;
 import io.quarkus.ts.mcp.app.MCPClient;
 import io.quarkus.ts.mcp.app.MyResources;
+import io.quarkus.ts.mcp.app.ProtocolObservationsResource;
+import io.quarkus.ts.mcp.app.ProtocolObserver;
 import io.restassured.specification.RequestSpecification;
+import io.vertx.core.json.JsonObject;
 
 @QuarkusScenario
 public class StatelessWebSocketIT extends StatelessAdvancedMCPIT {
     @QuarkusApplication(boms = { @Dependency(artifactId = "quarkus-mcp-server-bom") }, dependencies = {
+            @Dependency(artifactId = "quarkus-rest"),
             @Dependency(groupId = "io.quarkiverse.mcp", artifactId = "quarkus-mcp-server-websocket")
-    }, classes = { FileServer.class, MyResources.class, AdvancedServer.class })
+    }, classes = { FileServer.class, ProtocolObserver.class, ProtocolObservationsResource.class, MyResources.class,
+            AdvancedServer.class })
     static final RestService server = new RestService()
             .withProperty("working.folder", () -> getFileFolder(StatelessWebSocketIT.class));
 
@@ -33,8 +38,6 @@ public class StatelessWebSocketIT extends StatelessAdvancedMCPIT {
             }, classes = { MCPClient.class })
     static final RestService client = new RestService()
             .withProperty("quarkus.langchain4j.mcp.filesystem.protocol-version", "2026-07-28")
-            .withProperty("quarkus.langchain4j.mcp.filesystem.log-responses", "true")
-            .withProperty("quarkus.langchain4j.mcp.filesystem.log-requests", "true")
             .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "websocket")
             .withProperty("quarkus.langchain4j.mcp.filesystem.url",
                     () -> getUrl(server));
@@ -68,6 +71,11 @@ public class StatelessWebSocketIT extends StatelessAdvancedMCPIT {
     @Override
     protected List<String> serverLogs(McpAssured.McpTestClient<?, ?> protocol) {
         return serverApp().getLogs();
+    }
+
+    @Override
+    protected List<JsonObject> protocolObservations() {
+        return ProtocolAssertions.observations(serverApp());
     }
 
 }
