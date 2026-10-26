@@ -126,17 +126,14 @@ public class StatelessOIDCClientIT extends BasicMCPIT {
     static class ClientService extends RestService {
         public RestService withDefaultProperties() {
             return this
+                    .withProperties("mcp-2026-client.properties", "http-client.properties")
                     // keycloak tls configuration is provided by getTlsProperties,
                     // but uses quarkus.oidc property, while we need oidc-client there
                     .withProperty("quarkus.oidc-client.the-client.tls.tls-configuration-name", "keycloak")
                     .withProperty("quarkus.oidc-client.the-client.client-id", CLIENT_ID_DEFAULT)
                     .withProperty("quarkus.oidc-client.the-client.credentials.secret", CLIENT_SECRET_DEFAULT)
                     .withProperty("quarkus.oidc-client.the-client.grant.type", "password")
-                    .withProperty("quarkus.langchain4j.mcp.filesystem.oidc-client-name", "the-client")
-                    // Match the existing HTTP workaround for quarkus-langchain4j issue 2159.
-                    .withProperty("quarkus.langchain4j.mcp.filesystem.cache-tool-list", "false")
-                    .withProperty("quarkus.langchain4j.mcp.filesystem.protocol-version", "2026-07-28")
-                    .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "streamable-http");
+                    .withProperty("quarkus.langchain4j.mcp.filesystem.oidc-client-name", "the-client");
         }
     }
 

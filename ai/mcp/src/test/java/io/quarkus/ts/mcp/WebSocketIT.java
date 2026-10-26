@@ -49,7 +49,7 @@ public class WebSocketIT extends StatefulMCPIT {
                     @Dependency(groupId = "io.quarkiverse.langchain4j", artifactId = "quarkus-langchain4j-mcp"),
             }, classes = { MCPClient.class })
     static final RestService client = new RestService()
-            .withProperty("quarkus.langchain4j.mcp.filesystem.protocol-version", "2025-11-25")
+            .withProperties("mcp-2025-client.properties")
             .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "websocket")
             .withProperty("quarkus.langchain4j.mcp.filesystem.url",
                     () -> getUrl(server));
