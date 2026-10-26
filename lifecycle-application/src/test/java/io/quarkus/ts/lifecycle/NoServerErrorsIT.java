@@ -1,6 +1,8 @@
 package io.quarkus.ts.lifecycle;
 
 import java.net.ConnectException;
+import java.net.SocketException;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.Stream;
 
@@ -46,8 +48,13 @@ public class NoServerErrorsIT {
             app.given().get(endpoint);
             Assertions.fail("The connection should be rejected!");
         } catch (Exception ex) {
-            Assertions.assertEquals(ConnectException.class, ex.getClass());
-            Assertions.assertTrue(ex.getMessage().contains("Connection refused"));
+            // When the runner use Java 25 and have dual stack it can throw SocketException
+            // when only IPv4 is set the ConnectException is thrown (-Djava.net.preferIPv4Stack=true)
+            var setOfPossibleNetworkExceptions = Set.of(ConnectException.class, SocketException.class);
+            Assertions.assertTrue(setOfPossibleNetworkExceptions.contains(ex.getClass()),
+                    "Expected ConnectException or SocketException, but got: " + ex.getClass().getName());
+            Assertions.assertTrue(
+                    ex.getMessage().contains("Connection refused") || ex.getMessage().contains("Network is unreachable"));
         }
     }
 
