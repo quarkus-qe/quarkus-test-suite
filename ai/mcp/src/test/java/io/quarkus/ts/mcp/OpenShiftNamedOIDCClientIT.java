@@ -122,14 +122,17 @@ public class OpenShiftNamedOIDCClientIT {
 
     @Test
     public void adminAllowed() {
-        Response normal = adminClient.given().when().body("robot-readable.txt").post("/mcp/tools/readFile");
-        Assertions.assertEquals(200, normal.statusCode(), "Response is " + normal.body().asString());
-        Assertions.assertEquals("Hello, AI!", normal.body().asString());
-
-        Response minimal = adminClient.given().when().body("robot-readable.txt").post("/mcp-minimal/tools/readFile");
-        Assertions.assertEquals(200, minimal.statusCode(), "Response is " + minimal.body().asString());
-        Assertions.assertEquals("Hello, AI!", minimal.body().asString());
+        Response response = adminClient.given().body("robot-readable.txt").post("/mcp/tools/readFile");
+        Assertions.assertEquals(200, response.statusCode(), "Response is " + response.body().asString());
+        Assertions.assertEquals("Hello, AI!", response.body().asString());
         ProtocolAssertions.assertNegotiated(() -> ProtocolAssertions.observations(server1), "2025-11-25");
+    }
+
+    @Test
+    public void adminAllowedOnMinimalServer() {
+        Response response = adminClient.given().body("robot-readable.txt").post("/mcp-minimal/tools/readFile");
+        Assertions.assertEquals(200, response.statusCode(), "Response is " + response.body().asString());
+        Assertions.assertEquals("Hello, AI!", response.body().asString());
         ProtocolAssertions.assertNegotiated(() -> ProtocolAssertions.observations(server2), "2025-11-25");
     }
 
