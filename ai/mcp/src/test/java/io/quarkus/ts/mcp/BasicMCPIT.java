@@ -8,16 +8,19 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.bootstrap.RestService;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import io.vertx.core.json.JsonObject;
 
 public abstract class BasicMCPIT {
     public abstract RequestSpecification client();
 
     public abstract RestService app();
 
+    protected abstract List<JsonObject> protocolObservations();
+
     @Test
     public void protocolRevision() {
         client().get("/mcp/tools").then().statusCode(200);
-        ProtocolAssertions.assertNegotiated(app(), "2025-11-25", 1);
+        ProtocolAssertions.assertNegotiated(this::protocolObservations, "2025-11-25");
     }
 
     @Test

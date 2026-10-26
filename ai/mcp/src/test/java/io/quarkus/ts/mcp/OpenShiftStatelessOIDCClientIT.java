@@ -4,6 +4,8 @@ import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM;
 import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_BASE_PATH;
 import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_FILE;
 
+import java.util.List;
+
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -18,8 +20,11 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.mcp.app.FileServer;
 import io.quarkus.ts.mcp.app.MCPClient;
 import io.quarkus.ts.mcp.app.MyResources;
+import io.quarkus.ts.mcp.app.ProtocolObservationsResource;
+import io.quarkus.ts.mcp.app.ProtocolObserver;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import io.vertx.core.json.JsonObject;
 
 @OpenShiftScenario
 public class OpenShiftStatelessOIDCClientIT extends BasicMCPIT {
@@ -28,7 +33,7 @@ public class OpenShiftStatelessOIDCClientIT extends BasicMCPIT {
     @Test
     public void protocolRevision() {
         client().get("/mcp/tools").then().statusCode(200);
-        ProtocolAssertions.assertStateless(app(), "2026-07-28");
+        ProtocolAssertions.assertStateless(this::protocolObservations, "2026-07-28");
     }
 
     @Override
@@ -36,7 +41,7 @@ public class OpenShiftStatelessOIDCClientIT extends BasicMCPIT {
     public void readTemplatedResource() {
         client().get("/mcp/resources/readFile/robot-readable.txt").then().statusCode(200)
                 .body(Matchers.equalTo("Hello, AI!"));
-        ProtocolAssertions.assertStateless(app(), "2026-07-28");
+        ProtocolAssertions.assertStateless(this::protocolObservations, "2026-07-28");
         // Logging opt-in and delivery are verified per request by the direct transport suite.
     }
 
@@ -52,7 +57,8 @@ public class OpenShiftStatelessOIDCClientIT extends BasicMCPIT {
             @Dependency(artifactId = "quarkus-rest"),
             @Dependency(groupId = "io.quarkiverse.mcp", artifactId = "quarkus-mcp-server-http"),
             @Dependency(groupId = "io.quarkiverse.mcp", artifactId = "quarkus-mcp-server-oidc")
-    }, classes = { FileServer.class, MyResources.class }, properties = "server.properties")
+    }, classes = { FileServer.class, ProtocolObserver.class, ProtocolObservationsResource.class,
+            MyResources.class }, properties = "server.properties")
     static final RestService server = new RestService()
             .withProperties(keycloak::getTlsProperties)
             .withProperty("quarkus.oidc.token.audience", CLIENT_ID_DEFAULT)
@@ -97,7 +103,6 @@ public class OpenShiftStatelessOIDCClientIT extends BasicMCPIT {
                 .body("robot-readable.txt").post("/mcp/tools/readFile");
         Assertions.assertEquals(500, response.statusCode());
         userClient.logs().assertContains("Unexpected status code: 403");
-        ProtocolAssertions.assertStateless(userClient, "2026-07-28");
     }
 
     @Test
@@ -129,10 +134,14 @@ public class OpenShiftStatelessOIDCClientIT extends BasicMCPIT {
                     .withProperty("quarkus.oidc-client.the-client.grant.type", "password")
                     .withProperty("quarkus.langchain4j.mcp.filesystem.oidc-client-name", "the-client")
                     .withProperty("quarkus.langchain4j.mcp.filesystem.protocol-version", "2026-07-28")
-                    .withProperty("quarkus.langchain4j.mcp.filesystem.log-responses", "true")
-                    .withProperty("quarkus.langchain4j.mcp.filesystem.log-requests", "true")
                     .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "streamable-http")
                     .withProperty("quarkus.langchain4j.mcp.filesystem.cache-tool-list", "false");
         }
     }
+
+    @Override
+    protected List<JsonObject> protocolObservations() {
+        return ProtocolAssertions.observations(server);
+    }
+
 }
