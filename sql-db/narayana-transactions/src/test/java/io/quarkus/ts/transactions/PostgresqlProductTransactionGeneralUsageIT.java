@@ -19,7 +19,14 @@ public class PostgresqlProductTransactionGeneralUsageIT extends AbstractPostgres
             .withProperty("POSTGRESQL_MAX_PREPARED_TRANSACTIONS", "100");
 
     @QuarkusApplication
-    public static final RestService app = createQuarkusApp(database);
+    static RestService app = new RestService().withProperties("postgresql.properties")
+            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.datasource.jdbc.telemetry", "true")
+            .withProperty("quarkus.datasource.username", database.getUser())
+            .withProperty("quarkus.datasource.password", database.getPassword())
+            .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl)
+            .withProperty("quarkus.datasource.validation-query-timeout.jdbc.url",
+                    () -> configureValidationQueryDs(database));
 
     @Override
     protected RestService getApp() {
