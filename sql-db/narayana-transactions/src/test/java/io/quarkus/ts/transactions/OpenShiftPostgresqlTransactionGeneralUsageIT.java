@@ -16,7 +16,12 @@ public class OpenShiftPostgresqlTransactionGeneralUsageIT extends AbstractPostgr
             .withProperty("PGDATA", "/tmp/psql");
 
     @QuarkusApplication
-    public static final RestService app = createQuarkusApp(database);
+    static RestService app = new RestService().withProperties("postgresql.properties")
+            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.datasource.jdbc.telemetry", "true")
+            .withProperty("quarkus.datasource.username", database.getUser())
+            .withProperty("quarkus.datasource.password", database.getPassword())
+            .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl);
 
     @Override
     protected RestService getApp() {
