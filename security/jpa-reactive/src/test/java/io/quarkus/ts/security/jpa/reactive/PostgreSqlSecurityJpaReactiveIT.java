@@ -2,9 +2,11 @@ package io.quarkus.ts.security.jpa.reactive;
 
 import io.quarkus.test.bootstrap.PostgresqlService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnFipsAndJavaVersion;
 import io.quarkus.test.services.Container;
 
 @QuarkusScenario
+@DisabledOnFipsAndJavaVersion(max = 24, reason = "QUARKUS-9772")
 public class PostgreSqlSecurityJpaReactiveIT extends AbstractSecurityJpaReactiveIT {
 
     @Container(image = "${postgresql.latest.image}", port = 5432, expectedLog = "listening on IPv4 address")

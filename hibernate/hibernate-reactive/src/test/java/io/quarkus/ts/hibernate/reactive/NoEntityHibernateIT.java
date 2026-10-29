@@ -9,12 +9,14 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.bootstrap.PostgresqlService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnFipsAndJavaVersion;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.hibernate.reactive.entityless.EntitylessEndpoint;
 
 @QuarkusScenario
 @Tag("QUARKUS-6965")
+@DisabledOnFipsAndJavaVersion(max = 24, reason = "QUARKUS-9772")
 public class NoEntityHibernateIT {
     static final int POSTGRESQL_PORT = 5432;
 
