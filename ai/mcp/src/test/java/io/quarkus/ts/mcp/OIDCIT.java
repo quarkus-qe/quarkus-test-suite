@@ -5,6 +5,8 @@ import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_BASE_PATH;
 import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_FILE;
 import static io.quarkus.ts.mcp.app.Utils.getFileFolder;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,11 +22,14 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.mcp.app.FileServer;
 import io.quarkus.ts.mcp.app.MCPClient;
 import io.quarkus.ts.mcp.app.MyResources;
+import io.quarkus.ts.mcp.app.ProtocolObservationsResource;
+import io.quarkus.ts.mcp.app.ProtocolObserver;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import io.vertx.core.json.JsonObject;
 
 @QuarkusScenario
-public class OIDCIT extends BasicMCPIT {
+public class OIDCIT extends StatefulMCPIT {
 
     static final String NORMAL_USER = "test-normal-user";
     static final String ADMIN_USER = "test-admin-user";
@@ -38,7 +43,8 @@ public class OIDCIT extends BasicMCPIT {
             @Dependency(artifactId = "quarkus-rest"),
             @Dependency(groupId = "io.quarkiverse.mcp", artifactId = "quarkus-mcp-server-http"),
             @Dependency(groupId = "io.quarkiverse.mcp", artifactId = "quarkus-mcp-server-oidc")
-    }, classes = { FileServer.class, MyResources.class }, properties = "server.properties")
+    }, classes = { FileServer.class, ProtocolObserver.class, ProtocolObservationsResource.class,
+            MyResources.class }, properties = "server.properties")
     static final RestService server = new RestService()
             .withProperties(keycloak::getTlsProperties)
             .withProperty("quarkus.oidc.token.audience", CLIENT_ID_DEFAULT)
@@ -54,11 +60,11 @@ public class OIDCIT extends BasicMCPIT {
                     @Dependency(groupId = "io.quarkiverse.langchain4j", artifactId = "quarkus-langchain4j-oidc-mcp-auth-provider")
             }, classes = { MCPClient.class }, properties = "client.properties")
     static final RestService client = new RestService()
+            .withProperties("mcp-2025-client.properties", "http-client.properties")
             .withProperties(keycloak::getTlsProperties)
             .withProperty("quarkus.oidc.auth-server-url", () -> keycloak.getRealmUrl())
             .withProperty("quarkus.oidc.client-id", CLIENT_ID_DEFAULT)
             .withProperty("quarkus.oidc.credentials.secret", CLIENT_SECRET_DEFAULT)
-            .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "streamable-http")
             .withProperty("quarkus.langchain4j.mcp.filesystem.url",
                     () -> server.getURI(Protocol.HTTP).withPath("/mcp").toString());
     private AuthzClient authzClient;
@@ -98,6 +104,11 @@ public class OIDCIT extends BasicMCPIT {
     @Override
     public RestService app() {
         return client;
+    }
+
+    @Override
+    protected List<JsonObject> protocolObservations() {
+        return ProtocolAssertions.observations(server);
     }
 
 }

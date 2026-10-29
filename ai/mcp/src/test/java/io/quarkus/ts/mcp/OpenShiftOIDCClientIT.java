@@ -4,7 +4,10 @@ import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM;
 import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_BASE_PATH;
 import static io.quarkus.test.bootstrap.KeycloakService.DEFAULT_REALM_FILE;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.KeycloakService;
@@ -17,11 +20,14 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.mcp.app.FileServer;
 import io.quarkus.ts.mcp.app.MCPClient;
 import io.quarkus.ts.mcp.app.MyResources;
+import io.quarkus.ts.mcp.app.ProtocolObservationsResource;
+import io.quarkus.ts.mcp.app.ProtocolObserver;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import io.vertx.core.json.JsonObject;
 
 @OpenShiftScenario
-public class OpenShiftOIDCClientIT extends BasicMCPIT {
+public class OpenShiftOIDCClientIT extends StatefulMCPIT {
 
     static final String NORMAL_USER = "test-normal-user";
     static final String ADMIN_USER = "test-admin-user";
@@ -35,7 +41,8 @@ public class OpenShiftOIDCClientIT extends BasicMCPIT {
             @Dependency(artifactId = "quarkus-rest"),
             @Dependency(groupId = "io.quarkiverse.mcp", artifactId = "quarkus-mcp-server-http"),
             @Dependency(groupId = "io.quarkiverse.mcp", artifactId = "quarkus-mcp-server-oidc")
-    }, classes = { FileServer.class, MyResources.class }, properties = "server.properties")
+    }, classes = { FileServer.class, ProtocolObserver.class, ProtocolObservationsResource.class,
+            MyResources.class }, properties = "server.properties")
     static final RestService server = new RestService()
             .withProperties(keycloak::getTlsProperties)
             .withProperty("quarkus.oidc.token.audience", CLIENT_ID_DEFAULT)
@@ -74,6 +81,13 @@ public class OpenShiftOIDCClientIT extends BasicMCPIT {
             .withProperty("quarkus.langchain4j.mcp.filesystem.url",
                     () -> server.getURI(Protocol.HTTP).withPath("/mcp").toString());
 
+    @Override
+    @Test
+    @Disabled("OIDC auth provider calls blocking await on the roots callback event loop (MCP 2025-11-25)")
+    public void roots() {
+        super.roots();
+    }
+
     @Test
     public void userRejected() {
         Response response = userClient.given()
@@ -103,15 +117,20 @@ public class OpenShiftOIDCClientIT extends BasicMCPIT {
     static class ClientService extends RestService {
         public RestService withDefaultProperties() {
             return this
+                    .withProperties("mcp-2025-client.properties", "http-client.properties")
                     // keycloak tls configuration is provided by getTlsProperties,
                     // but uses quarkus.oidc property, while we need oidc-client there
                     .withProperty("quarkus.oidc-client.the-client.tls.tls-configuration-name", "keycloak")
                     .withProperty("quarkus.oidc-client.the-client.client-id", CLIENT_ID_DEFAULT)
                     .withProperty("quarkus.oidc-client.the-client.credentials.secret", CLIENT_SECRET_DEFAULT)
                     .withProperty("quarkus.oidc-client.the-client.grant.type", "password")
-                    .withProperty("quarkus.langchain4j.mcp.filesystem.oidc-client-name", "the-client")
-                    .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "streamable-http")
-                    .withProperty("quarkus.langchain4j.mcp.filesystem.cache-tool-list", "false");
+                    .withProperty("quarkus.langchain4j.mcp.filesystem.oidc-client-name", "the-client");
         }
     }
+
+    @Override
+    protected List<JsonObject> protocolObservations() {
+        return ProtocolAssertions.observations(server);
+    }
+
 }

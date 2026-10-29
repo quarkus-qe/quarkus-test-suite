@@ -2,19 +2,26 @@ package io.quarkus.ts.mcp;
 
 import java.util.List;
 
-import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import io.vertx.core.json.JsonObject;
 
 public abstract class BasicMCPIT {
     public abstract RequestSpecification client();
 
     public abstract RestService app();
+
+    protected abstract List<JsonObject> protocolObservations();
+
+    @Test
+    public void protocolRevision() {
+        client().get("/mcp/tools").then().statusCode(200);
+        ProtocolAssertions.assertNegotiated(this::protocolObservations, "2025-11-25");
+    }
 
     @Test
     public void tools() {
@@ -49,7 +56,6 @@ public abstract class BasicMCPIT {
     }
 
     @Test
-    @Disabled("Mostly caused by https://github.com/quarkiverse/quarkus-mcp-server/pull/1080")
     public void readTemplatedResource() throws InterruptedException {
         Response response = client().given().get("/mcp/resources/readFile/robot-readable.txt");
         Assertions.assertEquals(200, response.statusCode());
@@ -87,12 +93,14 @@ public abstract class BasicMCPIT {
         Assertions.assertEquals(200, create.statusCode());
         String changedTools = "[filereader, rootchecker, wait, meta, greeter]";
 
-        Response after = client().given().get("/mcp/tools");
-        Assertions.assertEquals(200, after.statusCode());
-        Assertions.assertEquals(changedTools, after.body().asString());
-
-        Response delete = client().given().delete("/mcp/meta/greeter");
-        Assertions.assertEquals(200, delete.statusCode());
+        try {
+            Response after = client().given().get("/mcp/tools");
+            Assertions.assertEquals(200, after.statusCode());
+            Assertions.assertEquals(changedTools, after.body().asString());
+        } finally {
+            Response delete = client().given().delete("/mcp/meta/greeter");
+            Assertions.assertEquals(200, delete.statusCode());
+        }
 
         Response last = client().given().get("/mcp/tools");
         Assertions.assertEquals(200, last.statusCode());
@@ -105,23 +113,13 @@ public abstract class BasicMCPIT {
         Assertions.assertEquals(200, list.statusCode());
         Assertions.assertTrue(list.body().asString().contains("meta"));
 
+    }
+
+    @Test
+    public void promptUsage() {
         Response usage = client().given().get("/mcp/prompt");
         Assertions.assertEquals(200, usage.statusCode());
         Assertions.assertEquals("This tool will create a new tool named 'hammer'", usage.body().asString());
     }
 
-    @Test
-    @Disabled("https://github.com/quarkus-qe/quarkus-test-suite/issues/3130")
-    public void roots() {
-        Response before = client().given().get("/mcp/roots");
-        Assertions.assertEquals(200, before.statusCode());
-        Assertions.assertEquals("No roots found", before.body().asString());
-
-        Response change = client().given().post("/mcp/roots");
-        Assertions.assertEquals(HttpStatus.SC_NO_CONTENT, change.statusCode());
-
-        Response after = client().given().get("/mcp/roots");
-        Assertions.assertEquals(200, after.statusCode());
-        Assertions.assertEquals("first (example.com)", after.body().asString());
-    }
 }

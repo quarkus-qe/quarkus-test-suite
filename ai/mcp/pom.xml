@@ -35,6 +35,11 @@
     <dependencies>
         <dependency>
             <groupId>io.quarkiverse.mcp</groupId>
+            <artifactId>quarkus-mcp-server-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkiverse.mcp</groupId>
             <artifactId>quarkus-mcp-server-core</artifactId>
             <scope>test</scope>
         </dependency>

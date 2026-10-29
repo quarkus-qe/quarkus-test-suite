@@ -8,13 +8,17 @@ import io.quarkus.ts.mcp.app.AdvancedServer;
 import io.quarkus.ts.mcp.app.FileServer;
 import io.quarkus.ts.mcp.app.MCPClient;
 import io.quarkus.ts.mcp.app.MyResources;
+import io.quarkus.ts.mcp.app.ProtocolObservationsResource;
+import io.quarkus.ts.mcp.app.ProtocolObserver;
 import io.restassured.specification.RequestSpecification;
 
 @OpenShiftScenario
 public class OpenShiftWebSocketIT extends WebSocketIT {
     @QuarkusApplication(boms = { @Dependency(artifactId = "quarkus-mcp-server-bom") }, dependencies = {
+            @Dependency(artifactId = "quarkus-rest"),
             @Dependency(groupId = "io.quarkiverse.mcp", artifactId = "quarkus-mcp-server-websocket")
-    }, classes = { FileServer.class, MyResources.class, AdvancedServer.class })
+    }, classes = { FileServer.class, ProtocolObserver.class, ProtocolObservationsResource.class, MyResources.class,
+            AdvancedServer.class })
     static final RestService server = new RestService()
             .withProperty("quarkus.profile", "debug")
             .withProperty("_ignored", "resource_with_destination::/deployments|robot-readable.txt")
@@ -27,6 +31,7 @@ public class OpenShiftWebSocketIT extends WebSocketIT {
                     @Dependency(groupId = "io.quarkiverse.langchain4j", artifactId = "quarkus-langchain4j-mcp"),
             }, classes = { MCPClient.class })
     static final RestService client = new RestService()
+            .withProperties("mcp-2025-client.properties")
             .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "websocket")
             .withProperty("quarkus.langchain4j.mcp.filesystem.url",
                     () -> getUrl(server));
@@ -35,4 +40,15 @@ public class OpenShiftWebSocketIT extends WebSocketIT {
     public RequestSpecification client() {
         return client.given();
     }
+
+    @Override
+    public RestService app() {
+        return client;
+    }
+
+    @Override
+    protected RestService serverApp() {
+        return server;
+    }
+
 }
