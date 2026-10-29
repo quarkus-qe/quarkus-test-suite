@@ -3,10 +3,12 @@ package io.quarkus.ts.hibernate.reactive;
 import io.quarkus.test.bootstrap.PostgresqlService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnFipsAndJavaVersion;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
+@DisabledOnFipsAndJavaVersion(max = 24, reason = "QUARKUS-9772")
 public class PostgresqlDatabaseHibernateReactiveIT extends AbstractDatabaseHibernateReactiveIT {
 
     private static final String POSTGRES_USER = "quarkus_test";
