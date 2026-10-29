@@ -7,9 +7,11 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnFipsAndJavaVersion;
 
 @Tag("QUARKUS-7179")
 @QuarkusScenario
+@DisabledOnFipsAndJavaVersion(max = 24, reason = "QUARKUS-9772")
 public class PermissionsAllowedReactivePanacheEntityResourceIT
         extends AbstractPermissionsAllowedReactivePanacheResourceIT {
     private static final String BASE_URL = "/secured/entity";

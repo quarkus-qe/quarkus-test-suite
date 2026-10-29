@@ -10,6 +10,7 @@ import io.quarkus.test.bootstrap.MySqlService;
 import io.quarkus.test.bootstrap.PostgresqlService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnFipsAndJavaVersion;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.Dependency;
 import io.quarkus.test.services.QuarkusApplication;
@@ -26,6 +27,7 @@ import io.restassured.http.ContentType;
 
 @Tag("QUARKUS-6259")
 @QuarkusScenario
+@DisabledOnFipsAndJavaVersion(max = 24, reason = "QUARKUS-9772")
 public class MixedSourcesIT {
     private static final String SQL_USER = "quarkus_test";
     private static final String SQL_PASSWORD = "quarkus_test";
