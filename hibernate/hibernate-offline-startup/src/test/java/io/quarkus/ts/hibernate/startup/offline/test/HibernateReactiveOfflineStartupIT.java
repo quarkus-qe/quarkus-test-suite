@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.bootstrap.PostgresqlService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnFipsAndJavaVersion;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.Dependency;
 import io.quarkus.test.services.QuarkusApplication;
@@ -18,6 +19,7 @@ import io.quarkus.ts.hibernate.startup.offline.test.reactive.ReactiveDatasourceC
 import io.quarkus.ts.hibernate.startup.offline.test.reactive.ReactiveResource;
 
 @QuarkusScenario
+@DisabledOnFipsAndJavaVersion(max = 24, reason = "QUARKUS-9772")
 public class HibernateReactiveOfflineStartupIT {
 
     @Container(image = "${postgresql.latest.image}", port = 5432, expectedLog = "listening on IPv4 address", builder = FixedPortResourceBuilder.class)
