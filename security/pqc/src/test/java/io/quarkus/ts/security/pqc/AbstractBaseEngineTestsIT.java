@@ -47,21 +47,37 @@ public abstract class AbstractBaseEngineTestsIT extends BaseVertX {
     }
 
     @Test
-    @DisabledIf("isOpenSsl35Available")
+    @DisabledIf("isPqcAvailable")
     void testQuarkusAppThrowErrorWithStrictWithNotAvailable35openSsl() {
         app.withProperty("quarkus.tls.pqc-enforcement-policy", "strict");
         assertThrows(AssertionFailedError.class, () -> app.start(),
-                "OpenSSL engine is not available, the Quarkus start should fail");
+                "Neither OpenSSL 3.5 nor JDK PQC is available, the Quarkus start should fail");
         app.logs().assertContains(getErrorMsg("STRICT"));
     }
 
     @Test
-    @DisabledIf("isOpenSsl35Available")
+    @DisabledIf("isPqcAvailable")
     void testQuarkusAppThrowErrorWithClientNegotiatedWithNotAvailable35openSsl() {
         app.withProperty("quarkus.tls.pqc-enforcement-policy", "client-negotiated");
         assertThrows(AssertionFailedError.class, () -> app.start(),
-                "OpenSSL engine is not available, the Quarkus start should fail");
+                "Neither OpenSSL 3.5 nor JDK PQC is available, the Quarkus start should fail");
         app.logs().assertContains(getErrorMsg("CLIENT_NEGOTIATED"));
+    }
+
+    @Test
+    @EnabledIf("isJdkPqcAvailable")
+    @DisabledIf("isOpenSsl35Available")
+    void testQuarkusAppWithStrictWhenJdkSupportsPqc() {
+        app.withProperty("quarkus.tls.pqc-enforcement-policy", "strict").start();
+        sendRequest(List.of("X25519MLKEM768"), app.getURI(Protocol.HTTPS) + "/hello");
+    }
+
+    @Test
+    @EnabledIf("isJdkPqcAvailable")
+    @DisabledIf("isOpenSsl35Available")
+    void testQuarkusAppWithClientNegotiatedWhenJdkSupportsPqc() {
+        app.withProperty("quarkus.tls.pqc-enforcement-policy", "client-negotiated").start();
+        sendRequest(List.of("X25519MLKEM768"), app.getURI(Protocol.HTTPS) + "/hello");
     }
 
     public String getErrorMsg(String pqcEnforcementPolicy) {

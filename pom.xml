@@ -318,7 +318,7 @@
                                 <!-- Oracle image - we aim to use same version as Dev Services for Oracle so that we only download one image -->
                                 <oracle.image>docker.io/gvenzl/oracle-free:23-slim-faststart</oracle.image>
                                 <db2.image>icr.io/db2_community/db2:12.1.0.0</db2.image>
-                                <mongodb.image>docker.io/library/mongo:8.3</mongodb.image>
+                                <mongodb.image>docker.io/library/mongo:9.0</mongodb.image>
                                 <redis.image>docker.io/library/redis:8</redis.image>
                                 <wiremock.image>docker.io/wiremock/wiremock:3x</wiremock.image>
                                 <!-- We're not allowed to use newer consul version than 1.16.4 due to changed license -->

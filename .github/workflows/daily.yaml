@@ -135,13 +135,14 @@ jobs:
           java-version: ${{ matrix.java }}
           check-latest: true
       - uses: ./.github/actions/cache-quarkus
+      - uses: ./.github/actions/prepare-quarkus-cli
       - uses: ./.github/actions/use-docker-mirror
       - uses: ./.github/actions/set-up-maven
       - name: Install Maven settings
         run: cp .github/mvn-settings.xml ~/.m2/settings.xml
       - name: Test in JVM mode
         run: |
-          mvn -fae -V -B -nsu --no-transfer-progress clean verify -P ${{ matrix.profiles }}
+          mvn -fae -V -B -nsu --no-transfer-progress clean verify -P ${{ matrix.profiles }} -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli"
       - uses: ./.github/actions/zip-and-archive
         name: Zip and archive artifacts
         if: failure()
@@ -347,10 +348,12 @@ jobs:
       - name: Install Maven settings
         run: cp .github/mvn-settings.xml ~/.m2/settings.xml
       - name: Test in Native mode
+        # kafka-producer excluded on AArch64 native due to Mandrel JDK 25 bug: https://github.com/quarkusio/quarkus/issues/54910
         run: |
           mvn -fae -V -B -nsu --no-transfer-progress -P ${{ matrix.profiles }} clean verify -Daarch64 -Dnative \
             -Dquarkus.native.builder-image=quay.io/quarkus/${{ matrix.image }} \
-            -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli"
+            -Dinclude.quarkus-cli-tests -Dts.quarkus.cli.cmd="${PWD}/quarkus-dev-cli" \
+            -pl !messaging/kafka-producer
       - uses: ./.github/actions/zip-and-archive
         name: Zip and archive artifacts
         if: failure()

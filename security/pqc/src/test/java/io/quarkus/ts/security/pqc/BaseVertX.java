@@ -116,4 +116,25 @@ public class BaseVertX {
     public static boolean isOpenSsl35Available() {
         return OpenSsl.isAvailable() && OpenSsl.version() >= 0x30500000L;
     }
+
+    public static boolean isJdkPqcAvailable() {
+        try {
+            var params = javax.net.ssl.SSLContext.getDefault().getSupportedSSLParameters();
+            var groups = params.getNamedGroups();
+            if (groups != null) {
+                for (String group : groups) {
+                    if ("X25519MLKEM768".equalsIgnoreCase(group)) {
+                        return true;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // ignore
+        }
+        return false;
+    }
+
+    public static boolean isPqcAvailable() {
+        return isOpenSsl35Available() || isJdkPqcAvailable();
+    }
 }
