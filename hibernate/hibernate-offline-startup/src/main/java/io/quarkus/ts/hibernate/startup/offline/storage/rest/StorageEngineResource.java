@@ -29,7 +29,7 @@ public class StorageEngineResource {
     @Path("/pu1/dialect")
     public String getPu1Dialect() {
         Dialect dialect = emPu1.getEntityManagerFactory().unwrap(SessionFactoryImpl.class).getJdbcServices().getDialect();
-        return dialect.getTableTypeString();
+        return dialect.tableCreationOptions();
     }
 
     @GET
@@ -45,7 +45,7 @@ public class StorageEngineResource {
     @Path("/pu2/dialect")
     public String getPu2Dialect() {
         Dialect dialect = emPu2.getEntityManagerFactory().unwrap(SessionFactoryImpl.class).getJdbcServices().getDialect();
-        return dialect.getTableTypeString();
+        return dialect.tableCreationOptions();
     }
 
     @GET

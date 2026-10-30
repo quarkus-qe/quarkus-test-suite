@@ -63,7 +63,7 @@ public class PanacheEndpoint {
         return Book.byId(id)
                 .map(book -> book == null
                         ? Response.status(Response.Status.NOT_FOUND)
-                        : Response.ok(book.getISBN()))
+                        : Response.ok(book.getIsbn()))
                 .map(Response.ResponseBuilder::build);
     }
 
@@ -72,7 +72,7 @@ public class PanacheEndpoint {
     public Uni<Response> changeISBN(Integer id, Long isbn) {
         return Book.byId(id)
                 .flatMap(book -> {
-                    book.setISBN(isbn);
+                    book.setIsbn(isbn);
                     return book.persistAndFlush();
                 })
                 .map(book -> book == null

@@ -20,9 +20,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -34,6 +31,9 @@ import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.junit5.VertxExtension;
+
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 /**
  * Integration test for multipart encoder mode handling in the REST client.
@@ -108,7 +108,7 @@ public class HttpMultipartEncodeModeAndContentIT {
                                             .setStatusCode(200)
                                             .putHeader(HttpHeaderNames.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                                             .end(mapper.writeValueAsString(new MyMultipartDTO(items)));
-                                } catch (JsonProcessingException e) {
+                                } catch (JacksonException e) {
                                     httpServerRequest.response().setStatusCode(500).end(e.getMessage());
                                 }
                             }

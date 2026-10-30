@@ -15,7 +15,7 @@ import io.quarkus.ts.security.vertx.model.Record;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import io.vertx.mutiny.redis.client.RedisAPI;
-import io.vertx.mutiny.redis.client.Response;
+import io.vertx.redis.client.Response;
 
 public abstract class AbstractRedisDao<E extends Record> {
 

@@ -8,7 +8,7 @@
     <name>Quarkus QE TS: Parent</name>
     <properties>
         <maven.compiler.parameters>true</maven.compiler.parameters>
-        <maven.compiler.release>17</maven.compiler.release>
+        <maven.compiler.release>21</maven.compiler.release>
         <gitflow-incremental-builder.version>4.8.0</gitflow-incremental-builder.version>
         <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -18,9 +18,9 @@
         <failsafe-plugin.version>3.6.1</failsafe-plugin.version>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-        <quarkus.platform.version>3.40.999-core-3.40-SNAPSHOT</quarkus.platform.version>
+        <quarkus.platform.version>999-core-main-SNAPSHOT</quarkus.platform.version>
         <quarkus.ide.version>3.30.0</quarkus.ide.version>
-        <quarkus.qe.framework.version>1.9.0.Beta9</quarkus.qe.framework.version>
+        <quarkus.qe.framework.version>999-SNAPSHOT</quarkus.qe.framework.version>
         <quarkus-qpid-jms.version>2.14.1</quarkus-qpid-jms.version>
         <confluent.kafka-avro-serializer.version>7.5.1</confluent.kafka-avro-serializer.version>
         <formatter-maven-plugin.version>2.29.0</formatter-maven-plugin.version>
@@ -28,7 +28,7 @@
         <xml-format-maven-plugin.version>4.1.0</xml-format-maven-plugin.version>
         <checkstyle.version>12.1.2</checkstyle.version>
         <jsoup.version>1.23.2</jsoup.version>
-        <quarkiverse.config.version>2.6.0</quarkiverse.config.version>
+        <quarkiverse.config.version>3.0.0.Beta1</quarkiverse.config.version>
         <quarkiverse.pact.version>1.6.1</quarkiverse.pact.version>
         <assertj.version>3.27.7</assertj.version>
         <htmlunit.version>5.6.0</htmlunit.version>
@@ -443,7 +443,7 @@
             <id>core-only</id>
             <properties>
                 <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-                <quarkus.platform.version>3.40.999-SNAPSHOT</quarkus.platform.version>
+                <quarkus.platform.version>999-SNAPSHOT</quarkus.platform.version>
                 <repository.update.policy>never</repository.update.policy>
             </properties>
         </profile>
@@ -578,6 +578,18 @@
                 <module>http/vertx</module>
                 <module>http/management</module>
                 <module>http/grpc</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>http-problem-modules</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>all-modules</name>
+                </property>
+            </activation>
+            <modules>
+                <module>env-info</module>
                 <module>http/http-problem</module>
             </modules>
         </profile>

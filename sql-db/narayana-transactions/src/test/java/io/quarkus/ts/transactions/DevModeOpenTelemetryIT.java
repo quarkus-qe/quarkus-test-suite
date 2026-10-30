@@ -39,7 +39,8 @@ public class DevModeOpenTelemetryIT {
 
     @DevModeQuarkusApplication
     static DevModeQuarkusService app = (DevModeQuarkusService) new DevModeQuarkusService()
-            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.exporter.otlp.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.traces.sampler.arg", "1.0d")
             .withProperty("quarkus.datasource.jdbc.telemetry", "true")
             .withProperty("quarkus.otel.enabled", "true")
             // TODO: remove once https://github.com/quarkusio/quarkus/issues/54953 is fixed

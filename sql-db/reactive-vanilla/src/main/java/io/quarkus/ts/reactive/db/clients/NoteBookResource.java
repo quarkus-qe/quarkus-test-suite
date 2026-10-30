@@ -16,14 +16,14 @@ import jakarta.ws.rs.core.UriInfo;
 import io.quarkus.ts.reactive.db.clients.model.Book;
 import io.quarkus.ts.reactive.db.clients.model.NoteBook;
 import io.smallrye.mutiny.Uni;
-import io.vertx.mutiny.mysqlclient.MySQLPool;
+import io.vertx.mutiny.sqlclient.Pool;
 
 @Path("/book/mysql")
 public class NoteBookResource extends CommonResource {
 
     @Inject
     @Named("mysql")
-    Instance<MySQLPool> mysql;
+    Instance<Pool> mysql;
 
     @GET
     @Produces(APPLICATION_JSON)

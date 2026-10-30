@@ -52,6 +52,6 @@ public class LocalEndpointsIT {
             }
         }
         assertNotNull(metric, "Metric 'http_server_requests_seconds_count' was not found in the response: " + body);
-        assertTrue(metric.endsWith("1.0"), "requests count is wrong: " + metric);
+        assertTrue(metric.endsWith(" 1"), "requests count is wrong: " + metric);
     }
 }

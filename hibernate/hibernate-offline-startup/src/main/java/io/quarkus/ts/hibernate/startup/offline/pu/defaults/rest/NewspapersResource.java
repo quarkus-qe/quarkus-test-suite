@@ -12,7 +12,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 
 import org.hibernate.SessionFactory;
-import org.hibernate.dialect.MariaDBDialect;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.jboss.resteasy.reactive.RestPath;
 
@@ -55,7 +54,7 @@ public class NewspapersResource {
     @Path("/dialect/max-varchar-length")
     @GET
     public int getMaxVarcharLength() {
-        var dialect = (MariaDBDialect) sessionFactory.unwrap(SessionFactoryImplementor.class).getJdbcServices().getDialect();
-        return dialect.getMaxVarcharLength();
+        var dialect = sessionFactory.unwrap(SessionFactoryImplementor.class).getJdbcServices().getDialect();
+        return dialect.getTypeSizingProfile().maxVarcharLength();
     }
 }

@@ -11,9 +11,9 @@ import java.util.concurrent.ExecutionException;
 
 import org.jboss.logging.Logger;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 class Session {
     private static final Logger LOG = Logger.getLogger(WebSocketIT.class);
@@ -86,7 +86,7 @@ class Session {
         return answers.stream().map(answer -> {
             try {
                 return mapper.readTree(answer);
-            } catch (JsonProcessingException e) {
+            } catch (JacksonException e) {
                 throw new RuntimeException(e);
             }
         })
@@ -98,7 +98,7 @@ class Session {
         String content = answers.get(answers.size() - 1);
         try {
             return mapper.readTree(content);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new RuntimeException("Error, while parsing the following json: '%s'".formatted(content), e);
         }
     }

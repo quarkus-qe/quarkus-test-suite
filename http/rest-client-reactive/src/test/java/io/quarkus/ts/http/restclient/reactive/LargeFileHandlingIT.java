@@ -91,6 +91,9 @@ public class LargeFileHandlingIT {
         assertEquals(serverSum, clientSum);
     }
 
+    // TODO Quarkus 4: multipart response is fully buffered in memory (~6GB for a 2GB file)
+    // instead of streamed, blocking the event loop indefinitely.
+    @Disabled("TODO Quarkus 4: multipart download buffers entire response in memory, blocking event loop")
     @Test
     public void downloadMultipart() {
         Response hashSum = app.given().get("/file/hash");

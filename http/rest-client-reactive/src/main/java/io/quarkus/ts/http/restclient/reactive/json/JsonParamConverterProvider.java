@@ -12,10 +12,9 @@ import jakarta.ws.rs.ext.Provider;
 
 import org.apache.commons.lang3.ClassUtils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.TypeFactory;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JavaType;
+import tools.jackson.databind.ObjectMapper;
 
 @Provider
 // This code is taken from https://github.com/pravussum/quarkus-query-param-repro
@@ -65,7 +64,7 @@ public class JsonParamConverterProvider implements ParamConverterProvider {
 
         public JsonParamConverter(ObjectMapper objectMapper, Class<T> rawType, Type genericType) {
             this.objectMapper = objectMapper;
-            this.genericType = genericType != null ? TypeFactory.defaultInstance().constructType(genericType) : null;
+            this.genericType = genericType != null ? objectMapper.getTypeFactory().constructType(genericType) : null;
             this.rawType = rawType;
         }
 
@@ -78,7 +77,7 @@ public class JsonParamConverterProvider implements ParamConverterProvider {
             try {
                 return genericType != null ? objectMapper.readValue(value, genericType)
                         : objectMapper.readValue(value, rawType);
-            } catch (JsonProcessingException e) {
+            } catch (JacksonException e) {
                 throw (new RuntimeException(e));
             }
         }
@@ -97,7 +96,7 @@ public class JsonParamConverterProvider implements ParamConverterProvider {
             }
             try {
                 return objectMapper.writeValueAsString(value);
-            } catch (JsonProcessingException e) {
+            } catch (JacksonException e) {
                 throw (new RuntimeException(e));
             }
         }

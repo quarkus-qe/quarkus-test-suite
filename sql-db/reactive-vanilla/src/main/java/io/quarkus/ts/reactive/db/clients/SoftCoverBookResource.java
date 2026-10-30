@@ -15,13 +15,13 @@ import jakarta.ws.rs.core.UriInfo;
 import io.quarkus.ts.reactive.db.clients.model.Book;
 import io.quarkus.ts.reactive.db.clients.model.SoftCoverBook;
 import io.smallrye.mutiny.Uni;
-import io.vertx.mutiny.pgclient.PgPool;
+import io.vertx.mutiny.sqlclient.Pool;
 
 @Path("/book/postgresql")
 public class SoftCoverBookResource extends CommonResource {
 
     @Inject
-    Instance<PgPool> postgresql;
+    Instance<Pool> postgresql;
 
     @GET
     @Produces(APPLICATION_JSON)

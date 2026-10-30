@@ -15,12 +15,12 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import io.quarkus.qe.hibernate.hql.HQLConsoleClient;
 import io.quarkus.test.bootstrap.LookupService;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
+
+import tools.jackson.databind.JsonNode;
 
 @Tag("QUARKUS-6243")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)

@@ -17,7 +17,7 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.services.containers.model.KafkaVendor;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.helpers.test.UniAssertSubscriber;
-import io.vertx.mutiny.core.buffer.Buffer;
+import io.vertx.core.buffer.Buffer;
 
 @OpenShiftScenario
 public class OpenShiftKafkaSnappyIT {

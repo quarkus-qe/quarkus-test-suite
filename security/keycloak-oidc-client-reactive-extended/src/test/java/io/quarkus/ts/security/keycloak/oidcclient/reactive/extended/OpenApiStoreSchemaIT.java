@@ -21,7 +21,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.jboss.logging.Logger;
 import org.junit.jupiter.api.Test;
-import org.yaml.snakeyaml.Yaml;
 
 import io.quarkus.test.bootstrap.KeycloakService;
 import io.quarkus.test.bootstrap.RestService;
@@ -30,6 +29,9 @@ import io.quarkus.test.services.KeycloakContainer;
 import io.quarkus.test.services.QuarkusApplication;
 import io.smallrye.openapi.runtime.io.Format;
 import io.vertx.core.json.JsonObject;
+
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.dataformat.yaml.YAMLMapper;
 
 @QuarkusScenario
 public class OpenApiStoreSchemaIT {
@@ -77,7 +79,8 @@ public class OpenApiStoreSchemaIT {
     }
 
     private JsonObject fromYaml(URI openApiYaml) throws IOException {
-        return JsonObject.mapFrom(new Yaml().loadAs(openApiYaml.toURL().openStream(), Map.class));
+        ObjectMapper yamlMapper = new YAMLMapper();
+        return JsonObject.mapFrom(yamlMapper.readValue(openApiYaml.toURL().openStream(), Map.class));
     }
 
     private JsonObject fromJson(URI openApiJson) throws IOException {
