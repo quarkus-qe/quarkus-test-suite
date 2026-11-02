@@ -497,6 +497,7 @@
                 <module>build-time-analytics</module>
                 <module>packaging/quarkus</module>
                 <module>packaging/jar</module>
+                <module>sbom/cyclonedx</module>
             </modules>
         </profile>
         <profile>
