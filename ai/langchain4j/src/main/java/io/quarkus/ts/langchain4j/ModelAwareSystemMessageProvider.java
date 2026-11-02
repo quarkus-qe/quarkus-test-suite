@@ -26,9 +26,6 @@ public class ModelAwareSystemMessageProvider implements SystemMessageProviderWit
             default -> "- you are powered by model %s from %s ".formatted(modelName, context.modelProvider());
         };
         builder.append(modelInfo);
-        if (modelName.contains("nano") || modelName.contains("mini") || modelName.contains("micro")) {
-            builder.append("- This is a resource-constrained model which may loose some context");
-        }
         if (context.defaultRequestParameters().temperature() > 0) {
             builder.append("- Your answers may include hallucinations");
         }
