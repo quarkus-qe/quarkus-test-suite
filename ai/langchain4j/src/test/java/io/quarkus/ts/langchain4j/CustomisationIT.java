@@ -2,9 +2,9 @@ package io.quarkus.ts.langchain4j;
 
 import static io.quarkus.ts.langchain4j.auxiliary.CommonTools.getKey;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -47,8 +47,8 @@ public class CustomisationIT {
         String unified = answer.toLowerCase();
         assertTrue(unified.contains("sam"), "System message was ignored! \n" + answer);
         assertTrue(unified.contains("openai"), "Answer doesn't contain provider name! \n" + answer);
-        assertTrue(unified.contains("constrained"), "System message about the model was not applied! \n" + answer);
-        assertFalse(unified.contains("hallucinat"), "Temperature overload was not applied! \n" + answer);
+        assertTrue(unified.contains("luna"), "Model name should contain luna! \n" + answer);
+        assertTrue(unified.contains("inaccurate"), "Temperature overload was applied! \n" + answer);
 
         // check, that builder was customised as well
         app.logs().assertContains("Customizing streaming chat model");
@@ -57,6 +57,7 @@ public class CustomisationIT {
     }
 
     @Test
+    @Disabled("https://community.openai.com/t/gpt-6-luna-returns-500-when-frequency-is-not-0/1412332")
     public void customisedPlainModel() {
         Response response = app.given().body("Write 'cells interlinked' and nothing else as a response").post("/plain-chat");
         assertEquals(200, response.statusCode());
