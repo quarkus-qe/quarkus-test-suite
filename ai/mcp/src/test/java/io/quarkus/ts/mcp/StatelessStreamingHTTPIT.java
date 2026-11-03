@@ -45,18 +45,17 @@ public class StatelessStreamingHTTPIT extends StatelessAdvancedMCPIT {
             @Dependency(artifactId = "quarkus-langchain4j-bom") }, dependencies = {
                     @Dependency(artifactId = "quarkus-rest-jackson"),
                     @Dependency(groupId = "io.quarkiverse.langchain4j", artifactId = "quarkus-langchain4j-mcp"),
-            }, classes = { MCPClient.class })
+            }, classes = { MCPClient.class }, properties = "http-client.properties")
     static final RestService client = new RestService()
-            .withProperties("mcp-2026-client.properties", "http-client.properties")
+            .withProperty("quarkus.langchain4j.mcp.filesystem.protocol-version", STATELESS_PROTOCOL_VERSION)
             .withProperty("quarkus.langchain4j.mcp.filesystem.url",
                     () -> server.getURI(Protocol.HTTP).withPath("/mcp").toString());
     @QuarkusApplication(boms = {
             @Dependency(artifactId = "quarkus-langchain4j-bom") }, dependencies = {
                     @Dependency(artifactId = "quarkus-rest-jackson"),
                     @Dependency(groupId = "io.quarkiverse.langchain4j", artifactId = "quarkus-langchain4j-mcp"),
-            }, classes = { MCPClient.class })
+            }, classes = { MCPClient.class }, properties = "http-client.properties")
     static final RestService automaticClient = new RestService()
-            .withProperties("http-client.properties")
             .withProperty("quarkus.langchain4j.mcp.filesystem.url",
                     () -> server.getURI(Protocol.HTTP).withPath("/mcp").toString());
 
@@ -135,7 +134,9 @@ public class StatelessStreamingHTTPIT extends StatelessAdvancedMCPIT {
                 Map.of("MCP-Protocol-Version", STATELESS_PROTOCOL_VERSION, "Mcp-Method", "server/discover"));
         response.then().statusCode(200);
         Assertions.assertNull(response.header("Mcp-Session-Id"));
-        Assertions.assertNotNull(new JsonObject(response.asString()).getJsonObject("result"), response::asString);
+        Assertions.assertNotNull(new JsonObject(response.asString()).getJsonObject("result"),
+                () -> "Missing result in server/discover response; JSON-RPC error: "
+                        + new JsonObject(response.asString()).getValue("error", "none"));
     }
 
     @Test

@@ -10,6 +10,7 @@ import static io.quarkus.ts.mcp.OIDCIT.NORMAL_USER;
 
 import java.util.List;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,10 @@ import io.restassured.specification.RequestSpecification;
 import io.vertx.core.json.JsonObject;
 
 @OpenShiftScenario
-public class OpenShiftOIDCIT extends StatefulMCPIT {
+public class OpenShiftOIDCIT extends BasicMCPIT {
+
+    // Change this value to exercise the same authentication checks with the older protocol.
+    static final String PROTOCOL_VERSION = "2026-07-28";
 
     @KeycloakContainer(runKeycloakInProdMode = true, image = "${rhbk.image}")
     static final KeycloakService keycloak = new KeycloakService(DEFAULT_REALM_FILE, DEFAULT_REALM, DEFAULT_REALM_BASE_PATH);
@@ -57,9 +61,9 @@ public class OpenShiftOIDCIT extends StatefulMCPIT {
                     @Dependency(artifactId = "quarkus-oidc"),
                     @Dependency(groupId = "io.quarkiverse.langchain4j", artifactId = "quarkus-langchain4j-mcp"),
                     @Dependency(groupId = "io.quarkiverse.langchain4j", artifactId = "quarkus-langchain4j-oidc-mcp-auth-provider")
-            }, classes = { MCPClient.class }, properties = "client.properties")
+            }, classes = { MCPClient.class }, properties = "http-client.properties")
     static final RestService client = new RestService()
-            .withProperties("mcp-2025-client.properties", "http-client.properties")
+            .withProperty("quarkus.langchain4j.mcp.filesystem.protocol-version", PROTOCOL_VERSION)
             .withProperty("quarkus.profile", "debug")
             .withProperty("quarkus.oidc.auth-server-url", keycloak::getRealmUrl)
             .withProperties(keycloak::getTlsProperties)
@@ -69,6 +73,22 @@ public class OpenShiftOIDCIT extends StatefulMCPIT {
                     () -> server.getURI(Protocol.HTTP).withPath("/mcp").toString());
 
     private AuthzClient authzClient;
+
+    @Override
+    @Test
+    public void protocolRevision() {
+        client().get("/mcp/tools").then().statusCode(200);
+        ProtocolAssertions.assertRevision(this::protocolObservations, PROTOCOL_VERSION);
+    }
+
+    @Override
+    @Test
+    public void readTemplatedResource() {
+        client().get("/mcp/resources/readFile/robot-readable.txt").then().statusCode(200)
+                .body(Matchers.equalTo("Hello, AI!"));
+        ProtocolAssertions.assertRevision(this::protocolObservations, PROTOCOL_VERSION);
+        // Protocol-specific logging is covered by the direct transport tests.
+    }
 
     @BeforeEach
     public void setup() {

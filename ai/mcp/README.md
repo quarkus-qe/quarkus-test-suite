@@ -3,8 +3,10 @@
 Tests MCP server features using Streamable HTTP, stdio and WebSocket. HTTP and
 stdio are standard MCP transports; WebSocket is a Quarkus extension.
 
-The existing scenarios use `2025-11-25`. The `Stateless*IT` scenarios use
-`2026-07-28`. Tests check actual protocol use through server observations or client initialization
+The original transport scenarios use `2025-11-25`. The `Stateless*IT` transport
+scenarios and the OIDC scenarios use `2026-07-28`. Each OIDC scenario has a
+`PROTOCOL_VERSION` constant to retarget its authentication checks to `2025-11-25`.
+Tests check actual protocol use through server observations or client initialization
 results; stdio forwards compact observations through stderr.
 
 - LangChain4j clients test tools, resources, prompts and dynamic tool changes.
@@ -23,11 +25,11 @@ runs as a native executable.
 Run the local JVM scenarios from the repository root:
 
 ```sh
-MAVEN_ARGS=-nsu mvn -nsu -s .github/mvn-settings.xml -pl ai/mcp \
-  -Dit.test=LocalStreamingHTTPIT,WebSocketIT,StdioIT,OIDCIT,OIDCClientIT,NamedOIDCClientIT \
+MAVEN_ARGS=-nsu mvn -s .github/mvn-settings.xml -pl ai/mcp \
+  -Dit.test=LocalStreamingHTTPIT,WebSocketIT,StdioIT \
   -Dreruns=0 -Dno-format verify
-MAVEN_ARGS=-nsu mvn -nsu -s .github/mvn-settings.xml -pl ai/mcp \
-  -Dit.test=StatelessStreamingHTTPIT,StatelessWebSocketIT,StatelessStdioIT,StatelessOIDCIT,StatelessOIDCClientIT,StatelessNamedOIDCClientIT \
+MAVEN_ARGS=-nsu mvn -s .github/mvn-settings.xml -pl ai/mcp \
+  -Dit.test=StatelessStreamingHTTPIT,StatelessWebSocketIT,StatelessStdioIT,OIDCIT,OIDCClientIT,NamedOIDCClientIT \
   -Dreruns=0 -Dno-format verify
 ```
 

@@ -49,7 +49,8 @@ public abstract class StatelessAdvancedMCPIT extends StatelessMCPIT {
             JsonObject selectedAck = selected.await(1);
             // Check the common notification envelope here; other checks focus on event kind and routing.
             Assertions.assertEquals("2.0", selectedAck.getString("jsonrpc"), "Unexpected notification JSON-RPC version");
-            Assertions.assertFalse(selectedAck.containsKey("id"), selectedAck::encode);
+            Assertions.assertFalse(selectedAck.containsKey("id"),
+                    "Subscription acknowledgement must not contain a request ID");
             assertSubscriptionNotification(selected, selectedAck, "notifications/subscriptions/acknowledged");
             Assertions.assertEquals(selectedFilters, selectedAck.getJsonObject("params").getJsonObject("notifications"));
             JsonObject filteredAck = filtered.await(1);
@@ -117,8 +118,12 @@ public abstract class StatelessAdvancedMCPIT extends StatelessMCPIT {
         JsonObject response = exchange(protocol, message(protocol, "tools/call", call("meta", new JsonObject()
                 .put("type", type).put("name", name).put("operation", operation))));
         JsonObject changed = response.getJsonObject("result");
-        Assertions.assertNotNull(changed, response::encode);
-        Assertions.assertEquals(false, changed.getBoolean("isError"), response::encode);
+        Assertions.assertNotNull(changed,
+                () -> "Missing tools/call result while trying to %s %s '%s'; JSON-RPC error: %s"
+                        .formatted(operation, type, name, response.getValue("error", "none")));
+        Assertions.assertEquals(false, changed.getBoolean("isError"),
+                () -> "Unexpected isError value while trying to %s %s '%s'; content: %s"
+                        .formatted(operation, type, name, changed.getValue("content", "none")));
     }
 
     @Test
@@ -138,7 +143,9 @@ public abstract class StatelessAdvancedMCPIT extends StatelessMCPIT {
             JsonObject params = call("sampled", new JsonObject().put("question", question));
             JsonObject firstResponse = exchange(protocol, message(protocol, "tools/call", params));
             JsonObject first = firstResponse.getJsonObject("result");
-            Assertions.assertNotNull(first, firstResponse::encode);
+            Assertions.assertNotNull(first,
+                    () -> "Sampling tool call returned no result; JSON-RPC error: "
+                            + firstResponse.getValue("error", "none"));
             Assertions.assertEquals("input_required", first.getString("resultType"));
             // Input-required is a different result family from discovery's complete result.
             Assertions.assertEquals("mcp",
@@ -172,7 +179,9 @@ public abstract class StatelessAdvancedMCPIT extends StatelessMCPIT {
             JsonObject firstResponse = exchange(protocol,
                     message(protocol, "tools/call", call("elicitation", new JsonObject())));
             JsonObject first = firstResponse.getJsonObject("result");
-            Assertions.assertNotNull(first, firstResponse::encode);
+            Assertions.assertNotNull(first,
+                    () -> "Form elicitation tool call returned no result; JSON-RPC error: "
+                            + firstResponse.getValue("error", "none"));
             Assertions.assertEquals("input_required", first.getString("resultType"));
             Assertions.assertEquals("qe-form-state", first.getString("requestState"));
             Assertions.assertEquals(Set.of("userInput"), first.getJsonObject("inputRequests").fieldNames());
