@@ -72,9 +72,10 @@ public abstract class StatelessMCPIT extends BasicMCPIT {
             // Validate the common response envelope and server identity here, rather than on every operation.
             Assertions.assertEquals("2.0", response.getString("jsonrpc"));
             Assertions.assertEquals(request.getValue("id"), response.getValue("id"));
-            Assertions.assertNull(response.getJsonObject("error"), response::encode);
+            Assertions.assertNull(response.getJsonObject("error"), "server/discover returned a JSON-RPC error");
             JsonObject discovery = response.getJsonObject("result");
-            Assertions.assertNotNull(discovery, response::encode);
+            Assertions.assertNotNull(discovery,
+                    () -> "Missing result in server/discover response; JSON-RPC error: " + response.getValue("error", "none"));
             Assertions.assertEquals("complete", discovery.getString("resultType"));
             JsonObject identity = discovery.getJsonObject("_meta").getJsonObject("io.modelcontextprotocol/serverInfo");
             Assertions.assertEquals("mcp", identity.getString("name"));
@@ -84,7 +85,8 @@ public abstract class StatelessMCPIT extends BasicMCPIT {
             Assertions.assertFalse(discovery.containsKey("serverInfo"));
             JsonObject capabilities = discovery.getJsonObject("capabilities");
             for (String capability : List.of("tools", "resources", "prompts", "logging", "completions")) {
-                Assertions.assertTrue(capabilities.containsKey(capability), discovery::encode);
+                Assertions.assertTrue(capabilities.containsKey(capability),
+                        () -> "Discovery did not advertise capability: " + capability);
             }
             Assertions.assertEquals(0L, discovery.getLong("ttlMs"));
             Assertions.assertEquals("public", discovery.getString("cacheScope"));
@@ -143,7 +145,9 @@ public abstract class StatelessMCPIT extends BasicMCPIT {
         for (int page = 0; page < 4; page++) {
             JsonObject response = exchange(protocol, message(protocol, "tools/list", params));
             JsonObject result = response.getJsonObject("result");
-            Assertions.assertNotNull(result, response::encode);
+            Assertions.assertNotNull(result,
+                    () -> "Missing result in tools/list response; JSON-RPC error: "
+                            + response.getValue("error", "none"));
             pages.add(result);
             String cursor = result.getString("nextCursor");
             if (cursor == null) {
@@ -169,7 +173,9 @@ public abstract class StatelessMCPIT extends BasicMCPIT {
         try (McpTestClient<?, ?> protocol = protocolClient()) {
             JsonObject response = exchange(protocol, message(protocol, "resources/list", new JsonObject()));
             JsonObject list = response.getJsonObject("result");
-            Assertions.assertNotNull(list, response::encode);
+            Assertions.assertNotNull(list,
+                    () -> "Missing result in resources/list response; JSON-RPC error: "
+                            + response.getValue("error", "none"));
             Assertions.assertEquals(List.of("file:///hello", "file:///number", "file:///separate"),
                     list.getJsonArray("resources").stream().map(resource -> ((JsonObject) resource).getString("uri")).toList());
             Assertions.assertEquals("complete", list.getString("resultType"));
@@ -184,7 +190,9 @@ public abstract class StatelessMCPIT extends BasicMCPIT {
             JsonObject response = exchange(protocol,
                     message(protocol, "resources/read", new JsonObject().put("uri", "file:///hello")));
             JsonObject read = response.getJsonObject("result");
-            Assertions.assertNotNull(read, response::encode);
+            Assertions.assertNotNull(read,
+                    () -> "Missing result in resources/read response for file:///hello; JSON-RPC error: "
+                            + response.getValue("error", "none"));
             Assertions.assertEquals(1, read.getJsonArray("contents").size());
             JsonObject content = read.getJsonArray("contents").getJsonObject(0);
             Assertions.assertEquals("file:///hello", content.getString("uri"));
@@ -201,7 +209,9 @@ public abstract class StatelessMCPIT extends BasicMCPIT {
             JsonObject response = exchange(protocol,
                     message(protocol, "resources/read", new JsonObject().put("uri", "file:///separate")));
             JsonObject read = response.getJsonObject("result");
-            Assertions.assertNotNull(read, response::encode);
+            Assertions.assertNotNull(read,
+                    () -> "Missing result in resources/read response for file:///separate; JSON-RPC error: "
+                            + response.getValue("error", "none"));
             Assertions.assertEquals(1, read.getJsonArray("contents").size());
             JsonObject content = read.getJsonArray("contents").getJsonObject(0);
             Assertions.assertEquals("file:///separate", content.getString("uri"));
@@ -218,7 +228,9 @@ public abstract class StatelessMCPIT extends BasicMCPIT {
             JsonObject response = exchange(protocol,
                     message(protocol, "resources/read", new JsonObject().put("uri", "file:///robot-readable.txt")));
             JsonObject read = response.getJsonObject("result");
-            Assertions.assertNotNull(read, response::encode);
+            Assertions.assertNotNull(read,
+                    () -> "Missing result in resources/read response for file:///robot-readable.txt; JSON-RPC error: "
+                            + response.getValue("error", "none"));
             Assertions.assertEquals(1, read.getJsonArray("contents").size());
             JsonObject content = read.getJsonArray("contents").getJsonObject(0);
             Assertions.assertEquals("file:///robot-readable.txt", content.getString("uri"));
@@ -234,7 +246,9 @@ public abstract class StatelessMCPIT extends BasicMCPIT {
         try (McpTestClient<?, ?> protocol = protocolClient()) {
             JsonObject response = exchange(protocol, message(protocol, "resources/templates/list", new JsonObject()));
             JsonObject templates = response.getJsonObject("result");
-            Assertions.assertNotNull(templates, response::encode);
+            Assertions.assertNotNull(templates,
+                    () -> "Missing result in resources/templates/list response; JSON-RPC error: "
+                            + response.getValue("error", "none"));
             Assertions.assertEquals("file:///{name}",
                     templates.getJsonArray("resourceTemplates").getJsonObject(0).getString("uriTemplate"));
             Assertions.assertEquals("complete", templates.getString("resultType"));
@@ -248,7 +262,9 @@ public abstract class StatelessMCPIT extends BasicMCPIT {
         try (McpTestClient<?, ?> protocol = protocolClient()) {
             JsonObject response = exchange(protocol, message(protocol, "prompts/list", new JsonObject()));
             JsonObject list = response.getJsonObject("result");
-            Assertions.assertNotNull(list, response::encode);
+            Assertions.assertNotNull(list,
+                    () -> "Missing result in prompts/list response; JSON-RPC error: "
+                            + response.getValue("error", "none"));
             Assertions.assertEquals(List.of("foodOrder", "meta"), list.getJsonArray("prompts").stream()
                     .map(prompt -> ((JsonObject) prompt).getString("name")).toList());
             Assertions.assertEquals("complete", list.getString("resultType"));
@@ -263,7 +279,9 @@ public abstract class StatelessMCPIT extends BasicMCPIT {
             JsonObject response = exchange(protocol, message(protocol, "prompts/get", new JsonObject().put("name", "meta")
                     .put("arguments", new JsonObject().put("type", "tool").put("name", "hammer").put("operation", "create"))));
             JsonObject prompt = response.getJsonObject("result");
-            Assertions.assertNotNull(prompt, response::encode);
+            Assertions.assertNotNull(prompt,
+                    () -> "Missing result in prompts/get response for meta; JSON-RPC error: "
+                            + response.getValue("error", "none"));
             Assertions.assertEquals("complete", prompt.getString("resultType"));
             Assertions.assertEquals(1, prompt.getJsonArray("messages").size());
             JsonObject user = prompt.getJsonArray("messages").getJsonObject(0);
@@ -283,7 +301,9 @@ public abstract class StatelessMCPIT extends BasicMCPIT {
                         .put("ref", new JsonObject().put("type", "ref/prompt").put("name", "foodOrder"))
                         .put("argument", new JsonObject().put("name", "food").put("value", entry.getKey()))));
                 JsonObject completed = response.getJsonObject("result");
-                Assertions.assertNotNull(completed, response::encode);
+                Assertions.assertNotNull(completed,
+                        () -> "Missing result in completion/complete response; JSON-RPC error: "
+                                + response.getValue("error", "none"));
                 Assertions.assertEquals("complete", completed.getString("resultType"));
                 Assertions.assertEquals(entry.getValue(),
                         completed.getJsonObject("completion").getJsonArray("values").getList(),
@@ -322,11 +342,14 @@ public abstract class StatelessMCPIT extends BasicMCPIT {
     }
 
     static void assertError(JsonObject response, int code, String message) {
-        Assertions.assertFalse(response.containsKey("result"), response::encode);
+        Assertions.assertFalse(response.containsKey("result"), "JSON-RPC error response must not contain a result");
         JsonObject error = response.getJsonObject("error");
-        Assertions.assertNotNull(error, response::encode);
-        Assertions.assertEquals(code, error.getInteger("code"), response::encode);
-        Assertions.assertTrue(error.getString("message").contains(message), response::encode);
+        Assertions.assertNotNull(error, () -> "Expected JSON-RPC error " + code + ", but response has no error");
+        Assertions.assertEquals(code, error.getInteger("code"),
+                () -> "Unexpected JSON-RPC error code; server error: " + error);
+        Assertions.assertTrue(error.getString("message").contains(message),
+                () -> "Expected JSON-RPC error message to contain '" + message
+                        + "'; received: " + error.getString("message"));
     }
 
     @Override
