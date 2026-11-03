@@ -49,7 +49,7 @@ public class WebSocketIT extends StatefulMCPIT {
                     @Dependency(groupId = "io.quarkiverse.langchain4j", artifactId = "quarkus-langchain4j-mcp"),
             }, classes = { MCPClient.class })
     static final RestService client = new RestService()
-            .withProperties("mcp-2025-client.properties")
+            .withProperty("quarkus.langchain4j.mcp.filesystem.protocol-version", STATEFUL_PROTOCOL_VERSION)
             .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "websocket")
             .withProperty("quarkus.langchain4j.mcp.filesystem.url",
                     () -> getUrl(server));
@@ -125,8 +125,9 @@ public class WebSocketIT extends StatefulMCPIT {
             JsonObject response = protocol.waitForResponse(request);
             Assertions.assertEquals("2.0", response.getString("jsonrpc"));
             Assertions.assertEquals(request.getValue("id"), response.getValue("id"));
-            Assertions.assertNull(response.getJsonObject("error"), response::encode);
-            Assertions.assertNotNull(response.getJsonObject("result"), response::encode);
+            Assertions.assertNull(response.getJsonObject("error"), "tools/list returned a JSON-RPC error");
+            Assertions.assertNotNull(response.getJsonObject("result"),
+                    () -> "Missing result in tools/list response; JSON-RPC error: " + response.getValue("error", "none"));
         }
     }
 
@@ -157,7 +158,8 @@ public class WebSocketIT extends StatefulMCPIT {
         for (int page = 0; page < 4; page++) {
             JsonObject response = request(protocol, "tools/list", params);
             JsonObject result = response.getJsonObject("result");
-            Assertions.assertNotNull(result, response::encode);
+            Assertions.assertNotNull(result,
+                    () -> "Missing result in tools/list response; JSON-RPC error: " + response.getValue("error", "none"));
             pages.add(result);
             String cursor = result.getString("nextCursor");
             if (cursor == null) {
@@ -190,8 +192,12 @@ public class WebSocketIT extends StatefulMCPIT {
             } finally {
                 JsonObject unsubscribed = request(protocol, "resources/unsubscribe",
                         new JsonObject().put("uri", "file:///number"));
-                Assertions.assertNotNull(unsubscribed.getJsonObject("result"), unsubscribed::encode);
-                Assertions.assertTrue(unsubscribed.getJsonObject("result").isEmpty(), unsubscribed::encode);
+                Assertions.assertNotNull(unsubscribed.getJsonObject("result"),
+                        () -> "Missing result in resources/unsubscribe response; JSON-RPC error: "
+                                + unsubscribed.getValue("error", "none"));
+                Assertions.assertTrue(unsubscribed.getJsonObject("result").isEmpty(),
+                        () -> "Unexpected fields in resources/unsubscribe result: "
+                                + unsubscribed.getJsonObject("result").fieldNames());
             }
         }
     }
@@ -200,7 +206,9 @@ public class WebSocketIT extends StatefulMCPIT {
     void promptNotifications() {
         try (McpWebSocketTestClient protocol = protocolClient()) {
             JsonObject before = request(protocol, "prompts/list", new JsonObject());
-            Assertions.assertNotNull(before.getJsonObject("result"), before::encode);
+            Assertions.assertNotNull(before.getJsonObject("result"),
+                    () -> "Missing prompts/list result before prompt creation; JSON-RPC error: "
+                            + before.getValue("error", "none"));
             Assertions.assertEquals(List.of("foodOrder", "meta"),
                     before.getJsonObject("result").getJsonArray("prompts").stream()
                             .map(prompt -> ((JsonObject) prompt).getString("name")).toList());
@@ -210,7 +218,9 @@ public class WebSocketIT extends StatefulMCPIT {
                 Assertions.assertEquals("notifications/prompts/list_changed",
                         protocol.waitForNotifications(count + 1).notifications().get(count).getString("method"));
                 JsonObject created = request(protocol, "prompts/list", new JsonObject());
-                Assertions.assertNotNull(created.getJsonObject("result"), created::encode);
+                Assertions.assertNotNull(created.getJsonObject("result"),
+                        () -> "Missing prompts/list result after prompt creation; JSON-RPC error: "
+                                + created.getValue("error", "none"));
                 Assertions.assertEquals(List.of("foodOrder", "meta", "about-greeter"),
                         created.getJsonObject("result").getJsonArray("prompts").stream()
                                 .map(prompt -> ((JsonObject) prompt).getString("name")).toList());
@@ -220,7 +230,9 @@ public class WebSocketIT extends StatefulMCPIT {
             Assertions.assertEquals("notifications/prompts/list_changed",
                     protocol.waitForNotifications(count + 2).notifications().get(count + 1).getString("method"));
             JsonObject deleted = request(protocol, "prompts/list", new JsonObject());
-            Assertions.assertNotNull(deleted.getJsonObject("result"), deleted::encode);
+            Assertions.assertNotNull(deleted.getJsonObject("result"),
+                    () -> "Missing prompts/list result after prompt deletion; JSON-RPC error: "
+                            + deleted.getValue("error", "none"));
             Assertions.assertEquals(List.of("foodOrder", "meta"),
                     deleted.getJsonObject("result").getJsonArray("prompts").stream()
                             .map(prompt -> ((JsonObject) prompt).getString("name")).toList());
@@ -359,8 +371,10 @@ public class WebSocketIT extends StatefulMCPIT {
 
     static void assertText(JsonObject response, String text) {
         JsonObject result = response.getJsonObject("result");
-        Assertions.assertNotNull(result, response::encode);
-        Assertions.assertEquals(false, result.getBoolean("isError"), response::encode);
+        Assertions.assertNotNull(result,
+                () -> "Missing result in tools/call response; JSON-RPC error: " + response.getValue("error", "none"));
+        Assertions.assertEquals(false, result.getBoolean("isError"),
+                () -> "Unexpected isError value in tool result; content: " + result.getValue("content", "none"));
         Assertions.assertEquals(1, result.getJsonArray("content").size());
         Assertions.assertEquals("text", result.getJsonArray("content").getJsonObject(0).getString("type"));
         Assertions.assertEquals(text, result.getJsonArray("content").getJsonObject(0).getString("text"));

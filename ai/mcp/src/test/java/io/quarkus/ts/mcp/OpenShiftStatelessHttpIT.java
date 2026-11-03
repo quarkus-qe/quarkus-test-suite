@@ -28,9 +28,9 @@ public class OpenShiftStatelessHttpIT extends StatelessStreamingHTTPIT {
             @Dependency(artifactId = "quarkus-langchain4j-bom") }, dependencies = {
                     @Dependency(artifactId = "quarkus-rest-jackson"),
                     @Dependency(groupId = "io.quarkiverse.langchain4j", artifactId = "quarkus-langchain4j-mcp"),
-            }, classes = { MCPClient.class })
+            }, classes = { MCPClient.class }, properties = "http-client.properties")
     static final RestService client = new RestService()
-            .withProperties("mcp-2026-client.properties", "http-client.properties")
+            .withProperty("quarkus.langchain4j.mcp.filesystem.protocol-version", STATELESS_PROTOCOL_VERSION)
             .withProperty("quarkus.langchain4j.mcp.filesystem.url",
                     () -> server.getURI(Protocol.HTTP).withPath("/mcp").toString());
 
@@ -38,9 +38,8 @@ public class OpenShiftStatelessHttpIT extends StatelessStreamingHTTPIT {
             @Dependency(artifactId = "quarkus-langchain4j-bom") }, dependencies = {
                     @Dependency(artifactId = "quarkus-rest-jackson"),
                     @Dependency(groupId = "io.quarkiverse.langchain4j", artifactId = "quarkus-langchain4j-mcp"),
-            }, classes = { MCPClient.class })
+            }, classes = { MCPClient.class }, properties = "http-client.properties")
     static final RestService automaticClient = new RestService()
-            .withProperties("http-client.properties")
             .withProperty("quarkus.langchain4j.mcp.filesystem.url",
                     () -> server.getURI(Protocol.HTTP).withPath("/mcp").toString());
 
