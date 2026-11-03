@@ -13,7 +13,7 @@ import io.quarkus.test.services.QuarkusApplication;
 
 @DisabledOnNative(reason = "PQC is not supported on native yet")
 @DisabledOnOs(OS.WINDOWS)
-@DisabledOnFips(reason = "FIPS not support X25519 algorithm")
+@DisabledOnFips(reason = "FIPS doesn't support X25519 algorithm")
 @Tag("QUARKUS-7367")
 @QuarkusScenario
 public class DefaultEngineTestsIT extends AbstractBaseEngineTestsIT {
