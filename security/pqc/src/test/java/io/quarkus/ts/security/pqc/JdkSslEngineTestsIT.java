@@ -16,12 +16,14 @@ import org.opentest4j.AssertionFailedError;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnFips;
 import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.Certificate;
 import io.quarkus.test.services.QuarkusApplication;
 
 @DisabledOnNative(reason = "PQC is not supported on native yet")
 @DisabledOnOs(OS.WINDOWS)
+@DisabledOnFips(reason = "FIPS not support X25519 algorithm")
 @Tag("QUARKUS-7367")
 @QuarkusScenario
 public class JdkSslEngineTestsIT extends BaseVertX {
