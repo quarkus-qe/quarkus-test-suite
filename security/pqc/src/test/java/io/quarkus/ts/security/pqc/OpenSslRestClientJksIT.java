@@ -16,7 +16,7 @@ import io.quarkus.ts.security.pqc.annotations.DisabledOnSsl35AndLower;
 @DisabledOnNative(reason = "PQC is not supported on native yet")
 @DisabledOnOs(OS.WINDOWS)
 @DisabledOnSsl35AndLower(reason = "PQC is not supported on system which don't have OpenSSL 3.5+")
-@DisabledOnFips(reason = "FIPS not support X25519 algorithm")
+@DisabledOnFips(reason = "FIPS doesn't support X25519 algorithm")
 @Tag("QUARKUS-7367")
 @QuarkusScenario
 public class OpenSslRestClientJksIT extends AbstractOpenSslRestClientIT {
