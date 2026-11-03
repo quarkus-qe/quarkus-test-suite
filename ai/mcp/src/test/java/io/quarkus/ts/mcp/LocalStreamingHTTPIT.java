@@ -41,9 +41,9 @@ public class LocalStreamingHTTPIT extends StatefulMCPIT {
             @Dependency(artifactId = "quarkus-langchain4j-bom") }, dependencies = {
                     @Dependency(artifactId = "quarkus-rest"),
                     @Dependency(groupId = "io.quarkiverse.langchain4j", artifactId = "quarkus-langchain4j-mcp"),
-            }, classes = { MCPClient.class })
+            }, classes = { MCPClient.class }, properties = "http-client.properties")
     static final RestService client = new RestService()
-            .withProperties("mcp-2025-client.properties", "http-client.properties")
+            .withProperty("quarkus.langchain4j.mcp.filesystem.protocol-version", STATEFUL_PROTOCOL_VERSION)
             .withProperty("quarkus.langchain4j.mcp.filesystem.url",
                     () -> server.getURI(Protocol.HTTP).withPath("/mcp").toString());
     private static final int NUMBER_OF_TOOLS = 4; // tools, declared or created in FileServer class
@@ -53,7 +53,7 @@ public class LocalStreamingHTTPIT extends StatefulMCPIT {
     }
 
     // Java SDK coverage stays on MCP 2025-11-25: SDK 2.0.1 does not support 2026-07-28.
-    // Extend these independent checks once a released SDK supports the newer protocol.
+    // TODO: Extend these independent checks after upgrading to a released SDK that supports 2026-07-28.
     private McpSyncClient sdkClient() {
         McpClientTransport transport = HttpClientStreamableHttpTransport
                 .builder(serverApp().getURI(Protocol.HTTP).toString())
