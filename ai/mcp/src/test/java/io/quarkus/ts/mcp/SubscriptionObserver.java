@@ -63,11 +63,11 @@ interface SubscriptionObserver extends AutoCloseable {
         };
     }
 
-    // McpAssured's installed HTTP disconnect API does not close a subscription stream.
-    // Own the HTTP body explicitly so close() releases the server-side subscription.
-    // https://github.com/quarkiverse/quarkus-mcp-server/issues/1082
-    // Once fixed, replace HttpSubscriptionObserver with McpAssured stream handling,
-    // preserving HTTP cancellation by stream closure rather than notifications/cancelled.
+    // Own the HTTP body so close() releases the subscription with older MCP Server versions.
+    // TODO: Replace with McpAssured stream handling after the MCP Server update:
+    // https://redhat.atlassian.net/browse/QUARKUS-9918
+    // Upstream fix: https://github.com/quarkiverse/quarkus-mcp-server/issues/1082
+    // Preserve HTTP cancellation by stream closure rather than notifications/cancelled.
     static SubscriptionObserver openHttp(URI endpoint, JsonObject request) {
         return new HttpSubscriptionObserver(endpoint, request);
     }
