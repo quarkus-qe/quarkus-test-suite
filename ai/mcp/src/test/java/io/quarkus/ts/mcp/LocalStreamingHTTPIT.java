@@ -52,8 +52,9 @@ public class LocalStreamingHTTPIT extends StatefulMCPIT {
         return server;
     }
 
-    // Java SDK coverage stays on MCP 2025-11-25: SDK 2.0.1 does not support 2026-07-28.
-    // TODO: Extend these independent checks after upgrading to a released SDK that supports 2026-07-28.
+    // Independent Java SDK interoperability coverage remains useful on MCP 2025-11-25.
+    // SDK 2.0.1 does not support 2026-07-28.
+    // TODO: Extend these checks after upgrading to a released SDK client that supports 2026-07-28.
     private McpSyncClient sdkClient() {
         McpClientTransport transport = HttpClientStreamableHttpTransport
                 .builder(serverApp().getURI(Protocol.HTTP).toString())

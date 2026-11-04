@@ -155,9 +155,7 @@ public class StatelessStreamingHTTPIT extends StatelessAdvancedMCPIT {
         Map<String, String> missingRevision = new HashMap<>(headers);
         missingRevision.remove("MCP-Protocol-Version");
         Response missingRevisionResponse = rawPost(request, missingRevision);
-        // TODO: Uncomment the assertion below once https://github.com/quarkiverse/quarkus-mcp-server/issues/1083 is fixed.
-        // Currently returns HTTP 200 instead of 400 / -32020
-        // assertHttpError(missingRevisionResponse, -32020, "Missing required header: Mcp-Protocol-Version");
+        assertHttpError(missingRevisionResponse, -32020, "Missing required header: Mcp-Protocol-Version");
         for (String required : List.of("Mcp-Method", "Mcp-Name")) {
             Map<String, String> omitted = new HashMap<>(headers);
             omitted.remove(required);
@@ -198,8 +196,7 @@ public class StatelessStreamingHTTPIT extends StatelessAdvancedMCPIT {
         JsonObject removed = rawMessage("initialize", new JsonObject().put("protocolVersion", STATELESS_PROTOCOL_VERSION));
         Response response = rawPost(removed,
                 Map.of("MCP-Protocol-Version", STATELESS_PROTOCOL_VERSION, "Mcp-Method", "initialize"));
-        // TODO: Intentionally not checking returned status code - should be 404 but is 200
-        // See https://github.com/quarkiverse/quarkus-mcp-server/issues/1081
+        response.then().statusCode(404);
         assertError(new JsonObject(response.asString()), -32601, "initialize");
     }
 
@@ -246,8 +243,8 @@ public class StatelessStreamingHTTPIT extends StatelessAdvancedMCPIT {
 
     @Override
     protected SubscriptionObserver subscribe(McpTestClient<?, ?> protocol, JsonObject request) {
-        return SubscriptionObserver.openHttp(URI.create(serverApp().getURI(Protocol.HTTP).withPath("/mcp").toString()),
-                request);
+        // Each HTTP subscription owns a client so closing it releases only that subscription's stream.
+        return SubscriptionObserver.openHttp(protocolClient(), request);
     }
 
     @Override
