@@ -28,4 +28,20 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <profiles>
+        <profile>
+            <!-- Skip native build on AArch64 due to Mandrel JDK 25 bug: https://github.com/quarkusio/quarkus/issues/54910 -->
+            <id>skip-native-aarch64</id>
+            <activation>
+                <property>
+                    <name>aarch64</name>
+                </property>
+            </activation>
+            <properties>
+                <quarkus.build.skip>true</quarkus.build.skip>
+                <skipTests>true</skipTests>
+                <skipITs>true</skipITs>
+            </properties>
+        </profile>
+    </profiles>
 </project>
