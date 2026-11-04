@@ -1097,6 +1097,19 @@
                     <value>fips</value>
                 </property>
             </activation>
+            <properties>
+                <!--
+                  https://redhat.atlassian.net/browse/MANDREL-414
+                  Workaround for RH JDK 25.0.5 FIPS regression (co-regression with JEP 527):
+                  SunPKCS11-FIPS at provider position 1 (fips.properties) blocks ML-KEM-768 and
+                  X25519 KeyPairGenerator lookups, which JEP 527 (X25519MLKEM768 hybrid TLS) calls
+                  unconditionally at class-init time, breaking every TLS 1.3 handshake.
+                  Disabling the hybrid group at both build time (-J) and runtime (-D) prevents
+                  SupportedGroups from registering X25519MLKEM768 at all.
+                  TODO: Remove when RH JDK/Mandrel 25.0.x ships a fix for fips.properties or HybridProvider.
+                -->
+                <quarkus.native.additional-build-args-append>-J-Djdk.tls.namedGroups=secp256r1\,secp384r1\,secp521r1\,x25519\,x448\,ffdhe2048\,ffdhe3072\,ffdhe4096\,ffdhe6144\,ffdhe8192,-Djdk.tls.namedGroups=secp256r1\,secp384r1\,secp521r1\,x25519\,x448\,ffdhe2048\,ffdhe3072\,ffdhe4096\,ffdhe6144\,ffdhe8192</quarkus.native.additional-build-args-append>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
