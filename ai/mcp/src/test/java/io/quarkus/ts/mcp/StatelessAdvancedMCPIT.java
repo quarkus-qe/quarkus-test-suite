@@ -357,8 +357,9 @@ public abstract class StatelessAdvancedMCPIT extends StatelessMCPIT {
                         kind + " notifications reached the change subscription: " + observer.notifications()));
     }
 
+    // Upstream fix: https://github.com/quarkiverse/quarkus-mcp-server/issues/1076
     @Test
-    @Disabled("https://github.com/quarkiverse/quarkus-mcp-server/issues/1076: log notifications emitted without request opt-in")
+    @Disabled("https://redhat.atlassian.net/browse/QUARKUS-9918: awaiting the MCP Server update")
     public void loggingRequiresOptIn() {
         try (McpTestClient<?, ?> protocol = protocolClient()) {
             int before = protocol.snapshot().notifications().size();
