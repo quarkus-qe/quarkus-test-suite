@@ -9,7 +9,6 @@ import java.util.Set;
 
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkiverse.mcp.server.test.McpAssured.McpTestClient;
@@ -358,7 +357,6 @@ public abstract class StatelessAdvancedMCPIT extends StatelessMCPIT {
     }
 
     @Test
-    @Disabled("https://github.com/quarkiverse/quarkus-mcp-server/issues/1076: log notifications emitted without request opt-in")
     public void loggingRequiresOptIn() {
         try (McpTestClient<?, ?> protocol = protocolClient()) {
             int before = protocol.snapshot().notifications().size();
