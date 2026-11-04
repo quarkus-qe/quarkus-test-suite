@@ -81,8 +81,10 @@ public abstract class StatelessMCPIT extends BasicMCPIT {
             Assertions.assertEquals("mcp", identity.getString("name"));
             Assertions.assertFalse(identity.getString("version").isBlank());
             Assertions.assertEquals(ADVERTISED_REVISIONS, discovery.getJsonArray("supportedVersions").getList());
-            Assertions.assertFalse(discovery.containsKey("protocolVersion"));
-            Assertions.assertFalse(discovery.containsKey("serverInfo"));
+            Assertions.assertFalse(discovery.containsKey("protocolVersion"),
+                    "Discovery contains the older initialize field 'protocolVersion'");
+            Assertions.assertFalse(discovery.containsKey("serverInfo"),
+                    "Discovery contains the older initialize field 'serverInfo'");
             JsonObject capabilities = discovery.getJsonObject("capabilities");
             for (String capability : List.of("tools", "resources", "prompts", "logging", "completions")) {
                 Assertions.assertTrue(capabilities.containsKey(capability),
