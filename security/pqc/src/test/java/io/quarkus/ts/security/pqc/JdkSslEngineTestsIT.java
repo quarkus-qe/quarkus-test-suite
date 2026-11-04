@@ -7,7 +7,9 @@ import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
 import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.EnabledIf;
 import org.junit.jupiter.api.condition.OS;
 import org.opentest4j.AssertionFailedError;
 
@@ -39,6 +41,7 @@ public class JdkSslEngineTestsIT extends BaseVertX {
     }
 
     @Test
+    @DisabledIf("isJdkPqcAvailable")
     void testQuarkusAppThrowErrorWithStrict() {
         app.withProperty("quarkus.tls.pqc-enforcement-policy", "strict");
         assertThrows(AssertionFailedError.class, () -> app.start(),
@@ -47,11 +50,26 @@ public class JdkSslEngineTestsIT extends BaseVertX {
     }
 
     @Test
+    @EnabledIf("isJdkPqcAvailable")
+    void testQuarkusAppWithStrictWhenJdkSupportsPqc() {
+        app.withProperty("quarkus.tls.pqc-enforcement-policy", "strict").start();
+        sendRequest(List.of("X25519MLKEM768"), app.getURI(Protocol.HTTPS) + "/hello");
+    }
+
+    @Test
+    @DisabledIf("isJdkPqcAvailable")
     void testQuarkusAppThrowErrorWithClientNegotiated() {
         app.withProperty("quarkus.tls.pqc-enforcement-policy", "client-negotiated");
         assertThrows(AssertionFailedError.class, () -> app.start(),
                 "JdkSsl engine not support PQC yet, the Quarkus start should fail");
         app.logs().assertContains(ERROR_LOG_CLIENT_NEGOTIATED);
+    }
+
+    @Test
+    @EnabledIf("isJdkPqcAvailable")
+    void testQuarkusAppWithClientNegotiatedWhenJdkSupportsPqc() {
+        app.withProperty("quarkus.tls.pqc-enforcement-policy", "client-negotiated").start();
+        sendRequest(List.of("X25519MLKEM768"), app.getURI(Protocol.HTTPS) + "/hello");
     }
 
     @Test
