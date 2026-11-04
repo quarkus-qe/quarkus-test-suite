@@ -116,4 +116,14 @@ public class BaseVertX {
     public static boolean isOpenSsl35Available() {
         return OpenSsl.isAvailable() && OpenSsl.version() >= 0x30500000L;
     }
+
+    // JDK PQC backport is in 25.0.5 and better (JDK 21 will come with 21.0.14).
+    public static boolean isJdkPqcAvailable() {
+        var version = Runtime.version();
+        return version.feature() >= 25 && version.update() >= 5;
+    }
+
+    public static boolean isPqcAvailable() {
+        return isOpenSsl35Available() || isJdkPqcAvailable();
+    }
 }
