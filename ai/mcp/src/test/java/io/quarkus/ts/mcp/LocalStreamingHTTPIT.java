@@ -82,17 +82,13 @@ public class LocalStreamingHTTPIT extends StatefulMCPIT {
         try (McpSyncClient thirdPartyClient = sdkClient()) {
             Assertions.assertEquals("2025-11-25", thirdPartyClient.initialize().protocolVersion());
 
-            McpSchema.ListToolsResult toolsResult = thirdPartyClient.listTools();
-            List<McpSchema.Tool> tools = new ArrayList<>(toolsResult.tools());
+            McpSchema.ListToolsResult firstPage = thirdPartyClient.listTools(McpSchema.FIRST_PAGE);
+            Assertions.assertNotNull(firstPage.nextCursor(), "Expected a second page for four tools with page size two");
+            McpSchema.ListToolsResult secondPage = thirdPartyClient.listTools(firstPage.nextCursor());
+            Assertions.assertNull(secondPage.nextCursor(), "Expected exactly two tool pages");
 
-            String cursor = toolsResult.nextCursor();
-            for (int page = 1; cursor != null && page < NUMBER_OF_TOOLS; page++) {
-                toolsResult = thirdPartyClient.listTools(cursor);
-                tools.addAll(toolsResult.tools());
-                cursor = toolsResult.nextCursor();
-            }
-
-            Assertions.assertNull(cursor, "Fixture tool listing did not terminate");
+            List<McpSchema.Tool> tools = new ArrayList<>(firstPage.tools());
+            tools.addAll(secondPage.tools());
             Assertions.assertEquals(NUMBER_OF_TOOLS, tools.size());
         }
     }

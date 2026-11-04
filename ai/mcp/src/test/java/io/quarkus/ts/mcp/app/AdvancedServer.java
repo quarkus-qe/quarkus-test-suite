@@ -29,6 +29,7 @@ import io.smallrye.mutiny.Uni;
 public class AdvancedServer {
     @Tool(description = "Ask the AI asynchronously")
     Uni<String> sampled(String question, Sampling sampling) {
+        // Preserve the older-protocol text fallback; newer requests use the builder's missing-capability error.
         if (!sampling.isSupported() && sampling.isServerInitiatedRequestSupported()) {
             return Uni.createFrom().item("Sampling not supported");
         }
@@ -62,6 +63,7 @@ public class AdvancedServer {
 
     @Tool(description = "Greet user")
     String elicitation(Elicitation elicitation) {
+        // Preserve the older-protocol text fallback; newer requests use the builder's missing-capability error.
         if (!elicitation.isFormModeSupported() && elicitation.isServerInitiatedRequestSupported()) {
             return "Elicitation not supported";
         }
