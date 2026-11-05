@@ -56,6 +56,22 @@ public class FileResource {
     }
 
     @POST
+    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("/upload-input-stream")
+    public Uni<String> uploadInputStream(File body) {
+        return upload(body);
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("/upload-input-stream-blocking")
+    public Uni<String> uploadInputStreamBlocking(File body) {
+        return upload(body);
+    }
+
+    @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/upload-multipart")

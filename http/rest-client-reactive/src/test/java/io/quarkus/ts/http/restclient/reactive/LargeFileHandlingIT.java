@@ -17,6 +17,7 @@ import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -139,6 +140,34 @@ public class LargeFileHandlingIT {
         String before = hashSum.body().asString();
 
         Response upload = app.given().post("/file-client/upload-file");
+        assertEquals(HttpStatus.SC_OK, upload.statusCode());
+        String after = upload.body().asString();
+
+        assertEquals(before, after);
+    }
+
+    @Test
+    @Tag("QQE-614")
+    public void uploadInputStreamThroughClient() {
+        Response hashSum = app.given().get("/file-client/client-hash");
+        assertEquals(HttpStatus.SC_OK, hashSum.statusCode());
+        String before = hashSum.body().asString();
+
+        Response upload = app.given().post("/file-client/upload-input-stream");
+        assertEquals(HttpStatus.SC_OK, upload.statusCode());
+        String after = upload.body().asString();
+
+        assertEquals(before, after);
+    }
+
+    @Test
+    @Tag("QQE-614")
+    public void uploadInputStreamThroughBlockingClient() {
+        Response hashSum = app.given().get("/file-client/client-hash");
+        assertEquals(HttpStatus.SC_OK, hashSum.statusCode());
+        String before = hashSum.body().asString();
+
+        Response upload = app.given().post("/file-client/upload-input-stream-blocking");
         assertEquals(HttpStatus.SC_OK, upload.statusCode());
         String after = upload.body().asString();
 

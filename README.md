@@ -479,6 +479,7 @@ HTTP/2 REST client tests check sync and async response by:
 - Two endpoint used by client
 - Eight endpoints used for validation of client request
 2. Reflection-free serialization and deserialization (enabled with special option) and a test to verify that this feature is really enabled.
+3. Sending `InputStream` as a request body (blocking and reactive), including streams bigger than 2GB, request-scoped streams that must not be read on the event loop and static headers configured via `quarkus.rest-client.<client>.headers`.
 
 
 ### `http/rest-client-reactive-vanilla`
