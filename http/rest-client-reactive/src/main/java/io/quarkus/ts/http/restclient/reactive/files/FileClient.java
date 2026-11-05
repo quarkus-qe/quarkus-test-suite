@@ -1,6 +1,7 @@
 package io.quarkus.ts.http.restclient.reactive.files;
 
 import java.io.File;
+import java.io.InputStream;
 
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
@@ -44,6 +45,18 @@ public interface FileClient {
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/upload")
     Uni<String> sendFile(File data);
+
+    @POST
+    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("/upload-input-stream")
+    Uni<String> sendInputStream(InputStream data);
+
+    @POST
+    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("/upload-input-stream-blocking")
+    String sendInputStreamBlocking(InputStream data);
 
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
