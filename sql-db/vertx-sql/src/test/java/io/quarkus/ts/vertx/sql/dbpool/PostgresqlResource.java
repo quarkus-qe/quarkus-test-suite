@@ -11,6 +11,9 @@ import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 
 public class PostgresqlResource implements QuarkusTestResourceLifecycleManager {
 
+    // SCRAM-SHA-256 (Postgres) uses the password as an HMAC key; FIPS PKCS#11 (NSS) rejects short keys (CKR_KEY_SIZE_RANGE), so the short passwords fail
+    // TODO: set the FIPS-safe (long) password in the Postgres DatabaseService of the test framework and drop this workaround
+    private static final String POSTGRESQL_PASSWORD = "quarkus_test_fips_long_password";
     private GenericContainer<?> postgresContainer;
     private static final String POSTGRESQL_IMAGE_NAME = System.getProperty("postgresql.latest.image");
 
@@ -22,16 +25,18 @@ public class PostgresqlResource implements QuarkusTestResourceLifecycleManager {
         postgresContainer = new GenericContainer<>(DockerImageName.parse(POSTGRESQL_IMAGE_NAME))
                 // Need to set POSTGRES and POSTGRESQL for usage with Docker hub and RH images
                 .withEnv("POSTGRES_USER", "test")
-                .withEnv("POSTGRES_PASSWORD", "test")
+                .withEnv("POSTGRES_PASSWORD", POSTGRESQL_PASSWORD)
                 .withEnv("POSTGRES_DB", "amadeus")
                 .withEnv("POSTGRESQL_USER", "test")
-                .withEnv("POSTGRESQL_PASSWORD", "test")
+                .withEnv("POSTGRESQL_PASSWORD", POSTGRESQL_PASSWORD)
                 .withEnv("POSTGRESQL_DATABASE", "amadeus")
                 .withExposedPorts(5432);
 
         postgresContainer.waitingFor(new HostPortWaitStrategy()).start();
 
         Map<String, String> config = new HashMap<>();
+        // main application.properties hard-codes the datasource password
+        config.put("quarkus.datasource.password", POSTGRESQL_PASSWORD);
         config.put("quarkus.datasource.jdbc.url", String.format("jdbc:postgresql://%s:%d/amadeus", postgresContainer.getHost(),
                 postgresContainer.getFirstMappedPort()));
         config.put("quarkus.datasource.reactive.url", String.format("postgresql://%s:%d/amadeus", postgresContainer.getHost(),
