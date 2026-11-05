@@ -25,7 +25,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
-import io.quarkus.test.scenarios.annotations.DisabledOnFipsAndJavaVersion;
 import io.quarkus.test.scenarios.annotations.EnabledWhenLinuxContainersAvailable;
 import io.smallrye.mutiny.Uni;
 import io.vertx.core.http.HttpMethod;
@@ -35,7 +34,6 @@ import io.vertx.mutiny.pgclient.PgPool;
 import io.vertx.mutiny.sqlclient.RowSet;
 
 @EnabledWhenLinuxContainersAvailable
-@DisabledOnFipsAndJavaVersion(max = 24, reason = "QUARKUS-9772")
 @QuarkusTest
 @TestProfile(PostgresqlTestProfile.class)
 @TestMethodOrder(OrderAnnotation.class)
