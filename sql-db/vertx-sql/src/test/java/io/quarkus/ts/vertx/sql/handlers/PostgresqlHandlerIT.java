@@ -18,7 +18,9 @@ public class PostgresqlHandlerIT extends CommonTestCases {
 
     @Container(image = "${postgresql.latest.image}", port = 5432, expectedLog = "listening on IPv4 address")
     static PostgresqlService postgres = new PostgresqlService()
-            .with("test", "test", POSTGRESQL_DATABASE);
+            // SCRAM-SHA-256 (Postgres) uses the password as an HMAC key; FIPS PKCS#11 (NSS) rejects short keys (CKR_KEY_SIZE_RANGE), so the short passwords fail
+            // TODO: set the FIPS-safe (long) password in the Postgres DatabaseService of the test framework and drop this workaround
+            .with("test", "quarkus_test_fips_long_password", POSTGRESQL_DATABASE);
 
     @QuarkusApplication
     static final RestService app = new RestService()
