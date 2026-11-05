@@ -37,4 +37,21 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <profiles>
+        <profile>
+            <id>aarch64</id>
+            <activation>
+                <property>
+                    <name>aarch64</name>
+                </property>
+            </activation>
+            <properties>
+                <!-- Internal Aarch64 machines require more than 7g memory. This is not happening on GH CI
+                     probably because of different OS and also different background app
+                     and subprocesses running on machines which could check the native execution.
+                -->
+                <quarkus.native.native-image-xmx>8g</quarkus.native.native-image-xmx>
+            </properties>
+        </profile>
+    </profiles>
 </project>
