@@ -30,7 +30,9 @@ import io.restassured.http.ContentType;
 @DisabledOnFipsAndJavaVersion(max = 24, reason = "QUARKUS-9772")
 public class MixedSourcesIT {
     private static final String SQL_USER = "quarkus_test";
-    private static final String SQL_PASSWORD = "quarkus_test";
+    // SCRAM-SHA-256 (Postgres) uses the password as an HMAC key; FIPS PKCS#11 (NSS) rejects short keys (CKR_KEY_SIZE_RANGE), so the short passwords fail
+    // TODO: set the FIPS-safe (long) password in the Postgres DatabaseService of the test framework and drop this workaround
+    private static final String SQL_PASSWORD = "quarkus_test_fips_long_password";
     private static final String SQL_DATABASE = "quarkus_test";
     private static final int POSTGRES_PORT = 5432;
     private static final int MYSQL_PORT = 3306;

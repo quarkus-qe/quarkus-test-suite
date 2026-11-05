@@ -15,7 +15,9 @@ import io.quarkus.test.services.QuarkusApplication;
 public class PostgresqlHibernateValidatorDdlCallbackIT extends AbstractHibernateValidatorIT {
 
     private static final String POSTGRES_USER = "quarkus_test";
-    private static final String POSTGRES_PASSWORD = "quarkus_test";
+    // SCRAM-SHA-256 (Postgres) uses the password as an HMAC key; FIPS PKCS#11 (NSS) rejects short keys (CKR_KEY_SIZE_RANGE), so the short passwords fail
+    // TODO: set the FIPS-safe (long) password in the Postgres DatabaseService of the test framework and drop this workaround
+    private static final String POSTGRES_PASSWORD = "quarkus_test_fips_long_password";
     private static final String POSTGRES_DATABASE = "quarkus_test";
     private static final int POSTGRES_PORT = 5432;
 
