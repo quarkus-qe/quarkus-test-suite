@@ -1122,9 +1122,24 @@
                                     <goal>verify</goal>
                                 </goals>
                                 <configuration>
+                                    <environmentVariables>
+                                        <!--
+                                          Passes the MANDREL-414 workaround to the native builds of @QuarkusApplication.
+                                          Those builds run in a separate mvn process that does not see the property defined
+                                          in this profile, every mvn process reads MAVEN_ARGS
+                                          TODO: remove together with the MANDREL-414 workaround above.
+                                        -->
+                                        <MAVEN_ARGS>-Dquarkus.native.additional-build-args-append=${quarkus.native.additional-build-args-append}</MAVEN_ARGS>
+                                    </environmentVariables>
                                     <systemPropertyVariables>
                                         <!-- Docker library MongoDB 8.0 is not starting in FIPS-enabled environment, use the official MongoDB ubi image -->
                                         <mongodb.image>docker.io/mongodb/mongodb-community-server:8.0-ubi9</mongodb.image>
+                                        <!--
+                                          Same workaround for @GitRepositoryQuarkusApplication,
+                                          the test framework passes the system properties of the test JVM to that build.
+                                          TODO: remove together with the MANDREL-414 workaround above.
+                                        -->
+                                        <quarkus.native.additional-build-args-append>${quarkus.native.additional-build-args-append}</quarkus.native.additional-build-args-append>
                                     </systemPropertyVariables>
                                 </configuration>
                             </execution>
