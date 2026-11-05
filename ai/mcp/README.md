@@ -15,6 +15,11 @@ Thus, the architecture of this module is like this:
 - HTTP classes have some additional tests for third-party clients (we use the official one: https://github.com/modelcontextprotocol/java-sdk)
 - WebSocket classes run both basic tests and tests for server-only features. They use custom client (see Session class for details).
 
+The client implements MCP revisions `2026-07-28` (stateless) and `2025-11-25`. Behavior, which depends on the revision, is tested by `*ProtocolIT` and `HttpHeadersIT` classes:
+- They use the `ProtocolClient` endpoint, which drives any configured MCP client by its name, so one client application can hold clients with different revisions or servers.
+- Servers, which the Quarkus MCP Server can not play (legacy-only, silent, intolerant to unknown methods, or echoing request headers), are provided by `McpServerMock`. It runs either as a stdio subprocess, which depends only on the JDK, or as an HTTP and WebSocket server inside the test JVM, so classes using it run only locally.
+- Quarkus does not expose the initialization timeout of the client, so tests with silent servers wait for the default 30 seconds.
+
 Useful tips for making a standalone reproducer:
 - (if you're using OpenShift) change deployment strategy to registry (which we usually do not use due to issues with cross-compilation for ARM)
 - add property `quarkus.profile=debug`, you will see jsons, which are send between client and server and session info.
