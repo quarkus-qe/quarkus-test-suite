@@ -11,12 +11,15 @@ import java.net.SocketException;
 
 import org.jboss.logging.Logger;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 
 import io.quarkus.test.bootstrap.KeycloakService;
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.KeycloakContainer;
 
+@DisabledOnOs(value = OS.WINDOWS, disabledReason = "https://redhat.atlassian.net/browse/QQE-3114")
 @QuarkusScenario
 public class SpiffeClientAuthIT extends AbstractSpiffeClientAuthIT {
 
