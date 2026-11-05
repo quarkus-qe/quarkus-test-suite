@@ -10,7 +10,6 @@ import io.quarkus.test.bootstrap.MySqlService;
 import io.quarkus.test.bootstrap.PostgresqlService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
-import io.quarkus.test.scenarios.annotations.DisabledOnFipsAndJavaVersion;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.Dependency;
 import io.quarkus.test.services.QuarkusApplication;
@@ -27,7 +26,6 @@ import io.restassured.http.ContentType;
 
 @Tag("QUARKUS-6259")
 @QuarkusScenario
-@DisabledOnFipsAndJavaVersion(max = 24, reason = "QUARKUS-9772")
 public class MixedSourcesIT {
     private static final String SQL_USER = "quarkus_test";
     // SCRAM-SHA-256 (Postgres) uses the password as an HMAC key; FIPS PKCS#11 (NSS) rejects short keys (CKR_KEY_SIZE_RANGE), so the short passwords fail
