@@ -8,10 +8,12 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.bootstrap.PostgresqlService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnFipsAndJavaVersion;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 import io.restassured.response.Response;
 
+@DisabledOnFipsAndJavaVersion(max = 24, reason = "QUARKUS-9772")
 @QuarkusScenario
 public class PostgresqlHandlerIT extends CommonTestCases {
     private static final String POSTGRESQL_DATABASE = "amadeus";
