@@ -33,6 +33,10 @@ MAVEN_ARGS=-nsu mvn -s .github/mvn-settings.xml -pl ai/mcp \
   -Dreruns=0 -Dno-format verify
 ```
 
+The client implements MCP revisions `2026-07-28` (stateless) and `2025-11-25`. Client behavior, which depends on the revision (protocol version detection, authentication during detection, resource and list-change subscriptions), is tested by `*ProtocolIT` classes:
+- They use the `ProtocolClient` endpoint, which drives any configured MCP client by its name, so one client application can hold clients with different revisions.
+- `StdioProtocolIT` runs only on bare metal, because the client starts the server as a local process.
+
 Useful tips for making a standalone reproducer:
 - (if you're using OpenShift) change deployment strategy to registry (which we usually do not use due to issues with cross-compilation for ARM)
 - add property `quarkus.profile=debug`, you will see jsons, which are send between client and server and session info.

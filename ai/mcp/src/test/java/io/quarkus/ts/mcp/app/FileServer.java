@@ -41,9 +41,11 @@ import io.smallrye.mutiny.Uni;
 public class FileServer {
     private static final Logger LOG = Logger.getLogger(FileServer.class);
     public static final String DYNAMIC_FILE = "file:///number";
+    public static final String HELLO_FILE = "file:///hello";
 
     private final PromptManager promptManager;
     private final ToolManager toolManager;
+    private final ResourceManager resourceManager;
     private final String folder;
     private int number = 1;
 
@@ -53,6 +55,7 @@ public class FileServer {
             @ConfigProperty(name = "working.folder", defaultValue = "target") String folder) {
         this.toolManager = toolManager;
         this.promptManager = promptManager;
+        this.resourceManager = resourceManager;
         this.folder = folder;
         this.toolManager.newTool("meta")
                 .setDescription("Does operations on other tools")
@@ -69,6 +72,7 @@ public class FileServer {
                             switch (type) {
                                 case "tool" -> createTool(name);
                                 case "prompt" -> createPrompt(name);
+                                case "resource" -> createResource(name);
                             }
                             yield ToolResponse.success("Created new %s: %s".formatted(type, name));
                         }
@@ -76,15 +80,21 @@ public class FileServer {
                             switch (type) {
                                 case "tool" -> deleteTool(name);
                                 case "prompt" -> deletePrompt(name);
+                                case "resource" -> resourceManager.removeResource(name);
                             }
                             yield ToolResponse.success("Deleted a %s %s".formatted(type, name));
                         }
                         case "update" -> {
-                            if (!type.equals("resource") || !name.equals(DYNAMIC_FILE)) {
-                                yield ToolResponse.error("Update is implemented only for " + DYNAMIC_FILE);
+                            ResourceManager.ResourceInfo resource = type.equals("resource")
+                                    ? resourceManager.getResource(name)
+                                    : null;
+                            if (resource == null) {
+                                yield ToolResponse.error("Update is implemented only for existing resources");
                             }
-                            number += 1;
-                            resourceManager.getResource(DYNAMIC_FILE).sendUpdateAndForget();
+                            if (name.equals(DYNAMIC_FILE)) {
+                                number += 1;
+                            }
+                            resource.sendUpdateAndForget();
                             yield ToolResponse.success("Updated %s %s".formatted(type, name));
                         }
                         default -> ToolResponse.error("Invalid operation: " + operation);
@@ -129,6 +139,14 @@ public class FileServer {
                 .register();
     }
 
+    private void createResource(String uri) {
+        resourceManager.newResource(uri)
+                .setDescription("Created by the meta tool")
+                .setUri(uri)
+                .setHandler(args -> new ResourceResponse(TextResourceContents.create(args.requestUri().value(), uri)))
+                .register();
+    }
+
     private void deleteTool(String name) {
         toolManager.removeTool(name);
     }
@@ -162,7 +180,7 @@ public class FileServer {
         return path.toAbsolutePath();
     }
 
-    @Resource(name = "fileresource", description = "Read a file", uri = "file:///hello")
+    @Resource(name = "fileresource", description = "Read a file", uri = HELLO_FILE)
     String readHelloFile() {
         Path path = resolveFilePath("robot-readable.txt");
         try (Stream<String> lines = Files.lines(path)) {
