@@ -11,13 +11,13 @@ import org.jboss.logging.Logger;
 @ApplicationScoped
 public class PriceConsumer {
 
-    private static final Logger LOG = Logger.getLogger(PriceProducer.class.getName());
+    private static final Logger LOG = Logger.getLogger(PriceConsumer.class.getName());
 
     private final ConcurrentLinkedQueue<Integer> prices = new ConcurrentLinkedQueue<>();
 
     @Incoming("prices")
     public void process(Integer price) {
-        LOG.info("process fired: " + price);
+        LOG.info("Price received: " + price);
         this.prices.add(price);
     }
 
