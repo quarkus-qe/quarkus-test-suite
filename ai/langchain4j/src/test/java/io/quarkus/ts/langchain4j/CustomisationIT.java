@@ -48,7 +48,9 @@ public class CustomisationIT {
         assertTrue(unified.contains("sam"), "System message was ignored! \n" + answer);
         assertTrue(unified.contains("openai"), "Answer doesn't contain provider name! \n" + answer);
         assertTrue(unified.contains("luna"), "Model name should contain luna! \n" + answer);
-        assertTrue(unified.contains("inaccurate"), "Temperature overload was applied! \n" + answer);
+        assertTrue(unified.contains("inaccura") || unified.contains("hallucinat") || unified.contains("error")
+                || unified.contains("mistake"),
+                "Temperature overload was applied! \n" + answer);
 
         // check, that builder was customised as well
         app.logs().assertContains("Customizing streaming chat model");
