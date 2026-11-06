@@ -1,6 +1,8 @@
 package io.quarkus.ts.http.restclient.reactive.files;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.LinkedList;
 import java.util.List;
@@ -100,6 +102,23 @@ public class FileClientResource {
         return client.sendFile(file.toFile());
     }
 
+    @POST
+    @Path("/upload-input-stream")
+    public Uni<String> uploadInputStream() throws IOException {
+        InputStream stream = new FileInputStream(file.toFile());
+        return client.sendInputStream(stream)
+                .eventually(() -> closeQuietly(stream));
+    }
+
+    @POST
+    @Path("/upload-input-stream-blocking")
+    @Blocking
+    public String uploadInputStreamBlocking() throws IOException {
+        try (InputStream stream = new FileInputStream(file.toFile())) {
+            return client.sendInputStreamBlocking(stream);
+        }
+    }
+
     @DELETE
     @Path("/")
     public RestResponse removeTemporaryFiles() {
@@ -111,5 +130,13 @@ public class FileClientResource {
             }
         }
         return RestResponse.noContent();
+    }
+
+    private static void closeQuietly(InputStream stream) {
+        try {
+            stream.close();
+        } catch (IOException e) {
+            Log.warn(e);
+        }
     }
 }
