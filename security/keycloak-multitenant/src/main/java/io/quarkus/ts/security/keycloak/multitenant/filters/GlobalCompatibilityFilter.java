@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import io.quarkus.oidc.common.OidcRequestFilter;
+import io.smallrye.mutiny.Uni;
 
 @ApplicationScoped
 public class GlobalCompatibilityFilter implements OidcRequestFilter {
@@ -12,10 +13,12 @@ public class GlobalCompatibilityFilter implements OidcRequestFilter {
     private volatile String lastTenantId = null;
 
     @Override
-    public void filter(OidcRequestContext requestContext) {
+    public Uni<Void> filter(OidcRequestFilterContext requestContext) {
         int count = invocationCount.incrementAndGet();
         lastTenantId = requestContext.contextProperties()
                 .getString(io.quarkus.oidc.runtime.OidcUtils.TENANT_ID_ATTRIBUTE);
+        return Uni.createFrom().voidItem();
+
     }
 
     public boolean isCalled() {

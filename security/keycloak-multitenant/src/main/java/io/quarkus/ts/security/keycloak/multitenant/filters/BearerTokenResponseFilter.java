@@ -4,6 +4,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 
 import io.quarkus.oidc.BearerTokenAuthentication;
 import io.quarkus.oidc.common.OidcResponseFilter;
+import io.smallrye.mutiny.Uni;
 
 @BearerTokenAuthentication
 @ApplicationScoped
@@ -12,9 +13,10 @@ public class BearerTokenResponseFilter implements OidcResponseFilter {
     private volatile String contentType = null;
 
     @Override
-    public void filter(OidcResponseContext responseContext) {
+    public Uni<Void> filter(OidcResponseFilterContext responseContext) {
         this.called = true;
         this.contentType = responseContext.responseHeaders().get("Content-Type");
+        return Uni.createFrom().voidItem();
     }
 
     public boolean isCalled() {
