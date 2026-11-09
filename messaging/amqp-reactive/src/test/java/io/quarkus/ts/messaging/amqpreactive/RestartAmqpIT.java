@@ -7,8 +7,11 @@ import java.time.Duration;
 
 import org.apache.http.HttpStatus;
 import org.eclipse.microprofile.config.ConfigProvider;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.testcontainers.containers.FixedHostPortGenericContainer;
 
@@ -19,6 +22,7 @@ import io.quarkus.test.services.containers.model.AmqProtocol;
 
 @QuarkusScenario
 @Tag("QUARKUS-5978")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @DisabledIfSystemProperty(named = "gh-action-disable-on-win", matches = "true", disabledReason = "Containers are not available")
 public class RestartAmqpIT {
 
@@ -51,14 +55,18 @@ public class RestartAmqpIT {
             .withProperty("amqp-port", () -> "" + AMQ_PORT);
 
     @Test
+    @Order(1)
     public void sendAndReceivePrice() {
         sender.given().post("send-prices/7");
-        String response = receiver.given().get("/price")
-                .then().statusCode(HttpStatus.SC_OK).extract().asString();
-        assertTrue(response.contains("7"));
+        await().atMost(Duration.ofSeconds(10)).untilAsserted(() -> {
+            String response = receiver.given().get("/price")
+                    .then().statusCode(HttpStatus.SC_OK).extract().asString();
+            assertTrue(response.contains("7"));
+        });
     }
 
     @Test
+    @Order(2)
     public void restart() {
         // restart amqp
         amq.stop();
