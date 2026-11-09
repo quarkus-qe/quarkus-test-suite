@@ -210,6 +210,14 @@ public abstract class TransactionCommons {
         // This test has no meaning if sqlProxy is not used
         Assumptions.assumeTrue(sqlProxy != null);
 
+        // connect the proxy to the backend database
+        // Connection cannot start too long before the test, otherwise it will timeout/fail on the database side.
+        //  That happens because application doesn't really connect to the DB before needed.
+        //  So the connection would hang between proxy and DB, and not connected to the app.
+        // Also, connection to DB must properly finish before the tests first use it. Otherwise, it might fail.
+        sqlProxy.connectToDatabase();
+        await().atMost(Duration.ofSeconds(2)).until(() -> sqlProxy.isConnectedToDatabase());
+
         // First verify normal operation works
         getApp().given()
                 .get("/connection/validation-query")

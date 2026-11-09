@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import io.quarkus.test.logging.Log;
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.net.NetClient;
@@ -23,6 +24,8 @@ public class SQLProxy extends AbstractVerticle {
     private NetClient backendClient;
     private Vertx vertxInstance;
     private boolean delayFirst = false;
+    private AtomicReference<NetSocket> backendSocketRef;
+    private AtomicReference<NetSocket> clientSocketRef;
 
     public SQLProxy(String backendHost, int backendPort, int proxyPort) {
         this.backendHost = backendHost;
@@ -35,27 +38,27 @@ public class SQLProxy extends AbstractVerticle {
         proxyServer = vertx.createNetServer();
         backendClient = vertx.createNetClient();
 
-        AtomicReference<NetSocket> backendSocketRef = new AtomicReference<>();
-        AtomicReference<NetSocket> clientSocketRef = new AtomicReference<>();
-        connectToDatabase(clientSocketRef, backendSocketRef);
+        backendSocketRef = new AtomicReference<>();
+        clientSocketRef = new AtomicReference<>();
         proxyServer.connectHandler(clientSocket -> {
             clientSocketRef.set(clientSocket);
-            handleClientConnection(clientSocket, backendSocketRef);
+            setupProxying(clientSocket, backendSocketRef);
         });
 
         proxyServer.listen(proxyPort, "localhost");
     }
 
-    private void handleClientConnection(NetSocket clientSocket, AtomicReference<NetSocket> backendSocketRef) {
-        setupProxying(clientSocket, backendSocketRef);
+    public boolean isConnectedToDatabase() {
+        return backendSocketRef.get() != null;
     }
 
-    private void connectToDatabase(AtomicReference<NetSocket> clientSocketRef, AtomicReference<NetSocket> backendSocketRef) {
+    public void connectToDatabase() {
         backendClient.connect(backendPort, backendHost)
                 .onSuccess(backendSocket -> {
                     backendSocketRef.set(backendSocket);
 
                     backendSocket.exceptionHandler(err -> {
+                        Log.error("Exception in SQL proxy backend socket: " + err.getMessage());
                         var clientSocket = clientSocketRef.get();
                         if (clientSocket != null) {
                             clientSocket.close();
@@ -109,6 +112,7 @@ public class SQLProxy extends AbstractVerticle {
 
         // Handle errors
         clientSocket.exceptionHandler(err -> {
+            Log.error("Exception in SQL proxying: " + err.getMessage());
             backendSocketRef.get().close();
         });
 
@@ -153,14 +157,9 @@ public class SQLProxy extends AbstractVerticle {
         SQLProxy proxy = new SQLProxy(backendHost, backendPort, proxyPort);
         proxy.vertxInstance = vertx;
 
-        vertx.deployVerticle(proxy);
-
-        // Give it a moment to start up
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
+        Future<String> proxyDeployment = vertx.deployVerticle(proxy);
+        proxyDeployment.onSuccess(deploymentId -> Log.info("SQL proxy successfully deployed. ID " + deploymentId));
+        proxyDeployment.onFailure(err -> Log.error("SQL proxy failed to deploy: " + err.getMessage()));
 
         return proxy;
     }
