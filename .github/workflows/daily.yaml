@@ -248,10 +248,6 @@ jobs:
           java-version: ${{ matrix.graalvm-java-version }}
           distribution: 'mandrel'
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Configure Pagefile
-        # Increased the page-file size due to memory-consumption of native-image command
-        # For details see https://github.com/actions/virtual-environments/issues/785
-        uses: al-cheb/configure-pagefile-action@v1.5
       - uses: ./.github/actions/cache-quarkus
       - name: Install Maven settings
         shell: bash
