@@ -17,10 +17,15 @@ import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.mcp.app.FileServer;
 import io.quarkus.ts.mcp.app.MCPClient;
 import io.quarkus.ts.mcp.app.MinimalEndpoint;
+import io.quarkus.ts.mcp.app.ProtocolObservationsResource;
+import io.quarkus.ts.mcp.app.ProtocolObserver;
 import io.restassured.response.Response;
 
 @OpenShiftScenario
 public class OpenShiftNamedOIDCClientIT {
+
+    // Change this value to exercise the same authentication checks with the older protocol.
+    static final String PROTOCOL_VERSION = "2026-07-28";
 
     static final String NORMAL_USER = "test-normal-user";
     static final String ADMIN_USER = "test-admin-user";
@@ -37,7 +42,8 @@ public class OpenShiftNamedOIDCClientIT {
             @Dependency(artifactId = "quarkus-rest"),
             @Dependency(groupId = "io.quarkiverse.mcp", artifactId = "quarkus-mcp-server-http"),
             @Dependency(groupId = "io.quarkiverse.mcp", artifactId = "quarkus-mcp-server-oidc")
-    }, classes = { FileServer.class }, properties = "server.properties")
+    }, classes = { FileServer.class, ProtocolObserver.class,
+            ProtocolObservationsResource.class }, properties = "server.properties")
     static final RestService server1 = new RestService()
             .withProperties(keycloak1::getTlsProperties)
             .withProperty("quarkus.oidc.token.audience", CLIENT_ID_DEFAULT)
@@ -50,7 +56,8 @@ public class OpenShiftNamedOIDCClientIT {
             @Dependency(artifactId = "quarkus-rest"),
             @Dependency(groupId = "io.quarkiverse.mcp", artifactId = "quarkus-mcp-server-http"),
             @Dependency(groupId = "io.quarkiverse.mcp", artifactId = "quarkus-mcp-server-oidc")
-    }, classes = { FileServer.class }, properties = "server.properties")
+    }, classes = { FileServer.class, ProtocolObserver.class,
+            ProtocolObservationsResource.class }, properties = "server.properties")
     static final RestService server2 = new RestService()
             .withProperties(keycloak2::getTlsProperties)
             .withProperty("quarkus.oidc.token.audience", CLIENT_ID_DEFAULT)
@@ -65,8 +72,10 @@ public class OpenShiftNamedOIDCClientIT {
                     @Dependency(artifactId = "quarkus-rest"),
                     @Dependency(groupId = "io.quarkiverse.langchain4j", artifactId = "quarkus-langchain4j-mcp"),
                     @Dependency(groupId = "io.quarkiverse.langchain4j", artifactId = "quarkus-langchain4j-oidc-client-mcp-auth-provider")
-            }, classes = { MCPClient.class, MinimalEndpoint.class }, properties = "client.properties")
-    static final RestService adminClient = new ClientService(new RestService())
+            }, classes = { MCPClient.class, MinimalEndpoint.class }, properties = "http-client.properties")
+    static final RestService adminClient = new ClientService(new RestService()
+            .withProperty("quarkus.langchain4j.mcp.filesystem.protocol-version", PROTOCOL_VERSION)
+            .withProperty("quarkus.langchain4j.mcp.minimal.protocol-version", PROTOCOL_VERSION))
             .withClient("provider1")
             .withClient("provider2")
             .get()
@@ -78,7 +87,6 @@ public class OpenShiftNamedOIDCClientIT {
             .withProperty("quarkus.oidc-client.provider2.grant-options.password.username", ADMIN_USER)
             .withProperty("quarkus.oidc-client.provider2.grant-options.password.password", ADMIN_USER)
             .withProperty("quarkus.langchain4j.mcp.filesystem.oidc-client-name", "provider1")
-            .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "streamable-http")
             .withProperty("quarkus.langchain4j.mcp.filesystem.url",
                     () -> server1.getURI(Protocol.HTTP).withPath("/mcp").toString())
             .withProperty("quarkus.langchain4j.mcp.minimal.oidc-client-name", "provider2")
@@ -91,8 +99,10 @@ public class OpenShiftNamedOIDCClientIT {
                     @Dependency(artifactId = "quarkus-rest"),
                     @Dependency(groupId = "io.quarkiverse.langchain4j", artifactId = "quarkus-langchain4j-mcp"),
                     @Dependency(groupId = "io.quarkiverse.langchain4j", artifactId = "quarkus-langchain4j-oidc-client-mcp-auth-provider")
-            }, classes = { MCPClient.class, MinimalEndpoint.class }, properties = "client.properties")
-    static final RestService userClient = new ClientService(new RestService())
+            }, classes = { MCPClient.class, MinimalEndpoint.class }, properties = "http-client.properties")
+    static final RestService userClient = new ClientService(new RestService()
+            .withProperty("quarkus.langchain4j.mcp.filesystem.protocol-version", PROTOCOL_VERSION)
+            .withProperty("quarkus.langchain4j.mcp.minimal.protocol-version", PROTOCOL_VERSION))
             .withClient("provider1")
             .withClient("provider2")
             .get()
@@ -104,7 +114,6 @@ public class OpenShiftNamedOIDCClientIT {
             .withProperty("quarkus.oidc-client.provider2.grant-options.password.username", NORMAL_USER)
             .withProperty("quarkus.oidc-client.provider2.grant-options.password.password", NORMAL_USER)
             .withProperty("quarkus.langchain4j.mcp.filesystem.oidc-client-name", "provider1")
-            .withProperty("quarkus.langchain4j.mcp.filesystem.transport-type", "streamable-http")
             .withProperty("quarkus.langchain4j.mcp.filesystem.url",
                     () -> server1.getURI(Protocol.HTTP).withPath("/mcp").toString())
             .withProperty("quarkus.langchain4j.mcp.minimal.oidc-client-name", "provider2")
@@ -114,13 +123,18 @@ public class OpenShiftNamedOIDCClientIT {
 
     @Test
     public void adminAllowed() {
-        Response normal = adminClient.given().when().body("robot-readable.txt").post("/mcp/tools/readFile");
-        Assertions.assertEquals(200, normal.statusCode(), "Response is " + normal.body().asString());
-        Assertions.assertEquals("Hello, AI!", normal.body().asString());
+        Response response = adminClient.given().body("robot-readable.txt").post("/mcp/tools/readFile");
+        Assertions.assertEquals(200, response.statusCode(), "Response is " + response.body().asString());
+        Assertions.assertEquals("Hello, AI!", response.body().asString());
+        ProtocolAssertions.assertRevision(() -> ProtocolAssertions.observations(server1), PROTOCOL_VERSION);
+    }
 
-        Response minimal = adminClient.given().when().body("robot-readable.txt").post("/mcp-minimal/tools/readFile");
-        Assertions.assertEquals(200, minimal.statusCode(), "Response is " + minimal.body().asString());
-        Assertions.assertEquals("Hello, AI!", minimal.body().asString());
+    @Test
+    public void adminAllowedOnMinimalServer() {
+        Response response = adminClient.given().body("robot-readable.txt").post("/mcp-minimal/tools/readFile");
+        Assertions.assertEquals(200, response.statusCode(), "Response is " + response.body().asString());
+        Assertions.assertEquals("Hello, AI!", response.body().asString());
+        ProtocolAssertions.assertRevision(() -> ProtocolAssertions.observations(server2), PROTOCOL_VERSION);
     }
 
     @Test
@@ -136,6 +150,7 @@ public class OpenShiftNamedOIDCClientIT {
         Response minimal = userClient.given().when().body("robot-readable.txt").post("/mcp-minimal/tools/readFile");
         Assertions.assertEquals(200, minimal.statusCode(), "Response is " + minimal.body().asString());
         Assertions.assertEquals("Hello, AI!", minimal.body().asString());
+        ProtocolAssertions.assertRevision(() -> ProtocolAssertions.observations(server2), PROTOCOL_VERSION);
     }
 
     static class ClientService {
