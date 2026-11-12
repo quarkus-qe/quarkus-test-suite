@@ -343,6 +343,7 @@ jobs:
       - name: Test in Native mode
         run: |
           # TODO remove -H:-AOTSingleCallsiteInline workaround once Mandrel ships the fix for https://github.com/quarkusio/quarkus/issues/57390
+          # see also CliProdModeNativeIT.buildNativeApp (build-time-analytics)
           mvn -fae -V -B -nsu --no-transfer-progress -P ${{ matrix.profiles }} clean verify -Daarch64 -Dnative \
             -Dquarkus.native.builder-image=quay.io/quarkus/${{ matrix.image }} \
             -Dquarkus.native.additional-build-args-append=-H:-AOTSingleCallsiteInline \
