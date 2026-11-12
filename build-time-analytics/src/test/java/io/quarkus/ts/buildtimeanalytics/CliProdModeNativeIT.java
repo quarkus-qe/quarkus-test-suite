@@ -5,6 +5,9 @@ import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsUtils.EXTENSION_SE
 import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsUtils.EXTENSION_SET_B;
 import static io.quarkus.ts.buildtimeanalytics.utils.AnalyticsUtils.QUARKUS_ANALYTICS_EVENT_PROD;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -47,11 +50,17 @@ public class CliProdModeNativeIT extends AbstractAnalyticsIT {
     }
 
     private Result buildNativeApp(QuarkusCliRestService app) {
+        List<String> props = new ArrayList<>();
         final String nativeImgXmx = NATIVE_IMG_XMX.get();
         if (nativeImgXmx != null) {
-            return buildApp(app::buildOnNative, formatBuildProperty(NATIVE_IMG_XMX.getPropertyKey(), nativeImgXmx));
+            props.add(formatBuildProperty(NATIVE_IMG_XMX.getPropertyKey(), nativeImgXmx));
         }
-        return buildApp(app::buildOnNative);
+        // TODO remove once Mandrel ships the fix for https://github.com/quarkusio/quarkus/issues/57390
+        // see also .github/workflows/daily.yaml (aarch64-linux-build-native-latest)
+        if ("aarch64".equals(System.getProperty("os.arch"))) {
+            props.add(formatBuildProperty("quarkus.native.additional-build-args", "-H:-AOTSingleCallsiteInline"));
+        }
+        return buildApp(app::buildOnNative, props.toArray(new String[0]));
     }
 
     @Override
