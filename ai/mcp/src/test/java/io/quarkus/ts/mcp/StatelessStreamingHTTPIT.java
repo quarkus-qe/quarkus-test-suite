@@ -232,7 +232,7 @@ public class StatelessStreamingHTTPIT extends StatelessAdvancedMCPIT {
         response.then().statusCode(400);
         JsonObject error = new JsonObject(response.asString());
         Assertions.assertEquals("2.0", error.getString("jsonrpc"));
-        Assertions.assertNull(error.getValue("id"));
+        Assertions.assertEquals(100, error.getValue("id"));
         assertError(error, code, message);
     }
 
