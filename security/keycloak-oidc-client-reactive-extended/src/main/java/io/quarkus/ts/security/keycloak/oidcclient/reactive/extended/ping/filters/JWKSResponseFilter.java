@@ -10,6 +10,7 @@ import org.jboss.logging.Logger;
 import io.quarkus.arc.Unremovable;
 import io.quarkus.oidc.common.OidcEndpoint;
 import io.quarkus.oidc.common.OidcResponseFilter;
+import io.smallrye.mutiny.Uni;
 import io.vertx.core.json.JsonObject;
 
 @ApplicationScoped
@@ -21,7 +22,7 @@ public class JWKSResponseFilter implements OidcResponseFilter {
     public static final List<String> interceptedMessageLogs = new CopyOnWriteArrayList<>();
 
     @Override
-    public void filter(OidcResponseContext responseContext) {
+    public Uni<Void> filter(OidcResponseFilterContext responseContext) {
         LOG.info("JWKS response intercepted");
         interceptedMessageLogs.add("JWKS response intercepted");
         JsonObject jwks = responseContext.responseBody().toJsonObject();
@@ -35,5 +36,6 @@ public class JWKSResponseFilter implements OidcResponseFilter {
         LOG.infof("JWKS response Content-Type: %s", contentType);
         interceptedMessageLogs.add("JWKS response Content-Type: " + contentType);
 
+        return Uni.createFrom().voidItem();
     }
 }
