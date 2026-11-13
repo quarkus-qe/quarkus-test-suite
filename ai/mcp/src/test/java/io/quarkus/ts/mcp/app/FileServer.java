@@ -155,7 +155,9 @@ public class FileServer {
         promptManager.removePrompt(name);
     }
 
-    @Tool(name = "filereader", description = "Read a file")
+    // every hint below differs from its MCP default, so the listing can only carry these values if the
+    // annotation was read; McpJavaFileServer declares the same ones with the standard annotations
+    @Tool(name = "filereader", title = "File reader", description = "Read a file", annotations = @Tool.Annotations(readOnlyHint = true, destructiveHint = false, idempotentHint = true, openWorldHint = false))
     String readFileContent(@ToolArg(description = "path to the file") String file) {
         Path path = resolveFilePath(file);
         try (Stream<String> lines = Files.lines(path)) {
