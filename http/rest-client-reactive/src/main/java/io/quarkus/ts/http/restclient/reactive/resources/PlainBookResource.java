@@ -30,8 +30,6 @@ import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.jboss.resteasy.reactive.RestMatrix;
 import org.jboss.resteasy.reactive.RestQuery;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.quarkus.ts.http.restclient.reactive.BookClient;
 import io.quarkus.ts.http.restclient.reactive.json.Author;
 import io.quarkus.ts.http.restclient.reactive.json.Book;
@@ -39,6 +37,8 @@ import io.quarkus.ts.http.restclient.reactive.json.BookIdWrapper;
 import io.quarkus.ts.http.restclient.reactive.json.BookRepository;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
+
+import tools.jackson.databind.ObjectMapper;
 
 @Path("/books")
 public class PlainBookResource {

@@ -2,7 +2,7 @@ package io.quarkus.qe.hibernate.hql;
 
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.JsonNode;
 
 public class HQLConsoleClient {
 

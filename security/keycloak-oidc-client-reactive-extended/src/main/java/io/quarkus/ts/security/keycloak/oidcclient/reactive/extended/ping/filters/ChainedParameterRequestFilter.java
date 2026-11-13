@@ -9,7 +9,7 @@ import io.quarkus.arc.Unremovable;
 import io.quarkus.oidc.common.OidcEndpoint;
 import io.quarkus.oidc.common.OidcRequestContextProperties;
 import io.quarkus.oidc.common.OidcRequestFilter;
-import io.vertx.mutiny.core.buffer.Buffer;
+import io.vertx.core.buffer.Buffer;
 
 @ApplicationScoped
 @Unremovable

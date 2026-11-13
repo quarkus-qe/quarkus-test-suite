@@ -13,13 +13,15 @@ import io.netty.handler.ssl.OpenSsl;
 import io.quarkus.test.security.certificate.Certificate;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
+import io.vertx.core.http.HttpClientBuilder;
+import io.vertx.core.net.ClientSSLOptions;
 import io.vertx.core.net.JksOptions;
 import io.vertx.core.net.KeyStoreOptionsBase;
 import io.vertx.core.net.OpenSSLEngineOptions;
 import io.vertx.core.net.PfxOptions;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
-import io.vertx.ext.web.client.WebClientOptions;
+import io.vertx.ext.web.client.WebClientConfig;
 
 public class BaseVertX {
 
@@ -75,20 +77,29 @@ public class BaseVertX {
     }
 
     public WebClient createWebClient(List<String> keyExchangeGroup, Certificate certificate) {
-        WebClientOptions options = new WebClientOptions();
-        options.setSsl(true);
-        // When `OpenSSLEngineOptions` is set on older version of openssl the request fail with `OpenSSL is not available`
-        if (isOpenSsl35Available()) {
-            options.setSslEngineOptions(new OpenSSLEngineOptions());
-        }
-        options.getSslOptions().setKeyExchangeGroups(keyExchangeGroup);
-        options.setTrustAll(true);
+        WebClientConfig config = new WebClientConfig();
+        config.setSsl(true);
+        // trustAll + verifyHost conflict in Vert.x 5: hostname verification requires
+        // X509ExtendedTrustManager, but the trust-all manager doesn't implement it
+        config.setVerifyHost(false);
+
+        ClientSSLOptions sslOptions = new ClientSSLOptions();
+        sslOptions.setKeyExchangeGroups(keyExchangeGroup);
+        sslOptions.setTrustAll(true);
         var keystoreOpinion = createKeyStoreOpinion(certificate);
         if (keystoreOpinion != null) {
-            options.setKeyCertOptions(keystoreOpinion);
+            sslOptions.setKeyCertOptions(keystoreOpinion);
         }
 
-        return WebClient.create(vertx, options);
+        HttpClientBuilder builder = vertx.httpClientBuilder()
+                .with(config)
+                .with(sslOptions);
+        // When OpenSSLEngineOptions is set on older version of openssl the request fails with "OpenSSL is not available"
+        if (isOpenSsl35Available()) {
+            builder.with(new OpenSSLEngineOptions());
+        }
+
+        return WebClient.wrap(builder.build());
     }
 
     public KeyStoreOptionsBase createKeyStoreOpinion(Certificate certificate) {

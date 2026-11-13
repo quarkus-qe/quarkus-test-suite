@@ -1,7 +1,6 @@
 package io.quarkus.ts.security.webauthn.client;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
@@ -18,13 +17,14 @@ import java.util.Base64;
 import java.util.Base64.Encoder;
 import java.util.Random;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.dataformat.cbor.CBORFactory;
 import com.webauthn4j.data.attestation.authenticator.AuthenticatorData;
 
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.auth.impl.Codec;
+
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.dataformat.cbor.CBORMapper;
 
 public class MyWebAuthnHardware {
 
@@ -69,20 +69,19 @@ public class MyWebAuthnHardware {
         /*
          * {"fmt": "none", "attStmt": {}, "authData": h'DATAAAAA'}
          */
-        CBORFactory cborFactory = new CBORFactory();
+        CBORMapper cborMapper = new CBORMapper();
         ByteArrayOutputStream byteWriter = new ByteArrayOutputStream();
-        try {
-            JsonGenerator generator = cborFactory.createGenerator(byteWriter);
-            generator.writeStartObject();
-            generator.writeStringField("fmt", "none");
-            generator.writeObjectFieldStart("attStmt");
-            generator.writeEndObject();
-            generator.writeBinaryField("authData", authBytes);
-            generator.writeEndObject();
-            generator.close();
-        } catch (IOException t) {
-            throw new RuntimeException(t);
-        }
+        JsonGenerator generator = cborMapper.createGenerator(byteWriter);
+        generator.writeStartObject();
+        generator.writeName("fmt");
+        generator.writeString("none");
+        generator.writeName("attStmt");
+        generator.writeStartObject();
+        generator.writeEndObject();
+        generator.writeName("authData");
+        generator.writeBinary(authBytes);
+        generator.writeEndObject();
+        generator.close();
         String attestationObjectEncoded = Base64.getUrlEncoder().encodeToString(byteWriter.toByteArray());
 
         return new JsonObject()
@@ -179,23 +178,24 @@ public class MyWebAuthnHardware {
             String x = urlEncoder.encodeToString(publicKey.getW().getAffineX().toByteArray());
             String y = urlEncoder.encodeToString(publicKey.getW().getAffineY().toByteArray());
 
-            CBORFactory cborFactory = new CBORFactory();
+            CBORMapper cborMapper = new CBORMapper();
             ByteArrayOutputStream byteWriter = new ByteArrayOutputStream();
-            try {
-                JsonGenerator generator = cborFactory.createGenerator(byteWriter);
-                generator.writeStartObject();
-                // see CWK and https://tools.ietf.org/html/rfc8152#section-7.1
-                generator.writeNumberField("1", 2); // kty: "EC"
-                generator.writeNumberField("3", -7); // alg: "ES256"
-                generator.writeNumberField("-1", 1); // crv: "P-256"
-                // https://tools.ietf.org/html/rfc8152#section-13.1.1
-                generator.writeStringField("-2", x); // x, base64url
-                generator.writeStringField("-3", y); // y, base64url
-                generator.writeEndObject();
-                generator.close();
-            } catch (IOException t) {
-                throw new RuntimeException(t);
-            }
+            JsonGenerator generator = cborMapper.createGenerator(byteWriter);
+            generator.writeStartObject();
+            // see CWK and https://tools.ietf.org/html/rfc8152#section-7.1
+            generator.writeName("1");
+            generator.writeNumber(2); // kty: "EC"
+            generator.writeName("3");
+            generator.writeNumber(-7); // alg: "ES256"
+            generator.writeName("-1");
+            generator.writeNumber(1); // crv: "P-256"
+            // https://tools.ietf.org/html/rfc8152#section-13.1.1
+            generator.writeName("-2");
+            generator.writeString(x); // x, base64url
+            generator.writeName("-3");
+            generator.writeString(y); // y, base64url
+            generator.writeEndObject();
+            generator.close();
             buffer.appendBytes(byteWriter.toByteArray());
         }
         return buffer.getBytes();

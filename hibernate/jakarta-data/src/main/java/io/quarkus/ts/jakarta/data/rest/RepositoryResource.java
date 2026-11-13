@@ -10,6 +10,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.Response;
 
 import io.quarkus.ts.jakarta.data.db.Fruit;
 import io.quarkus.ts.jakarta.data.db.FruitRepository;
@@ -32,6 +33,7 @@ public final class RepositoryResource {
         return fruitRepository.getCurrentView();
     }
 
+    @Transactional
     @PUT
     @Path("/update")
     public void update(Fruit fruit) {
@@ -40,8 +42,11 @@ public final class RepositoryResource {
 
     @GET
     @Path("/find-by-name")
-    public Fruit findByName(@QueryParam("name") String name) {
-        return otherFruitRepository.findByName(name);
+    public Response findByName(@QueryParam("name") String name) {
+        // Jakarta Data 1.1 throws EmptyResultException instead of returning null
+        return otherFruitRepository.findByName(name)
+                .map(fruit -> Response.ok(fruit).build())
+                .orElseGet(() -> Response.status(Response.Status.NOT_FOUND).build());
     }
 
     @Transactional

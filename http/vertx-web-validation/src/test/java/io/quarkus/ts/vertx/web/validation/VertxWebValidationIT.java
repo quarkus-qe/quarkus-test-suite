@@ -93,7 +93,7 @@ public class VertxWebValidationIT {
                 .extract()
                 .response();
         assertThat(response.asString(), containsString(ERROR_PARAMETER_MISSING));
-        assertThat(response.asString(), containsString("value should be <= 100.0"));
+        assertThat(response.asString(), containsString("is greater than 100.0"));
     }
 
     @Test

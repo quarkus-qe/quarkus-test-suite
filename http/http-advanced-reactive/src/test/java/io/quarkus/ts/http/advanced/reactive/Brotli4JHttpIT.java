@@ -14,9 +14,6 @@ import jakarta.ws.rs.core.MediaType;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Dependency;
@@ -26,6 +23,9 @@ import io.quarkus.ts.http.advanced.reactive.brotli4j.Brotli4JHttpServerConfig;
 import io.quarkus.ts.http.advanced.reactive.brotli4j.Brotli4JResource;
 import io.quarkus.ts.http.advanced.reactive.brotli4j.Brotli4JRestMock;
 import io.restassured.response.Response;
+
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 @Tag("QQE-378")
 @QuarkusScenario
