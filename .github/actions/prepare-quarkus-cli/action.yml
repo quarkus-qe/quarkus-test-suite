@@ -1,14 +1,15 @@
-name: 'Create Quarkus CLI 3.40.999-SNAPSHOT'
-description: 'Creates Quarkus CLI based on the current Quarkus main (3.40.999-SNAPSHOT version)'
+name: 'Create Quarkus CLI 999-SNAPSHOT'
+description: 'Creates Quarkus CLI based on the current Quarkus main (999-SNAPSHOT version)'
 runs:
   using: "composite"
   steps:
     - name: Install Quarkus CLI
       shell: bash
       run: |
+        curl -o /tmp/cli.jar https://maven-central.storage-download.googleapis.com/maven2/io/quarkus/quarkus-cli/4.0.0/quarkus-cli-4.0.0-runner.jar
         cat <<EOF > ./quarkus-dev-cli
         #!/bin/bash
-        java -jar ~/.m2/repository/io/quarkus/quarkus-cli/3.40.999-SNAPSHOT/quarkus-cli-3.40.999-SNAPSHOT-runner.jar "\$@"
+        java -jar /tmp/cli.jar "\$@"
         EOF
         chmod +x ./quarkus-dev-cli
         ./quarkus-dev-cli version
