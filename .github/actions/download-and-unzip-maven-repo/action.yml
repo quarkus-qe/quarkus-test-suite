@@ -1,0 +1,13 @@
+name: 'Download and unzip maven repo'
+description: 'Download created maven repo and unzip it'
+runs:
+  using: "composite"
+  steps:
+    - name: Download Maven Repo
+      uses: actions/download-artifact@v7
+      with:
+        name: maven-repo
+        path: .
+    - name: Extract Maven Repo
+      shell: bash
+      run: tar -xzf maven-repo.tgz -C ~

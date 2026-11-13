@@ -1,14 +1,15 @@
-name: 'Create Quarkus CLI 3.40.999-SNAPSHOT'
-description: 'Creates Quarkus CLI based on the current Quarkus main (3.40.999-SNAPSHOT version)'
+name: 'Create Quarkus CLI 999-SNAPSHOT'
+description: 'Creates Quarkus CLI based on the current Quarkus main (999-SNAPSHOT version)'
 runs:
   using: "composite"
   steps:
     - name: Install Quarkus CLI
       shell: pwsh
       run: |
+        curl.exe -o "%HOMEDRIVE%%HOMEPATH%\.m2\repository\cli.jar" https://maven-central.storage-download.googleapis.com/maven2/io/quarkus/quarkus-cli/4.0.0/quarkus-cli-4.0.0-runner.jar
         $quarkusCliFileContent = @"
         @ECHO OFF
-        java -jar %HOMEDRIVE%%HOMEPATH%\.m2\repository\io\quarkus\quarkus-cli\3.40.999-SNAPSHOT\quarkus-cli-3.40.999-SNAPSHOT-runner.jar %*
+        java -jar %HOMEDRIVE%%HOMEPATH%\.m2\repository\cli.jar %*
         "@
         New-Item -Path "$(pwd)\quarkus-dev-cli.bat" -ItemType File
         Set-Content -Path "$(pwd)\quarkus-dev-cli.bat" -Value $quarkusCliFileContent

@@ -18,7 +18,6 @@ import io.quarkiverse.mcp.server.McpProtocolVersion;
 import io.quarkiverse.mcp.server.test.McpAssured;
 import io.quarkiverse.mcp.server.test.McpAssured.McpTestClient;
 import io.quarkiverse.mcp.server.test.McpAssured.McpWebSocketTestClient;
-
 import io.quarkus.test.bootstrap.Protocol;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -33,7 +32,6 @@ import io.quarkus.ts.mcp.app.ProtocolObserver;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.vertx.core.json.JsonObject;
-
 
 @QuarkusScenario
 public class WebSocketIT extends StatefulMCPIT {
