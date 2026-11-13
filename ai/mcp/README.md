@@ -33,9 +33,16 @@ MAVEN_ARGS=-nsu mvn -s .github/mvn-settings.xml -pl ai/mcp \
   -Dreruns=0 -Dno-format verify
 ```
 
-The client implements MCP revisions `2026-07-28` (stateless) and `2025-11-25`. Client behavior, which depends on the revision (protocol version detection, authentication during detection, resource and list-change subscriptions), is tested by `*ProtocolIT` classes:
-- They use the `ProtocolClient` endpoint, which drives any configured MCP client by its name, so one client application can hold clients with different revisions.
+The client implements MCP revisions `2026-07-28` (stateless) and `2025-11-25`. Client behavior, which depends on the
+revision (protocol version detection, authentication during detection, resource and list-change subscriptions), is
+tested by `*ProtocolIT` classes:
+- They use the `ProtocolClient` endpoint, which drives any configured MCP client by its name, so one client application
+  can hold clients with different revisions.
 - `StdioProtocolIT` runs only on bare metal, because the client starts the server as a local process.
+
+The server also recognises the vendor-neutral `org.mcpjava` annotations of java-mcp-annotations next to its own
+`io.quarkiverse.mcp.server` ones. They are covered over Streamable HTTP only, since the annotations are processed the
+same way for every transport, and everything about them lives in the `McpJava*` classes.
 
 Useful tips for making a standalone reproducer:
 - (if you're using OpenShift) change deployment strategy to registry (which we usually do not use due to issues with cross-compilation for ARM)
