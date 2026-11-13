@@ -1,8 +1,10 @@
 package io.quarkus.ts.websockets.next.endpoints;
 
 import io.quarkus.websockets.next.InboundProcessingMode;
+import io.quarkus.websockets.next.OnBinaryMessage;
 import io.quarkus.websockets.next.OnTextMessage;
 import io.quarkus.websockets.next.WebSocket;
+import io.vertx.core.buffer.Buffer;
 
 @WebSocket(path = "/serial", inboundProcessingMode = InboundProcessingMode.SERIAL)
 public class SerialBlockingWebSocket {
@@ -12,6 +14,11 @@ public class SerialBlockingWebSocket {
         if (message.equals("block")) {
             Thread.sleep(1500);
         }
+        return message;
+    }
+
+    @OnBinaryMessage
+    public Buffer onBinaryMessage(Buffer message) {
         return message;
     }
 }
