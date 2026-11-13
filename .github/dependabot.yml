@@ -11,7 +11,18 @@ updates:
       # This dependency is used in `lifecycle-application` to verify Maven errors, we need to ignore it
       - dependency-name: io.quarkus:quarkus-spring-di
   # Maintain dependencies for GitHub Actions
+  # Note: "/" only covers a root action.yml plus .github/workflows/. Dependabot does
+  # not scan directories recursively, so each composite action under .github/actions/
+  # that references an external action needs its own entry below.
   - package-ecosystem: "github-actions"
     directory: "/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "github-actions"
+    directory: "/.github/actions/cache-quarkus"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "github-actions"
+    directory: "/.github/actions/zip-and-archive"
     schedule:
       interval: "daily"

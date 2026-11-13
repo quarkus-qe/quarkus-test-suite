@@ -11,7 +11,7 @@ jobs:
     name: Detect Modules in PR
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.event.pull_request.head.ref }}
@@ -27,7 +27,7 @@ jobs:
           git config user.name "Quarkus QE"
           git rebase quarkus_qe_target_repo/${GITHUB_BASE_REF}
       - id: files
-        uses: tj-actions/changed-files@v47
+        uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96 # v47.0.6
         continue-on-error: true
       - id: detect-changes
         run: |
@@ -119,9 +119,9 @@ jobs:
       matrix:
         java: [ 21 ]
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Install JDK ${{ matrix.java }}
-        uses: actions/setup-java@v6
+        uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
         with:
           distribution: 'temurin'
           java-version: ${{ matrix.java }}
@@ -145,12 +145,12 @@ jobs:
     outputs:
       has-flaky-tests: ${{steps.flaky-test-detector.outputs.has-flaky-tests}}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Reclaim Disk Space
         run: .github/ci-prerequisites.sh
       - name: Install JDK ${{ matrix.java }}
         # Uses sha for added security since tags can be updated
-        uses: actions/setup-java@v6
+        uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
         with:
           distribution: 'temurin'
           java-version: ${{ matrix.java }}
@@ -179,7 +179,7 @@ jobs:
       - name: Archive flaky run report
         id: archive-flaky-run-report
         if: ${{ hashFiles('**/flaky-run-report-linux-jvm-latest.json') != '' }}
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: flaky-run-report-linux-jvm-latest
           path: target/flaky-run-report-linux-jvm-latest.json
@@ -204,11 +204,11 @@ jobs:
     outputs:
       has-flaky-tests: ${{steps.flaky-test-detector.outputs.has-flaky-tests}}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Reclaim Disk Space
         run: .github/ci-prerequisites.sh
       - name: Install JDK ${{ matrix.java }} Semeru
-        uses: actions/setup-java@v6
+        uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
         with:
           distribution: 'semeru'
           java-version: ${{ matrix.java }}
@@ -239,7 +239,7 @@ jobs:
       - name: Archive flaky run report
         id: archive-flaky-run-report
         if: ${{ steps.rename-flaky-test-run-report.outputs.report-name != '' }}
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: ${{ steps.rename-flaky-test-run-report.outputs.report-name }}
           path: target/${{ steps.rename-flaky-test-run-report.outputs.report-name }}.json
@@ -263,12 +263,12 @@ jobs:
     outputs:
       has-flaky-tests: ${{steps.flaky-test-detector.outputs.has-flaky-tests}}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Reclaim Disk Space
         run: .github/ci-prerequisites.sh
       - name: Install JDK ${{ matrix.java }}
         # Uses sha for added security since tags can be updated
-        uses: actions/setup-java@v6
+        uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
         with:
           distribution: 'temurin'
           java-version: ${{ matrix.java }}
@@ -299,7 +299,7 @@ jobs:
       - name: Archive flaky run report
         id: archive-flaky-run-report
         if: ${{ hashFiles('**/flaky-run-report-linux-native-latest.json') != '' }}
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: flaky-run-report-linux-native-latest
           path: target/flaky-run-report-linux-native-latest.json
@@ -323,9 +323,9 @@ jobs:
     outputs:
       has-flaky-tests: ${{steps.flaky-test-detector.outputs.has-flaky-tests}}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Install JDK ${{ matrix.java }}
-        uses: actions/setup-java@v6
+        uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
         with:
           distribution: 'temurin'
           java-version: ${{ matrix.java }}
@@ -356,7 +356,7 @@ jobs:
       - name: Archive flaky run report
         id: archive-flaky-run-report
         if: ${{ hashFiles('**/flaky-run-report-windows-jvm-latest.json') != '' }}
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: flaky-run-report-windows-jvm-latest
           path: target/flaky-run-report-windows-jvm-latest.json
@@ -401,7 +401,7 @@ jobs:
           IS_WINDOWS_JVM: ${{ needs.windows-build-jvm-latest.outputs.has-flaky-tests == 'true' }}
       - name: Archive 'jobs-with-flaky-tests' artifact
         if: ${{ hashFiles('**/jobs-with-flaky-tests') != '' }}
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: jobs-with-flaky-tests
           path: jobs-with-flaky-tests
@@ -411,7 +411,7 @@ jobs:
           PR_NUMBER: ${{ github.event.number }}
         run: echo $PR_NUMBER > pr-number
       - name: Archive PR number
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: ${{ hashFiles('**/jobs-with-flaky-tests') != '' }}
         with:
           name: pr-number
