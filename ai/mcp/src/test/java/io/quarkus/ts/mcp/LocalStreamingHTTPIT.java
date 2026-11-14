@@ -55,7 +55,7 @@ public class LocalStreamingHTTPIT extends StatefulMCPIT {
     // Independent Java SDK interoperability coverage remains useful on MCP 2025-11-25.
     // SDK 2.0.1 does not support 2026-07-28.
     // TODO: Extend these checks after upgrading to a released SDK client that supports 2026-07-28.
-    private McpSyncClient sdkClient() {
+    protected McpSyncClient sdkClient() {
         McpClientTransport transport = HttpClientStreamableHttpTransport
                 .builder(serverApp().getURI(Protocol.HTTP).toString())
                 .endpoint("/mcp")
@@ -106,6 +106,38 @@ public class LocalStreamingHTTPIT extends StatefulMCPIT {
             Assertions.assertEquals("text", actual.type());
             McpSchema.TextContent text = (McpSchema.TextContent) actual;
             Assertions.assertEquals("Hello, AI!", text.text());
+        }
+    }
+
+    // QUARKUS-8957 - Standard Annotations Scenario: Quarkus metadata parity; McpJavaHttpIT covers the rest
+    @Test
+    @SuppressWarnings("unchecked")
+    public void toolListingMetadata() {
+        try (McpSyncClient thirdPartyClient = sdkClient()) {
+            thirdPartyClient.initialize();
+            McpSchema.Tool filereader = thirdPartyClient.listTools().tools().stream()
+                    .filter(tool -> tool.name().equals("filereader"))
+                    .findFirst()
+                    .orElseThrow();
+
+            Assertions.assertEquals("File reader", filereader.title());
+            Assertions.assertEquals("Read a file", filereader.description());
+
+            McpSchema.ToolAnnotations annotations = filereader.annotations();
+            Assertions.assertNotNull(annotations, "The tool annotations are missing from the listing");
+            Assertions.assertEquals(Boolean.TRUE, annotations.readOnlyHint());
+            Assertions.assertEquals(Boolean.FALSE, annotations.destructiveHint());
+            Assertions.assertEquals(Boolean.TRUE, annotations.idempotentHint());
+            Assertions.assertEquals(Boolean.FALSE, annotations.openWorldHint());
+
+            Map<String, Object> properties = (Map<String, Object>) filereader.inputSchema().get("properties");
+            List<String> required = (List<String>) filereader.inputSchema().get("required");
+            Assertions.assertEquals(List.of("file"), List.copyOf(properties.keySet()));
+            Assertions.assertEquals(List.of("file"), required);
+
+            Map<String, Object> file = (Map<String, Object>) properties.get("file");
+            Assertions.assertEquals("string", file.get("type"));
+            Assertions.assertEquals("path to the file", file.get("description"));
         }
     }
 
