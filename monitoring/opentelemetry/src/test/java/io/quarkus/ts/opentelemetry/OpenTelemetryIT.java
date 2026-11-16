@@ -4,22 +4,24 @@ import static io.quarkus.test.bootstrap.Protocol.HTTP;
 import static io.quarkus.ts.opentelemetry.MicroProfileTelemetryDIResource.LONG_ATTRIBUTE_NAME;
 import static io.restassured.RestAssured.given;
 import static org.awaitility.Awaitility.await;
-import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.wildfly.common.Assert.assertTrue;
 
 import java.time.Duration;
-import java.util.ArrayList;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.http.HttpStatus;
-import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -37,9 +39,13 @@ import io.restassured.response.Response;
 @QuarkusScenario
 public class OpenTelemetryIT {
 
-    private Response resp;
+    private static final Integer SPAN_KIND_CLIENT = 2;
+    private static final Integer SPAN_KIND_SERVER = 3;
+    // Jaeger v3 API requires a time window (v1 API did not)
+    String startMin = Instant.now().minus(1, ChronoUnit.HOURS).toString();
+    String startMax = Instant.now().plus(1, ChronoUnit.HOURS).toString();
 
-    @JaegerContainer(expectedLog = "\"Health Check state change\",\"status\":\"ready\"")
+    @JaegerContainer()
     static final JaegerService jaeger = new JaegerService();
 
     @QuarkusApplication(classes = { MicroProfileTelemetryDIResource.class,
@@ -47,6 +53,7 @@ public class OpenTelemetryIT {
     static final RestService pongservice = new RestService()
             .withProperty("quarkus.application.name", "pongservice")
             .withProperty("quarkus.otel.exporter.otlp.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.bsp.schedule.delay", "700ms")
             .withProperty("quarkus.otel.traces.sampler.arg", "1.0d");
 
     @QuarkusApplication(classes = { PingResource.class, PingPongService.class })
@@ -57,27 +64,32 @@ public class OpenTelemetryIT {
             .withProperty("quarkus.otel.exporter.otlp.endpoint", jaeger::getCollectorUrl)
             // test exporter OTLP proxy is disabled by default
             .withProperty("quarkus.otel.exporter.otlp.traces.proxy-options.host", "Host that must be ignored!")
+            .withProperty("quarkus.otel.bsp.schedule.delay", "700ms")
             .withProperty("quarkus.otel.traces.sampler.arg", "1.0d");
 
     @Order(1)
     @Test
     public void testContextPropagation() {
-        int pageLimit = 10;
         String operationName = "GET /ping/pong";
         String[] operations = new String[] { "GET /ping/pong", "GET /hello", "GET /hello" };
-
+        Arrays.sort(operations);
+        whenDoPingPongRequest();
         await().atMost(1, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(1)).untilAsserted(() -> {
-            whenDoPingPongRequest();
-            thenRetrieveTraces(pageLimit, "1h", pingservice.getName(), operationName);
-            thenTriggeredOperationsMustBe(containsInAnyOrder(operations));
-            thenTraceSpanSizeMustBe(is(3)); // 2 endpoint's + rest client call
-            verifyStandardSourceCodeAttributesArePresent(operationName);
+            Response response = retrieveTraces(pingservice.getName(), operationName);
+            String[] operationNames = response.jsonPath().getString("result.resourceSpans*.scopeSpans*.spans*.name")
+                    .replace("[", "")
+                    .replace("]", "")
+                    .split(", ");
+            Arrays.sort(operationNames);
+            assertArrayEquals(operations, operationNames);
+            verifyStandardSourceCodeAttributesArePresent(response, operationName);
 
-            ArrayList<String> spanKinds = resp.body().path(
-                    "data[0].spans.findAll { it.operationName == '%s' }.tags.flatten().findAll { it.key == 'span.kind' }.value.flatten()",
+            String query = String.format(
+                    "result.resourceSpans.scopeSpans.spans.flatten().findAll { it.name == '%s' }.kind.flatten()",
                     "GET /hello");
-            Assertions.assertTrue(spanKinds.contains("client"));
-            Assertions.assertTrue(spanKinds.contains("server"));
+            List<Integer> spanKinds = response.jsonPath().getList(query);
+            Assertions.assertTrue(spanKinds.contains(SPAN_KIND_CLIENT));
+            Assertions.assertTrue(spanKinds.contains(SPAN_KIND_SERVER));
         });
     }
 
@@ -90,7 +102,6 @@ public class OpenTelemetryIT {
                 getSpanIdFromPath("tracer"), // build Span id from injected Tracer and return Span id
                 getSpanIdFromPath("otel") // build Span id from injected OpenTelemetry and return Span id
         ).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
         // give some time to propagate traces to by checking Baggage now
         // assure Baggage is injected
         given().get(getBaseUri() + "baggage").then().statusCode(200).body(is("true"));
@@ -107,34 +118,35 @@ public class OpenTelemetryIT {
 
         String operationName = "GET /mp-telemetry-di/span";
         await().atMost(1, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(1)).untilAsserted(() -> {
-            thenRetrieveTraces(10, "1h", pongservice.getName(), operationName);
-            verifyAttributeLength(operationName, LONG_ATTRIBUTE_NAME);
+            Response response = retrieveTraces(pongservice.getName(), operationName);
+            verifyAttributeLength(response, operationName, LONG_ATTRIBUTE_NAME);
         });
     }
 
-    private void verifyStandardSourceCodeAttributesArePresent(String operationName) {
-        verifyAttributeValue(operationName, "code.function.name", PingResource.class.getName() + ".callPong");
+    private void verifyStandardSourceCodeAttributesArePresent(Response response, String operationName) {
+        verifyAttributeValue(response, operationName, "code.function.name", PingResource.class.getName() + ".callPong");
     }
 
-    private void verifyAttributeValue(String operationName, String attributeName, String attributeValue) {
-        resp.then().body(getGPathForOperationAndAttribute(operationName, attributeName), is(attributeValue));
+    private void verifyAttributeValue(Response response, String operationName, String attributeName, String attributeValue) {
+        response.then().body(getGPathForOperationAndAttribute(operationName, attributeName), is(attributeValue));
     }
 
-    private void verifyAttributeLength(String operationName, String attributeName) {
-        var attrVal = resp.body().jsonPath().getString(getGPathForOperationAndAttribute(operationName, attributeName));
+    private void verifyAttributeLength(Response response, String operationName, String attributeName) {
+        var attrVal = response.body().jsonPath().getString(getGPathForOperationAndAttribute(operationName, attributeName));
         assertNotNull(attrVal);
         assertEquals(51, attrVal.length());
     }
 
     private static String getGPathForOperationAndAttribute(String operationName, String attribute) {
-        return String.format("data[0].spans.find { it.operationName == '%s' }.tags.find { it.key == '%s' }.value",
+        return String.format(
+                "result.resourceSpans.scopeSpans.spans.flatten().find { it.name == '%s' }.attributes.find { it.key == '%s' }.value.stringValue",
                 operationName, attribute);
     }
 
     private void assureTraceIdPropagatedToJaeger(String path, String spanId) {
         await().atMost(1, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(1)).untilAsserted(() -> {
-            thenRetrieveTraces(200, "1h", pongservice.getName(), "GET /mp-telemetry-di/" + path);
-            assertTrue(resp.body().asString().contains(spanId));
+            Response response = retrieveTraces(pongservice.getName(), "GET /mp-telemetry-di/" + path);
+            assertTrue(response.body().asString().contains(spanId));
         });
     }
 
@@ -145,21 +157,14 @@ public class OpenTelemetryIT {
                 .statusCode(HttpStatus.SC_OK).body(equalToIgnoringCase("ping pong"));
     }
 
-    private void thenRetrieveTraces(int pageLimit, String lookBack, String serviceName, String operationName) {
-        resp = given().when()
-                .queryParam("operation", operationName)
-                .queryParam("lookback", lookBack)
-                .queryParam("limit", pageLimit)
-                .queryParam("service", serviceName)
-                .get(jaeger.getTraceUrl());
-    }
-
-    private void thenTraceSpanSizeMustBe(Matcher<?> matcher) {
-        resp.then().body("data[0].spans.size()", matcher);
-    }
-
-    private void thenTriggeredOperationsMustBe(Matcher<?> matcher) {
-        resp.then().body("data[0].spans.operationName", matcher);
+    private Response retrieveTraces(String serviceName, String operationName) {
+        return given().when()
+                .queryParam("query.service_name", serviceName)
+                .queryParam("query.operation_name", operationName)
+                .queryParam("query.start_time_min", startMin)
+                .queryParam("query.start_time_max", startMax)
+                .get(jaeger.getTraceV3Url())
+                .then().statusCode(200).log().all().extract().response();
     }
 
     private static Map.Entry<String, String> getSpanIdFromPath(String path) {

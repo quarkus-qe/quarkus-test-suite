@@ -34,7 +34,7 @@ public class DevModeOpenTelemetryIT {
     private static final String UPDATE_OPERATION_NAME = "UPDATE quarkus.account";
     private static volatile String previousLiveReloadLogEntry = null;
 
-    @JaegerContainer(expectedLog = "\"Health Check state change\",\"status\":\"ready\"")
+    @JaegerContainer()
     static final JaegerService jaeger = new JaegerService();
 
     @DevModeQuarkusApplication
@@ -98,7 +98,8 @@ public class DevModeOpenTelemetryIT {
     }
 
     private static String retrieveTraceIdForSpanOperation() {
-        return retrieveTraces(20, "1h", "narayanaTransactions", "GET /span", jaeger).jsonPath().getString("data[0].traceID");
+        return retrieveTraces(20, "1h", "narayanaTransactions", "GET /span", jaeger).jsonPath()
+                .getString("result.resourceSpans[0].scopeSpans[0].spans[0].traceId");
     }
 
     private static String getOtelEnabledProperty(boolean enabled) {

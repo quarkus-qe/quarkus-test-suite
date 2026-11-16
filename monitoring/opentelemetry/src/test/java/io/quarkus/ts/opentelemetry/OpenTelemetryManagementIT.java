@@ -6,6 +6,8 @@ import static io.restassured.RestAssured.given;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.containsString;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.http.HttpStatus;
@@ -65,14 +67,18 @@ public class OpenTelemetryManagementIT {
         // wait for pong endpoint to be logged in traces
         await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> given()
                 .when()
-                .queryParam("service", pong.getName())
-                .get(jaeger.getTraceUrl())
+                .queryParam("query.service_name", pong.getName())
+                .queryParam("query.start_time_min", Instant.now().minus(1, ChronoUnit.HOURS).toString())
+                .queryParam("query.start_time_max", Instant.now().plus(1, ChronoUnit.HOURS).toString())
+                .get(jaeger.getTraceV3Url())
                 .then().statusCode(HttpStatus.SC_OK)
                 .and().body(containsString(PONG_ENDPOINT)));
 
         String traces = given().when()
-                .queryParam("service", pong.getName())
-                .get(jaeger.getTraceUrl())
+                .queryParam("query.service_name", pong.getName())
+                .queryParam("query.start_time_min", Instant.now().minus(1, ChronoUnit.HOURS).toString())
+                .queryParam("query.start_time_max", Instant.now().plus(1, ChronoUnit.HOURS).toString())
+                .get(jaeger.getTraceV3Url())
                 .thenReturn().body().asString();
 
         // check that management endpoint is not present in traces, while correct trace is there

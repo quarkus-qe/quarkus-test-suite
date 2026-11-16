@@ -50,7 +50,7 @@ public class OpenTelemetryGrpcIT {
 
         // Then Jaeger is invoked
         await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> given()
-                .when().get(jaeger.getTraceUrl() + "?traceID=" + pingTraceId)
+                .when().get(jaeger.getTraceV3Url() + "/" + pingTraceId)
                 .then().statusCode(HttpStatus.SC_OK)
                 .and().body(allOf(containsString(PING_ENDPOINT), containsString(SAY_PONG_PROTO))));
     }

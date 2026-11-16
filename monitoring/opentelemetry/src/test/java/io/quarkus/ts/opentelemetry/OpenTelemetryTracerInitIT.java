@@ -20,7 +20,7 @@ import io.quarkus.ts.opentelemetry.beans.TracerInitBean;
 @QuarkusScenario
 public class OpenTelemetryTracerInitIT {
 
-    @JaegerContainer(expectedLog = "\"Health Check state change\",\"status\":\"ready\"")
+    @JaegerContainer()
     static final JaegerService jaeger = new JaegerService();
 
     @QuarkusApplication(classes = { TracerInitResource.class, TracerInitBean.class })
