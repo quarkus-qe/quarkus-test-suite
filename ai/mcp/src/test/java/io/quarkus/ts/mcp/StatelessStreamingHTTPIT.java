@@ -33,6 +33,9 @@ import io.vertx.core.json.JsonObject;
 
 @QuarkusScenario
 public class StatelessStreamingHTTPIT extends StatelessAdvancedMCPIT {
+
+    private static final int JSON_RPC_REQUEST_ID = 100;
+
     @QuarkusApplication(boms = { @Dependency(artifactId = "quarkus-mcp-server-bom") }, dependencies = {
             @Dependency(artifactId = "quarkus-rest"),
             @Dependency(groupId = "io.quarkiverse.mcp", artifactId = "quarkus-mcp-server-http")
@@ -218,7 +221,8 @@ public class StatelessStreamingHTTPIT extends StatelessAdvancedMCPIT {
     }
 
     private JsonObject rawMessage(String method, JsonObject params) {
-        JsonObject request = new JsonObject().put("jsonrpc", "2.0").put("id", 100).put("method", method).put("params", params);
+        JsonObject request = new JsonObject().put("jsonrpc", "2.0").put("id", JSON_RPC_REQUEST_ID).put("method", method)
+                .put("params", params);
         McpAssured.injectStatelessMeta(request);
         return request;
     }
@@ -232,7 +236,7 @@ public class StatelessStreamingHTTPIT extends StatelessAdvancedMCPIT {
         response.then().statusCode(400);
         JsonObject error = new JsonObject(response.asString());
         Assertions.assertEquals("2.0", error.getString("jsonrpc"));
-        Assertions.assertNull(error.getValue("id"));
+        Assertions.assertEquals(JSON_RPC_REQUEST_ID, error.getValue("id"));
         assertError(error, code, message);
     }
 
