@@ -45,12 +45,14 @@ public class CustomisationIT {
         assertEquals(200, response.statusCode());
         String answer = response.body().asString();
         String unified = answer.toLowerCase();
-        assertTrue(unified.contains("sam"), "System message was ignored! \n" + answer);
+        assertTrue(unified.contains("sam"), "System message was ignored! " +
+                "'Sam' is the AI name set by the system message in ModelAwareSystemMessageProvider. \n" + answer);
         assertTrue(unified.contains("openai"), "Answer doesn't contain provider name! \n" + answer);
         assertTrue(unified.contains("luna"), "Model name should contain luna! \n" + answer);
         assertTrue(unified.contains("inaccura") || unified.contains("hallucinat") || unified.contains("error")
                 || unified.contains("mistake"),
-                "Temperature overload was applied! \n" + answer);
+                "Temperature overload was applied! With temperature > 0 the model should warn that its answers may be " +
+                        "inaccurate/hallucinated, as instructed in ModelAwareSystemMessageProvider. \n" + answer);
 
         // check, that builder was customised as well
         app.logs().assertContains("Customizing streaming chat model");
