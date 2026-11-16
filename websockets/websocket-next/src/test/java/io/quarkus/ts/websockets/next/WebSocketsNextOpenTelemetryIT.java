@@ -8,6 +8,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -32,6 +35,9 @@ public class WebSocketsNextOpenTelemetryIT {
 
     private static final Logger LOG = Logger.getLogger(WebSocketsNextOpenTelemetryIT.class);
     private Response resp;
+    // Jaeger v3 API requires a time window (v1 API did not)
+    String startMin = Instant.now().minus(1, ChronoUnit.HOURS).toString();
+    String startMax = Instant.now().plus(1, ChronoUnit.HOURS).toString();
 
     @JaegerContainer(useOtlpCollector = true)
     static final JaegerService jaeger = new JaegerService();
@@ -67,20 +73,24 @@ public class WebSocketsNextOpenTelemetryIT {
         });
 
         // CLOSE trace should have a reference to OPEN trace of FOLLOWS_FROM type
-        Map<String, String> references = given().queryParam("operation", closeOperationName)
+        // Jaeger v3 (OTLP) exposes the reference as a span link carrying the traceId
+        Map<String, String> links = given().queryParam("query.operation_name", closeOperationName)
                 .queryParam("lookback", "1h")
                 .queryParam("limit", 10)
-                .queryParam("service", serviceName)
-                .get(jaeger.getTraceUrl()).path("data[0].spans[0].references[0]");
-        assertEquals("FOLLOWS_FROM", references.get("refType"));
-        String referenceTraceId = references.get("traceID");
+                .queryParam("query.service_name", serviceName)
+                .queryParam("query.start_time_min", startMin)
+                .queryParam("query.start_time_max", startMax)
+                .get(jaeger.getTraceV3Url()).path("result.resourceSpans[0].scopeSpans[0].spans[0].links[0]");
+        String referenceTraceId = links.get("traceId");
 
-        // assert that the reference traceID equals the OPEN operation traceID
-        String openOperationTraceIds = given().queryParam("operation", openOperationName)
+        // assert that the linked traceId equals the OPEN operation traceId
+        String openOperationTraceIds = given().queryParam("query.operation_name", openOperationName)
                 .queryParam("lookback", "1h")
                 .queryParam("limit", 10)
-                .queryParam("service", serviceName)
-                .get(jaeger.getTraceUrl()).path("data[0].traceID");
+                .queryParam("query.service_name", serviceName)
+                .queryParam("query.start_time_min", startMin)
+                .queryParam("query.start_time_max", startMax)
+                .get(jaeger.getTraceV3Url()).path("result.resourceSpans[0].scopeSpans[0].spans[0].traceId");
         assertEquals(referenceTraceId, openOperationTraceIds);
     }
 
@@ -102,17 +112,20 @@ public class WebSocketsNextOpenTelemetryIT {
                 .pollInterval(Duration.ofSeconds(1))
                 .until(() -> {
                     resp = given().when()
-                            .queryParam("operation", operationName)
+                            .queryParam("query.operation_name", operationName)
                             .queryParam("lookback", "1h")
                             .queryParam("limit", 10)
-                            .queryParam("service", serviceName)
-                            .get(jaeger.getTraceUrl());
-                    return !resp.jsonPath().getList("data.spans").isEmpty();
+                            .queryParam("query.service_name", serviceName)
+                            .queryParam("query.start_time_min", startMin)
+                            .queryParam("query.start_time_max", startMax)
+                            .get(jaeger.getTraceV3Url());
+                    List list = resp.jsonPath().getList("result.resourceSpans.scopeSpans.spans.flatten()");
+                    return list != null && !list.isEmpty();
                 });
     }
 
     private void thenNumberOfTraces(Matcher<?> matcher) {
-        resp.then().body("data.size()", matcher);
+        resp.then().body("result.resourceSpans.size()", matcher);
     }
 
 }

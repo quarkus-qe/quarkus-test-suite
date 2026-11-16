@@ -1,15 +1,20 @@
 package io.quarkus.ts.transactions;
 
+import io.quarkus.test.bootstrap.JaegerService;
 import io.quarkus.test.bootstrap.PostgresqlService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
+import io.quarkus.test.services.JaegerContainer;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.annotations.EnabledIfPostgresImageProduct;
 
 @QuarkusScenario
 @EnabledIfPostgresImageProduct
 public class PostgresqlProductTransactionGeneralUsageIT extends AbstractPostgresqlTransactionGeneralUsageIT {
+
+    @JaegerContainer()
+    static final JaegerService jaeger = new JaegerService();
 
     /**
      * Product and community postgresql image has different setup system, so we need to instantiate it differently
@@ -25,6 +30,7 @@ public class PostgresqlProductTransactionGeneralUsageIT extends AbstractPostgres
             .withProperty("quarkus.datasource.username", database.getUser())
             .withProperty("quarkus.datasource.password", database.getPassword())
             .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl)
+            .withProperty("quarkus.otel.bsp.schedule.delay", "700ms")
             .withProperty("quarkus.datasource.validation-query-timeout.jdbc.url",
                     () -> configureValidationQueryDs(database));
 
@@ -33,4 +39,8 @@ public class PostgresqlProductTransactionGeneralUsageIT extends AbstractPostgres
         return app;
     }
 
+    @Override
+    public JaegerService getJaeger() {
+        return jaeger;
+    }
 }

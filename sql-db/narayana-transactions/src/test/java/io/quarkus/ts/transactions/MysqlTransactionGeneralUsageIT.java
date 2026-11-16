@@ -6,10 +6,12 @@ import java.io.IOException;
 
 import org.testcontainers.containers.GenericContainer;
 
+import io.quarkus.test.bootstrap.JaegerService;
 import io.quarkus.test.bootstrap.MySqlService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
+import io.quarkus.test.services.JaegerContainer;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.transactions.recovery.TransactionExecutor;
 
@@ -17,6 +19,10 @@ import io.quarkus.ts.transactions.recovery.TransactionExecutor;
 public class MysqlTransactionGeneralUsageIT extends TransactionCommons {
 
     static final int MYSQL_PORT = 3306;
+
+    @JaegerContainer()
+    static final JaegerService jaeger = new JaegerService();
+
     @Container(image = "${mysql.image}", port = MYSQL_PORT, expectedLog = "port: " + MYSQL_PORT)
     static final MySqlService database = new MySqlService().onPostStart(service -> {
         // enable transactions recovery for user
@@ -56,5 +62,10 @@ public class MysqlTransactionGeneralUsageIT extends TransactionCommons {
     @Override
     protected boolean delayFirstProxyMessage() {
         return true;
+    }
+
+    @Override
+    public JaegerService getJaeger() {
+        return jaeger;
     }
 }

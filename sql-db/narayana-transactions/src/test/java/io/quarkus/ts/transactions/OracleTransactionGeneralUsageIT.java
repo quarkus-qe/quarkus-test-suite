@@ -2,10 +2,12 @@ package io.quarkus.ts.transactions;
 
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 
+import io.quarkus.test.bootstrap.JaegerService;
 import io.quarkus.test.bootstrap.OracleService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
+import io.quarkus.test.services.JaegerContainer;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.transactions.recovery.TransactionExecutor;
 
@@ -21,6 +23,9 @@ public class OracleTransactionGeneralUsageIT extends TransactionCommons {
      * When a one transaction is executed on 2 different databases, it is clear that 2PC is required.
      */
     private static final String DATABASES = DATABASE + SEPARATOR + DATABASE + 2;
+
+    @JaegerContainer()
+    static final JaegerService jaeger = new JaegerService();
 
     @Container(image = "${oracle.image}", port = ORACLE_PORT, expectedLog = "DATABASE IS READY TO USE!")
     static OracleService database = new OracleService().withDatabase(DATABASES);
@@ -53,4 +58,8 @@ public class OracleTransactionGeneralUsageIT extends TransactionCommons {
                 new Operation("UPDATE mydb.account") };
     }
 
+    @Override
+    public JaegerService getJaeger() {
+        return jaeger;
+    }
 }

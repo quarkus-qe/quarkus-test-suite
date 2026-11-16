@@ -22,9 +22,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.testcontainers.containers.GenericContainer;
 
+import io.quarkus.test.bootstrap.JaegerService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.bootstrap.SqlServerService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.services.JaegerContainer;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.services.SqlServerContainer;
 import io.quarkus.ts.transactions.recovery.TransactionExecutor;
@@ -36,6 +38,9 @@ import io.restassured.response.Response;
 @QuarkusScenario
 public class MssqlTransactionGeneralUsageIT extends TransactionCommons {
     private static final Logger LOG = Logger.getLogger(MssqlTransactionGeneralUsageIT.class);
+
+    @JaegerContainer()
+    static final JaegerService jaeger = new JaegerService();
 
     @SqlServerContainer
     static SqlServerService database = new SqlServerService().onPostStart(service -> {
@@ -85,7 +90,7 @@ public class MssqlTransactionGeneralUsageIT extends TransactionCommons {
                 // here we are looking for UPDATE msdb.ae1_0 because currently DB statement is
                 // update ae1_0 set amount=?,updatedAt=? from account ae1_0 where ae1_0.accountNumber=?
                 // however we shouldn't rely on alias generation logic, therefore we test the UPDATE statement is there
-                new Operation(actualOperationName -> actualOperationName.startsWith("UPDATE msdb.")) };
+                new Operation("UPDATE msdb.*", actualOperationName -> actualOperationName.startsWith("UPDATE msdb.")) };
     }
 
     @Test
@@ -140,5 +145,10 @@ public class MssqlTransactionGeneralUsageIT extends TransactionCommons {
     @Override
     protected boolean delayFirstProxyMessage() {
         return true;
+    }
+
+    @Override
+    public JaegerService getJaeger() {
+        return jaeger;
     }
 }

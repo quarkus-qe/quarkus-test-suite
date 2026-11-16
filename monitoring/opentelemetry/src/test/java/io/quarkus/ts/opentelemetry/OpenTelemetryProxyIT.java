@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 
 import org.apache.http.HttpStatus;
@@ -113,18 +115,21 @@ public class OpenTelemetryProxyIT {
         AwaitilityUtils.untilAsserted(() -> thenRetrieveTraces()
                 .then()
                 .statusCode(200)
-                .body("data.spans.flatten().findAll { it.operationName == '%s' }.size()".formatted(OPERATION_NAME),
+                .body("result.resourceSpans.scopeSpans.spans.flatten().findAll { it.name == '%s' }.size()"
+                        .formatted(OPERATION_NAME),
                         greaterThan(0)));
     }
 
     private static Response thenRetrieveTraces() {
         return RestAssured
                 .given()
-                .queryParam("operation", OPERATION_NAME)
+                .queryParam("query.operation_name", OPERATION_NAME)
                 .queryParam("lookback", "1h")
                 .queryParam("limit", PAGE_LIMIT)
-                .queryParam("service", "pingpong")
-                .get(jaeger.getTraceUrl());
+                .queryParam("query.service_name", "pingpong")
+                .queryParam("query.start_time_min", Instant.now().minus(1, ChronoUnit.HOURS).toString())
+                .queryParam("query.start_time_max", Instant.now().plus(1, ChronoUnit.HOURS).toString())
+                .get(jaeger.getTraceV3Url());
     }
 
     private static void doRequest() {

@@ -2,11 +2,12 @@ package io.quarkus.ts.opentelemetry;
 
 import static io.quarkus.test.utils.AwaitilityUtils.untilAsserted;
 import static org.awaitility.Awaitility.await;
-import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 
 import java.nio.file.Paths;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
@@ -38,7 +39,7 @@ public class DevModeOpenTelemetryIT {
     private static final int PAGE_LIMIT = 10;
     private static volatile String previousLiveReloadLogEntry = null;
 
-    @JaegerContainer(expectedLog = "\"Health Check state change\",\"status\":\"ready\"")
+    @JaegerContainer()
     static final JaegerService jaeger = new JaegerService();
 
     @DevModeQuarkusApplication(classes = { PingPongService.class, PingResource.class,
@@ -46,6 +47,7 @@ public class DevModeOpenTelemetryIT {
     static DevModeQuarkusService otel = (DevModeQuarkusService) new DevModeQuarkusService()
             .withProperty("quarkus.otel.exporter.otlp.endpoint", jaeger::getCollectorUrl)
             .withProperty("quarkus.otel.traces.sampler.arg", "1.0d")
+            .withProperty("quarkus.otel.bsp.schedule.delay", "700ms")
             // TODO: remove once https://github.com/quarkusio/quarkus/issues/54953 is fixed
             .withProperty("quarkus.observability.lgtm.enabled", "false");
 
@@ -57,8 +59,9 @@ public class DevModeOpenTelemetryIT {
         await().atMost(30, TimeUnit.SECONDS).untilAsserted(() -> {
             doRequest();
             Response response = thenRetrieveTraces(PAGE_LIMIT, "1h", "pingpong", operationName);
+            response.then().statusCode(HttpStatus.SC_OK);
             response.then()
-                    .body("data.size()", greaterThan(0));
+                    .body("result.resourceSpans.size()", greaterThan(0));
         });
     }
 
@@ -71,19 +74,20 @@ public class DevModeOpenTelemetryIT {
         await().atMost(30, TimeUnit.SECONDS).untilAsserted(() -> {
             doRequest();
             Response response = thenRetrieveTraces(PAGE_LIMIT, "1h", "pingpong", operationName);
-            response.then()
-                    .body("data", empty());
+            response.then().statusCode(404);
         });
     }
 
     private Response thenRetrieveTraces(int pageLimit, String lookBack, String serviceName, String operationName) {
         Response response = otel.given()
                 .when()
-                .queryParam("operation", operationName)
+                .queryParam("query.operation_name", operationName)
                 .queryParam("lookback", lookBack)
                 .queryParam("limit", pageLimit)
-                .queryParam("service", serviceName)
-                .get(jaeger.getTraceUrl());
+                .queryParam("query.service_name", serviceName)
+                .queryParam("query.start_time_min", Instant.now().minus(1, ChronoUnit.HOURS).toString())
+                .queryParam("query.start_time_max", Instant.now().plus(1, ChronoUnit.HOURS).toString())
+                .get(jaeger.getTraceV3Url());
         LOG.debug("Traces  -->  " + response.asPrettyString());
         return response;
     }

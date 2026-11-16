@@ -2,10 +2,12 @@ package io.quarkus.ts.transactions;
 
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
+import io.quarkus.test.bootstrap.JaegerService;
 import io.quarkus.test.bootstrap.MariaDbService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.services.Container;
+import io.quarkus.test.services.JaegerContainer;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.transactions.recovery.TransactionExecutor;
 
@@ -14,6 +16,9 @@ import io.quarkus.ts.transactions.recovery.TransactionExecutor;
 public class OpenShiftMariaDbTransactionGeneralUsageIT extends TransactionCommons {
 
     static final int MARIADB_PORT = 3306;
+
+    @JaegerContainer()
+    static final JaegerService jaeger = new JaegerService();
 
     @Container(image = "${mariadb.118.image}", port = MARIADB_PORT, expectedLog = "Only MySQL server logs after this point")
     static MariaDbService database = new MariaDbService();
@@ -36,4 +41,8 @@ public class OpenShiftMariaDbTransactionGeneralUsageIT extends TransactionCommon
         return TransactionExecutor.STATIC_TRANSACTION_MANAGER;
     }
 
+    @Override
+    public JaegerService getJaeger() {
+        return jaeger;
+    }
 }

@@ -3,10 +3,12 @@ package io.quarkus.ts.transactions;
 import org.jboss.logging.Logger;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
+import io.quarkus.test.bootstrap.JaegerService;
 import io.quarkus.test.bootstrap.MySqlService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
 import io.quarkus.test.services.Container;
+import io.quarkus.test.services.JaegerContainer;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.transactions.recovery.TransactionExecutor;
 
@@ -15,6 +17,9 @@ import io.quarkus.ts.transactions.recovery.TransactionExecutor;
 public class OpenShiftMysqlTransactionGeneralUsageIT extends TransactionCommons {
     private static final Logger LOG = Logger.getLogger(OpenShiftMysqlTransactionGeneralUsageIT.class);
     static final int MYSQL_PORT = 3306;
+
+    @JaegerContainer()
+    static final JaegerService jaeger = new JaegerService();
 
     @Container(image = "${mysql.image}", port = MYSQL_PORT, expectedLog = "Only MySQL server logs after this point")
     static MySqlService database = new MySqlService();
@@ -45,5 +50,10 @@ public class OpenShiftMysqlTransactionGeneralUsageIT extends TransactionCommons 
     @Override
     protected TransactionExecutor getTransactionExecutorUsedForRecovery() {
         return TransactionExecutor.STATIC_USER_TRANSACTION;
+    }
+
+    @Override
+    public JaegerService getJaeger() {
+        return jaeger;
     }
 }

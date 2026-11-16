@@ -2,10 +2,12 @@ package io.quarkus.ts.transactions;
 
 import org.junit.jupiter.api.Tag;
 
+import io.quarkus.test.bootstrap.JaegerService;
 import io.quarkus.test.bootstrap.MariaDbService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.Container;
+import io.quarkus.test.services.JaegerContainer;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.transactions.recovery.TransactionExecutor;
 
@@ -14,6 +16,9 @@ public class MariaDbTransactionGeneralUsageIT extends TransactionCommons {
 
     private static final String DATASOURCE_JDBC_ENABLE_RECOVERY = "quarkus.datasource.%s.jdbc.enable-recovery";
     static final int MARIADB_PORT = 3306;
+
+    @JaegerContainer()
+    static final JaegerService jaeger = new JaegerService();
 
     @Container(image = "${mariadb.12.image}", port = MARIADB_PORT, expectedLog = "socket: '.*sock'  port: " + MARIADB_PORT)
     static MariaDbService database = new MariaDbService();
@@ -53,5 +58,10 @@ public class MariaDbTransactionGeneralUsageIT extends TransactionCommons {
 
     private String getDsJdbcEnableRecovery(String datasourceName) {
         return DATASOURCE_JDBC_ENABLE_RECOVERY.formatted(datasourceName);
+    }
+
+    @Override
+    public JaegerService getJaeger() {
+        return jaeger;
     }
 }
