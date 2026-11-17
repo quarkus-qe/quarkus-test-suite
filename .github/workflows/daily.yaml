@@ -160,7 +160,7 @@ jobs:
         image: [ "ubi9-quarkus-mandrel-builder-image:jdk-25" ]
         profiles: [ "root-modules,websockets-modules,test-tooling-modules,nosql-db-modules,ai-modules",
                    "http-modules,cache-modules", "security-modules,spring-modules",
-                    "hibernate-modules", "sql-db-modules", "messaging-modules,monitoring-modules"]
+                    "hibernate-modules", "sql-db-modules", "messaging-modules", "monitoring-modules"]
     steps:
       - uses: actions/checkout@v7
       - name: Reclaim Disk Space
@@ -318,7 +318,7 @@ jobs:
         image: [ "ubi9-quarkus-mandrel-builder-image:jdk-25" ]
         profiles: [ "root-modules,websockets-modules,test-tooling-modules,nosql-db-modules,ai-modules",
                     "http-modules,cache-modules", "security-modules,spring-modules",
-                    "hibernate-modules", "sql-db-modules", "messaging-modules,monitoring-modules"]
+                    "hibernate-modules", "sql-db-modules", "messaging-modules", "monitoring-modules"]
     steps:
       - uses: actions/checkout@v7
       - name: Reclaim Disk Space
