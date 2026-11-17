@@ -5,6 +5,7 @@ on:
     - cron: '0 23 * * *'
 env:
   QUARKUS_BUILD: 3.40.999-SNAPSHOT
+  TESTCONTAINERS_PULL_TIMEOUT: 300
 jobs:
   build-quarkus:
     name: Build Quarkus
