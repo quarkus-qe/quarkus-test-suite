@@ -129,7 +129,7 @@ public class HeadersIT {
 
     @Test
     @Tag("https://github.com/quarkusio/quarkus/discussions/42636")
-    public void testHttp10WithoutHostHeader() throws InterruptedException, IOException {
+    public void testHttp10WithoutHostHeader() throws IOException {
         // We can't use java client as it's always adding `\r\n` to the host header.
         URILike uri = app.getURI();
         StringBuilder response = new StringBuilder();

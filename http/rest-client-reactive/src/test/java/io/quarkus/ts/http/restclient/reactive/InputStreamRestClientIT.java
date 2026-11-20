@@ -8,6 +8,7 @@ import static org.hamcrest.Matchers.is;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -25,6 +26,7 @@ public class InputStreamRestClientIT {
     static RestService app = new RestService();
 
     @Test
+    @Disabled("https://github.com/quarkusio/quarkus/issues/58731")
     public void sendInputStream() {
         app.given().get("/client/input-stream/count")
                 .then()
@@ -41,6 +43,7 @@ public class InputStreamRestClientIT {
     }
 
     @Test
+    @Disabled("https://github.com/quarkusio/quarkus/issues/58731")
     public void sendRequestScopedInputStream() {
         // RequestScopedInputStream returns A for the first MAX_ITERATIONS reads and then -1,
         // so the body is exactly MAX_ITERATIONS bytes. InputStreamResource.count() returns the
