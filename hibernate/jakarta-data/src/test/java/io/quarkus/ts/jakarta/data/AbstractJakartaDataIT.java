@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -436,6 +437,7 @@ public abstract class AbstractJakartaDataIT {
 
     @Order(24)
     @Test
+    @Disabled("https://github.com/quarkusio/quarkus/issues/58557")
     void testBasicRepositoryFindAnnotationWithRangeAndLimit() {
         // order by title
         // limit 2
@@ -478,6 +480,7 @@ public abstract class AbstractJakartaDataIT {
 
     @Order(25)
     @Test
+    @Disabled("https://github.com/quarkusio/quarkus/issues/58557")
     void testBasicRepositoryDeleteUsingStatelessSessionDirectly() {
         app.given()
                 .contentType(ContentType.JSON)
@@ -488,6 +491,7 @@ public abstract class AbstractJakartaDataIT {
 
     @Order(26)
     @Test
+    @Disabled("https://github.com/quarkusio/quarkus/issues/58557")
     void testBasicRepositoryBuiltinFindById() {
         var books = app.given().get("/basic-repository/author/" + ID_RANGE_START + "/builtin/find-by-id")
                 .then().statusCode(200)

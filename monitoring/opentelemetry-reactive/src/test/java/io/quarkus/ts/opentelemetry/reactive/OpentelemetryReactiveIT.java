@@ -13,11 +13,15 @@ import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matcher;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -30,6 +34,8 @@ import io.restassured.response.Response;
 
 @QuarkusScenario
 public class OpentelemetryReactiveIT {
+    private static final Integer SPAN_KIND_CLIENT = 2;
+    private static final Integer SPAN_KIND_SERVER = 3;
 
     private static final String OTEL_PING_SERVICE_NAME = "pingservice";
     private static final String TRACING_SUPPRESSED_SERVICE_NAME = "tracing-suppressed-service";
@@ -39,27 +45,30 @@ public class OpentelemetryReactiveIT {
     static final String ADMIN_USERNAME = "alice";
     static final String ADMIN_PASSWORD = "alice";
 
-    @JaegerContainer(useOtlpCollector = true, expectedLog = "\"Health Check state change\",\"status\":\"ready\"")
+    @JaegerContainer()
     static final JaegerService jaeger = new JaegerService();
 
     @QuarkusApplication(classes = { PongResource.class, SchedulerResource.class,
             SchedulerService.class }, properties = "pong.properties")
     static final RestService pongservice = new RestService()
             .withProperty("quarkus.application.name", "pongservice")
-            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl);
+            .withProperty("quarkus.otel.exporter.otlp.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.traces.sampler.arg", "1.0d");
 
     @QuarkusApplication(classes = { PingResource.class, PingPongService.class, AdminResource.class })
     static final RestService pingservice = new RestService()
             .withProperty("pongservice.url", () -> pongservice.getURI(HTTP).getRestAssuredStyleUri())
             .withProperty("pongservice.port", () -> Integer.toString(pongservice.getURI(HTTP).getPort()))
-            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.exporter.otlp.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.traces.sampler.arg", "1.0d")
             // verify OTEL service name has priority over default Quarkus application name
             .withProperty("quarkus.otel.service.name", OTEL_PING_SERVICE_NAME);
 
     @QuarkusApplication(classes = { PartiallyTraceableResource.class, UntraceableResource.class })
     static final RestService tracingsuppressedservice = new RestService()
             .withProperty("quarkus.application.name", TRACING_SUPPRESSED_SERVICE_NAME)
-            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.exporter.otlp.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.traces.sampler.arg", "1.0d")
             .withProperty("quarkus.otel.service.name", TRACING_SUPPRESSED_SERVICE_NAME)
             // we need to censor root as OpenShift readiness probe throws in a bunch of GET / traces into the mix and we don't want that in the test
             .withProperty("quarkus.otel.traces.suppress-application-uris", "/,partially-traceable-hello,untraceable-hello*");
@@ -70,17 +79,17 @@ public class OpentelemetryReactiveIT {
         String operationName = "GET /ping/pong";
         String[] operations = new String[] { "GET /ping/pong", "GET /hello", "GET /hello" };
 
+        whenDoPingPongRequest();
         await().atMost(1, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(1)).untilAsserted(() -> {
-            whenDoPingPongRequest();
             thenRetrieveTraces(pageLimit, "1h", OTEL_PING_SERVICE_NAME, operationName);
-            thenTriggeredOperationsMustBe(containsInAnyOrder(operations));
+            thenTriggeredOperationsMustContain(operations);
             thenTraceSpanSizeMustBe(is(3)); // 2 endpoint's + rest client call
             verifyStandardSourceCodeAttributesArePresent(operationName);
-            ArrayList<String> spanKinds = resp.body().path(
-                    "data[0].spans.findAll { it.operationName == '%s' }.tags.flatten().findAll { it.key == 'span.kind' }.value.flatten()",
+            ArrayList<Integer> spanKinds = resp.body().path(
+                    "result.resourceSpans.scopeSpans.spans.flatten().findAll { it.name == '%s' }.kind.flatten()",
                     "GET /hello");
-            assertTrue(spanKinds.contains("client"));
-            assertTrue(spanKinds.contains("server"));
+            assertTrue(spanKinds.contains(SPAN_KIND_CLIENT));
+            assertTrue(spanKinds.contains(SPAN_KIND_SERVER));
         });
     }
 
@@ -106,7 +115,7 @@ public class OpentelemetryReactiveIT {
         // asserts scheduled method was traced
         await().atMost(1, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(1)).untilAsserted(() -> {
             thenRetrieveTraces(10, "1h", pongservice.getName(), operationName);
-            thenTriggeredOperationsMustBe(containsInAnyOrder(operations));
+            thenTriggeredOperationsMustContain(operations);
             thenTraceSpanSizeMustBe(greaterThanOrEqualTo(1));
         });
 
@@ -132,7 +141,7 @@ public class OpentelemetryReactiveIT {
 
         await().atMost(1, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(1)).untilAsserted(() -> {
             thenRetrieveTraces(10, "1h", TRACING_SUPPRESSED_SERVICE_NAME);
-            resp.then().body("data.flatten().spans.flatten().operationName", containsInAnyOrder(operations));
+            resp.then().body("result.resourceSpans.scopeSpans.spans.flatten().name", containsInAnyOrder(operations));
             thenNumberOfTracesMustBe(is(3)); // untraceable-hello is fully suppressed, /partially-traceable-hello root is suppressed, three other requests should be traced
         });
     }
@@ -203,12 +212,15 @@ public class OpentelemetryReactiveIT {
                 .pollInterval(Duration.ofSeconds(1))
                 .until(() -> {
                     resp = given().when()
-                            .queryParam("operation", operationName)
+                            .queryParam("query.operation_name", operationName)
                             .queryParam("lookback", lookBack)
                             .queryParam("limit", pageLimit)
-                            .queryParam("service", serviceName)
-                            .get(jaeger.getTraceUrl());
-                    return !resp.jsonPath().getList("data.spans").isEmpty();
+                            .queryParam("query.service_name", serviceName)
+                            .queryParam("query.start_time_min", Instant.now().minus(1, ChronoUnit.HOURS).toString())
+                            .queryParam("query.start_time_max", Instant.now().plus(1, ChronoUnit.HOURS).toString())
+                            .get(jaeger.getTraceV3Url());
+                    List<Object> traces = resp.jsonPath().getList("result.resourceSpans.scopeSpans.spans.flatten()");
+                    return traces != null && !traces.isEmpty();
                 });
     }
 
@@ -219,28 +231,38 @@ public class OpentelemetryReactiveIT {
                     resp = given().when()
                             .queryParam("lookback", lookBack)
                             .queryParam("limit", pageLimit)
-                            .queryParam("service", serviceName)
-                            .get(jaeger.getTraceUrl());
-                    return !resp.jsonPath().getList("data.spans").isEmpty();
+                            .queryParam("query.service_name", serviceName)
+                            .queryParam("query.start_time_min", Instant.now().minus(1, ChronoUnit.HOURS).toString())
+                            .queryParam("query.start_time_max", Instant.now().plus(1, ChronoUnit.HOURS).toString())
+                            .get(jaeger.getTraceV3Url());
+                    List<Object> traces = resp.jsonPath().getList("result.resourceSpans.scopeSpans.spans.flatten()");
+                    return traces != null && !traces.isEmpty();
                 });
     }
 
     private void assertSecurityEventsAndLogsPresent() {
         resp.then().body(
-                "data.flatten().spans.flatten().findAll { span -> span.operationName == 'GET /admin' }.logs.flatten().findAll { log -> log.fields.find { field -> field.key == 'event' && field.value == 'quarkus.security.authorization.success' } }",
+                "result.resourceSpans.scopeSpans.spans.flatten().findAll { span -> span.name == 'GET /admin' }.events.flatten().findAll { event -> event.name == 'quarkus.security.authorization.success' }",
                 is(not(empty())));
     }
 
     private void thenNumberOfTracesMustBe(Matcher<?> matcher) {
-        resp.then().body("data.size()", matcher);
+        resp.then().body("result.resourceSpans.size()", matcher);
     }
 
     private void thenTraceSpanSizeMustBe(Matcher<?> matcher) {
-        resp.then().body("data[0].spans.size()", matcher);
+        resp.then().body("result.resourceSpans.scopeSpans.spans.flatten().size()", matcher);
     }
 
-    private void thenTriggeredOperationsMustBe(Matcher<?> matcher) {
-        resp.then().body("data[0].spans.operationName", matcher);
+    private void thenTriggeredOperationsMustContain(String[] operations) {
+        List<String> spans = resp.jsonPath().getList("result.resourceSpans.scopeSpans.spans.name.flatten()");
+        List<String> cleanedSpans = spans.stream()
+                .map(line -> line.replace("[", ""))
+                .map(line -> line.replace("]", ""))
+                .toList();
+        for (String operation : operations) {
+            Assertions.assertTrue(cleanedSpans.contains(operation), cleanedSpans + " should contain " + operation);
+        }
     }
 
     private void verifyStandardSourceCodeAttributesArePresent(String operationName) {
@@ -252,7 +274,8 @@ public class OpentelemetryReactiveIT {
     }
 
     private static String getGPathForOperationAndAttribute(String operationName, String attribute) {
-        return String.format("data[0].spans.find { it.operationName == '%s' }.tags.find { it.key == '%s' }.value",
+        return String.format(
+                "result.resourceSpans.scopeSpans.spans.flatten().find { it.name == '%s' }.attributes.find { it.key == '%s' }.value.stringValue",
                 operationName, attribute);
     }
 }

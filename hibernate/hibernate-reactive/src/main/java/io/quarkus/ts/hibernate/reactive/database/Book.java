@@ -69,11 +69,11 @@ public class Book extends PanacheEntityBase {
         this.author = author;
     }
 
-    public long getISBN() {
+    public long getIsbn() {
         return isbn;
     }
 
-    public void setISBN(long isbn) {
+    public void setIsbn(long isbn) {
         this.isbn = isbn;
     }
 }

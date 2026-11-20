@@ -17,6 +17,6 @@ public class ClientResource {
 
     @GET
     public Uni<Response> get() {
-        return client.health();
+        return client.health().onItem().transform(r -> Response.fromResponse(r).build());
     }
 }

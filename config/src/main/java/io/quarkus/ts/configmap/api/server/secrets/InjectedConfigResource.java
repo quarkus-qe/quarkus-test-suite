@@ -13,6 +13,6 @@ public class InjectedConfigResource extends SecretResource {
 
     @Override
     public String getProperty(String key) {
-        return config.getRawValue(key);
+        return config.getValue(key, String.class);
     }
 }

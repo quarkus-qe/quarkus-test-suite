@@ -3,8 +3,8 @@ package io.quarkus.ts.logging.jboss;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 
-import io.vertx.core.impl.logging.Logger;
-import io.vertx.core.impl.logging.LoggerFactory;
+import io.vertx.core.internal.logging.Logger;
+import io.vertx.core.internal.logging.LoggerFactory;
 
 @Path("/vertx-log")
 public class VertxNullLogMessageResource {

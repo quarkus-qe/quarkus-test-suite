@@ -9,8 +9,8 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 
 import io.smallrye.mutiny.Uni;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.mutiny.core.Vertx;
-import io.vertx.mutiny.core.buffer.Buffer;
 
 @Path("/hello")
 public class HelloResource {

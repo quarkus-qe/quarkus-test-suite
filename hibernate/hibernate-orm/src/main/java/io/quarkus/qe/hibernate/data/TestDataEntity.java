@@ -24,6 +24,7 @@ public class TestDataEntity {
     @JdbcTypeCode(SqlTypes.JSON)
     String json;
 
+    @Column(name = "\"character\"")
     Character character;
 
     @Version

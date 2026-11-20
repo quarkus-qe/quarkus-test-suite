@@ -2,11 +2,11 @@ package io.quarkus.ts.http.grpc.customizers;
 
 import jakarta.inject.Singleton;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.grpc.Context;
 import io.grpc.Metadata;
+
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 @Singleton
 public final class GrpcServerCustomizerHelper {
@@ -20,7 +20,7 @@ public final class GrpcServerCustomizerHelper {
                 public String toAsciiString(InterceptorInvocations interceptorInvocations) {
                     try {
                         return objectMapper.writeValueAsString(interceptorInvocations);
-                    } catch (JsonProcessingException e) {
+                    } catch (JacksonException e) {
                         throw new RuntimeException(e);
                     }
                 }
@@ -29,7 +29,7 @@ public final class GrpcServerCustomizerHelper {
                 public InterceptorInvocations parseAsciiString(String s) {
                     try {
                         return objectMapper.readValue(s, InterceptorInvocations.class);
-                    } catch (JsonProcessingException e) {
+                    } catch (JacksonException e) {
                         throw new RuntimeException(e);
                     }
                 }

@@ -23,7 +23,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.yaml.snakeyaml.Yaml;
 
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
@@ -41,6 +40,9 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.MultiPartSpecification;
+
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.dataformat.yaml.YAMLMapper;
 
 @QuarkusScenario
 public class NonJsonPayLoadIT {
@@ -123,8 +125,8 @@ public class NonJsonPayLoadIT {
                 .then()
                 .log().all()
                 .statusCode(200).extract().response();
-        Yaml yaml = new Yaml();
-        Map<String, Object> responseObject = yaml.load(response.asString());
+        ObjectMapper yamlMapper = new YAMLMapper();
+        Map<String, Object> responseObject = yamlMapper.readValue(response.asString(), Map.class);
         Assertions.assertEquals("[{name=Tokio, country=Japan}, {name=Paris, country=France}]",
                 responseObject.get("cityList").toString());
     }

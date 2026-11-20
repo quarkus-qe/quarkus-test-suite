@@ -7,7 +7,12 @@ import static org.awaitility.Awaitility.await;
 
 import java.net.HttpURLConnection;
 import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -17,7 +22,6 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.services.JaegerContainer;
 import io.quarkus.test.services.QuarkusApplication;
-import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 
 @QuarkusScenario
@@ -28,10 +32,15 @@ public class GraphQLTelemetryIT {
 
     @QuarkusApplication
     static RestService app = new RestService()
-            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl);
+            .withProperty("quarkus.otel.exporter.otlp.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.traces.sampler.arg", "1.0d");
 
     @Test
     void verifyTelemetry() {
+        // Jaeger v3 API requires a time window
+        String startMin = Instant.now().minus(1, ChronoUnit.HOURS).toString();
+        String startMax = Instant.now().plus(1, ChronoUnit.HOURS).toString();
+
         Response classic = sendQuery(createQuery("friend(name:\"Aristotle\"){name}"));
         Response reactive = sendQuery(createQuery("friend_r(name:\"Aristotle\"){name}"));
 
@@ -41,21 +50,34 @@ public class GraphQLTelemetryIT {
         await().atMost(1, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(10)).untilAsserted(() -> {
             String operation = "POST /graphql";
             Response traces = given().when()
-                    .queryParam("operation", operation)
-                    .queryParam("lookback", "1h")
-                    .queryParam("limit", 10)
-                    .queryParam("service", "graphql-telemetry")
-                    .get(jaeger.getTraceUrl());
+                    .queryParam("query.service_name", "graphql-telemetry")
+                    .queryParam("query.operation_name", operation)
+                    .queryParam("query.start_time_min", startMin)
+                    .queryParam("query.start_time_max", startMax)
+                    .get(jaeger.getTraceV3Url());
             Assertions.assertEquals(HttpURLConnection.HTTP_OK, traces.statusCode());
-            JsonPath body = traces.body().jsonPath();
-            Assertions.assertEquals(2, body.getList("data").size());
-            Assertions.assertEquals(2, body.getList("data[0].spans").size());
-            Assertions.assertEquals(2, body.getList("data[1].spans").size());
-            // Span with "operationName": "GraphQL" is child of the span with "operationName": "POST /graphql"
-            Assertions.assertTrue(body.getString("data[0].spans[0].operationName").equals(operation) ||
-                    body.getString("data[0].spans[0].operationName").equals("GraphQL"));
-            Assertions.assertTrue(body.getString("data[1].spans[0].operationName").equals(operation) ||
-                    body.getString("data[1].spans[0].operationName").equals("GraphQL"));
+
+            List<Map<String, Object>> spans = traces.jsonPath()
+                    .getList("result.resourceSpans.scopeSpans.spans.flatten()");
+            Map<Object, List<Map<String, Object>>> spansByTrace = spans.stream()
+                    .collect(Collectors.groupingBy(span -> span.get("traceId")));
+
+            // one trace for the classic query, one for the reactive one
+            Assertions.assertEquals(2, spansByTrace.size(), "Unexpected traces: " + spansByTrace);
+            for (List<Map<String, Object>> traceSpans : spansByTrace.values()) {
+                Assertions.assertEquals(2, traceSpans.size(), "Unexpected spans: " + traceSpans);
+                Map<String, Object> httpSpan = findSpan(traceSpans, operation);
+                Map<String, Object> graphQLSpan = findSpan(traceSpans, "GraphQL");
+                // the GraphQL span is a child of the HTTP span
+                Assertions.assertEquals(httpSpan.get("spanId"), graphQLSpan.get("parentSpanId"));
+            }
         });
+    }
+
+    private static Map<String, Object> findSpan(List<Map<String, Object>> spans, String name) {
+        return spans.stream()
+                .filter(span -> name.equals(span.get("name")))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("No span named '" + name + "' in " + spans));
     }
 }

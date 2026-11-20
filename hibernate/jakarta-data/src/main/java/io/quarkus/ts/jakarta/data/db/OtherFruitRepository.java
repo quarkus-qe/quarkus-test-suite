@@ -1,6 +1,7 @@
 package io.quarkus.ts.jakarta.data.db;
 
 import java.util.List;
+import java.util.Optional;
 
 import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
@@ -24,7 +25,7 @@ public interface OtherFruitRepository {
     void update(Fruit fruit);
 
     @Find
-    Fruit findByName(@By("name") String name);
+    Optional<Fruit> findByName(@By("name") String name);
 
     @Find
     Fruit findByNamePattern(@Pattern String name);

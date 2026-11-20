@@ -34,18 +34,22 @@ public abstract class BaseOidcMtlsIT {
     protected static final String INCORRECT_FILE_TYPE = "incorrect-type";
 
     protected static RestService createRestService(String fileType, String keystoreFileExtension, Supplier<String> realmUrl) {
+        String storeSubKey = JKS_KEYSTORE_FILE_TYPE.equals(fileType) ? "jks" : "p12";
         return new RestService()
-                .withProperty("quarkus.oidc.tls.verification", "required")
-                .withProperty("client-ts-file", "client-truststore." + keystoreFileExtension)
                 .withProperty("server-ts-file", "server-truststore." + keystoreFileExtension)
-                .withProperty("client-ks-file", "client-keystore." + keystoreFileExtension)
                 .withProperty("server-ks-file", "server-keystore." + keystoreFileExtension)
                 .withProperty("quarkus.oidc.auth-server-url", realmUrl)
                 .withProperty("quarkus.oidc.client-id", CLIENT_ID_DEFAULT)
-                .withProperty("store-file-extension", fileType)
+                // OIDC client TLS via the centralized TLS registry
+                .withProperty("quarkus.tls.oidc-client.key-store." + storeSubKey + ".path",
+                        "client-keystore." + keystoreFileExtension)
+                .withProperty("quarkus.tls.oidc-client.key-store." + storeSubKey + ".password", "password")
+                .withProperty("quarkus.tls.oidc-client.trust-store." + storeSubKey + ".path",
+                        "client-truststore." + keystoreFileExtension)
+                .withProperty("quarkus.tls.oidc-client.trust-store." + storeSubKey + ".password", "password")
                 // app would fail to start with incorrect file, but we want to test OIDC file type failure
                 .withProperty("server-store-file-extension",
-                        INCORRECT_FILE_TYPE.equals(fileType) ? JKS_KEYSTORE_FILE_TYPE : "${store-file-extension}")
+                        INCORRECT_FILE_TYPE.equals(fileType) ? JKS_KEYSTORE_FILE_TYPE : fileType)
                 .withProperty("quarkus.oidc.credentials.secret", CLIENT_SECRET_DEFAULT);
     }
 

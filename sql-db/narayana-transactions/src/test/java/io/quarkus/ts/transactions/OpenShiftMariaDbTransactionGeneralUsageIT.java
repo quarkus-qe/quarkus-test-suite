@@ -20,7 +20,8 @@ public class OpenShiftMariaDbTransactionGeneralUsageIT extends TransactionCommon
 
     @QuarkusApplication
     static RestService app = new RestService().withProperties("mariadb_app.properties")
-            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.exporter.otlp.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.traces.sampler.arg", "1.0d")
             .withProperty("quarkus.datasource.username", database.getUser())
             .withProperty("quarkus.datasource.password", database.getPassword())
             .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl);

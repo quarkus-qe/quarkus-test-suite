@@ -34,12 +34,13 @@ public class DevModeOpenTelemetryIT {
     private static final String UPDATE_OPERATION_NAME = "UPDATE quarkus.account";
     private static volatile String previousLiveReloadLogEntry = null;
 
-    @JaegerContainer(expectedLog = "\"Health Check state change\",\"status\":\"ready\"")
+    @JaegerContainer()
     static final JaegerService jaeger = new JaegerService();
 
     @DevModeQuarkusApplication
     static DevModeQuarkusService app = (DevModeQuarkusService) new DevModeQuarkusService()
-            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.exporter.otlp.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.traces.sampler.arg", "1.0d")
             .withProperty("quarkus.datasource.jdbc.telemetry", "true")
             .withProperty("quarkus.otel.enabled", "true")
             // TODO: remove once https://github.com/quarkusio/quarkus/issues/54953 is fixed
@@ -97,7 +98,8 @@ public class DevModeOpenTelemetryIT {
     }
 
     private static String retrieveTraceIdForSpanOperation() {
-        return retrieveTraces(20, "1h", "narayanaTransactions", "GET /span", jaeger).jsonPath().getString("data[0].traceID");
+        return retrieveTraces(20, "1h", "narayanaTransactions", "GET /span", jaeger).jsonPath()
+                .getString("result.resourceSpans[0].scopeSpans[0].spans[0].traceId");
     }
 
     private static String getOtelEnabledProperty(boolean enabled) {

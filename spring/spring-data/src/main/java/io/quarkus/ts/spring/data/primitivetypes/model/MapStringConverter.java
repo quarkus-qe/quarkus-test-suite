@@ -1,6 +1,5 @@
 package io.quarkus.ts.spring.data.primitivetypes.model;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
@@ -9,7 +8,7 @@ import jakarta.persistence.AttributeConverter;
 
 import org.jboss.logging.Logger;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 
 class MapStringConverter implements AttributeConverter<Map<String, String>, String> {
     private static final String EMPTY = "{}";
@@ -20,7 +19,7 @@ class MapStringConverter implements AttributeConverter<Map<String, String>, Stri
     public String convertToDatabaseColumn(Map<String, String> attribute) {
         try {
             return objectMapper.writeValueAsString(attribute);
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error("Error while converting Map to JSON String: ", e);
             return "";
         }

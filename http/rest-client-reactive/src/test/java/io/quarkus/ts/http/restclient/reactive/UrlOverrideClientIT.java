@@ -5,6 +5,7 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -27,7 +28,7 @@ public class UrlOverrideClientIT {
     private static final String MAIN_SERVICE_NAME = "overridingService";
 
     // used for jaeger filtering, to only query traces relevant for current test
-    private long testStartTime = 0;
+    private String testStartTime = "0";
 
     /*
      * Start two application. By default, restClient in app will do HTTP requests against app.
@@ -35,7 +36,7 @@ public class UrlOverrideClientIT {
      * Both apps will be distinguished by value of "ts.quarkus.urlOverride.response" which they return as HTTP response.
      * The URL override feature overrides base URL, but not HTTP path. So we cannot easily test it using just one app.
      */
-    @JaegerContainer(expectedLog = "\"Health Check state change\",\"status\":\"ready\"")
+    @JaegerContainer()
     static final JaegerService jaeger = new JaegerService();
 
     @QuarkusApplication(properties = "urlOverride.properties")
@@ -43,7 +44,8 @@ public class UrlOverrideClientIT {
             .withProperty("quarkus.otel.enabled", "true")
             .withProperty("quarkus.otel.simple", "true")
             .withProperty("quarkus.application.name", MAIN_SERVICE_NAME)
-            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl);
+            .withProperty("quarkus.otel.exporter.otlp.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.traces.sampler.arg", "1.0d");
 
     @QuarkusApplication(properties = "urlOverride.properties")
     static RestService app2 = new RestService()
@@ -53,7 +55,7 @@ public class UrlOverrideClientIT {
     @BeforeEach
     public void setTestStartTime() {
         // store time in same format as jaeger
-        testStartTime = System.currentTimeMillis() * 1000;
+        testStartTime = Instant.now().toString();
     }
 
     @Test
@@ -90,7 +92,11 @@ public class UrlOverrideClientIT {
 
         String defaultResponse = app.given().get("/testUrlOverride/" + defaultEndpoint).asString();
         assertEquals("default", defaultResponse);
-
+        //        /result/resourceSpans/0/scopeSpans/0/spans/0/name "GET /urlOverride/basic",
+        //        /result/resourceSpans/1/scopeSpans/0/spans/0/name GET /testUrlOverride/overrideString",
+        //        /result/resourceSpans/2/scopeSpans/0/spans/0/name GET /urlOverride/basic
+        //        /result/resourceSpans/3/scopeSpans/0/spans/0/name GET /urlOverride/basic
+        //        /result/resourceSpans/4/scopeSpans/0/spans/0/name GET /testUrlOverride/defaultString
         String overriddenResponse = app.given()
                 .get("/testUrlOverride/" + overrideEndpoint + "/?port=" + secondAppPort)
                 .body().asString();
@@ -106,17 +112,18 @@ public class UrlOverrideClientIT {
                 .pollInterval(500, TimeUnit.MILLISECONDS)
                 .until(() -> {
                     Response response = getOtelTraces();
-                    if (response.jsonPath().getList("data").size() >= 2) {
+                    if (response.jsonPath().getList("result.resourceSpans").size() >= 2) {
                         return response;
                     }
                     return null;
                 },
-                        response -> response != null && response.jsonPath().getList("data").size() >= 2);
+                        response -> response != null && response.jsonPath().getList("result.resourceSpans").size() >= 2);
 
-        assertTrue(traces.jsonPath().getList("data").size() >= 2, "There should be two spans, after two requests");
-
+        assertTrue(traces.jsonPath().getList("result.resourceSpans").size() >= 2,
+                "There should be two spans, after two requests");
         List<String> spanTargetHosts = traces.jsonPath()
-                .getList("data.flatten().spans.flatten().tags.flatten().findAll{it.key == 'url.full'}.value");
+                .getList(
+                        "result.resourceSpans.scopeSpans.spans.attributes.flatten().findAll{it.key == 'url.full'}.value.stringValue.flatten()");
 
         // There should be requests against both services
         List<String> expectedHosts = new ArrayList<>();
@@ -131,8 +138,9 @@ public class UrlOverrideClientIT {
 
     private Response getOtelTraces() {
         return given().when()
-                .queryParam("service", MAIN_SERVICE_NAME)
-                .queryParam("start", testStartTime)
-                .get(jaeger.getTraceUrl());
+                .queryParam("query.service_name", MAIN_SERVICE_NAME)
+                .queryParam("query.start_time_min", testStartTime)
+                .queryParam("query.start_time_max", Instant.now().toString())
+                .get(jaeger.getTraceV3Url());
     }
 }
