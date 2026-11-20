@@ -5,7 +5,10 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-  
+
+env:
+  TESTCONTAINERS_PULL_TIMEOUT: 300
+
 jobs:
   detect-test-suite-modules:
     name: Detect Modules in PR
@@ -97,7 +100,8 @@ jobs:
               " -P security-modules,spring-modules"
               " -P hibernate-modules"
               " -P sql-db-modules"
-              " -P messaging-modules,monitoring-modules"
+              " -P messaging-modules"
+              " -P monitoring-modules"
             )
           
             JVM_PARAMS=$(printf "'%s ${EXCLUDE_LONG_RUNS}', " "${JVM_MODULES_GROUPS[@]}")
