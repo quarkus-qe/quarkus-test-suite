@@ -15,7 +15,6 @@ import java.util.zip.ZipFile;
 
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +24,6 @@ import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
 @Tag("https://issues.redhat.com/browse/QUARKUS-4663")
-@Disabled("https://github.com/quarkusio/quarkus/issues/58579")
 public class AccessLoggingIT {
     private static final String ACCESS_LOG_FILENAME = "appAccess.log";
     private static final Path ACCESS_LOG_DIR = Path.of("target/AccessLoggingIT/app");
