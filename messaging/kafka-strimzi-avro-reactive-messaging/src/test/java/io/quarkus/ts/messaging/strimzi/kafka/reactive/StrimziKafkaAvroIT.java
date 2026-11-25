@@ -10,7 +10,7 @@ import io.quarkus.test.services.containers.model.KafkaVendor;
 @QuarkusScenario
 public class StrimziKafkaAvroIT extends BaseKafkaAvroIT {
 
-    @KafkaContainer(vendor = KafkaVendor.STRIMZI, withRegistry = true, registryPath = "/apis/registry/v3")
+    @KafkaContainer(vendor = KafkaVendor.STRIMZI_CLUSTER, withRegistry = true, registryPath = "/apis/registry/v3")
     static KafkaService kafka = new KafkaService();
 
     @QuarkusApplication

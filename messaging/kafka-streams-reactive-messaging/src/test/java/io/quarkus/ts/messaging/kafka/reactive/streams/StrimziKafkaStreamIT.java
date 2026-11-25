@@ -13,7 +13,7 @@ import io.quarkus.test.services.containers.model.KafkaVendor;
 @DisabledOnRHBQandWindows(reason = "QUARKUS-3434")
 public class StrimziKafkaStreamIT extends BaseKafkaStreamTest {
 
-    @KafkaContainer(vendor = KafkaVendor.STRIMZI)
+    @KafkaContainer(vendor = KafkaVendor.STRIMZI_CLUSTER)
     static KafkaService kafka = new KafkaService();
 
     @QuarkusApplication

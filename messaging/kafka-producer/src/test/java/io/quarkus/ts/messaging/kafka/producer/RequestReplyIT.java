@@ -14,7 +14,7 @@ import io.quarkus.test.services.containers.model.KafkaVendor;
 
 @QuarkusScenario
 public class RequestReplyIT {
-    @KafkaContainer(vendor = KafkaVendor.STRIMZI)
+    @KafkaContainer(vendor = KafkaVendor.STRIMZI_CLUSTER)
     static final KafkaService kafka = new KafkaService();
 
     @QuarkusApplication(classes = { KafkaRequestReplyEmitter.class, KafkaRequestReplyProcessor.class })

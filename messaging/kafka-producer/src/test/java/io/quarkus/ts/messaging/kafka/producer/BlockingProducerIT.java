@@ -25,7 +25,7 @@ public class BlockingProducerIT {
     static final long NETWORK_DELAY_MS = 300;
     static final long KAFKA_MAX_BLOCK_TIME_MS = KAFKA_MAX_BLOCK_MS + NETWORK_DELAY_MS;
 
-    @KafkaContainer(vendor = KafkaVendor.STRIMZI)
+    @KafkaContainer(vendor = KafkaVendor.STRIMZI_CLUSTER)
     static final KafkaService kafka = new KafkaService().withProperty("auto.create.topics.enable", "false");
 
     @QuarkusApplication
