@@ -43,4 +43,20 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <profiles>
+        <profile>
+            <!-- TODO remove this profile when https://github.com/quarkusio/quarkus/issues/57243 is fixed -->
+            <!-- Disable native build on this module -->
+            <id>native</id>
+            <activation>
+                <property>
+                    <name>native</name>
+                </property>
+            </activation>
+            <properties>
+                <!-- To not build the module on Native -->
+                <quarkus.build.skip>true</quarkus.build.skip>
+            </properties>
+        </profile>
+    </profiles>
 </project>

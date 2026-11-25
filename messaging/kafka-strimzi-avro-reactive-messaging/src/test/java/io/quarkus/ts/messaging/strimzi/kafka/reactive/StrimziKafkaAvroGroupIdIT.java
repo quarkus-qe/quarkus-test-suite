@@ -5,12 +5,14 @@ import org.junit.jupiter.api.Tag;
 import io.quarkus.test.bootstrap.KafkaService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.KafkaContainer;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.services.containers.model.KafkaVendor;
 
 @Tag("QUARKUS-1089")
 @QuarkusScenario
+@DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/57243") //todo enable when fixed
 public class StrimziKafkaAvroGroupIdIT extends BaseKafkaAvroGroupIdIT {
 
     @KafkaContainer(vendor = KafkaVendor.STRIMZI, withRegistry = true, registryPath = "/apis/registry/v3")
