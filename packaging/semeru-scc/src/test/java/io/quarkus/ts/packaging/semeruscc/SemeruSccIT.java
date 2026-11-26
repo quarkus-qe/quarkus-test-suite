@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
@@ -30,6 +31,8 @@ import io.quarkus.test.services.QuarkusApplication;
 @QuarkusScenario
 @DisabledOnNative(reason = "SCC is a JVM-only feature; native mode is not applicable")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+// TODO: enable when Semeru with condy bug fix is shipped, expected to land in Jan 2027
+@Disabled("OpenJ9 condy bug breaks Quarkus 4 app startup, see https://github.com/eclipse-openj9/openj9/issues/25187")
 class SemeruSccIT {
     private static final String SCC_CACHE_DIR = "app-scc";
     private static final String XSHARECLASSES_KEY = "-Xshareclasses";

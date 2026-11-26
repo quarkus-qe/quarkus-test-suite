@@ -6,6 +6,7 @@ import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import io.quarkus.test.bootstrap.OracleService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnSemeruJdk;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.security.jpa.sha512.CreateUserWithSHA512PassResource;
@@ -15,6 +16,8 @@ import io.quarkus.ts.security.jpa.sha512.SHA512UserEntity;
 @Tag("QUARKUS-3866")
 @QuarkusScenario
 @DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/2022")
+// TODO: enable when Semeru with condy bug fix is shipped, expected to land in Jan 2027
+@DisabledOnSemeruJdk(reason = "OpenJ9 condy bug breaks Quarkus 4 app startup, see https://github.com/eclipse-openj9/openj9/issues/25187")
 public class OracleSha512JpaIT extends BaseJpaSecurityRealmIT {
 
     static final int ORACLE_PORT = 1521;

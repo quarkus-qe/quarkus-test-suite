@@ -15,6 +15,7 @@ import io.quarkus.test.bootstrap.JaegerService;
 import io.quarkus.test.bootstrap.PostgresqlService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnSemeruJdk;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.Dependency;
 import io.quarkus.test.services.JaegerContainer;
@@ -24,6 +25,8 @@ import io.restassured.response.Response;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class) // using order only to test the traces last
 @QuarkusScenario
+// TODO: enable when Semeru with condy bug fix is shipped, expected to land in Jan 2027
+@DisabledOnSemeruJdk(reason = "OpenJ9 condy bug breaks Quarkus 4 app startup, see https://github.com/eclipse-openj9/openj9/issues/25187")
 public class OpenTelemetryHibernateOfflineStartupIT extends AbstractHibernateOfflineStartupIT {
 
     // Jaeger v3 API requires a time window (v1 API did not)

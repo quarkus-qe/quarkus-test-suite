@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -24,6 +25,8 @@ import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 @QuarkusIntegrationTest
 @EnabledOnSemeru(reason = "Integration-test training phase only produces an SCC on Semeru JVMs")
 @DisabledOnNative(reason = "SCC is a JVM-only feature; native mode is not applicable")
+// TODO: enable when Semeru with condy bug fix is shipped, expected to land in Jan 2027
+@Disabled("OpenJ9 condy bug breaks Quarkus 4 app startup, see https://github.com/eclipse-openj9/openj9/issues/25187")
 class SemeruSccIntegrationTestPhaseIT {
 
     private static final Path SCC_CACHE_DIR = Path.of("target", "quarkus-app", "app-scc");

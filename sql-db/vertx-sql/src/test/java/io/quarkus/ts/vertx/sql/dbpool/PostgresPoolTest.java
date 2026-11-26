@@ -25,6 +25,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
+import io.quarkus.test.scenarios.annotations.DisabledOnSemeruJdk;
 import io.quarkus.test.scenarios.annotations.EnabledWhenLinuxContainersAvailable;
 import io.smallrye.mutiny.Uni;
 import io.vertx.core.http.HttpMethod;
@@ -37,6 +38,8 @@ import io.vertx.mutiny.sqlclient.RowSet;
 @QuarkusTest
 @TestProfile(PostgresqlTestProfile.class)
 @TestMethodOrder(OrderAnnotation.class)
+// TODO: enable when Semeru with condy bug fix is shipped, expected to land in Jan 2027
+@DisabledOnSemeruJdk(reason = "OpenJ9 condy bug breaks Quarkus 4 app startup, see https://github.com/eclipse-openj9/openj9/issues/25187")
 public class PostgresPoolTest {
 
     private static final int EVENTS = 25000;

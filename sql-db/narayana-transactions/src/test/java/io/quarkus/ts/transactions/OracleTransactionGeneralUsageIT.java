@@ -6,6 +6,7 @@ import io.quarkus.test.bootstrap.JaegerService;
 import io.quarkus.test.bootstrap.OracleService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnSemeruJdk;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.JaegerContainer;
 import io.quarkus.test.services.QuarkusApplication;
@@ -13,6 +14,8 @@ import io.quarkus.ts.transactions.recovery.TransactionExecutor;
 
 @QuarkusScenario
 @DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/2022")
+// TODO: enable when Semeru with condy bug fix is shipped, expected to land in Jan 2027
+@DisabledOnSemeruJdk(reason = "OpenJ9 condy bug breaks Quarkus 4 app startup, see https://github.com/eclipse-openj9/openj9/issues/25187")
 public class OracleTransactionGeneralUsageIT extends TransactionCommons {
 
     private static final int ORACLE_PORT = 1521;

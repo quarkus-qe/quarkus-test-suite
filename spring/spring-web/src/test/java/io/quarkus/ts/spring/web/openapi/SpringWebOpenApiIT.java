@@ -10,11 +10,14 @@ import org.junit.jupiter.api.TestMethodOrder;
 import io.quarkus.test.bootstrap.MariaDbService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnSemeruJdk;
 import io.quarkus.test.services.Container;
 import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+// TODO: enable when Semeru with condy bug fix is shipped, expected to land in Jan 2027
+@DisabledOnSemeruJdk(reason = "OpenJ9 condy bug breaks Quarkus 4 app startup, see https://github.com/eclipse-openj9/openj9/issues/25187")
 public class SpringWebOpenApiIT extends AbstractSpringWebOpenApiIT {
 
     @Container(image = IMAGE_12, port = PORT, expectedLog = START_LOG_11)
