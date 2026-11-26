@@ -46,7 +46,8 @@ public class LargeFileHandlingIT {
 
     @QuarkusApplication(properties = "modern.properties")
     static RestService app = new RestService()
-            .withProperty("client.filepath", () -> files.toAbsolutePath().toString());
+            .withProperty("client.filepath", () -> files.toAbsolutePath().toString())
+            .withProperty("quarkus.rest-client.logging.scope", "none");
 
     @Inject
     public LargeFileHandlingIT() {
