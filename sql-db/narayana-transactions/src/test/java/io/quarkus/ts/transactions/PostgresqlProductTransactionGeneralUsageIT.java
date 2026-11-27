@@ -25,7 +25,8 @@ public class PostgresqlProductTransactionGeneralUsageIT extends AbstractPostgres
 
     @QuarkusApplication
     static RestService app = new RestService().withProperties("postgresql.properties")
-            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.exporter.otlp.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.traces.sampler.arg", "1.0d")
             .withProperty("quarkus.datasource.jdbc.telemetry", "true")
             .withProperty("quarkus.datasource.username", database.getUser())
             .withProperty("quarkus.datasource.password", database.getPassword())

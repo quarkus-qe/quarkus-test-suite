@@ -537,12 +537,8 @@ public abstract class TransactionCommons {
     private static Response getOperations(JaegerService jaeger, String serviceName) {
         try {
             URI uri = new URI(jaeger.getTraceV3Url());
-            String tst = jaeger.getURI().withPath("/api/v3/operations").getRestAssuredStyleUri();
-            System.out.println(tst);
             String operationsEndpoint = uri.getScheme() + "://" + uri.getHost() + ":" + uri.getPort() + "/api/v3/operations"; // todo add this to jaeger API
-            System.out.println("accessing " + operationsEndpoint);
             Response response = given().when()
-                    .log().uri()
                     .queryParam("service", serviceName)
                     .get(operationsEndpoint);
 
@@ -563,7 +559,6 @@ public abstract class TransactionCommons {
     static Response retrieveTraces(int pageLimit, String lookBack, String serviceName, String operationName,
             JaegerService jaeger) {
         return given().when()
-                .log().uri()
                 .queryParam("query.operation_name", operationName)
                 .queryParam("lookback", lookBack)
                 .queryParam("limit", pageLimit)
