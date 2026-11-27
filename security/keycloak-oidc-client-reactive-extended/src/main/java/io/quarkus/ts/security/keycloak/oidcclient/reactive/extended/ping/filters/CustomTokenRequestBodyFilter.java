@@ -12,6 +12,7 @@ import io.quarkus.arc.Unremovable;
 import io.quarkus.oidc.common.OidcEndpoint;
 import io.quarkus.oidc.common.OidcRequestContextProperties;
 import io.quarkus.oidc.common.OidcRequestFilter;
+import io.smallrye.mutiny.Uni;
 import io.vertx.mutiny.core.buffer.Buffer;
 
 @ApplicationScoped
@@ -23,7 +24,7 @@ public class CustomTokenRequestBodyFilter implements OidcRequestFilter {
     public static final List<String> interceptedMessageLogs = new CopyOnWriteArrayList<>();
 
     @Override
-    public void filter(OidcRequestContext requestContext) {
+    public Uni<Void> filter(OidcRequestFilterContext requestContext) {
         Buffer existingModification = requestContext.contextProperties()
                 .get(OidcRequestContextProperties.REQUEST_BODY);
 
@@ -37,6 +38,7 @@ public class CustomTokenRequestBodyFilter implements OidcRequestFilter {
         LOG.infof("Modified body request : %s", modifiedBody);
         requestContext.requestBody(Buffer.buffer(modifiedBody));
         interceptedMessageLogs.add("Custom param added to request");
+        return Uni.createFrom().voidItem();
     }
 
 }

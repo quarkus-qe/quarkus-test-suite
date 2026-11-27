@@ -11,6 +11,7 @@ import io.quarkus.arc.Unremovable;
 import io.quarkus.oidc.common.OidcEndpoint;
 import io.quarkus.oidc.common.OidcResponseFilter;
 import io.quarkus.oidc.common.runtime.OidcConstants;
+import io.smallrye.mutiny.Uni;
 
 @ApplicationScoped
 @Unremovable
@@ -21,7 +22,7 @@ public class TokenResponseFilter implements OidcResponseFilter {
     public static final List<String> interceptedMessageLogs = new CopyOnWriteArrayList<>();
 
     @Override
-    public void filter(OidcResponseContext responseContext) {
+    public Uni<Void> filter(OidcResponseFilterContext responseContext) {
         String grantType = responseContext.requestProperties().get(OidcConstants.GRANT_TYPE);
         LOG.infof("Grant Type: %s", grantType);
         interceptedMessageLogs.add("TokenResponseFilter invoked with grant type: " + grantType);
@@ -34,5 +35,6 @@ public class TokenResponseFilter implements OidcResponseFilter {
             interceptedMessageLogs.add("Tokens have been refreshed");
         }
 
+        return Uni.createFrom().voidItem();
     }
 }

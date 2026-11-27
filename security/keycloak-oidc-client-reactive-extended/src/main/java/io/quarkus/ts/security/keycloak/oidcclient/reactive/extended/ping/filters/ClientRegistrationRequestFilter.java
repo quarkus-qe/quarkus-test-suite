@@ -10,6 +10,7 @@ import org.jboss.logging.Logger;
 import io.quarkus.arc.Unremovable;
 import io.quarkus.oidc.common.OidcEndpoint;
 import io.quarkus.oidc.common.OidcRequestFilter;
+import io.smallrye.mutiny.Uni;
 import io.vertx.core.json.JsonObject;
 import io.vertx.mutiny.core.buffer.Buffer;
 
@@ -22,7 +23,7 @@ public class ClientRegistrationRequestFilter implements OidcRequestFilter {
     private static final Logger LOG = Logger.getLogger(ClientRegistrationRequestFilter.class);
 
     @Override
-    public void filter(OidcRequestContext requestContext) {
+    public Uni<Void> filter(OidcRequestFilterContext requestContext) {
         LOG.info("ClientRegistrationRequestFilter invoked");
         interceptedMessageLogs.add("ClientRegistrationRequestFilter invoked");
         try {
@@ -41,5 +42,6 @@ public class ClientRegistrationRequestFilter implements OidcRequestFilter {
         } catch (Exception e) {
             interceptedMessageLogs.add("Error processing request: " + e.getMessage());
         }
+        return Uni.createFrom().voidItem();
     }
 }
