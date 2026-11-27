@@ -14,9 +14,10 @@ public class MicrometerOpenTelemetryBridgeIT extends AbstractMicrometerOpenTelem
 
     @QuarkusApplication
     static final RestService app = new RestService()
-            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", grafana::getOtlpCollectorUrl)
+            .withProperty("quarkus.otel.exporter.otlp.endpoint", grafana::getOtlpCollectorUrl)
             .withProperty("quarkus.otel.exporter.otlp.logs.endpoint", grafana::getOtlpCollectorUrl)
-            .withProperty("quarkus.otel.exporter.otlp.metrics.endpoint", grafana::getOtlpCollectorUrl);
+            .withProperty("quarkus.otel.exporter.otlp.metrics.endpoint", grafana::getOtlpCollectorUrl)
+            .withProperty("quarkus.otel.traces.sampler.arg", "1.0d");
 
     @Override
     protected boolean useBasicAuth() {

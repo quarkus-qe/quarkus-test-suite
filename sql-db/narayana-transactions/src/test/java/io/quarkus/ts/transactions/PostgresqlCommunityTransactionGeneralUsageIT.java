@@ -1,17 +1,25 @@
 package io.quarkus.ts.transactions;
 
+import io.quarkus.test.bootstrap.JaegerService;
 import io.quarkus.test.bootstrap.PostgresqlService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnSemeruJdk;
 import io.quarkus.test.services.Container;
+import io.quarkus.test.services.JaegerContainer;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.ts.annotations.EnabledIfPostgresImageCommunity;
 
 @QuarkusScenario
 @EnabledIfPostgresImageCommunity
+// TODO: enable when Semeru with condy bug fix is shipped, expected to land in Jan 2027
+@DisabledOnSemeruJdk(reason = "OpenJ9 condy bug breaks Quarkus 4 app startup, see https://github.com/eclipse-openj9/openj9/issues/25187")
 public class PostgresqlCommunityTransactionGeneralUsageIT extends AbstractPostgresqlTransactionGeneralUsageIT {
 
     private static final String ENABLE_PREPARED_TRANSACTIONS = "--max_prepared_transactions=100";
+
+    @JaegerContainer()
+    static final JaegerService jaeger = new JaegerService();
 
     /**
      * Product and community postgresql image has different setup system, so we need to instantiate it differently.
@@ -21,11 +29,13 @@ public class PostgresqlCommunityTransactionGeneralUsageIT extends AbstractPostgr
 
     @QuarkusApplication
     static RestService app = new RestService().withProperties("postgresql.properties")
-            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.exporter.otlp.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.traces.sampler.arg", "1.0d")
             .withProperty("quarkus.datasource.jdbc.telemetry", "true")
             .withProperty("quarkus.datasource.username", database.getUser())
             .withProperty("quarkus.datasource.password", database.getPassword())
             .withProperty("quarkus.datasource.jdbc.url", database::getJdbcUrl)
+            .withProperty("quarkus.otel.bsp.schedule.delay", "700ms")
             .withProperty("quarkus.datasource.validation-query-timeout.jdbc.url",
                     () -> configureValidationQueryDs(database));
 
@@ -34,4 +44,8 @@ public class PostgresqlCommunityTransactionGeneralUsageIT extends AbstractPostgr
         return app;
     }
 
+    @Override
+    public JaegerService getJaeger() {
+        return jaeger;
+    }
 }

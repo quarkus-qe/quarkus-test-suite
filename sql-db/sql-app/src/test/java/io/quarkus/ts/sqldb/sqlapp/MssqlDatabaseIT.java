@@ -6,6 +6,7 @@ import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.bootstrap.SqlServerService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnNative;
+import io.quarkus.test.scenarios.annotations.DisabledOnSemeruJdk;
 import io.quarkus.test.services.Dependency;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.services.SqlServerContainer;
@@ -13,6 +14,8 @@ import io.quarkus.test.services.SqlServerContainer;
 @DisabledOnNative(reason = "BouncyCastle JSSE FIPS doesn't work in native but is required for FIPS-enabled environments")
 @DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/2017")
 @QuarkusScenario
+// TODO: enable when Semeru with condy bug fix is shipped, expected to land in Jan 2027
+@DisabledOnSemeruJdk(reason = "OpenJ9 condy bug breaks Quarkus 4 app startup, see https://github.com/eclipse-openj9/openj9/issues/25187")
 public class MssqlDatabaseIT extends AbstractSqlDatabaseIT {
 
     @SqlServerContainer(tlsEnabled = true)

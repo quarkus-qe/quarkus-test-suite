@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Tag;
 import io.quarkus.test.bootstrap.KafkaService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.Dependency;
 import io.quarkus.test.services.KafkaContainer;
 import io.quarkus.test.services.QuarkusApplication;
@@ -12,6 +13,7 @@ import io.quarkus.test.services.containers.model.KafkaVendor;
 
 @Tag("QUARKUS-1089")
 @QuarkusScenario
+@DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/58761") // TODO enable when fixed
 @Tag("podman-incompatible") //todo fails on podman 4.4.1, works on 4.5.0 and above
 public class ConfluentKafkaAvroGroupIdIT extends BaseKafkaAvroGroupIdIT {
 

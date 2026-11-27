@@ -10,8 +10,8 @@ import org.jboss.logging.Logger;
 import io.quarkus.arc.Unremovable;
 import io.quarkus.oidc.common.OidcEndpoint;
 import io.quarkus.oidc.common.OidcRequestFilter;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
-import io.vertx.mutiny.core.buffer.Buffer;
 
 @ApplicationScoped
 @Unremovable

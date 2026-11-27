@@ -27,7 +27,7 @@ public class ConfigIT {
     @QuarkusApplication
     static RestService app = new RestService()
             .withProperty(ANSWER_KEY, ANSWER_VALUE)
-            .withProperty("secret.password", "T0tallySafePa\\$\\$word")
+            .withProperty("secret.password", "T0tallySafePa$$word")
             .withProperty("secret.ip", "127.0.0.1")
             .withProperty("secrets.system-crypto-handler",
                     "${aes-gcm-nopadding::DEaZok2mA76F-jak70kWav7Gx65QarcWbul-bvLgCHzy9eiHMkCWdadFISES2H7lewF61Ct-jqNaSQ}")

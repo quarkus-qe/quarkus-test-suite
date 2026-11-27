@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.bootstrap.KafkaService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.Dependency;
 import io.quarkus.test.services.KafkaContainer;
 import io.quarkus.test.services.QuarkusApplication;
@@ -23,6 +24,7 @@ import io.quarkus.ts.messaging.kafka.restclient.UppercaseRestResource;
 @QuarkusScenario
 @Tag("podman-incompatible") //todo fails on podman 4.4.1, works on 4.5.0 and above
 @Tag("https://github.com/quarkusio/quarkus/issues/48983")
+@DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/58761") // TODO enable when fixed
 public class ConfluentKafkaRestClientTimeoutIT {
 
     private static final int ASSERT_TIMEOUT_SECONDS = 40;

@@ -11,10 +11,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 
 import org.jboss.logging.Logger;
 
-import com.fasterxml.jackson.core.exc.StreamReadException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DatabindException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
 @ApplicationScoped
 public class Brotli4JRestMock {
@@ -55,9 +53,7 @@ public class Brotli4JRestMock {
             byte[] bytes = inputStream.readAllBytes();
             jsonResponse = objectMapper.readValue(bytes, new TypeReference<>() {
             });
-        } catch (StreamReadException | DatabindException e) {
-            LOGGER.error("Error occurred while deserializing JSON file: " + e.getMessage());
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOGGER.error("Error occurred while reading the JSON file: " + e.getMessage());
         }
     }

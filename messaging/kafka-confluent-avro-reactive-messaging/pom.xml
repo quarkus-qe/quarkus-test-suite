@@ -32,7 +32,7 @@
             <artifactId>kafka-avro-serializer</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <groupId>tools.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-csv</artifactId>
         </dependency>
         <dependency>
@@ -70,4 +70,20 @@
             </snapshots>
         </repository>
     </repositories>
+    <profiles>
+        <profile>
+            <!-- TODO remove this profile when https://github.com/quarkusio/quarkus/issues/58761 is fixed -->
+            <!-- Disable native build on this module -->
+            <id>native</id>
+            <activation>
+                <property>
+                    <name>native</name>
+                </property>
+            </activation>
+            <properties>
+                <!-- To not build the module on Native -->
+                <quarkus.build.skip>true</quarkus.build.skip>
+            </properties>
+        </profile>
+    </profiles>
 </project>

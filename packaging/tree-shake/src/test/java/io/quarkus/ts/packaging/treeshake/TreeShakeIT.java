@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.QuarkusScenario;
 import io.quarkus.test.scenarios.annotations.DisabledOnNative;
+import io.quarkus.test.scenarios.annotations.DisabledOnSemeruJdk;
 import io.quarkus.test.services.QuarkusApplication;
 
 /**
@@ -29,6 +30,8 @@ import io.quarkus.test.services.QuarkusApplication;
  */
 @QuarkusScenario
 @DisabledOnNative(reason = "Tree-shaking applies to JAR packaging; native builds do their own dead-code elimination")
+// TODO: enable when Semeru with condy bug fix is shipped, expected to land in Jan 2027
+@DisabledOnSemeruJdk(reason = "OpenJ9 condy bug breaks Quarkus 4 app startup, see https://github.com/eclipse-openj9/openj9/issues/25187")
 class TreeShakeIT {
 
     private static final Logger LOG = Logger.getLogger(TreeShakeIT.class);

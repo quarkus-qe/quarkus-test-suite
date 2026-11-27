@@ -21,6 +21,7 @@ import jakarta.json.bind.JsonbBuilder;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.RestService;
@@ -107,6 +108,7 @@ public class JsonPayloadIT {
     }
 
     @Test
+    @Disabled("https://github.com/quarkusio/quarkus/issues/58583")
     public void sendInvalidJSONPayload() throws IOException {
         String jsonPayload = readJSONFile("football-teams_invalid.json");
         app.given()

@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.bootstrap.DevModeQuarkusService;
 import io.quarkus.test.scenarios.QuarkusScenario;
+import io.quarkus.test.services.Dependency;
 import io.quarkus.test.services.DevModeQuarkusApplication;
 import io.quarkus.ts.http.advanced.reactive.brotli4j.Brotli4JHttpServerConfig;
 import io.quarkus.ts.http.advanced.reactive.brotli4j.Brotli4JResource;
@@ -24,7 +25,7 @@ import io.restassured.response.Response;
 public class DevModeBrotli4JHttpIT {
     private static final String COMPRESSION_ENABLED_PROPERTY = "quarkus.http.enable-compression";
     @DevModeQuarkusApplication(classes = { Brotli4JHttpServerConfig.class, Brotli4JResource.class,
-            Brotli4JRestMock.class }, properties = "compression.properties")
+            Brotli4JRestMock.class }, dependencies = @Dependency(groupId = "com.aayushatharva.brotli4j", artifactId = "brotli4j"), properties = "compression.properties")
     static DevModeQuarkusService app = (DevModeQuarkusService) new DevModeQuarkusService()
             .withProperty(COMPRESSION_ENABLED_PROPERTY, "false");
 

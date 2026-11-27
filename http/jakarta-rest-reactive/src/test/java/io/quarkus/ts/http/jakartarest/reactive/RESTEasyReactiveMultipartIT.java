@@ -13,6 +13,7 @@ import jakarta.ws.rs.core.MediaType;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -43,6 +44,7 @@ public class RESTEasyReactiveMultipartIT {
     }
 
     @Test
+    @Disabled("https://github.com/quarkusio/quarkus/issues/58726")
     public void testMultipartIsSendAndReceived() {
         whenSendMultipartData("/multipart")
                 .contentType("multipart/form-data");

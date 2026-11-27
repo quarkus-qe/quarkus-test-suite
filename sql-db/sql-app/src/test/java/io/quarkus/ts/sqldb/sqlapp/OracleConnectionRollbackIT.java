@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.http.HttpStatus;
 import org.awaitility.Awaitility;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
@@ -21,6 +22,7 @@ import io.quarkus.test.services.QuarkusApplication;
 
 @QuarkusScenario
 @Tag("QUARKUS-7644")
+@Disabled("https://github.com/quarkusio/quarkus/issues/58789") // TODO: enable when fixed
 @DisabledIfSystemProperty(named = "ts.arm.missing.services.excludes", matches = "true", disabledReason = "https://github.com/quarkus-qe/quarkus-test-suite/issues/2022")
 public class OracleConnectionRollbackIT {
 

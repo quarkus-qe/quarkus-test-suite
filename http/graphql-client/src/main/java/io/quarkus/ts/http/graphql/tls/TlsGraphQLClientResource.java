@@ -35,7 +35,7 @@ public class TlsGraphQLClientResource {
     public String callDynamicClient() {
         try {
             Response response = dynamicClient.executeSync("{ tlsHello }");
-            return response.getData().getString("tlsHello");
+            return response.getData().get("tlsHello").asText();
         } catch (Exception e) {
             throw new WebApplicationException("Dynamic GraphQL TLS request failed", 502);
         }

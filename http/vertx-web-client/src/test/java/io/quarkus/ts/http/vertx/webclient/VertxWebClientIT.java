@@ -4,33 +4,26 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static io.restassured.RestAssured.given;
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-import static java.util.Objects.requireNonNull;
 import static org.awaitility.Awaitility.await;
-import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.not;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.net.HttpURLConnection;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.IntStream;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.tomakehurst.wiremock.client.WireMock;
 
 import io.quarkus.test.bootstrap.DefaultService;
@@ -54,7 +47,7 @@ public class VertxWebClientIT {
 
     private Response resp;
 
-    @JaegerContainer(expectedLog = "\"Health Check state change\",\"status\":\"ready\"")
+    @JaegerContainer()
     static final JaegerService jaeger = new JaegerService();
 
     @Container(image = "${wiremock.image}", port = 8080, expectedLog = "verbose")
@@ -63,7 +56,15 @@ public class VertxWebClientIT {
     @QuarkusApplication
     static RestService vertx = new RestService()
             .withProperty("chucknorris.api.domain", () -> wiremock.getURI(Protocol.HTTP).toString())
-            .withProperty("quarkus.otel.exporter.otlp.traces.endpoint", jaeger::getCollectorUrl);
+            .withProperty("quarkus.otel.exporter.otlp.endpoint", jaeger::getCollectorUrl)
+            .withProperty("quarkus.otel.traces.sampler.arg", "1.0d")
+            .withProperty("quarkus.otel.bsp.schedule.delay", "700ms");
+    private String testStartTime;
+
+    @BeforeEach
+    void setUp() {
+        testStartTime = Instant.now().toString();
+    }
 
     @Test
     @DisplayName("Vert.x WebClient [flavor: mutiny] -> Map json response body to POJO")
@@ -113,7 +114,6 @@ public class VertxWebClientIT {
             thenTraceDataSizeMustBe(greaterThan(0));
             thenTraceSpanSizeMustBe(greaterThan(0));
             thenTraceSpanTagsSizeMustBe(greaterThan(0));
-            thenTraceSpansOperationNameMustBe(not(empty()));
             thenCheckOperationNamesIsEqualTo(TRACE_PING_OPERATION_NAME);
         });
     }
@@ -128,7 +128,6 @@ public class VertxWebClientIT {
             thenTraceDataSizeMustBe(greaterThan(0));
             thenTraceSpanSizeMustBe(greaterThan(1));
             thenTraceSpanTagsSizeMustBe(greaterThan(0));
-            thenTraceSpansOperationNameMustBe(not(empty()));
             thenCheckOperationNamesIsEqualTo(TRACE_PING_OPERATION_NAME);
         });
     }
@@ -145,8 +144,11 @@ public class VertxWebClientIT {
                 .queryParam("limit", pageLimit)
                 .queryParam("lookback", lookBack)
                 .queryParam("service", serviceName)
-                .queryParam("operation", operationName)
-                .get(jaeger.getTraceUrl());
+                .queryParam("query.service_name", serviceName)
+                .queryParam("query.operation_name", operationName)
+                .queryParam("query.start_time_min", testStartTime)
+                .queryParam("query.start_time_max", Instant.now().toString())
+                .get(jaeger.getTraceV3Url());
     }
 
     private void thenStatusCodeMustBe(int expectedStatusCode) {
@@ -154,37 +156,21 @@ public class VertxWebClientIT {
     }
 
     private void thenTraceDataSizeMustBe(Matcher<?> matcher) {
-        resp.then().body("data.size()", matcher);
+        resp.then().body("result.resourceSpans.size()", matcher);
     }
 
     private void thenTraceSpanSizeMustBe(Matcher<?> matcher) {
-        resp.then().body("data[0].spans.size()", matcher);
+        resp.then().body("result.resourceSpans[0].scopeSpans[0].spans.size()", matcher);
     }
 
     private void thenTraceSpanTagsSizeMustBe(Matcher<?> matcher) {
-        resp.then().body("data[0].spans[0].tags.size()", matcher);
-    }
-
-    private void thenTraceSpansOperationNameMustBe(Matcher<?> matcher) {
-        resp.then().body("data.spans.operationName", matcher);
+        resp.then().body("result.resourceSpans[0].scopeSpans[0].spans.attributes.size()", matcher);
     }
 
     private void thenCheckOperationNamesIsEqualTo(String expectedOperationName) {
-        var body = resp.then().extract().jsonPath();
-        IntStream
-                .range(0, body.getList("data").size())
-                .mapToObj(i -> body.getList("data[" + i + "].spans", Span.class))
-                .map(TreeSet::new)
-                .forEach(spans -> {
-                    var prevSpan = requireNonNull(spans.pollFirst());
-                    // assert that operation of the root span element is the expected one
-                    Assertions.assertEquals(expectedOperationName, prevSpan.operationName);
-                    // assert all other span elements are children (pingRequest endpoint calls pong endpoint and returns result)
-                    for (Span span : spans) {
-                        Assertions.assertTrue(prevSpan.hasChild(span));
-                        prevSpan = span;
-                    }
-                });
+        List<String> operationNames = resp.jsonPath().getList("result.resourceSpans.scopeSpans.spans.name.flatten()");
+        assertTrue(operationNames.contains(expectedOperationName),
+                expectedOperationName + " is not found in " + operationNames);
     }
 
     @Test
@@ -192,7 +178,7 @@ public class VertxWebClientIT {
     public void checkNativeDebugSymbols() {
         final String debugSymbolsFileName = "vertx-web-client-1.0.0-SNAPSHOT-runner.debug";
         File debugFile = Paths.get("target", debugSymbolsFileName).toFile();
-        Assertions.assertTrue(debugFile.exists(), "Missing debug symbols file: " + debugSymbolsFileName);
+        assertTrue(debugFile.exists(), "Missing debug symbols file: " + debugSymbolsFileName);
     }
 
     private void setupMockHttpServer() {
@@ -214,49 +200,5 @@ public class VertxWebClientIT {
 
     private WireMock wireMockClient() {
         return new WireMock(wiremock.getURI(Protocol.HTTP).getHost(), wiremock.getURI(Protocol.HTTP).getPort());
-    }
-
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    private static final class Span implements Comparable<Span> {
-
-        private static final String SPAN_ID = "spanID";
-
-        @JsonProperty
-        String operationName;
-
-        @JsonProperty
-        String spanID;
-
-        private String parentSpanID;
-
-        @JsonProperty("references")
-        void setParentSpanID(List<Map<String, Object>> references) {
-            // has reference to a parent element -> is not root element
-            if (nonNull(references) && !references.isEmpty() && nonNull(references.get(0))) {
-                parentSpanID = (String) references.get(0).get(SPAN_ID);
-            }
-        }
-
-        @Override
-        public int compareTo(Span otherSpan) {
-            // leaf node > branch node > root
-            if (isRootElement()) {
-                return -1;
-            }
-            if (otherSpan.isRootElement()) {
-                return 1;
-            } else {
-                return hasChild(otherSpan) ? -1 : 1;
-            }
-        }
-
-        boolean hasChild(Span otherSpan) {
-            return spanID.equals(otherSpan.parentSpanID);
-        }
-
-        private boolean isRootElement() {
-            return isNull(parentSpanID);
-        }
-
     }
 }

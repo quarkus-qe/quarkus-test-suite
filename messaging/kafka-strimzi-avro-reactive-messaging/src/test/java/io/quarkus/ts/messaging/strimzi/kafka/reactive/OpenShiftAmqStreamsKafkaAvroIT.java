@@ -5,12 +5,14 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import io.quarkus.test.bootstrap.KafkaService;
 import io.quarkus.test.bootstrap.RestService;
 import io.quarkus.test.scenarios.OpenShiftScenario;
+import io.quarkus.test.scenarios.annotations.DisabledOnNative;
 import io.quarkus.test.services.KafkaContainer;
 import io.quarkus.test.services.QuarkusApplication;
 import io.quarkus.test.services.containers.model.KafkaVendor;
 
 @OpenShiftScenario
 @EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
+@DisabledOnNative(reason = "https://github.com/quarkusio/quarkus/issues/57243") //todo enable when fixed
 public class OpenShiftAmqStreamsKafkaAvroIT extends BaseKafkaAvroIT {
 
     @KafkaContainer(vendor = KafkaVendor.STRIMZI, image = "${amq-streams.image}", version = "${amq-streams.version}", withRegistry = true, registryPath = "/apis/registry/v3")

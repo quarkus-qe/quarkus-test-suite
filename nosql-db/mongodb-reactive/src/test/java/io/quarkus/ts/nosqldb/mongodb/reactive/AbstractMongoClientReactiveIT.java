@@ -12,9 +12,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 import io.quarkus.test.bootstrap.RestService;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.helpers.test.UniAssertSubscriber;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.Json;
-import io.vertx.mutiny.core.buffer.Buffer;
 import io.vertx.mutiny.ext.web.client.HttpRequest;
 import io.vertx.mutiny.ext.web.client.HttpResponse;
 

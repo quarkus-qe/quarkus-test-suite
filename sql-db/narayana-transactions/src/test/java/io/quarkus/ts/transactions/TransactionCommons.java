@@ -10,10 +10,16 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static java.time.Duration.ofMinutes;
 import static org.awaitility.Awaitility.await;
+import static org.awaitility.Awaitility.waitAtMost;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.stringContainsInOrder;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
@@ -34,9 +40,9 @@ import org.junit.jupiter.api.Timeout;
 import io.quarkus.test.bootstrap.DatabaseService;
 import io.quarkus.test.bootstrap.JaegerService;
 import io.quarkus.test.bootstrap.RestService;
-import io.quarkus.test.services.JaegerContainer;
 import io.quarkus.ts.transactions.recovery.TransactionExecutor;
 import io.restassured.http.ContentType;
+import io.restassured.path.json.exception.JsonPathException;
 import io.restassured.response.Response;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class) // we keep order to ensure JDBC traces are ready
@@ -59,8 +65,11 @@ public abstract class TransactionCommons {
     static final int ASSERT_SERVICE_TIMEOUT_MINUTES = 1;
     protected static volatile SQLProxy sqlProxy = null;
 
-    @JaegerContainer(expectedLog = "\"Health Check state change\",\"status\":\"ready\"")
-    static final JaegerService jaeger = new JaegerService();
+    // Jaeger v3 API requires a time window (v1 API did not)
+    String startMin = Instant.now().minus(1, ChronoUnit.HOURS).toString();
+    String startMax = Instant.now().plus(1, ChronoUnit.HOURS).toString();
+
+    public abstract JaegerService getJaeger();
 
     protected static String configureValidationQueryDs(DatabaseService<?> database) {
         return configureValidationQueryDs(database, database.getJdbcUrl());
@@ -256,18 +265,28 @@ public abstract class TransactionCommons {
     @Order(7)
     @Test
     public void verifyJdbcTraces() {
-        var serviceTraces = retrieveServiceTraces(NARAYANA_SERVICE_NAME);
-        var operationNames = serviceTraces.jsonPath().getList("data.spans.operationName.flatten()", String.class);
-        for (var operation : getExpectedJdbcOperations()) {
-            verifyTracesForOperationArePresent(operation, operationNames);
-        }
+        waitAtMost(Duration.ofMinutes(1)).untilAsserted(() -> {
+            Response operations = getOperations(getJaeger(), NARAYANA_SERVICE_NAME);
+            Assertions.assertEquals(HttpStatus.SC_OK, operations.getStatusCode());
+            List<String> operationNames;
+            try {
+                operationNames = operations.jsonPath().getList("operations.name.flatten()", String.class);
+            } catch (JsonPathException e) {
+                throw new RuntimeException("Failed to retrieve data from " + operations.body().asPrettyString(), e);
+            }
+            for (var operation : getExpectedJdbcOperations()) {
+                verifyTracesForOperationArePresent(operation, operationNames);
+            }
+        });
+
     }
 
     private static void verifyTracesForOperationArePresent(Operation operation, List<String> operationNames) {
         var matchedOperationNames = operationNames.stream().filter(operation.operationNameMatcher())
                 .collect(Collectors.toSet());
         if (matchedOperationNames.isEmpty()) {
-            Assertions.fail("Failed to find operation %s, known operation names are: %s".formatted(operation, operationNames));
+            Assertions.fail("Failed to find operation %s, known operation names are: %s".formatted(operation.operationName,
+                    operationNames));
         }
         if (matchedOperationNames.size() > 1) {
             throw new IllegalStateException(
@@ -279,10 +298,10 @@ public abstract class TransactionCommons {
     /**
      * @param operationNameMatcher matches found operation names with expected operation name
      */
-    protected record Operation(Predicate<String> operationNameMatcher) {
+    protected record Operation(String operationName, Predicate<String> operationNameMatcher) {
 
         Operation(String operationName) {
-            this(operationName::equals);
+            this(operationName, operationName::equals);
         }
 
     }
@@ -290,10 +309,12 @@ public abstract class TransactionCommons {
     private Response retrieveServiceTraces(String serviceName) {
         return given().when()
                 .log().uri()
-                .queryParam("service", serviceName)
+                .queryParam("query.service_name", serviceName)
                 .queryParam("lookback", "1h")
                 .queryParam("limit", SERVICE_TRACES_LIMIT)
-                .get(jaeger.getTraceUrl());
+                .queryParam("query.start_time_min", startMin)
+                .queryParam("query.start_time_max", startMax)
+                .get(getJaeger().getTraceV3Url());
     }
 
     protected Operation[] getExpectedJdbcOperations() {
@@ -496,20 +517,35 @@ public abstract class TransactionCommons {
     }
 
     private void verifyRequestTraces(String operationName) {
-        verifyRequestTraces(operationName, jaeger);
+        verifyRequestTraces(operationName, getJaeger());
     }
 
     static void verifyRequestTraces(String operationName, JaegerService jaeger) {
         await().atMost(1, TimeUnit.MINUTES).pollInterval(Duration.ofSeconds(5)).untilAsserted(() -> {
             var operations = getTracedOperationsForName(operationName, jaeger);
             Assertions.assertNotNull(operations);
+            stringContainsInOrder(operations);
             Assertions.assertTrue(operations.stream().anyMatch(operationName::equals));
         });
     }
 
     static List<String> getTracedOperationsForName(String operationName, JaegerService jaeger) {
         var jaegerResponse = retrieveTraces(20, "1h", "narayanaTransactions", operationName, jaeger);
-        return jaegerResponse.jsonPath().getList("data[0].spans.operationName", String.class);
+        return jaegerResponse.jsonPath().getList("result.resourceSpans.scopeSpans.spans.name.flatten()", String.class);
+    }
+
+    private static Response getOperations(JaegerService jaeger, String serviceName) {
+        try {
+            URI uri = new URI(jaeger.getTraceV3Url());
+            String operationsEndpoint = uri.getScheme() + "://" + uri.getHost() + ":" + uri.getPort() + "/api/v3/operations"; // todo add this to jaeger API
+            Response response = given().when()
+                    .queryParam("service", serviceName)
+                    .get(operationsEndpoint);
+
+            return response;
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private JournalEntity getLatestJournalRecord(String accountNumber) {
@@ -523,12 +559,13 @@ public abstract class TransactionCommons {
     static Response retrieveTraces(int pageLimit, String lookBack, String serviceName, String operationName,
             JaegerService jaeger) {
         return given().when()
-                .log().uri()
-                .queryParam("operation", operationName)
+                .queryParam("query.operation_name", operationName)
                 .queryParam("lookback", lookBack)
                 .queryParam("limit", pageLimit)
-                .queryParam("service", serviceName)
-                .get(jaeger.getTraceUrl());
+                .queryParam("query.service_name", serviceName)
+                .queryParam("query.start_time_min", Instant.now().minus(1, ChronoUnit.HOURS).toString())
+                .queryParam("query.start_time_max", Instant.now().plus(1, ChronoUnit.HOURS).toString())
+                .get(jaeger.getTraceV3Url());
     }
 
     private void verifyMetrics(String name, Predicate<Double> valueMatcher) {
