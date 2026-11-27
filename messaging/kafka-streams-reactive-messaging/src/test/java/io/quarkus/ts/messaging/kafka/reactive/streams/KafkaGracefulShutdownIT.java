@@ -40,7 +40,7 @@ public class KafkaGracefulShutdownIT {
     private static final String LAST_MESSAGE_LOG = "Processed Message " + TOTAL_MESSAGES;
     private static final String SHUTDOWN_KAFKA_LOG = "Shutting down - Waiting for message processing to complete";
 
-    @KafkaContainer(vendor = KafkaVendor.STRIMZI)
+    @KafkaContainer(vendor = KafkaVendor.STRIMZI_CLUSTER)
     static KafkaService kafka = new KafkaService();
 
     @QuarkusApplication(classes = { SlowTopicConsumer.class,

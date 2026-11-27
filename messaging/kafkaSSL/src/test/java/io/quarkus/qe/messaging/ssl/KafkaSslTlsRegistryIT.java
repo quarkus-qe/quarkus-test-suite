@@ -20,7 +20,7 @@ import io.quarkus.test.services.containers.model.KafkaVendor;
 @QuarkusScenario
 public class KafkaSslTlsRegistryIT {
 
-    @KafkaContainer(vendor = KafkaVendor.STRIMZI, protocol = KafkaProtocol.SSL, tlsRegistryEnabled = true, tlsConfigName = "kafka-ssl-config")
+    @KafkaContainer(vendor = KafkaVendor.STRIMZI_CLUSTER, protocol = KafkaProtocol.SSL, tlsRegistryEnabled = true, tlsConfigName = "kafka-ssl-config")
     static final KafkaService kafkassl = new KafkaService();
 
     @QuarkusApplication

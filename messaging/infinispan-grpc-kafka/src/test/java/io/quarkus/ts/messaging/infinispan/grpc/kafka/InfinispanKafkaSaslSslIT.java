@@ -31,7 +31,7 @@ public class InfinispanKafkaSaslSslIT {
             .withSecretFiles(CertUtils.KEYSTORE)
             .onPreStart((action) -> CertUtils.prepareCerts());
 
-    @KafkaContainer(vendor = KafkaVendor.STRIMZI, protocol = KafkaProtocol.SASL_SSL, tlsRegistryEnabled = true, tlsConfigName = "kafka-sasl-ssl")
+    @KafkaContainer(vendor = KafkaVendor.STRIMZI_CLUSTER, protocol = KafkaProtocol.SASL_SSL, tlsRegistryEnabled = true, tlsConfigName = "kafka-sasl-ssl")
     static final KafkaService kafkaSaslSsl = new KafkaService();
 
     @QuarkusApplication

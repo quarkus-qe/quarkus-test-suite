@@ -25,7 +25,7 @@ public class OpenShiftKafkaSnappyIT {
     private static final int TIMEOUT_SEC = 5;
     private static final String FILTER_COMMAND_LOG_CONTAINER = "/bin/bash -c \"./bin/kafka-run-class.sh org.apache.kafka.tools.DumpLogSegments --deep-iteration --print-data-log --files /tmp/kraft-combined-logs/test-0/00000000000000000000.log | head\"";
 
-    @KafkaContainer(vendor = KafkaVendor.STRIMZI)
+    @KafkaContainer(vendor = KafkaVendor.STRIMZI_CLUSTER)
     static final KafkaService kafka = new KafkaService().withProperty("auto.create.topics.enable", "false");
 
     @QuarkusApplication

@@ -14,7 +14,7 @@ import io.quarkus.test.services.containers.model.KafkaVendor;
 @EnabledIfSystemProperty(named = "ts.redhat.registry.enabled", matches = "true")
 public class OpenShiftAmqStreamsKafkaStreamIT extends BaseKafkaStreamTest {
 
-    @KafkaContainer(vendor = KafkaVendor.STRIMZI, image = "${amq-streams.image}", version = "${amq-streams.version}", withRegistry = true)
+    @KafkaContainer(vendor = KafkaVendor.STRIMZI_CLUSTER, image = "${amq-streams.image}", version = "${amq-streams.version}", withRegistry = true)
     static KafkaService kafka = new KafkaService();
 
     @QuarkusApplication

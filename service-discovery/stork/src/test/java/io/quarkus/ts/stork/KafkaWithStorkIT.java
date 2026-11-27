@@ -24,7 +24,7 @@ public class KafkaWithStorkIT {
     private static final Logger testLog = Logger.getLogger(KafkaWithStorkIT.class);
     private static final String STORK_GET_INSTANCE_NPE_SIGNATURE = "Cannot invoke \"io.smallrye.stork.Stork.getService(String)\" because the return value of \"io.smallrye.stork.Stork.getInstance()\" is null";
 
-    @KafkaContainer(vendor = KafkaVendor.STRIMZI)
+    @KafkaContainer(vendor = KafkaVendor.STRIMZI_CLUSTER)
     static final KafkaService kafka = new KafkaService();
 
     @QuarkusApplication(classes = {
