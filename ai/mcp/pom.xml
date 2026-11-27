@@ -10,6 +10,11 @@
     <artifactId>mcp</artifactId>
     <packaging>jar</packaging>
     <name>Quarkus QE TS: MCP</name>
+    <!--
+        TODO: file /src/main/resources/META-INF/native-image/io.quarkus.ts.qe/mcp/reachability-metadata.json
+        was added as a workaround for https://github.com/quarkiverse/quarkus-langchain4j/issues/3311.
+        Remove it once the issue is resolved.
+    -->
     <properties>
         <!-- The line below is required because we have empty src/main: https://github.com/quarkusio/quarkus/issues/33061 -->
         <quarkus.build.skip>true</quarkus.build.skip>

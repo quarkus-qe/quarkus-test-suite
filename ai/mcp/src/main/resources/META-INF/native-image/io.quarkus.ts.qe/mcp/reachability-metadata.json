@@ -1,0 +1,13 @@
+{
+  "reflection": [
+    {
+      "type": "dev.langchain4j.mcp.client.McpIconTheme",
+      "methods": [
+        {
+          "name": "value",
+          "parameterTypes": []
+        }
+      ]
+    }
+  ]
+}
